@@ -20,29 +20,23 @@ You can download this as a _.zip_ from the GitHub Repository via the following l
 If you have Git installed you can clone the repo
 
 	git clone https://github.com/XavierBerger/RPi-Monitor.git
-  
-## Install
-
-####Install rpimonitor daemon
-
-Copy the directory rpimonitord into /usr/local/
-
-Copy rpimonitord.conf into /etc/init/
-
-Execute the following command to start the daemon
-
-	sudo start rpimonitord
-
-####Install the web interface
-
-Copy directory rpimonitorweb into you web server.
-
-Installation is done.
 
 ## Usage
 
-When the daemon is running, you can check the current status in the file with the command:
+Start rpimonitord from directory rpimonitor web with the command
 
-	cat /usr/local/rpimonitor/rpimonitord.status
+	./rpimonitord &
 
-Browse http://<your Raspberry Pi address>/rpimonitor/ to access to the inteactive web interface
+When the rpimonitord is running, you can check the current status in the file with the command:
+
+	cat rpimonitord.status
+
+Start the web server by excuting the following command 
+
+	./start.sh
+
+You can now browse http://<your Raspberry Pi address>:8888 to access to the interactive web interface.
+
+## Future development
+
+Future development will make installation and usage easier. It will start rpimonitord as daemon and will add additionnal feature to the web interface.
