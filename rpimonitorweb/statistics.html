@@ -1,0 +1,66 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>RPi-Monitor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="RPi-Monitor">
+    <meta name="author" content="RPi-Experiences">
+
+    <!-- CSS -->
+    <link href="./css/bootstrap.css" rel="stylesheet">
+    <link href="./css/rpimonitor.css" rel="stylesheet">
+    <link href="./css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- Favicon-->
+    <link rel="shortcut icon" type="image/png" href="./img/favicon.png">
+  </head>
+
+  <body>
+
+
+    <!-- Part 1: Wrap all page content here -->
+    <div id="wrap">
+
+      <!-- Fixed navbar -->
+      <div id='topmenu'></div>
+
+      <!-- Begin page content -->
+      <div class="container">
+        <table id="infotable" border=0>
+            <tr><td colspan="21"></td></tr>
+        </table>
+
+        <div id="mygraph"></div>
+      </div>
+      <div id="push"></div>
+    </div>
+
+    <div id="configuration"></div>
+
+    <div id="footer"></div>
+
+
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+
+    <script type="text/javascript" src="js/javascriptrrd/binaryXHR.js"></script>
+    <script type="text/javascript" src="js/javascriptrrd/rrdFile.js"></script>
+    <script type="text/javascript" src="js/javascriptrrd/rrdMultiFile.js"></script>
+    <!-- rrdFlot class needs the following four include files !-->
+    <script type="text/javascript" src="js/javascriptrrd/rrdFlotSupport.js"></script>
+    <script type="text/javascript" src="js/javascriptrrd/rrdFlot.js"></script>
+    <script type="text/javascript" src="js/flot/jquery.js"></script>
+    <script type="text/javascript" src="js/flot/jquery.flot.js"></script>
+    <script type="text/javascript" src="js/flot/jquery.flot.selection.js"></script>
+    <script type="text/javascript" src="js/flot/jquery.flot.tooltip.js"></script>
+
+    <script src="./js/rpimonitor.statistics.js"></script>
+    <script src="./js/rpimonitor.js"></script>
+  </body>
+</html>

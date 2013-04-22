@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>RPi-Monitor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="RPi-Monitor">
+    <meta name="author" content="RPi-Experiences">
+
+    <!-- CSS -->
+    <link href="./css/bootstrap.css" rel="stylesheet">
+    <link href="./css/rpimonitor.css" rel="stylesheet">
+    <link href="./css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- Favicon-->
+    <link rel="shortcut icon" type="image/png" href="./img/favicon.png">
+  </head>
+
+  <body>
+
+
+    <!-- Part 1: Wrap all page content here -->
+    <div id="wrap">
+
+      <!-- Fixed navbar -->
+      <div id='topmenu'></div>
+
+      <!-- Begin page content -->
+      <div class="container">
+        <div class="row">
+          <div class="reportIcon"><img src="img/version.png"></div>
+          <div class="reportTitle">Version</div>
+          <div class="reportWarning"></div>
+          <div class="reportText" id="versionText"><b>rpimonitord looks to be not started!</b></div>
+        </div>
+        <hr>
+        <div class="row">
+          <div class="reportIcon"><img src="img/uptime.png"></div>
+          <div class="reportTitle">uptime</div>
+          <div class="reportWarning"></div>
+          <div class="reportText" id="uptimeText"><b></b></div>
+        </div>
+        <hr>
+        <div class="row">
+          <div class="reportIcon"><img src="img/cpu.png"></div>
+          <div class="reportTitle">CPU</div>
+          <div class="reportWarning" id="cpuWarning"></div>
+          <div class="reportText" id="cpuText"></div>
+        </div>
+        <hr>
+        <div class="row">
+          <div class="reportIcon"><img src="img/cpu_temp.png"></div>
+          <div class="reportTitle">Temperature</div>
+          <div class="reportWarning"></div>
+          <div class="reportText" id="tempText"></div>
+        </div>
+        <hr>
+        <div class="row">
+          <div class="reportIcon"><img src="img/memory.png"></div>
+          <div class="reportTitle">memory</div>
+          <div class="reportWarning"></div>
+          <div class="reportText" id="memText"></div>
+        </div>
+        <hr>
+        <div class="row">
+          <div class="reportIcon"><img src="img/swap.png"></div>
+          <div class="reportTitle">swap</div>
+          <div class="reportWarning" id="swapWarning"></div>
+          <div class="reportText" id="swapText"></div>
+        </div>
+        <hr>
+        <div class="row">
+          <div class="reportIcon"><img src="img/sd.png"></div>
+          <div class="reportTitle">SD card</div>
+          <div class="reportWarning" id="sdWarning"></div>
+          <div class="reportText" id="sdText"></div>
+        </div>
+        <hr>
+        <div class="row">
+          <div class="reportIcon"><img src="img/network.png"></div>
+          <div class="reportTitle">Network</div>
+          <div class="reportWarning"></div>
+          <div class="reportText" id="netText"></div>
+        </div>
+        <hr>
+        <!--div class="row">
+          <div class="reportIcon"><img src="img/user.png"></div>
+          <div class="reportTitle">Users</div>
+          <div class="reportWarning"></div>
+          <div class="reportText" id="usersText"></div>
+        </div>
+        <hr-->
+      </div>
+      <div id="push"></div>
+    </div>
+
+    <div id="configuration"></div>
+    <div id="footer"></div>
+
+  <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/rpimonitor.status.js"></script>
+    <script src="./js/rpimonitor.js"></script>
+  </body>
+</html>

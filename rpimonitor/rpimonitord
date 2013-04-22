@@ -1,0 +1,212 @@
+#!/usr/bin/perl
+# (c) 2013 - RPI-Experience - http://rpi-experiences.blogspot.fr/
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+$|=1;
+$SIG{CHLD}   = 'IGNORE';
+$SIG{INT}    = sub { stop(); };
+$0 =~ /(\w+)$/;
+my $status_file = "./$1.status";
+my $rrd_file = "./$1.rrd";
+
+package Monitor;
+use strict;
+use RRDs;
+
+sub new
+{
+  my $this = bless { }, shift;
+  # default values
+  $this->{'delay'} = 10;
+
+=cut
+      $cpuCurFreq = round(file_get_contents("/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq") / 1000) . "MHz";
+      $cpuMinFreq = round(file_get_contents("/sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq") / 1000) . "MHz";
+      $cpuMaxFreq = round(file_get_contents("/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq") / 1000) . "MHz";
+      $cpuFreqGovernor = file_get_contents("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor");
+=cut
+
+  # note: to avoid fork due to system call, it would be better to get everything from /proc
+  %{$this->{'id'}} = ( './vcgencmd version' => [ ['firmware_version'], ['version (\S+) '] ],
+                       '/proc/version' => [ ['kernel_version'], ['version (\S+) '] ],
+                       '/proc/meminfo' => [ ['memory_total','swap_total'], ['MemTotal:\s+(\d+)','SwapTotal:\s+(\d+)'] ],
+                       'df -t ext4' => [ ['sdcard_root_total','sdcard_home_total','sdcard_boot_total'], ['slash\s+(\d+)','home\s+(\d+)','sda2\s+(\d+)'] ]
+  );
+
+  %{$this->{'kpi'}} = ( '/proc/net/dev' => [ [ 'net_recived', 'net_send' ] , [ 'wlan0:\s+(\d+)(?:\s+\d+){7}\s+(\d+)' ] ] , # should use /sys/class/net...
+                        './vcgencmd measure_clock arm'  => [ ['cpu_frequency'], ['([0-9.]{4,})' ] ],
+                        './vcgencmd measure_clock core' => [ ['core_frequency'], ['([0-9.]{4,})' ] ],
+                        './vcgencmd measure_volts core' => [ ['core_voltage'], ['([0-9.]{4,})' ] ],
+                        '/sys/devices/virtual/thermal/thermal_zone0/temp'  => [ ['soc_temp'], ['(.*)' ] ],
+                        '/proc/uptime'  => [ ['uptime'], ['^(\S+)' ] ],
+                        '/proc/loadavg' => [ ['load1', 'load5', 'load15'], ['^(\S+)\s(\S+)\s(\S+)' ]],
+                        '/proc/meminfo' => [ ['memory_free','swap_free'], ['MemFree:\s+(\d+)','SwapFree:\s+(\d+)'] ],
+                        'df -t ext4' => [ ['sdcard_root_free','sdcard_home_free','sdcard_boot_free'], ['slash\s+\d+\s+\d+\s+(\d+)','home\s+\d+\s+\d+\s+(\d+)','sda2\s+\d+\s+\d+\s+(\d+)'] ]
+                        );
+
+  -f $rrd_file or $this->CreateRRD();
+
+  return $this;
+}
+
+sub CreateRRD
+{
+  my $this = shift;
+  my $current = time();
+  my $start = $current - 60;
+  my @data=();
+
+  while ( my ( $command, $feed) = each ( %{$this->{"kpi"}} ) ) {
+    my $name = @$feed[0];
+    foreach (@$name) {
+      push(@data, "DS:$_:GAUGE:600:U:U");
+    }
+  }
+
+  RRDs::create( $rrd_file,
+                "--start", $start,
+                "--step", 10,
+                @data,
+                "RRA:AVERAGE:0.5:1:8640",    # 1 day with interval of 10sec
+                "RRA:AVERAGE:0.5:6:2880",    # 2 day with interval of 1min
+                "RRA:AVERAGE:0.5:60:2016",   # 2 week with interval of 10min
+                "RRA:AVERAGE:0.5:180:1488",  # 1 mounth with interval of 30min
+                "RRA:AVERAGE:0.5:360:8784"   # 1 year with interval of 1hour
+                );
+}
+
+sub Run
+{
+  # start main loop
+  my $this = shift;
+
+  $this->Process('id');
+
+  for(;;)
+  {
+    $this->Process('kpi',1);
+    $this->Status();
+
+    # tempo before next process
+    $this->{'delay'} or last;
+    sleep $this->{'delay'};
+  }
+  -f $status_file and unlink $status_file;
+}
+
+sub Process
+{
+
+  # process
+  my $this = shift;
+  my $list = shift;
+  my $rrd = shift;
+
+  my $data="N";
+
+  while ( my ( $command, $feed) = each ( %{$this->{"$list"}} ) ) {
+    my ($kpi, $regexp) = @$feed;
+    my $file = -f $command ? $command : "$command|";
+    my $index=0;
+    open(FEED, $file);
+      while (<FEED>) {
+        foreach my $re(@$regexp) {
+          @_ = /$re/ or next;
+          foreach (@_) {
+            my $name = @$kpi[$index++];
+            $this->{'result'}->{$name} = $_;
+            $rrd and $data .= ":$_";
+          }
+        }
+      }
+    close FEED;
+  }
+  $rrd and RRDs::update($rrd_file, $data);
+}
+
+sub Status
+{
+  my $this = shift;
+
+  # construct printable status
+  my $status = "";
+  my %result = %{$this->{'result'}};
+  $status .= "\"$_\":\"$result{$_}\"\n" for (keys %result);
+
+  # Print status on screen if requested
+  $this->{'show'} and print STDOUT "$status";
+
+  chomp($status);
+  $status=~s/\n/, /g;
+  $status="{ $status }";
+
+  # write current status in file (JSON)
+  open(FILE, "> $status_file")
+    or warn $!;
+    print FILE $status ;
+  close(FILE);
+}
+
+package main;
+use strict;
+
+sub help
+{
+  # print help and exit
+  die <<EOF;
+
+$0
+
+NAME
+  $0
+
+USAGE
+  $0 blabla
+
+DESCRIPTION
+  $0 is designed extract data from RPI system and store status in json
+  and statistic into RRD.
+
+OPTIONS
+  -d, --Delay       Delay between check (default 10sec)
+  -h, --help        Shows this help and exit
+  -s, --Show        Show status in STDOUT
+
+
+OVERVIEW
+
+EOF
+}
+
+my $monitor = Monitor->new();
+
+sub stop
+{
+  $monitor->{'delay'} = 0;
+}
+
+# read command lines
+while($_ = shift)
+{
+  /-d(elay)?/       and $monitor->{'delay'} = shift and next;
+  /-h(elp)?/        and help;
+  /-s(how)?/        and ++$monitor->{'show'}        and next;
+  /-v(ersion)?/     and die "$0 version 1.0\n";
+}
+
+# Start monitor manager
+$monitor->Run();
+
+
