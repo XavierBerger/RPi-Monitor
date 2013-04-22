@@ -1,11 +1,13 @@
+WARNING: RPi-Monitor is not officially released, if you found this repository, you can try it but keep in mind that I'm still developping this tool and fixing bugs...
+
+
 # RPi-Monitor
 
 **Author:** Xavier Berger
 
 ## About
+
 RPi-Monitor is designed to run on [Raspberry Pi](http://raspberrypi.org). 
-
-
 
 ## Download
 
@@ -14,7 +16,7 @@ RPi-Monitor is designed to run on [Raspberry Pi](http://raspberrypi.org).
 You can download this as a _.zip_ from the GitHub Repository via the following link: 
 
 	https://github.com/XavierBerger/RPi-Monitor/zipball/master
-    
+
 #### Git Clone
 
 If you have Git installed you can clone the repo
