@@ -141,7 +141,8 @@ rrdFlot.prototype.createHTML = function() {
   var rowHeader=external_table.insertRow(-1);
   var cellRes=rowHeader.insertCell(-1);
   cellRes.colSpan=3;
-  cellRes.appendChild(document.createTextNode("Resolution:"));
+  //A modifier - pour ajouter un <select>
+  cellRes.appendChild(document.createTextNode("Resolution: "));
   var forRes=document.createElement("Select");
   forRes.id=this.res_id;
   //forRes.onChange= this.callback_res_changed;
