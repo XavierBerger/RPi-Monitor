@@ -118,7 +118,7 @@ $(function () {
   $('#footer').html(
     license + about +
 '      <div class="container">'+
-'        <p class="muted credit">RPi-Monitor has been created by <a href="http://http://rpi-experiences.blogspot.fr/">RPI-Experiences</a>.'+
+'        <p class="muted credit">RPi-Monitor has been created by <a href="http://rpi-experiences.blogspot.fr/">RPI-Experiences</a>.'+
 '        Raspberry Pi and Raspberry Pi logo are properties of <a href="http://www.raspberrypi.org/">Raspberry Pi Fundation</a></p>'+
 '      </div>'
   );
