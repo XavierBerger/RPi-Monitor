@@ -1,5 +1,8 @@
-WARNING: RPi-Monitor is not officially released, if you found this repository, you can try it but keep in mind that I'm still developping this tool and fixing bugs...
+***
+**WARNING:**
 
+**RPi-Monitor is not officially released, if you found this repository, you can try it but keep in mind that I'm still developping this tool and fixing bugs...**
+***
 
 # RPi-Monitor
 
@@ -37,7 +40,7 @@ Start the web server by excuting the following command
 
 	./start.sh
 
-You can now browse http://<your Raspberry Pi address>:8888 to access to the interactive web interface.
+You can now browse <http://your_Raspberry_Pi_address:8888> to access to the interactive web interface.
 
 ## Future development
 
