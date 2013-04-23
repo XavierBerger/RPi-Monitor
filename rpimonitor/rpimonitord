@@ -58,7 +58,7 @@ sub Load
     $_ and ( -f "$_.rrd" or $this->CreateRRD($_) );
   }
   $this->{'status'} =~ s/,$/]/;
-  $this->{'status'} = "\"Section\":[".$this->{'status'} ;
+  $this->{'status'} = "\"section\":[".$this->{'status'} ;
 
 
 =cut
@@ -167,7 +167,8 @@ sub Process
         my $i=0;
         my @names = @{$list->{$source}->{$regexp}};
         foreach ( @_ ) {
-          $this->{'result'}->{@names[$i++]}=$1;
+          $this->{'result'}->{@names[$i]}=@_[$i];
+          $i++;
         }
       }
     }
