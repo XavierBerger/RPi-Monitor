@@ -16,10 +16,7 @@
 #
 $|=1;
 $SIG{CHLD}   = 'IGNORE';
-$SIG{INT}    = sub { stop(); };
-$0 =~ /(\w+)$/;
-my $status_file = "./$1.status";
-my $rrd_file = "./$1.rrd";
+$SIG{INT}    = sub { stop(); }; # catch Ctrl+C
 
 package Configuration;
 use strict;
@@ -30,7 +27,6 @@ sub new
   $0 =~ /(\w+)$/;
   $this->{'status_file'} = "./$1.status";
   $this->{'conf_file'} = "./$1.conf";
-  $this->{'rrd_file'} = "./$1.rrd";
   return $this;
 }
 
@@ -39,8 +35,8 @@ sub Load
   my $this = shift;
   my $conf_file = shift || $this->{'conf_file'};
 
+  # load configuration
   my $section;
-
   open ( FILE, $conf_file)
     or die "Error while openning $conf_file: $!\n";
   while (<FILE>){
@@ -48,16 +44,25 @@ sub Load
     /^\s*#|^$/ and next;
     /\[(.*)\]/ and $section=$1 and next;
     my ($namelist,$source,$regexp)= split('=',$_);
-    #print "$section--> $name <--> $source <--> $regexp <--> \n";
     my @names=split(',',$namelist);
     push(@{$this->{'section'}->{$section}}, @names);
     my $switch = $section ? "always" : "once";
     $this->{'source'}->{$switch}->{$source}->{$regexp} = \@names;
-    $section or next;
-    #$this->{'source'}->{'always'} = $this->{'source'}->{$source}->{$regexp};
   }
   close(FILE);
 
+  # check rrd files and create them if they are missing
+  for ( keys %{$this->{'section'}} ){
+    $_ or next;
+    $this->{'status'} = $this->{'status'} . "\"$_\",";
+    $_ and ( -f "$_.rrd" or $this->CreateRRD($_) );
+  }
+  $this->{'status'} =~ s/,$/]/;
+  $this->{'status'} = "\"Section\":[".$this->{'status'} ;
+
+
+=cut
+### DEBUG -> ###
   print "===== SOURCES =====\n";
   my %result = %{$this->{'source'}};
   for my $switch (keys %result){
@@ -73,88 +78,33 @@ sub Load
     }
   }
 
-
   print "===== SECTIONS =====\n";
   my %result = %{$this->{'section'}};
   for my $section (keys %result){
     print ($section || "Common");
     print "\n\t@{$result{$section}}\n";
   }
-=cut
-  print "===== ALWAYS =====\n";
-  my %result = %{$this->{'always'}};
-  for my $source (keys %result){
-    print "$source\n";
-    my %subresult = %{$result{$source}};
-    for my $regexp (keys %subresult){
-      print "\t$regexp\n\t\t@{$subresult{$regexp}}\n";
-    }
-    print "\n";
-  }
-=cut
+
   print "\n";
+### <- DEBUG ###
+=cut
 }
 
 sub CreateRRD
 {
   my $this = shift;
-}
+  my $section = shift;
 
-package Monitor;
-use strict;
-use RRDs;
-
-sub new
-{
-  my $this = bless { }, shift;
-  # default values
-  $this->{'delay'} = 10;
-
-=cut
-      /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq
-      /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
-      /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
-      /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-=cut
-
-  # note: to avoid fork due to system call, it would be better to get everything from /proc
-  %{$this->{'id'}} = ( './vcgencmd version' => [ ['firmware_version'], ['version (\S+) '] ],
-                       '/proc/version' => [ ['kernel_version'], ['version (\S+) '] ],
-                       '/proc/meminfo' => [ ['memory_total','swap_total'], ['MemTotal:\s+(\d+)','SwapTotal:\s+(\d+)'] ],
-                       'df -t ext4' => [ ['sdcard_root_total','sdcard_home_total','sdcard_boot_total'], ['slash\s+(\d+)','home\s+(\d+)','sda2\s+(\d+)'] ]
-  );
-
-  %{$this->{'kpi'}} = ( '/proc/net/dev' => [ [ 'net_recived', 'net_send' ] , [ 'wlan0:\s+(\d+)(?:\s+\d+){7}\s+(\d+)' ] ] , # should use /sys/class/net...
-                        './vcgencmd measure_clock arm'  => [ ['cpu_frequency'], ['([0-9.]{4,})' ] ],
-                        './vcgencmd measure_clock core' => [ ['core_frequency'], ['([0-9.]{4,})' ] ],
-                        './vcgencmd measure_volts core' => [ ['core_voltage'], ['([0-9.]{4,})' ] ],
-                        '/sys/devices/virtual/thermal/thermal_zone0/temp'  => [ ['soc_temp'], ['(.*)' ] ],
-                        '/proc/uptime'  => [ ['uptime'], ['^(\S+)' ] ],
-                        '/proc/loadavg' => [ ['load1', 'load5', 'load15'], ['^(\S+)\s(\S+)\s(\S+)' ]],
-                        '/proc/meminfo' => [ ['memory_free','swap_free'], ['MemFree:\s+(\d+)','SwapFree:\s+(\d+)'] ],
-                        'df -t ext4' => [ ['sdcard_root_free','sdcard_home_free','sdcard_boot_free'], ['slash\s+\d+\s+\d+\s+(\d+)','home\s+\d+\s+\d+\s+(\d+)','sda2\s+\d+\s+\d+\s+(\d+)'] ]
-                        );
-
-  -f $rrd_file or $this->CreateRRD();
-
-  return $this;
-}
-
-sub CreateRRD
-{
-  my $this = shift;
   my $current = time();
   my $start = $current - 60;
   my @data=();
 
-  while ( my ( $command, $feed) = each ( %{$this->{"kpi"}} ) ) {
-    my $name = @$feed[0];
-    foreach (@$name) {
-      push(@data, "DS:$_:GAUGE:600:U:U");
-    }
+  # creat the list of data to stor into the rrd
+  foreach ( @{$this->{'section'}->{$section}} ){
+     push(@data, "DS:$_:GAUGE:600:U:U");
   }
 
-  RRDs::create( $rrd_file,
+  RRDs::create( "$section.rrd",
                 "--start", $start,
                 "--step", 10,
                 @data,
@@ -166,58 +116,69 @@ sub CreateRRD
                 );
 }
 
+package Monitor;
+use strict;
+use RRDs;
+
+sub new
+{
+  my $this = bless { }, shift;
+  $this->{'delay'} = 10;  # default values 10s
+  return $this;
+}
+
 sub Run
 {
   # start main loop
   my $this = shift;
+  my $config = shift;
 
-  $this->Process('id');
-
+  # process data that should be extracted once
+  $this->Process($config->{'source'}->{'once'});
   for(;;)
   {
-    $this->Process('kpi',1);
-    $this->Status();
+    # Process data
+    $this->Process($config->{'source'}->{'always'});
+
+    # Store and show extracted data
+    $this->Status($config);
 
     # tempo before next process
     $this->{'delay'} or last;
     sleep $this->{'delay'};
   }
-  -f $status_file and unlink $status_file;
+
+  # Remove status file when applocation stop
+  -f $config->{'status_file'} and unlink $config->{'status_file'};
 }
 
 sub Process
 {
-
-  # process
   my $this = shift;
   my $list = shift;
-  my $rrd = shift;
 
-  my $data="N";
-
-  while ( my ( $command, $feed) = each ( %{$this->{"$list"}} ) ) {
-    my ($kpi, $regexp) = @$feed;
-    my $file = -f $command ? $command : "$command|";
-    my $index=0;
+  # for each source, read data and apply all regexp
+  foreach my $source ( keys (%$list) ){
+    my $file = -f $source ? $source : "$source|";
     open(FEED, $file);
-      while (<FEED>) {
-        foreach my $re(@$regexp) {
-          @_ = /$re/ or next;
-          foreach (@_) {
-            my $name = @$kpi[$index++];
-            $this->{'result'}->{$name} = $_;
-            $rrd and $data .= ":$_";
-          }
+    while (<FEED>){
+      foreach my $regexp ( keys (%{$list->{$source}}) ){
+        @_ = /$regexp/ or next;
+        my $i=0;
+        my @names = @{$list->{$source}->{$regexp}};
+        foreach ( @_ ) {
+          $this->{'result'}->{@names[$i++]}=$1;
         }
       }
+    }
     close FEED;
   }
-  $rrd and RRDs::update($rrd_file, $data);
 }
 
 sub Status
 {
   my $this = shift;
+  my $config = shift;
 
   # construct printable status
   my $status = "";
@@ -229,13 +190,24 @@ sub Status
 
   chomp($status);
   $status=~s/\n/, /g;
-  $status="{ $status }";
+  $status="{ $config->{'status'}, $status }";
 
   # write current status in file (JSON)
-  open(FILE, "> $status_file")
+  open(FILE, "> $config->{'status_file'}")
     or warn $!;
     print FILE $status ;
   close(FILE);
+
+  # add data in round robin database
+  my %rrd = %{$config->{'section'}};
+  for my $section (keys %rrd){
+    $section or next;
+    my $data="N";
+    foreach ( @{$rrd{$section}} ) {
+      $data .= ":$this->{'result'}->{$_}";
+    }
+    RRDs::update("$section.rrd", $data);
+  }
 }
 
 package main;
@@ -259,12 +231,10 @@ DESCRIPTION
   and statistic into RRD.
 
 OPTIONS
-  -d, --Delay       Delay between check (default 10sec)
+  -d, --delay       Delay between check (default 10sec)
   -h, --help        Shows this help and exit
-  -s, --Show        Show status in STDOUT
-
-
-OVERVIEW
+  -s, --show        Show status in STDOUT
+  -v, --version     Show version and exit
 
 EOF
 }
@@ -273,7 +243,6 @@ my $monitor = Monitor->new();
 my $configuration = Configuration->new();
 
 $configuration->Load();
-exit;
 
 sub stop
 {
@@ -290,6 +259,6 @@ while($_ = shift)
 }
 
 # Start monitor manager
-$monitor->Run();
+$monitor->Run($configuration);
 
 
