@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-# (c) 2013 - RPI-Experience - http://rpi-experiences.blogspot.fr/
+# (c) 2013 - Xavier Berger - http://rpi-experiences.blogspot.fr/
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,6 +21,85 @@ $0 =~ /(\w+)$/;
 my $status_file = "./$1.status";
 my $rrd_file = "./$1.rrd";
 
+package Configuration;
+use strict;
+
+sub new
+{
+  my $this = bless { }, shift;
+  $0 =~ /(\w+)$/;
+  $this->{'status_file'} = "./$1.status";
+  $this->{'conf_file'} = "./$1.conf";
+  $this->{'rrd_file'} = "./$1.rrd";
+  return $this;
+}
+
+sub Load
+{
+  my $this = shift;
+  my $conf_file = shift || $this->{'conf_file'};
+
+  my $section;
+
+  open ( FILE, $conf_file)
+    or die "Error while openning $conf_file: $!\n";
+  while (<FILE>){
+    chomp;
+    /^\s*#|^$/ and next;
+    /\[(.*)\]/ and $section=$1 and next;
+    my ($namelist,$source,$regexp)= split('=',$_);
+    #print "$section--> $name <--> $source <--> $regexp <--> \n";
+    my @names=split(',',$namelist);
+    push(@{$this->{'section'}->{$section}}, @names);
+    my $switch = $section ? "always" : "once";
+    $this->{'source'}->{$switch}->{$source}->{$regexp} = \@names;
+    $section or next;
+    #$this->{'source'}->{'always'} = $this->{'source'}->{$source}->{$regexp};
+  }
+  close(FILE);
+
+  print "===== SOURCES =====\n";
+  my %result = %{$this->{'source'}};
+  for my $switch (keys %result){
+    print "$switch\n";
+    my %subresult = %{$result{$switch}};
+    for my $source (keys %subresult){
+      print "\t$source\n";
+      my %subsubresult = %{$subresult{$source}};
+      for my $regexp (keys %subsubresult){
+        print "\t\t$regexp\n\t\t\t@{$subsubresult{$regexp}}\n";
+      }
+      print "\n";
+    }
+  }
+
+
+  print "===== SECTIONS =====\n";
+  my %result = %{$this->{'section'}};
+  for my $section (keys %result){
+    print ($section || "Common");
+    print "\n\t@{$result{$section}}\n";
+  }
+=cut
+  print "===== ALWAYS =====\n";
+  my %result = %{$this->{'always'}};
+  for my $source (keys %result){
+    print "$source\n";
+    my %subresult = %{$result{$source}};
+    for my $regexp (keys %subresult){
+      print "\t$regexp\n\t\t@{$subresult{$regexp}}\n";
+    }
+    print "\n";
+  }
+=cut
+  print "\n";
+}
+
+sub CreateRRD
+{
+  my $this = shift;
+}
+
 package Monitor;
 use strict;
 use RRDs;
@@ -32,10 +111,10 @@ sub new
   $this->{'delay'} = 10;
 
 =cut
-      $cpuCurFreq = round(file_get_contents("/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq") / 1000) . "MHz";
-      $cpuMinFreq = round(file_get_contents("/sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq") / 1000) . "MHz";
-      $cpuMaxFreq = round(file_get_contents("/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq") / 1000) . "MHz";
-      $cpuFreqGovernor = file_get_contents("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor");
+      /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq
+      /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+      /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+      /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 =cut
 
   # note: to avoid fork due to system call, it would be better to get everything from /proc
@@ -191,6 +270,10 @@ EOF
 }
 
 my $monitor = Monitor->new();
+my $configuration = Configuration->new();
+
+$configuration->Load();
+exit;
 
 sub stop
 {
