@@ -1,7 +1,8 @@
 ***
 **WARNING:**
 
-**RPi-Monitor is not officially released, if you found this repository, you can try it but keep in mind that I'm still developping this tool and fixing bugs...**
+**RPi-Monitor is not officially released. If you found this repository, you can try it but keep in mind that 
+I'm waiting my Raspberry Pi delivery so the application is still in development and bug fix stage...**
 ***
 
 # RPi-Monitor
