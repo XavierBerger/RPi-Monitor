@@ -10,7 +10,22 @@
 
 ## About
 
-RPi-Monitor is designed to run on [Raspberry Pi](http://raspberrypi.org). 
+**RPi-Monitor** is a self monitoring application designed to run on [Raspberry Pi](http://raspberrypi.org). 
+
+For performance and security reason, **RPi-Monitor** separates the extraction of the information from the 
+presentation of the information.
+
+The extraction of the information is done by a perl script design to run as a daemon. This script is 
+extracting the key performance indicators (KPI) from the computer and store in various files. 
+The latest extracted information is stored into a JSON file and all extracted information is 
+also written into a Round Robin Database (RRD) for history.
+
+The presentation of the information is performed by HTML5 pages. This page dynamically download the 
+information extracted from the previous script and perform the rendering the in a nice looking format 
+(using [bootstrap](http://twitter.github.io/bootstrap/), [jquery](http://jquery.com/), 
+[jsqrencode](https://code.google.com/p/jsqrencode/) and [javascriptrrd](http://javascriptrrd.sourceforge.net/)).
+
+This architecture has the advantage in an embedded architecture to offload the server task and delegate processing and rendering to the client.
 
 ## Download
 
