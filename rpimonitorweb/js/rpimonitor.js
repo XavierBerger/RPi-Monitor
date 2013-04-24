@@ -57,6 +57,7 @@ $(function () {
 '                    <li class="divider"></li>'+
 '                    <li class="nav-header">Related links</li>'+
 '                    <li><a href="http://rpi-experiences.blogspot.fr/">RPI-experiences</a></li>'+
+'                    <li><a href="https://github.com/XavierBerger/RPi-Monitor">Github</a></li>'+
 '                  </ul>'+
 '                </li>'+
 '              </ul>'+
@@ -88,7 +89,7 @@ $(function () {
 '</p>'+
 '<hr>'+
 'RPi-Monitor is using third party software hava there own license.<br>'+
-'Ref. <a href="#About" data-toggle="modal">About</a> to have the list of software used by RPi-Monitor. '+
+'Ref. <a href="#About" data-dismiss="modal" data-toggle="modal">About</a> to have the list of software used by RPi-Monitor. '+
 '        </div>'+
 '        <div class="modal-footer">'+
 '          <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>'+
@@ -103,10 +104,12 @@ $(function () {
 '          <h3 id="myModalLabel">About</h3>'+
 '        </div>'+
 '        <div class="modal-body">'+
-'          <p><b>Version 1.0</b></p>'+
-'          <p><b>RPI-Monitor</b> is free software using developped on top of other open source'+
-'tools : <a href="http://twitter.github.io/bootstrap/">bootstrap</a>, <a href="http://jquery.com/">jquery</a>, <a href="https://code.google.com/p/jsqrencode/">jsqrencode</a> and <a href="http://javascriptrrd.sourceforge.net/">javascriptrrd</a>.<br><br>'+
-'The look and feel of the status page is clearly inspired by <a href="">Raspcontrol</a>.</p>'+
+'          <p><b>Version</b>: 1.0'+
+'          <b>by</b> Xavier Berger <a href="http://rpi-experiences.blogspot.fr/">Blog</a> <a href="https://github.com/XavierBerger/RPi-Monitor">Github</a></p>'+
+'          <hr>'+
+'          <p><b>RPI-Monitor</b> is free software developped on top of other open source'+
+'tools : <a href="http://twitter.github.io/bootstrap/">bootstrap</a>, <a href="http://jquery.com/">jquery</a>, <a href="https://code.google.com/p/jsqrencode/">jsqrencode</a> and <a href="http://javascriptrrd.sourceforge.net/">javascriptrrd</a>.<br>'+
+'The look and feel of the status page is clearly inspired by <a href="https://github.com/Bioshox/Raspcontrol">Raspcontrol</a>.</p>'+
 '          <p><b>Raspberry Pi</b> and Raspberry Pi logo are properties of <a href="http://www.raspberrypi.org/">Raspberry Pi Fundation</a>.</p>'+
 '        </div>'+
 '        <div class="modal-footer">'+
@@ -119,8 +122,8 @@ $(function () {
   $('#footer').html(
     license + about +
 '      <div class="container">'+
-'        <p class="muted credit">Follow RPi-Monitor news in <a href="http://rpi-experiences.blogspot.fr/">RPI-Experiences</a> blog.'+
-'        Raspberry Pi and Raspberry Pi logo are properties of <a href="http://www.raspberrypi.org/">Raspberry Pi Fundation</a></p>'+
+'        <p class="muted credit"><small>Follow RPi-Monitor news in <a href="http://rpi-experiences.blogspot.fr/">RPI-Experiences</a> blog.'+
+'        Raspberry Pi and Raspberry Pi logo are properties of <a href="http://www.raspberrypi.org/">Raspberry Pi Fundation</a></small></p>'+
 '      </div>'
   );
 
