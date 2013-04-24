@@ -33,12 +33,11 @@ sub new
 sub Load
 {
   my $this = shift;
-  my $conf_file = shift || $this->{'conf_file'};
 
   # load configuration
   my $section;
-  open ( FILE, $conf_file)
-    or die "Error while openning $conf_file: $!\n";
+  open ( FILE, $this->{'conf_file'})
+    or die "Error while openning $this->{'conf_file'}: $!\n";
   while (<FILE>){
     chomp;
     /^\s*#|^$/ and next;
@@ -232,6 +231,7 @@ DESCRIPTION
   and statistic into RRD.
 
 OPTIONS
+  -c, --conf       Delay between check (default 10sec)
   -d, --delay       Delay between check (default 10sec)
   -h, --help        Shows this help and exit
   -s, --show        Show status in STDOUT
@@ -243,8 +243,6 @@ EOF
 my $monitor = Monitor->new();
 my $configuration = Configuration->new();
 
-$configuration->Load();
-
 sub stop
 {
   $monitor->{'delay'} = 0;
@@ -253,6 +251,7 @@ sub stop
 # read command lines
 while($_ = shift)
 {
+  /-c(onf)?/        and $configuration->{'conf_file'} = shift and next;
   /-d(elay)?/       and $monitor->{'delay'} = shift and next;
   /-h(elp)?/        and help;
   /-s(how)?/        and ++$monitor->{'show'}        and next;
@@ -260,6 +259,7 @@ while($_ = shift)
 }
 
 # Start monitor manager
+$configuration->Load();
 $monitor->Run($configuration);
 
 
