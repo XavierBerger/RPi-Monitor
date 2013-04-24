@@ -56,7 +56,7 @@ $(function () {
       graphlist+="</select>\n";
 
       $("#mygraph_res_title").html(graphlist);
-      $('#selected_graph').live('change', function (e) {
+      $('#selected_graph').on('change', function (e) {
         fname = this.value;
         fname_update();
       })

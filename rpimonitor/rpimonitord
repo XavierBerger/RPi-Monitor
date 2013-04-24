@@ -224,14 +224,15 @@ NAME
   $0
 
 USAGE
-  $0 blabla
+  $0 is the extractig script of RPi-Monitor.
+  RPi-Monitor a self monitoring application designed to run on Raspberry Pi.
 
 DESCRIPTION
   $0 is designed extract data from RPI system and store status in json
   and statistic into RRD.
 
 OPTIONS
-  -c, --conf       Delay between check (default 10sec)
+  -c, --conf        Define the configuration file (Default: ./$0.conf)
   -d, --delay       Delay between check (default 10sec)
   -h, --help        Shows this help and exit
   -s, --show        Show status in STDOUT
