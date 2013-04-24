@@ -5,7 +5,7 @@
  *                    Igor Sfiligoi, isfiligoi@ucsd.edu
  *
  * Original repository: http://javascriptrrd.sourceforge.net/
- * 
+ *
  * MIT License [http://www.opensource.org/licenses/mit-license.php]
  *
  */
@@ -36,7 +36,7 @@
  *  tooltipOpts: { content: "<h4>%s</h4> Value: %y.3" }
  * }
  *
- * ds_graph_options is a dictionary of DS_name, 
+ * ds_graph_options is a dictionary of DS_name,
  *   with each element being a graph_option
  *   The defaults for each element are
  *   {
@@ -50,34 +50,34 @@
  *   }
  *
  * //overwrites other defaults; mostly used for linking via the URL
- * rrdflot_defaults defaults (see Flot docs for details) 	 
+ * rrdflot_defaults defaults (see Flot docs for details)
  * {
  *    graph_only: false        // If true, limit the display to the graph only
- *    legend: "Top"            //Starting location of legend. Options are: 
+ *    legend: "Top"            //Starting location of legend. Options are:
  *                             //   "Top","Bottom","TopRight","BottomRight","None".
  *    num_cb_rows: 12          //How many rows of DS checkboxes per column.
  *    use_elem_buttons: false  //To be used in conjunction with num_cb_rows: This option
  *                             //    creates a button above every column, which selects
- *                             //    every element in the column. 
- *    multi_ds: false          //"true" appends the name of the aggregation function to the 
- *                             //    name of the DS element. 
- *    multi_rra: false         //"true" appends the name of the RRA consolidation function (CF) 
- *                             //    (AVERAGE, MIN, MAX or LAST) to the name of the RRA. Useful 
- *                             //    for RRAs over the same interval with different CFs.  
+ *                             //    every element in the column.
+ *    multi_ds: false          //"true" appends the name of the aggregation function to the
+ *                             //    name of the DS element.
+ *    multi_rra: false         //"true" appends the name of the RRA consolidation function (CF)
+ *                             //    (AVERAGE, MIN, MAX or LAST) to the name of the RRA. Useful
+ *                             //    for RRAs over the same interval with different CFs.
  *    use_checked_DSs: false   //Use the list checked_DSs below.
- *    checked_DSs: []          //List of elements to be checked by default when graph is loaded. 
- *                             //    Overwrites graph options. 
+ *    checked_DSs: []          //List of elements to be checked by default when graph is loaded.
+ *                             //    Overwrites graph options.
  *    use_rra: false           //Whether to use the rra index specified below.
- *    rra: 0                   //RRA (rra index in rrd) to be selected when graph is loaded. 
+ *    rra: 0                   //RRA (rra index in rrd) to be selected when graph is loaded.
  *    use_windows: false       //Whether to use the window zoom specifications below.
- *    window_min: 0            //Sets minimum for window zoom. X-axis usually in unix time. 
+ *    window_min: 0            //Sets minimum for window zoom. X-axis usually in unix time.
  *    window_max: 0            //Sets maximum for window zoom.
- *    graph_height: "300px"    //Height of main graph. 
+ *    graph_height: "300px"    //Height of main graph.
  *    graph_width: "500px"     //Width of main graph.
  *    scale_height: "110px"    //Height of small scaler graph.
  *    scale_width: "250px"     //Width of small scaler graph.
  *    timezone: local          //timezone.
- * } 
+ * }
  */
 
 var local_checked_DSs = [];
@@ -125,6 +125,7 @@ rrdFlot.prototype.createHTML = function() {
   this.res_id=this.html_id+"_res";
   this.ds_cb_id=this.html_id+"_ds_cb";
   this.graph_id=this.html_id+"_graph";
+  this.res_title_id=this.html_id+"_res_title";
   this.scale_id=this.html_id+"_scale";
   this.legend_sel_id=this.html_id+"_legend_sel";
   this.time_sel_id=this.html_id+"_time_sel";
@@ -141,14 +142,18 @@ rrdFlot.prototype.createHTML = function() {
   var rowHeader=external_table.insertRow(-1);
   var cellRes=rowHeader.insertCell(-1);
   cellRes.colSpan=3;
-  //A modifier - pour ajouter un <select>
-  cellRes.appendChild(document.createTextNode("Resolution: "));
+  // Insert "Resolution:" into a span to allow dynamic modification
+  var resTitleSpan=document.createElement('span');
+  resTitleSpan.id=this.res_title_id;
+  resTitleSpan.appendChild(document.createTextNode("Resolution:"));
+  cellRes.appendChild(resTitleSpan);
+  //cellRes.appendChild(document.createTextNode("Resolution:"));
   var forRes=document.createElement("Select");
   forRes.id=this.res_id;
   //forRes.onChange= this.callback_res_changed;
   forRes.onchange= function () {rf_this.callback_res_changed();};
   cellRes.appendChild(forRes);
-  
+
   var cellDSTitle=rowHeader.insertCell(-1);
   cellDSTitle.appendChild(document.createTextNode("Select elements to plot:"));
 
@@ -167,7 +172,7 @@ rrdFlot.prototype.createHTML = function() {
   cellGraph.appendChild(elGraph);
 
   var cellDScb=rowGraph.insertCell(-1);
-  
+
 
   cellDScb.vAlign="top";
   var formDScb=document.createElement("Form");
@@ -236,7 +241,7 @@ rrdFlot.prototype.createHTML = function() {
   } else {elScale.style.height="110px";}
   elScale.id=this.scale_id;
   cellScale.appendChild(elScale);
-  
+
   var cellScaleReset=rowScale.insertCell(-1);
   cellScaleReset.vAlign="top";
   cellScaleReset.appendChild(document.createTextNode(" "));
@@ -289,7 +294,7 @@ rrdFlot.prototype.populateRes = function() {
 rrdFlot.prototype.populateDScb = function() {
   var rf_this=this; // use obj inside other functions
   var form_el=document.getElementById(this.ds_cb_id);
- 
+
   //Create a table within a table to arrange
   // checkbuttons into two or more columns
   var table_el=document.createElement("Table");
@@ -298,17 +303,17 @@ rrdFlot.prototype.populateDScb = function() {
   var cell_el=null; // will define later
 
   if (this.rrdflot_defaults.num_cb_rows==null) {
-     this.rrdflot_defaults.num_cb_rows=12; 
+     this.rrdflot_defaults.num_cb_rows=12;
   }
   // now populate with DS info
   var nrDSs=this.rrd_file.getNrDSs();
   var elem_group_number = 0;
- 
+
   for (var i=0; i<nrDSs; i++) {
 
     if ((i%this.rrdflot_defaults.num_cb_rows)==0) { // one column every x DSs
       if(this.rrdflot_defaults.use_element_buttons) {
-        cell_el=row_el.insertCell(-1); //make next element column 
+        cell_el=row_el.insertCell(-1); //make next element column
         if(nrDSs>this.rrdflot_defaults.num_cb_rows) { //if only one column, no need for a button
           elem_group_number = (i/this.rrdflot_defaults.num_cb_rows)+1;
           var elGroupSelect = document.createElement("input");
@@ -322,7 +327,7 @@ rrdFlot.prototype.populateDScb = function() {
         }
       } else {
          //just make next element column
-         cell_el=row_el.insertCell(-1); 
+         cell_el=row_el.insertCell(-1);
       }
     }
     var ds=this.rrd_file.getDS(i);
@@ -331,7 +336,7 @@ rrdFlot.prototype.populateDScb = function() {
        var name2=ds.getName();
     }
     else {var name=ds.getName(); var name2=ds.getName();}
-    var title=name; 
+    var title=name;
     if(this.rrdflot_defaults.use_checked_DSs) {
        if(this.rrdflot_defaults.checked_DSs.length==0) {
           var checked=(i==0); // only first checked by default
@@ -340,11 +345,11 @@ rrdFlot.prototype.populateDScb = function() {
     if (this.ds_graph_options[name]!=null) {
       var dgo=this.ds_graph_options[name];
       if (dgo['title']!=null) {
-	// if the user provided the title, use it
-	title=dgo['title'];
+  // if the user provided the title, use it
+  title=dgo['title'];
       } else if (dgo['label']!=null) {
-	// use label as a second choiceit
-	title=dgo['label'];
+  // use label as a second choiceit
+  title=dgo['label'];
       } // else leave the ds name
       if(this.rrdflot_defaults.use_checked_DSs) {
          if(this.rrdflot_defaults.checked_DSs.length==0) {
@@ -353,7 +358,7 @@ rrdFlot.prototype.populateDScb = function() {
          }
       } else {
          if (dgo['checked']!=null) {
-            checked=dgo['checked']; 
+            checked=dgo['checked'];
          }
       }
     }
@@ -363,6 +368,7 @@ rrdFlot.prototype.populateDScb = function() {
              if (name==this.rrdflot_defaults.checked_DSs[j]) {checked=true;}
        }
     }
+    checked=true; //Force all check by default. Note
     var cb_el = document.createElement("input");
     cb_el.type = "checkbox";
     cb_el.name = "ds";
@@ -376,7 +382,7 @@ rrdFlot.prototype.populateDScb = function() {
 };
 
 // ======================================
-// 
+//
 rrdFlot.prototype.drawFlotGraph = function() {
   // Res contains the RRA idx
   var oSelect=document.getElementById(this.res_id);
@@ -398,23 +404,23 @@ rrdFlot.prototype.drawFlotGraph = function() {
   if (oCB.ds.length>0) {
     for (var i=0; i<oCB.ds.length; i++) {
       if (oCB.ds[i].checked==true) {
-	var ds_name=oCB.ds[i].value;
-	var ds_stack_type='none';
+  var ds_name=oCB.ds[i].value;
+  var ds_stack_type='none';
         local_checked_DSs.push(ds_name);;
-	if (this.ds_graph_options[ds_name]!=null) {
-	  var dgo=this.ds_graph_options[ds_name];
-	  if (dgo['stack']!=null) {
-	    var ds_stack_type=dgo['stack'];
-	  }
-	}
-	if (ds_stack_type=='positive') {
-	  ds_positive_stack_list.push(ds_name);
-	} else if (ds_stack_type=='negative') {
-	  ds_negative_stack_list.push(ds_name);
-	} else {
-	  ds_single_list.push(ds_name);
-	}
-	ds_colors[ds_name]=i;
+  if (this.ds_graph_options[ds_name]!=null) {
+    var dgo=this.ds_graph_options[ds_name];
+    if (dgo['stack']!=null) {
+      var ds_stack_type=dgo['stack'];
+    }
+  }
+  if (ds_stack_type=='positive') {
+    ds_positive_stack_list.push(ds_name);
+  } else if (ds_stack_type=='negative') {
+    ds_negative_stack_list.push(ds_name);
+  } else {
+    ds_single_list.push(ds_name);
+  }
+  ds_colors[ds_name]=i;
       }
     }
   } else { // single element is not treated as an array
@@ -432,7 +438,7 @@ rrdFlot.prototype.drawFlotGraph = function() {
 
   // then extract RRA data about those DSs
   var flot_obj=rrdRRAStackFlotObj(this.rrd_file,rra_idx,
-				  ds_positive_stack_list,ds_negative_stack_list,ds_single_list,
+          ds_positive_stack_list,ds_negative_stack_list,ds_single_list,
                                   timezone_shift*3600);
 
   // fix the colors, based on the position in the RRD
@@ -442,22 +448,22 @@ rrdFlot.prototype.drawFlotGraph = function() {
     if (this.ds_graph_options[name]!=null) {
       var dgo=this.ds_graph_options[name];
       if (dgo['color']!=null) {
-	color=dgo['color'];
+  color=dgo['color'];
       }
       if (dgo['label']!=null) {
-	// if the user provided the label, use it
-	flot_obj.data[i].label=dgo['label'];
+  // if the user provided the label, use it
+  flot_obj.data[i].label=dgo['label'];
       } else  if (dgo['title']!=null) {
-	// use title as a second choice 
-	flot_obj.data[i].label=dgo['title'];
+  // use title as a second choice
+  flot_obj.data[i].label=dgo['title'];
       } // else use the ds name
       if (dgo['lines']!=null) {
-	// if the user provided the label, use it
-	flot_obj.data[i].lines=dgo['lines'];
+  // if the user provided the label, use it
+  flot_obj.data[i].lines=dgo['lines'];
       }
       if (dgo['yaxis']!=null) {
-	// if the user provided the label, use it
-	flot_obj.data[i].yaxis=dgo['yaxis'];
+  // if the user provided the label, use it
+  flot_obj.data[i].yaxis=dgo['yaxis'];
       }
     }
     flot_obj.data[i].color=color;
@@ -488,7 +494,7 @@ rrdFlot.prototype.bindFlotGraph = function(flot_obj) {
     tooltipOpts: { content: "<h4>%s</h4> Value: %y.3" },
     grid: { hoverable: true },
   };
-  
+
   if (legend_id=="None") {
     // do nothing
   } else {
@@ -508,15 +514,15 @@ rrdFlot.prototype.bindFlotGraph = function(flot_obj) {
   if (this.selection_range.isSet()) {
     var selection_range=this.selection_range.getFlotRanges();
     if(this.rrdflot_defaults.use_windows) {
-       graph_options.xaxis.min = this.rrdflot_defaults.window_min;  
-       graph_options.xaxis.max = this.rrdflot_defaults.window_max;  
+       graph_options.xaxis.min = this.rrdflot_defaults.window_min;
+       graph_options.xaxis.max = this.rrdflot_defaults.window_max;
     } else {
     graph_options.xaxis.min=selection_range.xaxis.from;
     graph_options.xaxis.max=selection_range.xaxis.to;
     }
   } else if(this.rrdflot_defaults.use_windows) {
-    graph_options.xaxis.min = this.rrdflot_defaults.window_min;  
-    graph_options.xaxis.max = this.rrdflot_defaults.window_max;  
+    graph_options.xaxis.min = this.rrdflot_defaults.window_min;
+    graph_options.xaxis.max = this.rrdflot_defaults.window_max;
   } else {
     graph_options.xaxis.min=flot_obj.min;
     graph_options.xaxis.max=flot_obj.max;
@@ -539,8 +545,8 @@ rrdFlot.prototype.bindFlotGraph = function(flot_obj) {
 
   this.graph = $.plot($(graph_jq_id), graph_data, graph_options);
   this.scale = $.plot($(scale_jq_id), scale_data, scale_options);
- 
-  
+
+
   if(this.rrdflot_defaults.use_windows) {
     ranges = {};
     ranges.xaxis = [];
@@ -555,7 +561,7 @@ rrdFlot.prototype.bindFlotGraph = function(flot_obj) {
     this.scale.setSelection(this.selection_range.getFlotRanges(),true); //don't fire event, no need
   }
 
-  // now connect the two    
+  // now connect the two
   $(graph_jq_id).unbind("plotselected"); // but first remove old function
   $(graph_jq_id).bind("plotselected", function (event, ranges) {
       // do the zooming
@@ -565,12 +571,12 @@ rrdFlot.prototype.bindFlotGraph = function(flot_obj) {
       window_min = ranges.xaxis.from;
       window_max = ranges.xaxis.to;
       rf_this.graph = $.plot($(graph_jq_id), rf_this.selection_range.trim_flot_data(flot_data), graph_options);
-      
+
       // don't fire event on the scale to prevent eternal loop
       rf_this.scale.setSelection(ranges, true); //puts the transparent window on minigraph
   });
-   
-  $(scale_jq_id).unbind("plotselected"); //same here 
+
+  $(scale_jq_id).unbind("plotselected"); //same here
   $(scale_jq_id).bind("plotselected", function (event, ranges) {
       rf_this.graph.setSelection(ranges);
   });
@@ -634,24 +640,24 @@ function getGraphInfo() {
 
 function resetWindow() {
   window_min = 0;
-  window_max = 0; 
+  window_max = 0;
 };
 
 function populateGraphOptions(me, other) {
   for (e in other) {
     if (me[e]!=undefined) {
       if (typeof(other[e])=="object") {
-	me[e]=populateGraphOptions(me[e],other[e]);
+  me[e]=populateGraphOptions(me[e],other[e]);
       } else {
-	me[e]=other[e];
+  me[e]=other[e];
       }
     } else {
       /// create a new one
       if (typeof(other[e])=="object") {
-	// This will do a deep copy
-	me[e]=populateGraphOptions({},other[e]);
+  // This will do a deep copy
+  me[e]=populateGraphOptions({},other[e]);
       } else {
-	me[e]=other[e];
+  me[e]=other[e];
       }
     }
   }

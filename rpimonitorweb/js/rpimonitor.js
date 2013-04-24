@@ -35,7 +35,8 @@ $(function () {
 '          <h3 id="myModalLabel">Configuration</h3>'+
 '        </div>'+
 '        <div class="modal-body">'+
-'          <p>New feature will be implemented in future releases</p>'+
+'          <p>New feature will be implemented in future releases.<br>'+
+'          Configuration will be stored into the browser HTML5 storage.</p>'+
 '        </div>'+
 '        <div class="modal-footer">'+
 '          <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>'+
@@ -118,7 +119,7 @@ $(function () {
   $('#footer').html(
     license + about +
 '      <div class="container">'+
-'        <p class="muted credit">RPi-Monitor has been created by <a href="http://rpi-experiences.blogspot.fr/">RPI-Experiences</a>.'+
+'        <p class="muted credit">Follow RPi-Monitor news in <a href="http://rpi-experiences.blogspot.fr/">RPI-Experiences</a> blog.'+
 '        Raspberry Pi and Raspberry Pi logo are properties of <a href="http://www.raspberrypi.org/">Raspberry Pi Fundation</a></p>'+
 '      </div>'
   );
