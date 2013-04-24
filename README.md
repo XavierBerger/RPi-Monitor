@@ -8,6 +8,10 @@
 
 **Author:** Xavier Berger
 
+![screenshot](index.png)
+![screenshot](status.png)
+![screenshot](statistics.png)
+
 ## About
 
 **RPi-Monitor** is a self monitoring application designed to run on [Raspberry Pi](http://raspberrypi.org). 
