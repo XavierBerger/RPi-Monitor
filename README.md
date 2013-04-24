@@ -6,7 +6,8 @@
 
 # RPi-Monitor
 
-**Author:** Xavier Berger
+**Author**: Xavier Berger    
+**Blog**: [RPi-Experience](http://rpi-experiences.blogspot.fr/)
 
 ![screenshot](index.png)
 ![screenshot](status.png)
