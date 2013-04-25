@@ -1,6 +1,6 @@
 $(function () {
   //
-  fname="/cpuload.rrd";
+  fname="/stat/cpuload.rrd";
 
   // Remove the Javascript warning
   document.getElementById("infotable").deleteRow(0);
@@ -45,12 +45,12 @@ $(function () {
 
     // Get json to extract the list of rrd availble
     $.ajaxSetup({ cache: false });
-    $.getJSON('/rpimonitord.status', function(data) {
+    $.getJSON('/rpimonitord.json', function(data) {
       var graphlist="Graph: <select id='selected_graph'>\n";
       for (var i=0;i<data.section.length;i++)
       {
-        graphlist+="<option value='/"+data.section[i]+".rrd'";
-        if ( fname=="/"+data.section[i]+".rrd") { graphlist+=" selected "; }
+        graphlist+="<option value='/stat/"+data.section[i]+".rrd'";
+        if ( fname=="/stat/"+data.section[i]+".rrd") { graphlist+=" selected "; }
         graphlist+=">"+data.section[i]+"</option>\n";
       }
       graphlist+="</select>\n";
@@ -61,7 +61,11 @@ $(function () {
         fname_update();
       })
 
-    }).fail(function() { $('#mygraph').html("<b>rpimonitord looks to be not started!</b>") });;
+    }).fail(function() {
+        $('#message').html("<b>Can not get status information. Is rpimonitord.conf correctly configured on server?</b>") ;
+        $('#message').removeClass('hide');
+        $('#mygraph').addClass('hide');
+      });
   }
 
   // this function is invoked when the RRD file name changes

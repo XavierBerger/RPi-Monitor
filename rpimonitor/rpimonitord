@@ -17,6 +17,15 @@
 $|=1;
 $SIG{CHLD}   = 'IGNORE';
 $SIG{INT}    = sub { stop(); }; # catch Ctrl+C
+my $verbose=0;
+
+# prepare the shared memory for communication between Monitor and Server
+my $key      = $$;
+my $shm_size = 512;
+eval 'sub IPC_CREAT {0001000}' unless defined &IPC_CREAT;
+eval 'sub IPC_RMID {0}'        unless defined &IPC_RMID;
+my $id = shmget($key, $shm_size, &IPC_CREAT | 0777 )
+  or warn "Can't shmget: $!";
 
 package Configuration;
 use strict;
@@ -25,9 +34,26 @@ sub new
 {
   my $this = bless { }, shift;
   $0 =~ /(\w+)$/;
-  $this->{'status_file'} = "./$1.status";
+
   $this->{'conf_file'} = "./$1.conf";
+
+  $this->{'user'} = "pi";
+  $this->{'group'} = "pi";
+  $this->{'port'} = 8888;
+  $this->{'addr'} = '0.0.0.0';
+
+  $this->{'delay'} = 10;
+
   return $this;
+}
+
+sub Debug
+{
+  my $this = shift;
+  my $level = shift;
+
+  $level <= $verbose or return;
+  print STDERR "[", strftime("%Y/%m/%d-%H:%M:%S", localtime), "] ", " " x (5-$level), (caller 1)[3], " @_\n";
 }
 
 sub Load
@@ -42,6 +68,7 @@ sub Load
     chomp;
     /^\s*#|^$/ and next;
     /\[(.*)\]/ and $section=$1 and next;
+    /^([^=]+)=([^=]+)$/ and $this->{$1}=$2 and next;
     my ($namelist,$source,$regexp)= split('=',$_);
     my @names=split(',',$namelist);
     push(@{$this->{'section'}->{$section}}, @names);
@@ -50,15 +77,22 @@ sub Load
   }
   close(FILE);
 
-  # check rrd files and create them if they are missing
+  $this->{'gid'} = getgrnam($this->{'user'}) || 1000;
+  $this->{'uid'} = getpwnam($this->{'group'}) || 1000;
+
+  # check rrd files and create them if they are missing and construct the list of rrd page accessible
+  my @rrds=();
   for ( keys %{$this->{'section'}} ){
     $_ or next;
     $this->{'status'} = $this->{'status'} . "\"$_\",";
-    $_ and ( -f "$_.rrd" or $this->CreateRRD($_) );
+    if ( $_ ) {
+      -f "web/stat/$_.rrd" or $this->CreateRRD($_);
+      push(@rrds, "/stat/$_.rrd");
+    }
   }
   $this->{'status'} =~ s/,$/]/;
   $this->{'status'} = "\"section\":[".$this->{'status'} ;
-
+  $this->{'rrds'} = \@rrds;
 
 =cut
 ### DEBUG -> ###
@@ -103,9 +137,9 @@ sub CreateRRD
      push(@data, "DS:$_:GAUGE:600:U:U");
   }
 
-  RRDs::create( "$section.rrd",
+  RRDs::create( "web/stat/$section.rrd",
                 "--start", $start,
-                "--step", 10,
+                "--step", $this->{'delay'},
                 @data,
                 "RRA:AVERAGE:0.5:1:8640",    # 1 day with interval of 10sec
                 "RRA:AVERAGE:0.5:6:2880",    # 2 day with interval of 1min
@@ -115,40 +149,221 @@ sub CreateRRD
                 );
 }
 
+
+package Server;
+
+use strict;
+use POSIX;
+use IO::Handle;
+use HTTP::Daemon;
+use HTTP::Daemon::SSL;
+use HTTP::Status;
+
+sub new
+{
+  my $this = bless {}, shift;
+  $this->Debug(3,"");
+
+  my @paths = (
+    "/",
+
+    "/favicon.ico",
+
+    "/index.html",
+    "/statistics.html",
+    "/status.html",
+    "/rpimonitord.json",
+
+    "/css/rpimonitor.css",
+    "/css/bootstrap.min.css",
+    "/css/bootstrap-responsive.min.css",
+
+    "/img/cpu.png",
+    "/img/glyphicons-halflings.png",
+    "/img/network.png",
+    "/img/warning.png",
+    "/img/uptime.png",
+    "/img/glyphicons-halflings-white.png",
+    "/img/ok.png",
+    "/img/version.png",
+    "/img/user.png",
+    "/img/favicon.png",
+    "/img/memory.png",
+    "/img/swap.png",
+    "/img/cpu_temp.png",
+    "/img/logo.png",
+    "/img/sd.png",
+
+    "/js/rpimonitor.index.js",
+    "/js/rpimonitor.statistics.js",
+    "/js/flot",
+    "/js/flot/jquery.flot.min.js",
+    "/js/flot/jquery.flot.selection.min.js",
+    "/js/flot/jquery.flot.tooltip.min.js",
+    "/js/rpimonitor.status.js",
+    "/js/jsqrencode.min.js",
+    "/js/rpimonitor.js",
+    "/js/jquery.min.js",
+    "/js/bootstrap.min.js",
+    "/js/javascriptrrd",
+    "/js/javascriptrrd/binaryXHR.js",
+    "/js/javascriptrrd/rrdFlotMatrix.js",
+    "/js/javascriptrrd/rrdFlot.js",
+    "/js/javascriptrrd/rrdMultiFile.js",
+    "/js/javascriptrrd/rrdFile.js",
+    "/js/javascriptrrd/rrdFlotSupport.js"
+  );
+
+  $this->{'paths'} = \@paths;
+
+  return $this;
+}
+
+sub Debug
+{
+  my $this = shift;
+  my $level = shift;
+
+  $level <= $verbose or return;
+  print STDERR "[", strftime("%Y/%m/%d-%H:%M:%S", localtime), "] ", " " x (5-$level), (caller 1)[3], " @_\n";
+}
+
+sub SendFile
+{
+  my $this = shift;
+  my $connection = shift;
+  my $file = shift;
+  $this->Debug(2,$file);
+
+  $connection->send_file_response($file);
+  $connection->close();
+
+  return 1;
+}
+
+sub SendStatus
+{
+  my $this = shift;
+  $this->Debug(2,"");
+
+  my $var;
+  my $id = shmget( $key, $shm_size, 0777 )
+    or warn "Can't shmget: $!";
+  shmread($id, $var, 0, $shm_size)
+    or warn "Can't shmread: $!";
+
+  my $response = HTTP::Response->new(
+      RC_OK, OK => [ 'Content-Type' => "application/json" ], $var
+  );
+  $this->{'connection'}->send_response($response);
+  $this->{'connection'}->close();
+
+  return 1;
+}
+
+sub DoGET
+{
+  my $this = shift;
+  my $request = shift;
+  $this->Debug(3,"");
+
+  my $connection = $this->{'connection'};
+  my $path = $request->url->path;
+  $this->Debug(2,$path);
+
+  #The file need to be known or we return an error
+  $path ~~ @{$this->{'paths'}} or $connection->send_error(404) and return;
+
+  $path =~ /rpimonitord.json/ and $this->SendStatus() and return;
+
+  #The main page (/) is requested
+  $path =~ /^\/$/ and $path = "index.html";
+
+  #If the file exists we return it
+  -e "web$path" and $this->SendFile($connection, "web$path") and return;
+
+  #Finally send error
+  $connection->send_error();
+}
+
+sub Run
+{
+  my $this = shift;
+  my $configuration=shift;
+  $this->Debug(3,"");
+
+  push(@{$this->{'paths'}}, @{$configuration->{'rrds'}});
+
+  # Create the server
+  if ( $configuration->{'ssl'} ) {
+    $this->{'server'} = new HTTP::Daemon::SSL( ReuseAddr => 1,
+                                               LocalAddr => $configuration->{'addr'},
+                                               LocalPort => $configuration->{'port'})
+      or die $!;
+  }
+  else {
+    $this->{'server'} = new HTTP::Daemon     ( ReuseAddr => 1,
+                                               LocalAddr => $configuration->{'addr'},
+                                               LocalPort => $configuration->{'port'})
+      or die $!;
+  }
+
+  $this->Debug(1,"< URL:", $this->{'server'}->url, ">");
+
+  #Process requests
+  while ( $this->{'connection'} = $this->{'server'}->accept) {
+    while (my $request = $this->{'connection'}->get_request) {
+      my $method = "Do".$request->method();
+      $this->$method($request);
+    }
+    $this->{'connection'}->close;
+    undef($this->{'connection'});
+  }
+  $this->Debug(1,"Server stopped");
+
+  $this->{'server'}->close();
+}
+
 package Monitor;
 use strict;
+use POSIX;
 use RRDs;
 
 sub new
 {
   my $this = bless { }, shift;
-  $this->{'delay'} = 10;  # default values 10s
   return $this;
+}
+
+sub Debug
+{
+  my $this = shift;
+  my $level = shift;
+
+  $level <= $verbose or return;
+  print STDERR "[", strftime("%Y/%m/%d-%H:%M:%S", localtime), "] ", " " x (5-$level), (caller 1)[3], " @_\n";
 }
 
 sub Run
 {
   # start main loop
   my $this = shift;
-  my $config = shift;
+  my $configuration = shift;
 
   # process data that should be extracted once
-  $this->Process($config->{'source'}->{'once'});
+  $this->Process($configuration->{'source'}->{'once'});
   for(;;)
   {
     # Process data
-    $this->Process($config->{'source'}->{'always'});
+    $this->Process($configuration->{'source'}->{'always'});
 
     # Store and show extracted data
-    $this->Status($config);
+    $this->Status($configuration);
 
     # tempo before next process
-    $this->{'delay'} or last;
-    sleep $this->{'delay'};
+    $configuration->{'delay'}or last;
+    sleep $configuration->{'delay'};
   }
-
-  # Remove status file when applocation stop
-  -f $config->{'status_file'} and unlink $config->{'status_file'};
 }
 
 sub Process
@@ -180,23 +395,23 @@ sub Status
   my $this = shift;
   my $config = shift;
 
+  $this->{'result'} or return;
+
   # construct printable status
   my $status = "";
   my %result = %{$this->{'result'}};
   $status .= "\"$_\":\"$result{$_}\"\n" for (keys %result);
 
   # Print status on screen if requested
-  $this->{'show'} and print STDOUT "$status";
+  #$this->Debug(1,"\n$status");
 
   chomp($status);
   $status=~s/\n/, /g;
   $status="{ $config->{'status'}, $status }";
 
-  # write current status in file (JSON)
-  open(FILE, "> $config->{'status_file'}")
-    or warn $!;
-    print FILE $status ;
-  close(FILE);
+  # write current status (JSON) in shared memory
+  shmwrite( $id, "$status" . " " x ($shm_size - length($status)), 0, $shm_size )
+    or warn "Can't shmwrite: $!";
 
   # add data in round robin database
   my %rrd = %{$config->{'section'}};
@@ -206,61 +421,112 @@ sub Status
     foreach ( @{$rrd{$section}} ) {
       $data .= ":$this->{'result'}->{$_}";
     }
-    RRDs::update("$section.rrd", $data);
+    RRDs::update("web/stat/$section.rrd", $data);
   }
 }
 
 package main;
 use strict;
+use POSIX;
 
 sub help
 {
-  # print help and exit
+  $0 =~ /(\w+)$/;
   die <<EOF;
-
-$0
-
 NAME
-  $0
+  $1
 
 USAGE
-  $0 is the extractig script of RPi-Monitor.
-  RPi-Monitor a self monitoring application designed to run on Raspberry Pi.
+  $1 [-a address][-c configuration_file][-d delay][-h][-n]
+     [-p port][-s][-v[v[...]]][-V]
 
 DESCRIPTION
-  $0 is designed extract data from RPI system and store status in json
-  and statistic into RRD.
+  $1 is designed extract data from Raspberry Pi system and store
+  statistic into RRD. $1 embed a web server allowing to display
+  current status and statistics.
 
 OPTIONS
-  -c, --conf        Define the configuration file (Default: ./$0.conf)
+  -a, --addr        Web server bind address (Default: 0.0.0.0)
+  -c, --conf        Define the configuration file (Default: ./$1.conf)
   -d, --delay       Delay between check (default 10sec)
+                      Note: If you want to change the default delay, the
+                      rrd file will have to be deleted rpimonitord will
+                      recreate them at next startup.
   -h, --help        Shows this help and exit
-  -s, --show        Show status in STDOUT
-  -v, --version     Show version and exit
+  -n, --noserver    Don't start embeded server
+  -p, --port        Web server port (Default: 8888)
+  -s, --secure      Use https in web server
+  -v, --verbose     Write debug info on screen
+  -V, --Version     Show version and exit
+
+CONFIGURATION
+  Configuration can be defined into $1.conf or a file specified
+  by -c parameter. See the $1.conf file provided with at
+  installation to see how to customize $1.
+  Configuration defined inside a configuration file always overwrite
+  default values. Configuration given as option of the command line
+  always overwrite the one defined into a file.
+
+SECURE ACCESS WITH SSL
+  $1 server can use SSL to secure the communication. It is
+  required to add certificate into ./certs/ directory and start $1
+  with the -s parameter.
+
+  To generate a certificate, execute the following commands
+
+    openssl req -config demoCA/openssl.cnf \
+            -new -days 365 -newkey rsa:1024 -x509 \
+            -keyout demoCA/certs/server-key-with-password.pem \
+            -out demoCA/certs/server-cert.pem
+
+    openssl rsa -in demoCA/certs/server-key-with-password.pem \
+                -out demoCA/certs/server-key.pem
+
+AUTHOR
+  Xavier Berger
+    https://github.com/XavierBerger/RPi-Monitor
+    http://rpi-experiences.blogspot.fr
 
 EOF
 }
 
-my $monitor = Monitor->new();
 my $configuration = Configuration->new();
+my $monitor = Monitor->new();
 
 sub stop
 {
-  $monitor->{'delay'} = 0;
+  $configuration->{'delay'} = 0;
 }
 
 # read command lines
 while($_ = shift)
 {
+  /-a(ddr)?/        and $configuration->{'addr'} = shift and next;
   /-c(onf)?/        and $configuration->{'conf_file'} = shift and next;
-  /-d(elay)?/       and $monitor->{'delay'} = shift and next;
+  /-d(elay)?/       and $configuration->{'delay'} = shift and next;
   /-h(elp)?/        and help;
-  /-s(how)?/        and ++$monitor->{'show'}        and next;
-  /-v(ersion)?/     and die "$0 version 1.0\n";
+  /-n(oserver)./    and $configuration->{'noserver'};
+  /-p(ort)?/        and $configuration->{'port'} = shift and next;
+  /-s(sl)?/         and $configuration->{'ssl'}++ and next;
+  /^-([v]+)$/       and $verbose = length $1 and next;
+  /-V(ersion)?/     and die "$0 version 1.0\n";
 }
 
 # Start monitor manager
 $configuration->Load();
-$monitor->Run($configuration);
 
+#start server as a separate process with specific user right (user:pi)
+my $pid;
+if ( !$configuration->{'noserver'} ){
+  unless ($pid = fork) {
+    my $server = Server->new();
+    setgid($configuration->{'gid'});
+    setuid($configuration->{'uid'});
+    $server->Run($configuration);
+    exit;
+  }
+}
+
+$monitor->Run($configuration);
+$pid and kill (9,$pid);
 

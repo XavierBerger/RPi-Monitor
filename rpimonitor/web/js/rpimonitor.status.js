@@ -2,7 +2,7 @@ $(function () {
   /* set no cache */
   $.ajaxSetup({ cache: false });
 
-  $.getJSON('/rpimonitord.status', function(data) {
+  $.getJSON('/rpimonitord.json', function(data) {
     // Uptime
     hour = Math.round(data.uptime / 3600);
     rest = data.uptime % 3600;
@@ -17,17 +17,17 @@ $(function () {
       "<p>Firmvare version: <b>" + data.firmware_version + "</b></p>"+
       "<p>Revision: <b>" + "" + "</b></p>"
     );
-    
+
     // memory
     mempercent=100*(data.memory_total-data.memory_free)/data.memory_total;
-    $('#memText').html( 
+    $('#memText').html(
       "<p>Used: <b>"+Math.round((data.memory_total-data.memory_free)/ 1024)+"MB ("+Math.round(mempercent)+"%)</b>"+
       " Free: <b>"+Math.round(data.memory_free/ 1024)+"MB</b>"+
       " Total: <b>"+Math.round(data.memory_total/ 1024)+"MB</b></p>"+
       "<div class='progress progress-striped active'><div class='bar' style='width: "+mempercent+"%;'></div></div>");
 
     // cpu
-    $('#cpuText').html( 
+    $('#cpuText').html(
       "<p>Load: 1 Min: <b>" + data.load1 +
       "</b> - 5 Min: <b>" + data.load5 +
       "</b> - 15 Min: <b>" + data.load15 +
@@ -38,12 +38,12 @@ $(function () {
       (data.core_voltage)+
       "V</b></p>"
     )
-    
+
     // temperature
     $('#tempText').html(
       "CPU temperature: <b>" + Math.round(data.soc_temp/1000) + "°C</b>"
     );
-    
+
     // swap
     swappercent=100*(data.swap_total-data.swap_free)/data.swap_total;
     $('#swapText').html(
@@ -52,7 +52,7 @@ $(function () {
       " Total: <b>"+Math.round(data.swap_total/ 1024)+"MB</b></p>"+
       "<div class='progress progress-striped active'><div class='bar' style='width: "+swappercent+"%;'></div></div>"
     );
-    
+
     // sd
     homepercent=100*(data.sdcard_home_total-data.sdcard_home_free)/data.sdcard_home_total;
     rootpercent=100*(data.sdcard_root_total-data.sdcard_root_free)/data.sdcard_root_total;
@@ -71,13 +71,16 @@ $(function () {
       " Total: <b>"+Math.round(data.sdcard_home_total/ 1024)+"MB</b></p>"+
       "<div class='progress progress-striped active'><div class='bar' style='width: "+homepercent+"%;'></div></div>"
     );
-    
+
     // network
     $('#netText').html(
-      "Ethernet Sent: <b>" + 
+      "Ethernet Sent: <b>" +
       Math.round(data.net_send/1024/1024) + "MB <i class='icon-arrow-up'></i>"+
-      "</b> Recieved: <b>" + 
-      Math.round(data.net_recived/1024/1024) + "MB <i class='icon-arrow-down'></i></b>" 
+      "</b> Recieved: <b>" +
+      Math.round(data.net_recived/1024/1024) + "MB <i class='icon-arrow-down'></i></b>"
     );
-  });
+  }).fail(function() {
+      $('#message').html("<b>Can not get status information. Is rpimonitord.conf correctly configured on server?</b>");
+      $('#message').removeClass('hide');
+    });
 });

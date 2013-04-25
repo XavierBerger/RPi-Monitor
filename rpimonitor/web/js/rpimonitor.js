@@ -122,8 +122,9 @@ $(function () {
   $('#footer').html(
     license + about +
 '      <div class="container">'+
-'        <p class="muted credit"><small>Follow RPi-Monitor news in <a href="http://rpi-experiences.blogspot.fr/">RPI-Experiences</a> blog.'+
-'        Raspberry Pi and Raspberry Pi logo are properties of <a href="http://www.raspberrypi.org/">Raspberry Pi Fundation</a></small></p>'+
+'        <p class="muted credit"><small>Follow RPi-Monitor news in <a href="http://rpi-experiences.blogspot.fr/">RPI-Experiences</a> blog'+
+'        and <a href="https://github.com/XavierBerger/RPi-Monitor">Github</a>.'+
+'        Raspberry Pi brand and Raspberry Pi logo are properties of <a href="http://www.raspberrypi.org/">Raspberry Pi Fundation</a></small></p>'+
 '      </div>'
   );
 
