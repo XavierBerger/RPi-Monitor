@@ -29,10 +29,13 @@ my $id = shmget($key, $shm_size, &IPC_CREAT | 0777 )
 
 package Configuration;
 use strict;
+use POSIX;
 
 sub new
 {
   my $this = bless { }, shift;
+  $this->Debug(3,"");
+  
   $0 =~ /(\w+)$/;
 
   $this->{'conf_file'} = "./$1.conf";
@@ -41,6 +44,8 @@ sub new
   $this->{'group'} = "pi";
   $this->{'port'} = 8888;
   $this->{'addr'} = '0.0.0.0';
+  $this->{'webroot'} = 'web';
+  $this->{'statdir'} = 'stat';
 
   $this->{'delay'} = 10;
 
@@ -59,6 +64,7 @@ sub Debug
 sub Load
 {
   my $this = shift;
+  $this->Debug(2,"");
 
   # load configuration
   my $section;
@@ -86,58 +92,31 @@ sub Load
     $_ or next;
     $this->{'status'} = $this->{'status'} . "\"$_\",";
     if ( $_ ) {
-      -f "web/stat/$_.rrd" or $this->CreateRRD($_);
-      push(@rrds, "/stat/$_.rrd");
+      -f "$this->{'webroot'}/$this->{'statdir'}/$_.rrd" or $this->CreateRRD($_);
+      push(@rrds, "/$this->{'statdir'}/$_.rrd");
     }
   }
   $this->{'status'} =~ s/,$/]/;
   $this->{'status'} = "\"section\":[".$this->{'status'} ;
   $this->{'rrds'} = \@rrds;
-
-=cut
-### DEBUG -> ###
-  print "===== SOURCES =====\n";
-  my %result = %{$this->{'source'}};
-  for my $switch (keys %result){
-    print "$switch\n";
-    my %subresult = %{$result{$switch}};
-    for my $source (keys %subresult){
-      print "\t$source\n";
-      my %subsubresult = %{$subresult{$source}};
-      for my $regexp (keys %subsubresult){
-        print "\t\t$regexp\n\t\t\t@{$subsubresult{$regexp}}\n";
-      }
-      print "\n";
-    }
-  }
-
-  print "===== SECTIONS =====\n";
-  my %result = %{$this->{'section'}};
-  for my $section (keys %result){
-    print ($section || "Common");
-    print "\n\t@{$result{$section}}\n";
-  }
-
-  print "\n";
-### <- DEBUG ###
-=cut
 }
 
 sub CreateRRD
 {
   my $this = shift;
   my $section = shift;
+  $this->Debug(2,"$this->{'webroot'}/$this->{'statdir'}/$section.rrd");
 
   my $current = time();
   my $start = $current - 60;
   my @data=();
 
-  # creat the list of data to stor into the rrd
+  # create the list of data to stor into the rrd
   foreach ( @{$this->{'section'}->{$section}} ){
      push(@data, "DS:$_:GAUGE:600:U:U");
   }
 
-  RRDs::create( "web/stat/$section.rrd",
+  RRDs::create( "$this->{'webroot'}/$this->{'statdir'}/$section.rrd",
                 "--start", $start,
                 "--step", $this->{'delay'},
                 @data,
@@ -149,9 +128,7 @@ sub CreateRRD
                 );
 }
 
-
 package Server;
-
 use strict;
 use POSIX;
 use IO::Handle;
@@ -194,18 +171,16 @@ sub new
     "/img/logo.png",
     "/img/sd.png",
 
-    "/js/rpimonitor.index.js",
     "/js/rpimonitor.statistics.js",
-    "/js/flot",
+    "/js/rpimonitor.status.js",
+    "/js/rpimonitor.index.js",
+    "/js/rpimonitor.js",
+    "/js/jsqrencode.min.js",
+    "/js/jquery.min.js",
+    "/js/bootstrap.min.js",
     "/js/flot/jquery.flot.min.js",
     "/js/flot/jquery.flot.selection.min.js",
     "/js/flot/jquery.flot.tooltip.min.js",
-    "/js/rpimonitor.status.js",
-    "/js/jsqrencode.min.js",
-    "/js/rpimonitor.js",
-    "/js/jquery.min.js",
-    "/js/bootstrap.min.js",
-    "/js/javascriptrrd",
     "/js/javascriptrrd/binaryXHR.js",
     "/js/javascriptrrd/rrdFlotMatrix.js",
     "/js/javascriptrrd/rrdFlot.js",
@@ -261,10 +236,21 @@ sub SendStatus
   return 1;
 }
 
+sub DoHEAD
+{
+  return;
+}
+
+sub DoPOST
+{
+  return;
+}
+
 sub DoGET
 {
   my $this = shift;
   my $request = shift;
+  my $configuration = shift;
   $this->Debug(3,"");
 
   my $connection = $this->{'connection'};
@@ -280,7 +266,7 @@ sub DoGET
   $path =~ /^\/$/ and $path = "/index.html";
 
   #If the file exists we return it
-  -e "web$path" and $this->SendFile($connection, "web$path") and return;
+  -e $configuration->{'webroot'}.$path and $this->SendFile($connection, $configuration->{'webroot'}.$path) and return;
 
   #Finally send error
   $connection->send_error();
@@ -314,7 +300,7 @@ sub Run
   while ( $this->{'connection'} = $this->{'server'}->accept) {
     while (my $request = $this->{'connection'}->get_request) {
       my $method = "Do".$request->method();
-      $this->$method($request);
+      $this->$method($request,$configuration);
     }
     $this->{'connection'}->close;
     undef($this->{'connection'});
@@ -332,6 +318,7 @@ use RRDs;
 sub new
 {
   my $this = bless { }, shift;
+  $this->Debug(3,"");
   return $this;
 }
 
@@ -349,6 +336,7 @@ sub Run
   # start main loop
   my $this = shift;
   my $configuration = shift;
+  $this->Debug(2,"");
 
   # process data that should be extracted once
   $this->Process($configuration->{'source'}->{'once'});
@@ -361,7 +349,7 @@ sub Run
     $this->Status($configuration);
 
     # tempo before next process
-    $configuration->{'delay'}or last;
+    $configuration->{'delay'} or last;
     sleep $configuration->{'delay'};
   }
 }
@@ -403,11 +391,12 @@ sub Status
   $status .= "\"$_\":\"$result{$_}\"\n" for (keys %result);
 
   # Print status on screen if requested
-  #$this->Debug(1,"\n$status");
+  $this->Debug(4,"\n$status");
 
   chomp($status);
   $status=~s/\n/, /g;
   $status="{ $config->{'status'}, $status }";
+
 
   # write current status (JSON) in shared memory
   shmwrite( $id, "$status" . " " x ($shm_size - length($status)), 0, $shm_size )
