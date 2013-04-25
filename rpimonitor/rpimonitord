@@ -21,7 +21,7 @@ my $verbose=0;
 
 # prepare the shared memory for communication between Monitor and Server
 my $key      = $$;
-my $shm_size = 512;
+my $shm_size = 1024;
 eval 'sub IPC_CREAT {0001000}' unless defined &IPC_CREAT;
 eval 'sub IPC_RMID {0}'        unless defined &IPC_RMID;
 my $id = shmget($key, $shm_size, &IPC_CREAT | 0777 )
@@ -277,7 +277,7 @@ sub DoGET
   $path =~ /rpimonitord.json/ and $this->SendStatus() and return;
 
   #The main page (/) is requested
-  $path =~ /^\/$/ and $path = "index.html";
+  $path =~ /^\/$/ and $path = "/index.html";
 
   #If the file exists we return it
   -e "web$path" and $this->SendFile($connection, "web$path") and return;
