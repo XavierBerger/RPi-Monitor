@@ -37,7 +37,7 @@ This architecture has the advantage in an embedded architecture to offload the s
 processing and rendering to the client.
 
 You may notice that The look and feel of the status page is clearly inspired by 
-[Raspcontrol](href="https://github.com/Bioshox/Raspcontrol).
+[Raspcontrol](https://github.com/Bioshox/Raspcontrol).
 
 ## Download
 
