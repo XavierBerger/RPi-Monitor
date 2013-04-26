@@ -69,15 +69,15 @@ access to the interactive web interface.
 
 If you want to start **RPi-Monitor** as a daemon at Raspberry Pi startup, copy the directory _rpimonitor_ in _/usr/local_
 
-    cp -a RPi-Monitor/rpimonitor /usr/local/rpimonitor
+    sudo cp -a RPi-Monitor/rpimonitor /usr/local/rpimonitor
 
 Copy the upstart script into _/etc/init_
 
-    cp RPi-Monitor/init/rpimonitord.conf /etc/init/
+    sudo cp RPi-Monitor/init/rpimonitord.conf /etc/init/
 
 Start the daemon
 
-    start rpimonitord
+    sudo start rpimonitord
 
 That's it, your Raspberry Pi is monitored. You can now browse <http://your_Raspberry_Pi_address:8888> to
 access to the interactive web interface. Note: you can delete the directory _RPi-Monitor_ which is no more used.
