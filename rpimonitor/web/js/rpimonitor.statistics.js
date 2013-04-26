@@ -45,7 +45,7 @@ $(function () {
 
     // Get json to extract the list of rrd availble
     $.ajaxSetup({ cache: false });
-    $.getJSON('/rpimonitord.json', function(data) {
+    $.getJSON('/stat/rpimonitord.json', function(data) {
       var graphlist="Graph: <select id='selected_graph'>\n";
       for (var i=0;i<data.section.length;i++)
       {

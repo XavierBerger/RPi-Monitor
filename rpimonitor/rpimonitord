@@ -17,6 +17,7 @@
 $|=1;
 $SIG{CHLD}   = 'IGNORE';
 $SIG{INT}    = sub { stop(); }; # catch Ctrl+C
+
 my $verbose=0;
 
 # prepare the shared memory for communication between Monitor and Server
@@ -35,7 +36,7 @@ sub new
 {
   my $this = bless { }, shift;
   $this->Debug(3,"");
-  
+
   $0 =~ /(\w+)$/;
 
   $this->{'conf_file'} = "./$1.conf";
@@ -46,7 +47,7 @@ sub new
   $this->{'addr'} = '0.0.0.0';
   $this->{'webroot'} = 'web';
   $this->{'statdir'} = 'stat';
-
+  $this->{'status_file'} = "$1.json";
   $this->{'delay'} = 10;
 
   return $this;
@@ -86,8 +87,9 @@ sub Load
   $this->{'gid'} = getgrnam($this->{'user'}) || 1000;
   $this->{'uid'} = getpwnam($this->{'group'}) || 1000;
 
+
   # check rrd files and create them if they are missing and construct the list of rrd page accessible
-  my @rrds=();
+  my @rrds=("/$this->{'statdir'}/$this->{'status_file'}");
   for ( keys %{$this->{'section'}} ){
     $_ or next;
     $this->{'status'} = $this->{'status'} . "\"$_\",";
@@ -149,7 +151,6 @@ sub new
     "/index.html",
     "/statistics.html",
     "/status.html",
-    "/rpimonitord.json",
 
     "/css/rpimonitor.css",
     "/css/bootstrap.min.css",
@@ -268,6 +269,7 @@ sub DoGET
   #If the file exists we return it
   -e $configuration->{'webroot'}.$path and $this->SendFile($connection, $configuration->{'webroot'}.$path) and return;
 
+  $this->Debug(2,"Can't find $path");
   #Finally send error
   $connection->send_error();
 }
@@ -352,6 +354,7 @@ sub Run
     $configuration->{'delay'} or last;
     sleep $configuration->{'delay'};
   }
+  -f $configuration->{'status_file'} and unlink $configuration->{'status_file'};
 }
 
 sub Process
@@ -381,7 +384,7 @@ sub Process
 sub Status
 {
   my $this = shift;
-  my $config = shift;
+  my $configuration = shift;
 
   $this->{'result'} or return;
 
@@ -395,22 +398,31 @@ sub Status
 
   chomp($status);
   $status=~s/\n/, /g;
-  $status="{ $config->{'status'}, $status }";
+  $status="{ $configuration->{'status'}, $status }";
 
-
-  # write current status (JSON) in shared memory
-  shmwrite( $id, "$status" . " " x ($shm_size - length($status)), 0, $shm_size )
-    or warn "Can't shmwrite: $!";
+  # if embeded server is not used, we write the json file else the
+  # data are transmitted with a shared memory
+  if ( $configuration->{'noserver'} ){
+    open(FILE, "> $this->{'webroot'}/$this->{'statdir'}/$this->{'status_file'}")
+      or warn $!;
+      print FILE $status ;
+    close(FILE);
+  }
+  else{
+    # write current status (JSON) in shared memory
+    shmwrite( $id, "$status" . " " x ($shm_size - length($status)), 0, $shm_size )
+      or warn "Can't shmwrite: $!";
+  }
 
   # add data in round robin database
-  my %rrd = %{$config->{'section'}};
+  my %rrd = %{$configuration->{'section'}};
   for my $section (keys %rrd){
     $section or next;
     my $data="N";
     foreach ( @{$rrd{$section}} ) {
       $data .= ":$this->{'result'}->{$_}";
     }
-    RRDs::update("web/stat/$section.rrd", $data);
+    RRDs::update("$configuration->{'webroot'}/$configuration->{'statdir'}/$section.rrd", $data);
   }
 }
 
@@ -487,6 +499,9 @@ sub stop
   $configuration->{'delay'} = 0;
 }
 
+# Start monitor manager
+$configuration->Load();
+
 # read command lines
 while($_ = shift)
 {
@@ -494,19 +509,16 @@ while($_ = shift)
   /-c(onf)?/        and $configuration->{'conf_file'} = shift and next;
   /-d(elay)?/       and $configuration->{'delay'} = shift and next;
   /-h(elp)?/        and help;
-  /-n(oserver)./    and $configuration->{'noserver'};
+  /-n(oserver)?/    and $configuration->{'noserver'}++ and next;
   /-p(ort)?/        and $configuration->{'port'} = shift and next;
   /-s(sl)?/         and $configuration->{'ssl'}++ and next;
   /^-([v]+)$/       and $verbose = length $1 and next;
   /-V(ersion)?/     and die "$0 version 1.0\n";
 }
 
-# Start monitor manager
-$configuration->Load();
-
 #start server as a separate process with specific user right (user:pi)
 my $pid;
-if ( !$configuration->{'noserver'} ){
+unless ( $configuration->{'noserver'} ){
   unless ($pid = fork) {
     my $server = Server->new();
     setgid($configuration->{'gid'});

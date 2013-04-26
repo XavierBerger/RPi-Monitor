@@ -2,7 +2,7 @@ $(function () {
   /* set no cache */
   $.ajaxSetup({ cache: false });
 
-  $.getJSON('/rpimonitord.json', function(data) {
+  $.getJSON('/stat/rpimonitord.json', function(data) {
     // Uptime
     hour = Math.round(data.uptime / 3600);
     rest = data.uptime % 3600;
