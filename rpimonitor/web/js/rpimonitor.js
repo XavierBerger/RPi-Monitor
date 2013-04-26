@@ -57,7 +57,7 @@ $(function () {
 '                    <li class="divider"></li>'+
 '                    <li class="nav-header">Related links</li>'+
 '                    <li><a href="http://rpi-experiences.blogspot.fr/">RPI-experiences</a></li>'+
-'                    <li><a href="https://github.com/XavierBerger/RPi-Monitor">Github</a></li>'+
+'                    <li><a href="https://github.com/XavierBerger/RPi-Monitor">GitHub</a></li>'+
 '                  </ul>'+
 '                </li>'+
 '              </ul>'+
@@ -105,7 +105,7 @@ $(function () {
 '        </div>'+
 '        <div class="modal-body">'+
 '          <p><b>Version</b>: 1.0'+
-'          <b>by</b> Xavier Berger <a href="http://rpi-experiences.blogspot.fr/">Blog</a> <a href="https://github.com/XavierBerger/RPi-Monitor">Github</a></p>'+
+'          <b>by</b> Xavier Berger <a href="http://rpi-experiences.blogspot.fr/">Blog</a> <a href="https://github.com/XavierBerger/RPi-Monitor">GitHub</a></p>'+
 '          <hr>'+
 '          <p><b>RPI-Monitor</b> is free software developped on top of other open source'+
 'tools : <a href="http://twitter.github.io/bootstrap/">bootstrap</a>, <a href="http://jquery.com/">jquery</a>, <a href="https://code.google.com/p/jsqrencode/">jsqrencode</a> and <a href="http://javascriptrrd.sourceforge.net/">javascriptrrd</a>.<br>'+
@@ -123,7 +123,7 @@ $(function () {
     license + about +
 '      <div class="container">'+
 '        <p class="muted credit"><small>Follow RPi-Monitor news in <a href="http://rpi-experiences.blogspot.fr/">RPI-Experiences</a> blog'+
-'        and <a href="https://github.com/XavierBerger/RPi-Monitor">Github</a>.'+
+'        and <a href="https://github.com/XavierBerger/RPi-Monitor">GitHub</a>.'+
 '        Raspberry Pi brand and Raspberry Pi logo are properties of <a href="http://www.raspberrypi.org/">Raspberry Pi Fundation</a></small></p>'+
 '      </div>'
   );
