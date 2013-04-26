@@ -12,10 +12,10 @@ $(function () {
 
     // temperature
     $('#versionText').html(
-      "<p>Distribtion: <b>" + "" + "</b></p>"+
+      "<p>Distribtion: <b>" + data.distribution + "</b></p>"+
       "<p>Kernel version: <b>" + data.kernel_version + "</b></p>"+
       "<p>Firmvare version: <b>" + data.firmware_version + "</b></p>"+
-      "<p>Revision: <b>" + "" + "</b></p>"
+      "<p>Revision: <b>" + data.revision + "</b></p>"
     );
 
     // memory
@@ -33,9 +33,9 @@ $(function () {
       "</b> - 15 Min: <b>" + data.load15 +
       "</b>"+
       "<p>CPU frequency: <b>"+
-      (data.cpu_frequency / 1000000)+
+      (data.cpu_frequency / 1000)+
       "MHz</b> Voltage: <b>"+
-      (data.core_voltage)+
+      (data.voltage  / 1000000)+
       "V</b></p>"
     )
 
@@ -75,9 +75,9 @@ $(function () {
     // network
     $('#netText').html(
       "Ethernet Sent: <b>" +
-      Math.round(data.net_send/1024/1024) + "MB <i class='icon-arrow-up'></i>"+
+      (data.net_send/1024/1024).toFixed(3) + "MB <i class='icon-arrow-up'></i>"+
       "</b> Recieved: <b>" +
-      Math.round(data.net_recived/1024/1024) + "MB <i class='icon-arrow-down'></i></b>"
+      (data.net_recived/1024/1024).toFixed(3) + "MB <i class='icon-arrow-down'></i></b>"
     );
   }).fail(function() {
       $('#message').html("<b>Can not get status information. Is rpimonitord.conf correctly configured on server?</b>");
