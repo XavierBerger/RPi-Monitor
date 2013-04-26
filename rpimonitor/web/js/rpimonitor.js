@@ -57,7 +57,7 @@ $(function () {
 '                    <li class="divider"></li>'+
 '                    <li class="nav-header">Related links</li>'+
 '                    <li><a href="http://rpi-experiences.blogspot.fr/">RPI-experiences</a></li>'+
-'                    <li><a href="https://github.com/XavierBerger/RPi-Monitor">GitHub</a></li>'+
+'                    <li><a href="https://github.com/XavierBerger/RPi-Monitor">RPi-Monitor</a></li>'+
 '                  </ul>'+
 '                </li>'+
 '              </ul>'+
