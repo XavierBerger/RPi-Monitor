@@ -17,8 +17,8 @@
 $|=1;
 $SIG{CHLD}   = 'IGNORE';
 $SIG{INT}    = sub { stop(); }; # catch Ctrl+C
-$VERSION     = 1.0;
 
+my $VERSION     = 1.0;
 my $verbose=0;
 
 # prepare the shared memory for communication between Monitor and Server
