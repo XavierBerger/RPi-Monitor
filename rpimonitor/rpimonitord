@@ -17,6 +17,7 @@
 $|=1;
 $SIG{CHLD}   = 'IGNORE';
 $SIG{INT}    = sub { stop(); }; # catch Ctrl+C
+$VERSION     = 1.0;
 
 my $verbose=0;
 
@@ -513,7 +514,7 @@ while($_ = shift)
   /-p(ort)?/        and $configuration->{'port'} = shift and next;
   /-s(sl)?/         and $configuration->{'ssl'}++ and next;
   /^-([v]+)$/       and $verbose = length $1 and next;
-  /-V(ersion)?/     and die "$0 version 1.0\n";
+  /-V(ersion)?/     and die "$0 version $VERSION\n";
 }
 
 #start server as a separate process with specific user right (user:pi)
