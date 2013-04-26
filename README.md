@@ -57,21 +57,15 @@ If you have Git installed you can clone the repo
 
 ## Usage
 
-Start rpimonitord from directory rpimonitor web with the command
+Start rpimonitord from directory _./rpimonitor_ with the command
 
     ./rpimonitord &
 
-When the rpimonitord is running, you can check the current status in the file with the command:
-
-    cat rpimonitord.status
-
-Start the web server by excuting the following command
-
-    ./start.sh
-
-You can now browse <http://your_Raspberry_Pi_address:8888> to access to the interactive web interface.
+That's it, you Raspberry Pi is monitored. You can now browse <http://your_Raspberry_Pi_address:8888> to 
+access to the interactive web interface.
 
 ## Future development
 
-Future development will make installation and usage easier. It will start rpimonitord as daemon
-and will add additionnal feature to the web interface.
+Future development will make installation and usage easier (yes, it is possible with debian package and upstart).
+
+Additionnal feature will also be added into the web interface.
