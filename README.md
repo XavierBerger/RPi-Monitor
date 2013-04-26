@@ -8,6 +8,7 @@ I'm waiting my Raspberry Pi delivery so the application is still in development 
 # RPi-Monitor
 
 **Author**: Xavier Berger
+
 **Blog**: [RPi-Experience](http://rpi-experiences.blogspot.fr/)
 
 ![screenshot](index.png)
