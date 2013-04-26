@@ -56,17 +56,28 @@ If you have Git installed you can clone the repo
 
     git clone https://github.com/XavierBerger/RPi-Monitor.git
 
-## Usage
+## I can't wait! How can I test it?
 
-Start rpimonitord from directory _./rpimonitor_ with the command
+Start rpimonitord from directory _RPi-Monitor/rpimonitor_ with the command
 
-    ./rpimonitord &
+    ./rpimonitord
 
-That's it, you Raspberry Pi is monitored. You can now browse <http://your_Raspberry_Pi_address:8888> to 
+That's it, your Raspberry Pi is monitored. You can now browse <http://your_Raspberry_Pi_address:8888> to
 access to the interactive web interface.
 
-## Future development
+## Installing rpimonitor as a daemon
 
-Future development will make installation and usage easier (yes, it is possible with debian package and upstart).
+If you want to start **RPi-Monitor** as a daemon at Raspberry Pi startup, copy the directory _rpimonitor_ in _/usr/local_
 
-Additionnal feature will also be added into the web interface.
+    cp -a RPi-Monitor/rpimonitor /usr/local/rpimonitor
+
+Copy the upstart script into _/etc/init_
+
+    cp RPi-Monitor/init/rpimonitord.conf /etc/init/
+
+Start the daemon
+
+    start rpimonitord
+
+That's it, your Raspberry Pi is monitored. You can now browse <http://your_Raspberry_Pi_address:8888> to
+access to the interactive web interface. Note: you can delete the directory _RPi-Monitor_ which is no more used.
