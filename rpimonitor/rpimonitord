@@ -89,7 +89,9 @@ sub Load
   $this->{'uid'} = getpwnam($this->{'group'}) || 1000;
 
 
-  # check rrd files and create them if they are missing and construct the list of rrd page accessible
+  # check rrd directory and files and create them if they are missing 
+  # construct the list of rrd page accessible
+  -d "$this->{'webroot'}/$this->{'statdir'}" or mkdir "$this->{'webroot'}/$this->{'statdir'}";
   my @rrds=("/$this->{'statdir'}/$this->{'status_file'}");
   for ( keys %{$this->{'section'}} ){
     $_ or next;
