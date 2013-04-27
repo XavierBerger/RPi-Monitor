@@ -81,3 +81,22 @@ Start the daemon
 
 That's it, your Raspberry Pi is monitored. You can now browse <http://your_Raspberry_Pi_address:8888> to
 access to the interactive web interface. Note: you can delete the directory _RPi-Monitor_ which is no more used.
+
+## FAQ
+
+**When I try to start rpiminitord I've the error "Can't locate HTTP/Daemon/SSL.pm"**
+
+A perl package is missing, you can install it with the command:
+    
+    sudo apt-get install libhttp-daemon-ssl-perl
+    
+**Can I  run RPi-Monitor on a computer other than a Raspberry Pi**
+
+Yes, you can, you will just have to update rpimonitor.conf to reflect you hardware arhitecture.
+
+**I did update the configuration  but I can't see the change in rrd**
+
+If you change the configuration , the _rrd_ files will have to be regenerated. Delete the rrd file concerned by the 
+change and restart rpimonitord. This can be done with the ollowing command is rpimonitord is installed as a daemon:
+
+    sudo restart rpimonitord
