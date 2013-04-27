@@ -22,12 +22,11 @@ I'm waiting my Raspberry Pi delivery so the application is still in development 
 For performance and security reason, **RPi-Monitor** separates the extraction of the information from the
 presentation of the information.
 
-The extraction of the information is done by a process designed to run as a daemon (which can be executed as root).
-The extracted key performance indicators (KPI) from the computer are stored them into a Round Robin Database (RRD)
-to keep an history of the health og the computer.
-
-**rpimonitord** is the perl script designed to start the monitoring daemon and the embedded web server giving
-access to the pages. The web server is running into a separate process owned by a non root user (the user 'pi' by default)
+The extraction of the information is done by a process designed to run as a daemon (which can be executed as root). 
+The extracted key performance indicators (KPI) from the computer are stored them into a Round Robin Database (RRD) 
+to keep an history of the health of the computer. rpimonitord is the perl script also starts the embedded web 
+server giving access to the pages. The web server is running into a separate process owned by a non root user 
+(the user 'pi' by default).
 
 The presentation of the information is performed by HTML5 pages. These pages dynamically download the
 information extracted from the previous script and perform the rendering the in a nice looking format
@@ -36,7 +35,7 @@ information extracted from the previous script and perform the rendering the in 
 This architecture has the advantage in an embedded architecture to offload the server task and delegate
 processing and rendering to the client.
 
-You may notice that The look and feel of the status page is clearly inspired by
+You may notice that the look and feel of the status page is clearly inspired by
 [Raspcontrol](https://github.com/Bioshox/Raspcontrol).
 
 Finnally note that the embedded server doesn't provide access control or authentication. It is still possible
@@ -52,7 +51,7 @@ You can download this as a _.zip_ from the GitHub Repository via the following l
 
 #### Git Clone
 
-If you have Git installed you can clone the repo
+If you have Git installed you can clone the repository with the following command
 
     git clone https://github.com/XavierBerger/RPi-Monitor.git
 
