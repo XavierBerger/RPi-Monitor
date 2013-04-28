@@ -56,7 +56,7 @@ $(function () {
     var disk_total=[data.sdcard_home_total,data.sdcard_root_total,data.sdcard_boot_total];
     var disk_free=[data.sdcard_home_free,data.sdcard_root_free,data.sdcard_boot_free];
     for (iloop=0;iloop<disk_total.length;iloop++){
-      if ( disk_total ){
+      if ( disk_total[iloop] ){
         percent=100*(disk_total[iloop]-disk_free[iloop])/disk_total[iloop];
         diskText+="<p><b>"+disk_name[iloop]+"</b> used: <b>"+Math.round((disk_total[iloop]-disk_free[iloop])/ 1024)+"MB ("+Math.round(percent)+"%)</b>"
         diskText+=" Free: <b>"+Math.round(disk_free[iloop]/ 1024)+"MB</b>"
@@ -65,25 +65,7 @@ $(function () {
       }
     }
     $('#sdText').html( diskText );
-/*
-    homepercent=100*(data.sdcard_home_total-data.sdcard_home_free)/data.sdcard_home_total;
-    rootpercent=100*(data.sdcard_root_total-data.sdcard_root_free)/data.sdcard_root_total;
-    bootpercent=100*(data.sdcard_boot_total-data.sdcard_boot_free)/data.sdcard_boot_total;
-    $('#sdText').html(
-      "<p><b>/boot</b> used: <b>"+Math.round((data.sdcard_boot_total-data.sdcard_boot_free)/ 1024)+"MB ("+Math.round(bootpercent)+"%)</b>"+
-      " Free: <b>"+Math.round(data.sdcard_boot_free/ 1024)+"MB</b>"+
-      " Total: <b>"+Math.round(data.sdcard_boot_total/ 1024)+"MB</b></p>"+
-      "<div class='progress progress-striped active'><div class='bar' style='width: "+bootpercent+"%;'></div></div>"+
-      "<p><b>/</b> used: <b>"+Math.round((data.sdcard_root_total-data.sdcard_root_free)/ 1024)+"MB ("+Math.round(rootpercent)+"%)</b>"+
-      " Free: <b>"+Math.round(data.sdcard_root_free/ 1024)+"MB</b>"+
-      " Total: <b>"+Math.round(data.sdcard_root_total/ 1024)+"MB</b></p>"+
-      "<div class='progress progress-striped active'><div class='bar' style='width: "+rootpercent+"%;'></div></div>"+
-      "<p><b>/home</b> used: <b>"+Math.round((data.sdcard_home_total-data.sdcard_home_free)/ 1024)+"MB ("+Math.round(homepercent)+"%)</b>"+
-      " Free: <b>"+Math.round(data.sdcard_home_free/ 1024)+"MB</b>"+
-      " Total: <b>"+Math.round(data.sdcard_home_total/ 1024)+"MB</b></p>"+
-      "<div class='progress progress-striped active'><div class='bar' style='width: "+homepercent+"%;'></div></div>"
-    );
-*/
+    
     // network
     $('#netText').html(
       "Ethernet Sent: <b>" +
