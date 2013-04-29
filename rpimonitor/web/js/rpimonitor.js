@@ -1,7 +1,8 @@
+var animate;
 $(function () {
   
   var dialogs="";
-
+  
   function AddConfigurationDialog(){
       dialogs+=
         '<div id="Configuration" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">'+
@@ -10,12 +11,12 @@ $(function () {
             '<h3 id="myModalLabel">Configuration</h3>'+
           '</div>'+
           '<div class="modal-body">'+
-            '<p>New feature will be implemented in future releases.<br>'+
-            'Configuration will be stored into the browser HTML5 storage.</p>'+
+            '<p>'+
+              '<label class="checkbox"><input type="checkbox" id="animate">Animate progress bar</label>'+
+            '</p>'+
           '</div>'+
           '<div class="modal-footer">'+
             '<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>'+
-            '<button class="btn btn-primary">Save changes</button>'+
           '</div>'+
         '</div>';
   }
@@ -141,8 +142,31 @@ $(function () {
     );
   }
   
+  
   AddTopmenu();
   AddDialogs();
   AddFooter();
+  
+  animate=(localStorage.getItem('animate') === 'true');
+  
+  $('#animate').click(function(){
+    animate = $('#animate').is(":checked");
+    localStorage.setItem('animate', animate);
+    SetProgressBarAnimate();
+  });
+  
+  function SetProgressBarAnimate(){
+    $('#animate').attr('checked', animate );
+    if ( animate ) {
+      $('.progress').addClass('active');
+    }
+    else{
+      $('.progress').removeClass('active');
+    }
+    
+  }
+
+  SetProgressBarAnimate();
+
 
 });

@@ -24,7 +24,7 @@ $(function () {
       "<p>Used: <b>"+Math.round((data.memory_total-data.memory_free)/ 1024)+"MB ("+Math.round(mempercent)+"%)</b>"+
       " Free: <b>"+Math.round(data.memory_free/ 1024)+"MB</b>"+
       " Total: <b>"+Math.round(data.memory_total/ 1024)+"MB</b></p>"+
-      "<div class='progress progress-striped active'><div class='bar' style='width: "+mempercent+"%;'></div></div>");
+      "<div class='progress progress-striped " + ( animate? "active" : "") +"'><div class='bar' style='width: "+mempercent+"%;'></div></div>");
 
     // cpu
     cpuText=""
@@ -46,7 +46,7 @@ $(function () {
         "<p>Used: <b>"+Math.round((data.swap_total-data.swap_free)/ 1024)+"MB ("+Math.round(swappercent)+"%)</b>"+
         " Free: <b>"+Math.round(data.swap_free/ 1024)+"MB</b>"+
         " Total: <b>"+Math.round(data.swap_total/ 1024)+"MB</b></p>"+
-        "<div class='progress progress-striped active'><div class='bar' style='width: "+swappercent+"%;'></div></div>"
+        "<div class='progress progress-striped " + ( animate ? "active" : "") +"'><div class='bar' style='width: "+swappercent+"%;'></div></div>"
       );
     }
 
@@ -61,7 +61,7 @@ $(function () {
         diskText+="<p><b>"+disk_name[iloop]+"</b> used: <b>"+Math.round((disk_total[iloop]-disk_free[iloop])/ 1024)+"MB ("+Math.round(percent)+"%)</b>"
         diskText+=" Free: <b>"+Math.round(disk_free[iloop]/ 1024)+"MB</b>"
         diskText+=" Total: <b>"+Math.round(disk_total[iloop]/ 1024)+"MB</b></p>"
-        diskText+="<div class='progress progress-striped active'><div class='bar' style='width: "+percent+"%;'></div></div>"
+        diskText+="<div class='progress progress-striped " + ( animate ? "active" : "") +"'><div class='bar' style='width: "+percent+"%;'></div></div>"
       }
     }
     $('#sdText').html( diskText );
