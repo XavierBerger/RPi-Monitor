@@ -1,4 +1,14 @@
 $(function () {
+  
+  function FormatSize(size){
+    if ( size < 1048576 ) {
+      return ( size / 1024 ).toFixed(2)+"MB";
+    }
+    else{
+      return ( size / 1024 / 1024 ).toFixed(2) +"GB";
+    }
+  }
+  
   /* set no cache */
   $.ajaxSetup({ cache: false });
 
@@ -21,9 +31,9 @@ $(function () {
     // memory
     mempercent=100*(data.memory_total-data.memory_free)/data.memory_total;
     $('#memText').html(
-      "<p>Used: <b>"+Math.round((data.memory_total-data.memory_free)/ 1024)+"MB ("+Math.round(mempercent)+"%)</b>"+
-      " Free: <b>"+Math.round(data.memory_free/ 1024)+"MB</b>"+
-      " Total: <b>"+Math.round(data.memory_total/ 1024)+"MB</b></p>"+
+      "<p>Used: <b>" + FormatSize(data.memory_total-data.memory_free)+" ("+mempercent.toFixed(2)+"%)</b>"+
+      " Free: <b>"   + FormatSize(data.memory_free)+"</b>"+
+      " Total: <b>"  + FormatSize(data.memory_total)+"</b></p>"+
       "<div class='progress progress-striped " + ( animate? "active" : "") +"'><div class='bar' style='width: "+mempercent+"%;'></div></div>");
 
     // cpu
@@ -43,9 +53,9 @@ $(function () {
     if ( data.swap_total ) {
       swappercent=100*(data.swap_total-data.swap_free)/data.swap_total;
       $('#swapText').html(
-        "<p>Used: <b>"+Math.round((data.swap_total-data.swap_free)/ 1024)+"MB ("+Math.round(swappercent)+"%)</b>"+
-        " Free: <b>"+Math.round(data.swap_free/ 1024)+"MB</b>"+
-        " Total: <b>"+Math.round(data.swap_total/ 1024)+"MB</b></p>"+
+        "<p>Used: <b>"+ FormatSize(data.swap_total-data.swap_free) + " ("+swappercent.toFixed(2)+"%)</b>"+
+        " Free: <b>"  + FormatSize(data.swap_free)                 + "</b>"+
+        " Total: <b>" + FormatSize(data.swap_total)                + "</b></p>"+
         "<div class='progress progress-striped " + ( animate ? "active" : "") +"'><div class='bar' style='width: "+swappercent+"%;'></div></div>"
       );
     }
@@ -58,9 +68,9 @@ $(function () {
     for (iloop=0;iloop<disk_total.length;iloop++){
       if ( disk_total[iloop] ){
         percent=100*(disk_total[iloop]-disk_free[iloop])/disk_total[iloop];
-        diskText+="<p><b>"+disk_name[iloop]+"</b> used: <b>"+Math.round((disk_total[iloop]-disk_free[iloop])/ 1024)+"MB ("+Math.round(percent)+"%)</b>"
-        diskText+=" Free: <b>"+Math.round(disk_free[iloop]/ 1024)+"MB</b>"
-        diskText+=" Total: <b>"+Math.round(disk_total[iloop]/ 1024)+"MB</b></p>"
+        diskText+="<p><b>"      + disk_name[iloop] + "</b> used: <b>" + FormatSize(disk_total[iloop]-disk_free[iloop])+" ("+percent.toFixed(2)+"%)</b>"
+        diskText+=" Free: <b>"  + FormatSize(disk_free[iloop])  + "</b>"
+        diskText+=" Total: <b>" + FormatSize(disk_total[iloop]) + "</b></p>"
         diskText+="<div class='progress progress-striped " + ( animate ? "active" : "") +"'><div class='bar' style='width: "+percent+"%;'></div></div>"
       }
     }
@@ -69,9 +79,9 @@ $(function () {
     // network
     $('#netText').html(
       "Ethernet Sent: <b>" +
-      (data.net_send/1024/1024).toFixed(3) + "MB <i class='icon-arrow-up'></i>"+
+      FormatSize(data.net_send/1024) + " <i class='icon-arrow-up'></i>"+
       "</b> Recieved: <b>" +
-      (data.net_recived/1024/1024).toFixed(3) + "MB <i class='icon-arrow-down'></i></b>"
+      FormatSize(data.net_recived/1024) + " <i class='icon-arrow-down'></i></b>"
     );
   }).fail(function() {
       $('#message').html("<b>Can not get status information. Is rpimonitord.conf correctly configured on server?</b>");

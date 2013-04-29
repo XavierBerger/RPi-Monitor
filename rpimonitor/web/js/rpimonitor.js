@@ -11,9 +11,8 @@ $(function () {
             '<h3 id="myModalLabel">Configuration</h3>'+
           '</div>'+
           '<div class="modal-body">'+
-            '<p>'+
-              '<label class="checkbox"><input type="checkbox" id="animate">Animate progress bar</label>'+
-            '</p>'+
+            '<p><label class="checkbox"><input type="checkbox" id="animate">Animate progress bar</label></p>'+
+            '<p>...</p>'+
           '</div>'+
           '<div class="modal-footer">'+
             '<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>'+
