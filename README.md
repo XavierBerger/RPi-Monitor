@@ -89,13 +89,13 @@ A perl package is missing, you can install it with the command:
     
     sudo apt-get install libhttp-daemon-ssl-perl
     
-**Can I  run RPi-Monitor on a computer other than a Raspberry Pi**
+**Can I  run RPi-Monitor on a computer other than a Raspberry Pi?**
 
 Yes, you can, you will just have to update rpimonitor.conf to reflect you hardware arhitecture.
 
-**I did update the configuration  but I can't see the change in rrd**
+**I did update the configuration but I can't see the change in rrd**
 
 If you change the configuration , the _rrd_ files will have to be regenerated. Delete the rrd file concerned by the 
-change and restart rpimonitord. This can be done with the ollowing command is rpimonitord is installed as a daemon:
+change and restart rpimonitord. This can be done with the following command is rpimonitord is installed as a daemon:
 
     sudo restart rpimonitord
