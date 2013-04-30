@@ -22,10 +22,10 @@ I'm waiting my Raspberry Pi delivery so the application is still in development 
 For performance and security reason, **RPi-Monitor** separates the extraction of the information from the
 presentation of the information.
 
-The extraction of the information is done by a process designed to run as a daemon (which can be executed as root). 
-The extracted key performance indicators (KPI) from the computer are stored them into a Round Robin Database (RRD) 
-to keep an history of the health of the computer. rpimonitord is the perl script also starts the embedded web 
-server giving access to the pages. The web server is running into a separate process owned by a non root user 
+The extraction of the information is done by a process designed to run as a daemon (which can be executed as root).
+The extracted key performance indicators (KPI) from the computer are stored them into a Round Robin Database (RRD)
+to keep an history of the health of the computer. rpimonitord is the perl script also starts the embedded web
+server giving access to the pages. The web server is running into a separate process owned by a non root user
 (the user 'pi' by default).
 
 The presentation of the information is performed by HTML5 pages. These pages dynamically download the
@@ -40,6 +40,12 @@ You may notice that the look and feel of the status page is clearly inspired by
 
 Finnally note that the embedded server doesn't provide access control or authentication. It is still possible
 to not start the embeded web server and use an external web server to deliver the pages.
+
+## Prerequisite
+
+Before installing **RPi-Monitor** you should install the dependencies. To do so, execute the following command:
+
+    sudo apt-get install librrds-perl libhttp-daemon-perl libhttp-daemon-ssl-perl
 
 ## Download
 
@@ -83,19 +89,17 @@ access to the interactive web interface. Note: you can delete the directory _RPi
 
 ## FAQ
 
-**When I try to start rpiminitord I've the error "Can't locate HTTP/Daemon/SSL.pm"**
+**When I try to start rpiminitord I've the error "Can't locate XXXXX.pm "**
 
-A perl package is missing, you can install it with the command:
-    
-    sudo apt-get install libhttp-daemon-ssl-perl
-    
+A perl package is missing, check the perequisit.
+
 **Can I  run RPi-Monitor on a computer other than a Raspberry Pi?**
 
 Yes, you can, you will just have to update rpimonitor.conf to reflect you hardware arhitecture.
 
 **I did update the configuration but I can't see the change in rrd**
 
-If you change the configuration , the _rrd_ files will have to be regenerated. Delete the rrd file concerned by the 
+If you change the configuration , the _rrd_ files will have to be regenerated. Delete the rrd file concerned by the
 change and restart rpimonitord. This can be done with the following command is rpimonitord is installed as a daemon:
 
     sudo restart rpimonitord
