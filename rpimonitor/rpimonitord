@@ -154,6 +154,7 @@ sub new
     "/index.html",
     "/statistics.html",
     "/status.html",
+    "/shellinabox.html",
 
     "/css/rpimonitor.css",
     "/css/bootstrap.min.css",

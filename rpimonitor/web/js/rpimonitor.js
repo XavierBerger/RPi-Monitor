@@ -92,18 +92,27 @@ $(function () {
               '<div class="nav-collapse collapse">'+
                 '<ul class="nav">';
 
-    if ( (current_path == 'status.html') || (current_path == 'statistics.html') ) {
-      if (current_path == 'status.html'){
-        status_active = 'class="active"';
-        statistic_active = '';
-      }
-      else {
-        status_active = '';
-        statistic_active = 'class="active"';
-      }
+    if (current_path == 'status.html'){
+      status_active = 'class="active"';
+      statistic_active = '';
+      shellinabox_active = '';
+    }
+    if(current_path == 'statistics.html') {
+      status_active = '';
+      statistic_active = 'class="active"';
+      shellinabox_active = '';
+    }
+    if(current_path == 'shellinabox.html') {
+      status_active = '';
+      statistic_active = '';
+      shellinabox_active = 'class="active"';
+    }
+    
+    if (current_path != 'index.html') {
       topmenu+=
                   '<li ' + status_active + '><a href="status.html">Status</a></li>'+
                   '<li ' + statistic_active + '><a href="statistics.html">Statistics</a></li>'+
+                  '<li ' + shellinabox_active + '><a href="shellinabox.html">Shellinabox</a></li>'+
                   '<li><a href="#Configuration" data-toggle="modal">Configuration</a></li>';
       AddConfigurationDialog();
     }
