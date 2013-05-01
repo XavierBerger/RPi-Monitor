@@ -92,23 +92,24 @@ $(function () {
               '<div class="nav-collapse collapse">'+
                 '<ul class="nav">';
 
+    status_active = '';
+    statistic_active = '';
+    shellinabox_active = '';
+    var index=true;
     if (current_path == 'status.html'){
       status_active = 'class="active"';
-      statistic_active = '';
-      shellinabox_active = '';
+      index=false;
     }
     if(current_path == 'statistics.html') {
       status_active = '';
-      statistic_active = 'class="active"';
-      shellinabox_active = '';
+      index=false;
     }
     if(current_path == 'shellinabox.html') {
       status_active = '';
-      statistic_active = '';
-      shellinabox_active = 'class="active"';
+      index=false;
     }
     
-    if (current_path != 'index.html') {
+    if ( index==false ) {
       topmenu+=
                   '<li ' + status_active + '><a href="status.html">Status</a></li>'+
                   '<li ' + statistic_active + '><a href="statistics.html">Statistics</a></li>'+
