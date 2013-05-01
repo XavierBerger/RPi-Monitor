@@ -303,13 +303,15 @@ sub Run
   $this->Debug(1,"< URL:", $this->{'server'}->url, ">");
 
   #Process requests
-  while ( $this->{'connection'} = $this->{'server'}->accept) {
-    while (my $request = $this->{'connection'}->get_request) {
-      my $method = "Do".$request->method();
-      $this->$method($request,$configuration);
+  for (;;){
+    while ( $this->{'connection'} = $this->{'server'}->accept) {
+      while (my $request = $this->{'connection'}->get_request) {
+        my $method = "Do".$request->method();
+        $this->$method($request,$configuration);
+      }
+      $this->{'connection'}->close;
+      undef($this->{'connection'});
     }
-    $this->{'connection'}->close;
-    undef($this->{'connection'});
   }
   $this->Debug(1,"Server stopped");
 
