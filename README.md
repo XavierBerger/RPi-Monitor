@@ -99,7 +99,42 @@ Yes, you can, you will just have to update rpimonitor.conf to reflect you hardwa
 
 **I did update the configuration but I can't see the change in rrd**
 
-If you change the configuration , the _rrd_ files will have to be regenerated. Delete the rrd file concerned by the
-change and restart rpimonitord. This can be done with the following command is rpimonitord is installed as a daemon:
+If you change the configuration , the _rrd_ files will have to be regenerated. 
+Delete the rrd file concerned by the change and restart rpimonitord. This can be 
+done with the following command is rpimonitord is installed as a daemon:
+
+    sudo restart rpimonitord
+
+**RPi-Monitor supports https. How to activate it?**
+
+To activate HTTPS you first have to generate a certificate. Here are the commands to do so:
+
+    cd RPi-Monitor/rpimonitor
+    mkdir -p demoCA/certs
+    
+    openssl req -config /etc/ssl/openssl.cnf \
+                -new -days 365 -newkey rsa:1024 -x509 \
+                -keyout demoCA/certs/server-key-with-password.pem \
+                -out demoCA/certs/server-cert.pem
+    
+    openssl rsa -in demoCA/certs/server-key-with-password.pem \
+                -out demoCA/certs/server-key.pem
+    
+    openssl pkcs12 -export \
+                   -in demoCA/certs/server-cert.pem \
+                   -inkey demoCA/certs/server-key.pem \
+                   -out demoCA/certs/server-bundle.p12
+    
+    mv demoCA/certs .
+    rmdir demoCA
+
+Now you can start _rpimonitord_ with the parameter "-s" and browse <https://your_Raspberry_Pi_address:8888>.
+
+    ./rpimonitord -s
+
+Note: if you you installed **RPi-Monitor** as a daemon, it will be required 
+to update the upstart script (/etc/init/rpimonitord) and append "-s" to the command line.
+Once the update will be done, restart rpimonitord. This can be 
+done with the following command:
 
     sudo restart rpimonitord
