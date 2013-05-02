@@ -1,5 +1,5 @@
 $(function () {
-  
+
   function FormatSize(size){
     if ( size < 1048576 ) {
       return ( size / 1024 ).toFixed(2)+"MB";
@@ -8,7 +8,7 @@ $(function () {
       return ( size / 1024 / 1024 ).toFixed(2) +"GB";
     }
   }
-  
+
   /* set no cache */
   $.ajaxSetup({ cache: false });
 
@@ -34,7 +34,7 @@ $(function () {
       "<p>Used: <b>" + FormatSize(data.memory_total-data.memory_free)+" ("+mempercent.toFixed(2)+"%)</b>"+
       " Free: <b>"   + FormatSize(data.memory_free)+"</b>"+
       " Total: <b>"  + FormatSize(data.memory_total)+"</b></p>"+
-      "<div class='progress progress-striped " + ( animate? "active" : "") +"'><div class='bar' style='width: "+mempercent+"%;'></div></div>");
+      "<div class='progress progress-striped'><div class='bar' style='width: "+mempercent+"%;'></div></div>");
 
     // cpu
     cpuText=""
@@ -75,7 +75,7 @@ $(function () {
       }
     }
     $('#sdText').html( diskText );
-    
+
     // network
     $('#netText').html(
       "Ethernet Sent: <b>" +
@@ -83,8 +83,12 @@ $(function () {
       "</b> Recieved: <b>" +
       FormatSize(data.net_recived/1024) + " <i class='icon-arrow-down'></i></b>"
     );
+
+    SetProgressBarAnimate();
+
   }).fail(function() {
       $('#message').html("<b>Can not get status information. Is rpimonitord.conf correctly configured on server?</b>");
       $('#message').removeClass('hide');
     });
+
 });

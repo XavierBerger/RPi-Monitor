@@ -89,7 +89,7 @@ sub Load
   $this->{'uid'} = getpwnam($this->{'group'}) || 1000;
 
 
-  # check rrd directory and files and create them if they are missing 
+  # check rrd directory and files and create them if they are missing
   # construct the list of rrd page accessible
   -d "$this->{'webroot'}/$this->{'statdir'}" or mkdir "$this->{'webroot'}/$this->{'statdir'}";
   my @rrds=("/$this->{'statdir'}/$this->{'status_file'}");
@@ -146,6 +146,7 @@ sub new
   my $this = bless {}, shift;
   $this->Debug(3,"");
 
+  # List of files to be delivered
   my @paths = (
     "/",
 
@@ -176,6 +177,7 @@ sub new
     "/img/logo.png",
     "/img/sd.png",
 
+    "/js/rpimonitor.shellinabox.js",
     "/js/rpimonitor.statistics.js",
     "/js/rpimonitor.status.js",
     "/js/rpimonitor.index.js",
@@ -291,13 +293,13 @@ sub Run
     $this->{'server'} = new HTTP::Daemon::SSL( ReuseAddr => 1,
                                                LocalAddr => $configuration->{'addr'},
                                                LocalPort => $configuration->{'port'})
-      or die $!;
+      or die "Secure Web server not started because of error: $!\n";
   }
   else {
     $this->{'server'} = new HTTP::Daemon     ( ReuseAddr => 1,
                                                LocalAddr => $configuration->{'addr'},
                                                LocalPort => $configuration->{'port'})
-      or die $!;
+      or die "Web server not started because or error: $!\n";
   }
 
   $this->Debug(1,"< URL:", $this->{'server'}->url, ">");

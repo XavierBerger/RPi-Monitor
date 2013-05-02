@@ -1,8 +1,36 @@
 var animate;
+var shellinabox;
+var shellinaboxport;
+
+function SetProgressBarAnimate(){
+  $('#animate').attr('checked', animate );
+  if ( animate ) {
+    $('.progress').addClass('active');
+  }
+  else{
+    $('.progress').removeClass('active');
+  }
+}
+
+function SetShellinaboxMenu(){
+  $('#shellinabox').attr('checked', shellinabox );
+  if ( shellinabox ) {
+    $('#shellinaboxmenu').removeClass('hide');
+    $('#shellinaboxport').val(shellinaboxport);
+    $('#shellinaboxport').attr('disabled',false);
+  }
+  else{
+    $('#shellinaboxmenu').addClass('hide');
+    $('#shellinaboxport').val('');
+    $('#shellinaboxport').attr('disabled',true);
+  }
+
+}
+
 $(function () {
-  
+
   var dialogs="";
-  
+
   function AddConfigurationDialog(){
       dialogs+=
         '<div id="Configuration" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">'+
@@ -12,7 +40,10 @@ $(function () {
           '</div>'+
           '<div class="modal-body">'+
             '<p><label class="checkbox"><input type="checkbox" id="animate">Animate progress bar</label></p>'+
-            '<p>...</p>'+
+            '<p><form class="form-inline">'+
+              '<label class="checkbox"><input type="checkbox" id="shellinabox">Show shellinabox menu</label> '+
+              '<input type="text" placeholder="Listen Port" id="shellinaboxport" class="input-small" >'+
+            '</form></p>'+
           '</div>'+
           '<div class="modal-footer">'+
             '<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>'+
@@ -50,7 +81,7 @@ $(function () {
         '</div>'+
       '</div>';
   }
-  
+
   function AddAboutDialog(){
     dialogs+=
       '<div id="About" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">'+
@@ -72,12 +103,12 @@ $(function () {
         '</div>'+
       '</div>';
   }
-  
+
   function AddDialogs(){
      $('#dialogs').html(dialogs);
   }
-  
-  function AddTopmenu(){ 
+
+  function AddTopmenu(){
     var current_path = window.location.pathname.split('/').pop();
     topmenu=
         '<div class="navbar navbar-inverse navbar-fixed-top">'+
@@ -108,12 +139,12 @@ $(function () {
       status_active = '';
       index=false;
     }
-    
+
     if ( index==false ) {
       topmenu+=
                   '<li ' + status_active + '><a href="status.html">Status</a></li>'+
                   '<li ' + statistic_active + '><a href="statistics.html">Statistics</a></li>'+
-                  '<li ' + shellinabox_active + '><a href="shellinabox.html">Shellinabox</a></li>'+
+                  '<li ' + shellinabox_active + ' id="shellinaboxmenu" class="hide"><a href="shellinabox.html">Shellinabox</a></li>'+
                   '<li><a href="#Configuration" data-toggle="modal">Configuration</a></li>';
       AddConfigurationDialog();
     }
@@ -136,9 +167,12 @@ $(function () {
             '</div>'+
           '</div>'+
         '</div>';
+
     AddLicenseDialog();
     AddAboutDialog();
+
     $('#topmenu').html(topmenu);
+
   }
 
   function AddFooter(){
@@ -150,32 +184,33 @@ $(function () {
         '</div>'
     );
   }
-  
-  
+
+
+  animate=(localStorage.getItem('animate') === 'true');
+  shellinabox=(localStorage.getItem('shellinabox') === 'true');
+  shellinaboxport=(localStorage.getItem('shellinaboxport') || '4200');
+
   AddTopmenu();
   AddDialogs();
   AddFooter();
-  
-  animate=(localStorage.getItem('animate') === 'true');
-  
+  SetShellinaboxMenu();
+
   $('#animate').click(function(){
     animate = $('#animate').is(":checked");
     localStorage.setItem('animate', animate);
     SetProgressBarAnimate();
   });
-  
-  function SetProgressBarAnimate(){
-    $('#animate').attr('checked', animate );
-    if ( animate ) {
-      $('.progress').addClass('active');
-    }
-    else{
-      $('.progress').removeClass('active');
-    }
-    
-  }
 
-  SetProgressBarAnimate();
 
+  $('#shellinabox').click(function(){
+    shellinabox = $('#shellinabox').is(":checked");
+    localStorage.setItem('shellinabox', shellinabox);
+    SetShellinaboxMenu();
+  });
+
+  $('#shellinaboxport').keyup(function(){
+    shellinaboxport = $('#shellinaboxport').val();
+    localStorage.setItem('shellinaboxport', shellinaboxport);
+  });
 
 });
