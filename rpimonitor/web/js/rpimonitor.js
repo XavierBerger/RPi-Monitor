@@ -1,6 +1,8 @@
 var animate;
 var shellinabox;
 var shellinaboxport;
+var statusautorefresh;
+var reloadneeded = false;
 
 function SetProgressBarAnimate(){
   $('#animate').attr('checked', animate );
@@ -44,9 +46,10 @@ $(function () {
               '<label class="checkbox"><input type="checkbox" id="shellinabox">Show shellinabox menu</label> '+
               '<input type="text" placeholder="Listen Port" id="shellinaboxport" class="input-small" >'+
             '</form></p>'+
+            '<p><label class="checkbox"><input type="checkbox" id="statusautorefresh">Auto refresh status page</label></p>'+
           '</div>'+
           '<div class="modal-footer">'+
-            '<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>'+
+            '<button class="btn" data-dismiss="modal" aria-hidden="true" id="closeconfiguration">Close</button>'+
           '</div>'+
         '</div>';
   }
@@ -189,11 +192,13 @@ $(function () {
   animate=(localStorage.getItem('animate') === 'true');
   shellinabox=(localStorage.getItem('shellinabox') === 'true');
   shellinaboxport=(localStorage.getItem('shellinaboxport') || '4200');
+  statusautorefresh=(localStorage.getItem('statusautorefresh') === 'true');
 
   AddTopmenu();
   AddDialogs();
   AddFooter();
   SetShellinaboxMenu();
+  $('#statusautorefresh').attr('checked', statusautorefresh );
 
   $('#animate').click(function(){
     animate = $('#animate').is(":checked");
@@ -211,6 +216,18 @@ $(function () {
   $('#shellinaboxport').keyup(function(){
     shellinaboxport = $('#shellinaboxport').val();
     localStorage.setItem('shellinaboxport', shellinaboxport);
+  });
+  
+  
+  $('#statusautorefresh').click(function(){
+    statusautorefresh = $('#statusautorefresh').is(":checked");
+    localStorage.setItem('statusautorefresh', statusautorefresh);
+    reloadneeded = true;
+  });
+
+
+  $('#closeconfiguration').click(function(){
+    if ( reloadneeded ) { location.reload() };
   });
 
 });

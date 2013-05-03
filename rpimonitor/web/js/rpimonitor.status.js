@@ -1,17 +1,13 @@
-$(function () {
-
-  function FormatSize(size){
-    if ( size < 1048576 ) {
-      return ( size / 1024 ).toFixed(2)+"MB";
-    }
-    else{
-      return ( size / 1024 / 1024 ).toFixed(2) +"GB";
-    }
+function FormatSize(size){
+  if ( size < 1048576 ) {
+    return ( size / 1024 ).toFixed(2)+"MB";
   }
+  else{
+    return ( size / 1024 / 1024 ).toFixed(2) +"GB";
+  }
+}
 
-  /* set no cache */
-  $.ajaxSetup({ cache: false });
-
+function UpdateStatus () {
   $.getJSON('/stat/rpimonitord.json', function(data) {
     // Uptime
     hour = Math.round(data.uptime / 3600);
@@ -85,10 +81,20 @@ $(function () {
     );
 
     SetProgressBarAnimate();
+    if ( statusautorefresh ) { setTimeout(UpdateStatus(), 10000) };
 
   }).fail(function() {
       $('#message').html("<b>Can not get status information. Is rpimonitord.conf correctly configured on server?</b>");
       $('#message').removeClass('hide');
     });
+}
 
+$(function () {
+  /* set no cache */
+  $.ajaxSetup({ cache: false });
+  
+  /* Start status update*/
+  UpdateStatus();
 });
+
+
