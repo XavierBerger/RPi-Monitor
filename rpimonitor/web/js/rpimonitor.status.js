@@ -36,13 +36,13 @@ function UpdateStatus () {
     cpuText=""
     cpuText+="<p>Load: 1 Min: <b>" + data.load1 + "</b> - 5 Min: <b>" + data.load5 +"</b> - 15 Min: <b>" + data.load15 + "</b>"
     cpuText+="<p>CPU frequency: <b>"+ (data.cpu_frequency / 1000)+"MHz</b> "
-    if ( data.voltage ) { cpuText+="Voltage: <b>" +(data.voltage  / 1000000)+"V</b>" }
+    if ( data.voltage ) { cpuText+="Voltage: <b>" +data.voltage+"V</b>" }
     cpuText+="</p>"
     $('#cpuText').html( cpuText );
 
     // temperature
     $('#tempText').html(
-      "CPU temperature: <b>" + Math.round(data.soc_temp/1000) + "°C</b>"
+      "CPU temperature: <b>" + (data.soc_temp/1000).toFixed(2) + "°C</b>"
     );
 
     // swap
@@ -84,7 +84,7 @@ function UpdateStatus () {
     if ( statusautorefresh ) { setTimeout(UpdateStatus(), 10000) };
 
   }).fail(function() {
-      $('#message').html("<b>Can not get status information. Is rpimonitord.conf correctly configured on server?</b>");
+      $('#message').html("<b>Can not get status information. Is rpimonitord.conf correctly configured on server? Is server running?</b>");
       $('#message').removeClass('hide');
     });
 }
