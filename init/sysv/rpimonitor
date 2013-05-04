@@ -1,0 +1,56 @@
+#!/bin/bash
+#
+# This starts and stops RPI-Monitor
+#
+# chkconfig: 2345 12 88
+# description: rpimonitor is a slef monitoring tool for RaspberryPi
+# processname: rpimonitord
+# pidfile: /var/run/rpimonitord.pid
+### BEGIN INIT INFO
+# Provides: $XXXXXXXXXXXX
+### END INIT INFO
+
+# Source function library.
+. /etc/init.d/functions
+
+PROGRAM="/usr/local/rpimonitor/rpimonitord"
+
+[ -x $PROGRAM ] || exit 0
+
+RETVAL=0
+
+start() {
+    echo -n "Starting RPI-Monitor"
+    $PROGRAM -b
+}
+
+stop() {
+    echo -n "Shutting down RPi-Monitor"
+    for pid in $(cat /var/run/rpimonitord.pid); do
+      kill -9 $pid
+    done
+}
+
+restart() {
+    echo -n "Restarting RPi-Minitor"
+    stop
+    sleep 2
+    start
+}
+
+case "$1" in
+    start)
+    	start
+    ;;
+    stop)
+    	stop
+    ;;
+    restart)
+    	restart
+    ;;
+    *)
+    	echo "Usage: $0 {start|stop|restart}"
+    ;;
+esac
+
+exit 0

@@ -18,37 +18,40 @@ $|=1;
 $SIG{CHLD}   = 'IGNORE';
 $SIG{INT}    = sub { stop(); }; # catch Ctrl+C
 
-my $VERSION     = 1.0;
-my $verbose=0;
+my $VERSION  = 1.0;
+my $verbose  = 0;
 
 # prepare the shared memory for communication between Monitor and Server
-my $key      = $$;
+$0 =~ /(.*)$/;
+my $key      = $1;
 my $shm_size = 1024;
 eval 'sub IPC_CREAT {0001000}' unless defined &IPC_CREAT;
 eval 'sub IPC_RMID {0}'        unless defined &IPC_RMID;
 my $id = shmget($key, $shm_size, &IPC_CREAT | 0777 )
   or warn "Can't shmget: $!";
 
+-f "/var/run/$key.pid" and unlink("/var/run/$key.pid");
+
 package Configuration;
 use strict;
 use POSIX;
+use Cwd 'abs_path';
 
 sub new
 {
   my $this = bless { }, shift;
   $this->Debug(3,"");
 
-  $0 =~ /(\w+)$/;
+  my $script = abs_path($0);
+  $script =~ /(.*)\/(\w+)$/;
 
-  $this->{'conf_file'} = "./$1.conf";
-
+  $this->{'conf_file'} = "$1/$2.conf";
   $this->{'user'} = "pi";
   $this->{'group'} = "pi";
   $this->{'port'} = 8888;
   $this->{'addr'} = '0.0.0.0';
-  $this->{'webroot'} = 'web';
-  $this->{'statdir'} = 'stat';
-  $this->{'status_file'} = "$1.json";
+  $this->{'webroot'} = "$1/web";
+  $this->{'status_file'} = "$2.json";
   $this->{'delay'} = 10;
 
   return $this;
@@ -88,17 +91,16 @@ sub Load
   $this->{'gid'} = getgrnam($this->{'user'}) || 1000;
   $this->{'uid'} = getpwnam($this->{'group'}) || 1000;
 
-
   # check rrd directory and files and create them if they are missing
   # construct the list of rrd page accessible
-  -d "$this->{'webroot'}/$this->{'statdir'}" or mkdir "$this->{'webroot'}/$this->{'statdir'}";
-  my @rrds=("/$this->{'statdir'}/$this->{'status_file'}");
+  -d "$this->{'webroot'}/stat" or mkdir "$this->{'webroot'}/stat";
+  my @rrds=("/stat/$this->{'status_file'}");
   for ( keys %{$this->{'section'}} ){
     $_ or next;
     $this->{'status'} = $this->{'status'} . "\"$_\",";
     if ( $_ ) {
-      -f "$this->{'webroot'}/$this->{'statdir'}/$_.rrd" or $this->CreateRRD($_);
-      push(@rrds, "/$this->{'statdir'}/$_.rrd");
+      -f "$this->{'webroot'}/stat/$_.rrd" or $this->CreateRRD($_);
+      push(@rrds, "/stat/$_.rrd");
     }
   }
   $this->{'status'} =~ s/,$/]/;
@@ -110,7 +112,7 @@ sub CreateRRD
 {
   my $this = shift;
   my $section = shift;
-  $this->Debug(2,"$this->{'webroot'}/$this->{'statdir'}/$section.rrd");
+  $this->Debug(2,"$this->{'webroot'}/stat/$section.rrd");
 
   my $current = time();
   my $start = $current - 60;
@@ -121,7 +123,7 @@ sub CreateRRD
      push(@data, "DS:$_:GAUGE:600:U:U");
   }
 
-  RRDs::create( "$this->{'webroot'}/$this->{'statdir'}/$section.rrd",
+  RRDs::create( "$this->{'webroot'}/stat/$section.rrd",
                 "--start", $start,
                 "--step", $this->{'delay'},
                 @data,
@@ -234,6 +236,7 @@ sub SendStatus
   shmread($id, $var, 0, $shm_size)
     or warn "Can't shmread: $!";
 
+  $this->Debug(3,"JSON: $var");
   my $response = HTTP::Response->new(
       RC_OK, OK => [ 'Content-Type' => "application/json" ], $var
   );
@@ -258,7 +261,7 @@ sub DoGET
   my $this = shift;
   my $request = shift;
   my $configuration = shift;
-  $this->Debug(3,"");
+  $configuration->Debug(3,"");
 
   my $connection = $this->{'connection'};
   my $path = $request->url->path;
@@ -273,9 +276,9 @@ sub DoGET
   $path =~ /^\/$/ and $path = "/index.html";
 
   #If the file exists we return it
-  -e $configuration->{'webroot'}.$path and $this->SendFile($connection, $configuration->{'webroot'}.$path) and return;
+  -f $configuration->{'webroot'}.$path and $this->SendFile($connection, $configuration->{'webroot'}.$path) and return;
 
-  $this->Debug(2,"Can't find $path");
+  $this->Debug(2,"Can't find $configuration->{'webroot'}.$path");
   #Finally send error
   $connection->send_error();
 }
@@ -402,7 +405,7 @@ sub Status
   $status .= "\"$_\":\"$result{$_}\"\n" for (keys %result);
 
   # Print status on screen if requested
-  $this->Debug(4,"\n$status");
+  $this->Debug(5,"\n$status");
 
   chomp($status);
   $status=~s/\n/, /g;
@@ -411,7 +414,7 @@ sub Status
   # if embeded server is not used, we write the json file else the
   # data are transmitted with a shared memory
   if ( $configuration->{'noserver'} ){
-    open(FILE, "> $this->{'webroot'}/$this->{'statdir'}/$this->{'status_file'}")
+    open(FILE, "> $configuration->{'webroot'}/stat/$this->{'status_file'}")
       or warn $!;
       print FILE $status ;
     close(FILE);
@@ -430,7 +433,8 @@ sub Status
     foreach ( @{$rrd{$section}} ) {
       $data .= ":$this->{'result'}->{$_}";
     }
-    RRDs::update("$configuration->{'webroot'}/$configuration->{'statdir'}/$section.rrd", $data);
+    $this->Debug(4,"\nUpdate $configuration->{'webroot'}/stat/$section.rrd => $data");
+    RRDs::update("$configuration->{'webroot'}/stat/$section.rrd", $data);
   }
 }
 
@@ -456,6 +460,7 @@ DESCRIPTION
 
 OPTIONS
   -a, --addr        Web server bind address (Default: 0.0.0.0)
+  -b, --background  Define the pid file when run in background
   -c, --conf        Define the configuration file (Default: ./$1.conf)
   -d, --delay       Delay between check (default 10sec)
                       Note: If you want to change the default delay, the
@@ -499,6 +504,26 @@ AUTHOR
 EOF
 }
 
+sub writePID {
+  open(PID, ">> /var/run/$key.pid") || die "could not open '/var/run/$key.pid' $!"; 
+  print PID "$$\n"; 
+  close(PID); 
+}
+
+sub daemonize {
+  chdir '/' or die "Can't chdir to /: $!";
+  open STDIN, '/dev/null' or die "Can't read /dev/null: $!";
+  open STDOUT, '>>/dev/null' or die "Can't write to /dev/null: $!";
+  open STDERR, '>>/dev/null' or die "Can't write to /dev/null: $!";
+  defined(my $pid = fork) or die "Can't fork: $!";
+  $pid or writePID();
+  exit if $pid;
+  setsid or die "Can't start a new session: $!";
+  umask 0;
+}
+
+
+
 my $configuration = Configuration->new();
 my $monitor = Monitor->new();
 
@@ -507,13 +532,11 @@ sub stop
   $configuration->{'delay'} = 0;
 }
 
-# Start monitor manager
-$configuration->Load();
-
 # read command lines
 while($_ = shift)
 {
   /-a(ddr)?/        and $configuration->{'addr'} = shift and next;
+  /-b(ackground)?/  and $configuration->{'background'}++;
   /-c(onf)?/        and $configuration->{'conf_file'} = shift and next;
   /-d(elay)?/       and $configuration->{'delay'} = shift and next;
   /-h(elp)?/        and help;
@@ -522,20 +545,26 @@ while($_ = shift)
   /-s(sl)?/         and $configuration->{'ssl'}++ and next;
   /^-([v]+)$/       and $verbose = length $1 and next;
   /-V(ersion)?/     and die "$0 version $VERSION\n";
-}
+} 
+
+# Start monitor manager
+$configuration->Load();
 
 #start server as a separate process with specific user right (user:pi)
 my $pid;
 unless ( $configuration->{'noserver'} ){
   unless ($pid = fork) {
+    writePID();
     my $server = Server->new();
     setgid($configuration->{'gid'});
     setuid($configuration->{'uid'});
     $server->Run($configuration);
+    print "Server crashed";
     exit;
   }
 }
 
+$configuration->{'background'} and &daemonize;
+
 $monitor->Run($configuration);
 $pid and kill (9,$pid);
-
