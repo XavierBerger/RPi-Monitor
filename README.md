@@ -7,6 +7,7 @@
 ![screenshot](index.png)
 ![screenshot](status.png)
 ![screenshot](statistics.png)
+![screenshot](shellinabox.png)
 
 ## About
 
