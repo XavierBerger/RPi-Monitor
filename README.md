@@ -1,3 +1,9 @@
+-------
+**WARNING: The current code may have bugs. Program is still in development.**
+
+-------
+
+
 # RPi-Monitor
 
 **Author**: Xavier Berger
