@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+use IPC::SysV;
 $|=1;
 $SIG{CHLD}   = 'IGNORE';
 $SIG{INT}    = sub { stop(); }; # catch Ctrl+C
@@ -22,12 +23,8 @@ my $VERSION  = 1.0;
 my $verbose  = 0;
 
 # prepare the shared memory for communication between Monitor and Server
-my $key      = $$;
+my $key      = 19740614;
 my $shm_size = 1024;
-eval 'sub IPC_CREAT {0001000}' unless defined &IPC_CREAT;
-eval 'sub IPC_RMID {0}'        unless defined &IPC_RMID;
-my $id = shmget($key, $shm_size, &IPC_CREAT | 0777 )
-  or warn "Can't shmget: $!";
 
 
 $0 =~ /(\w+)$/;
@@ -202,6 +199,8 @@ sub new
 
   $this->{'paths'} = \@paths;
 
+  $this->{'shmid'} = shmget( $key, $shm_size, 0777 );
+    
   return $this;
 }
 
@@ -233,10 +232,7 @@ sub SendStatus
   $this->Debug(2,"");
 
   my $var;
-  my $id = shmget( $key, $shm_size, 0777 )
-    or warn "Can't shmget: $!";
-  shmread($id, $var, 0, $shm_size)
-    or warn "Can't shmread: $!";
+  shmread($this->{'shmid'}, $var, 0, $shm_size);
 
   $this->Debug(3,"JSON: $var");
   my $response = HTTP::Response->new(
@@ -346,6 +342,9 @@ sub Debug
   print STDERR "[", strftime("%Y/%m/%d-%H:%M:%S", localtime), "] ", " " x (5-$level), (caller 1)[3], " @_\n";
 }
 
+eval 'sub IPC_CREAT {0001000}' unless defined &IPC_CREAT;
+eval 'sub IPC_RMID {0}'        unless defined &IPC_RMID;
+
 sub Run
 {
   # start main loop
@@ -353,6 +352,10 @@ sub Run
   my $configuration = shift;
   $this->Debug(2,"");
 
+  if ( !$configuration->{'noserver'}) {
+    $this->{'shmid'} = shmget($key, $shm_size, &IPC_CREAT | 0777 );
+  }
+  
   # process data that should be extracted once
   $this->Process($configuration->{'source'}->{'once'});
   for(;;)
@@ -368,6 +371,7 @@ sub Run
     sleep $configuration->{'delay'};
   }
   -f $configuration->{'status_file'} and unlink $configuration->{'status_file'};
+  $this->{'shmid'} and shmctl( $this->{'shmid'}, &IPC_RMID, 0 );
 }
 
 sub Process
@@ -423,8 +427,7 @@ sub Status
   }
   else{
     # write current status (JSON) in shared memory
-    shmwrite( $id, "$status" . " " x ($shm_size - length($status)), 0, $shm_size )
-      or warn "Can't shmwrite: $!";
+    shmwrite( $this->{'shmid'}, "$status" . " " x ($shm_size - length($status)), 0, $shm_size );
   }
 
   # add data in round robin database
@@ -556,7 +559,7 @@ $configuration->Load();
 my $pid;
 unless ( $configuration->{'noserver'} ){
   unless ($pid = fork) {
-    writePID();
+    $configuration->{'background'} and writePID();
     my $server = Server->new();
     setgid($configuration->{'gid'});
     setuid($configuration->{'uid'});
