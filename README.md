@@ -91,10 +91,10 @@ To stop the daemon
 
     sudo /etc/init.d/rpimonitor stop
 
-To startup automatically **RPi-Monitor** at startup, create a link to the system starts:
+To startup automatically **RPi-Monitor** at startup execute the following command to install strtup script:
 
-    cd /etc/rc2.d
-    sudo ln -s ../init.d/rpimonitor S10rpimonitor
+    sudo update-rc.d rpimonitor defaults
+
 
 ## FAQ
 

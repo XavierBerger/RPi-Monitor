@@ -1,14 +1,19 @@
-#!/bin/bash
-#
-# This starts and stops RPI-Monitor
-#
-# chkconfig: 2345 12 88
-# description: rpimonitor is a slef monitoring tool for RaspberryPi
-# processname: rpimonitord
-# pidfile: /var/run/rpimonitord.pid
+#!/bin/sh
 ### BEGIN INIT INFO
-# Provides: $XXXXXXXXXXXX
+# Provides:          rpimonitor
+# Required-Start:    $networking $remote_fs
+# Required-Stop:     $networking $remote_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# X-Interactive:     true
+# Short-Description: RPi-Monitor daemon
+# Description:       Daemon for RPi serlf monitoring
 ### END INIT INFO
+
+if [ "$(id -u)" != "0" ]; then
+   echo "This script must be run as root" 
+   exit 1
+fi
 
 # Source function library.
 . /lib/lsb/init-functions
@@ -16,9 +21,7 @@
 DAEMON="/usr/local/rpimonitor/rpimonitord"
 PIDFILE="/var/run/rpimonitord.pid"
 
-[ -x $PROGRAM ] || exit 0
-
-
+[ -x $DAEMON ] || exit 0
 
 start() {
     log_daemon_msg "Starting RPi-Monitor" "rpimonitord"
@@ -30,8 +33,8 @@ start() {
 stop() {
     log_daemon_msg "Stopping RPi-Monitor" "rpimonitord"
     for pid in $(cat $PIDFILE); do
-      kill -9 $pid
-    done
+        kill -9 $pid > /dev/null 2>&1
+      done
     status=$?
     log_end_msg $status
 }
