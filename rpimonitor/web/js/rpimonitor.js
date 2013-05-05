@@ -127,7 +127,7 @@ $(function () {
                 '<ul class="nav">';
 
     status_active = '';
-    statistic_active = '';
+    statistics_active = '';
     shellinabox_active = '';
     var index=true;
     if (current_path == 'status.html'){
@@ -135,18 +135,18 @@ $(function () {
       index=false;
     }
     if(current_path == 'statistics.html') {
-      status_active = '';
+      statistics_active = 'class="active"';
       index=false;
     }
     if(current_path == 'shellinabox.html') {
-      status_active = '';
+      shellinabox_active = 'class="active"';
       index=false;
     }
 
     if ( index==false ) {
       topmenu+=
                   '<li ' + status_active + '><a href="status.html">Status</a></li>'+
-                  '<li ' + statistic_active + '><a href="statistics.html">Statistics</a></li>'+
+                  '<li ' + statistics_active + '><a href="statistics.html">Statistics</a></li>'+
                   '<li ' + shellinabox_active + ' id="shellinaboxmenu" class="hide"><a href="shellinabox.html">Shellinabox</a></li>'+
                   '<li><a href="#Configuration" data-toggle="modal">Configuration</a></li>';
       AddConfigurationDialog();
