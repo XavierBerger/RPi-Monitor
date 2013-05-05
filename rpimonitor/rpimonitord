@@ -22,15 +22,17 @@ my $VERSION  = 1.0;
 my $verbose  = 0;
 
 # prepare the shared memory for communication between Monitor and Server
-$0 =~ /(.*)$/;
-my $key      = $1;
+my $key      = $$;
 my $shm_size = 1024;
 eval 'sub IPC_CREAT {0001000}' unless defined &IPC_CREAT;
 eval 'sub IPC_RMID {0}'        unless defined &IPC_RMID;
 my $id = shmget($key, $shm_size, &IPC_CREAT | 0777 )
   or warn "Can't shmget: $!";
 
--f "/var/run/$key.pid" and unlink("/var/run/$key.pid");
+
+$0 =~ /(\w+)$/;
+my $pidfle="/var/run/$1.pid";
+-f $pidfle and unlink($pidfle);
 
 package Configuration;
 use strict;
@@ -505,7 +507,7 @@ EOF
 }
 
 sub writePID {
-  open(PID, ">> /var/run/$key.pid") || die "could not open '/var/run/$key.pid' $!"; 
+  open(PID, ">> $pidfle") || die "Could not open '$pidfle' $!"; 
   print PID "$$\n"; 
   close(PID); 
 }

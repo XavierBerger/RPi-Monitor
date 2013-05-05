@@ -11,24 +11,29 @@
 ### END INIT INFO
 
 # Source function library.
-. /etc/init.d/functions
+. /lib/lsb/init-functions
 
-PROGRAM="/usr/local/rpimonitor/rpimonitord"
+DAEMON="/usr/local/rpimonitor/rpimonitord"
+PIDFILE="/var/run/rpimonitord.pid"
 
 [ -x $PROGRAM ] || exit 0
 
-RETVAL=0
+
 
 start() {
-    echo -n "Starting RPI-Monitor"
-    $PROGRAM -b
+    log_daemon_msg "Starting RPi-Monitor" "rpimonitord"
+    $DAEMON -b
+    status=$?
+    log_end_msg $status
 }
 
 stop() {
-    echo -n "Shutting down RPi-Monitor"
-    for pid in $(cat /var/run/rpimonitord.pid); do
+    log_daemon_msg "Stopping RPi-Monitor" "rpimonitord"
+    for pid in $(cat $PIDFILE); do
       kill -9 $pid
     done
+    status=$?
+    log_end_msg $status
 }
 
 restart() {

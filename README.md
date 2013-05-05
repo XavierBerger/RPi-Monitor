@@ -94,7 +94,7 @@ To stop the daemon
 To startup automatically **RPi-Monitor** at startup, create a link to the system starts:
 
     cd /etc/rc2.d
-    sudo ln -s ../init.d/S10rpimonitor
+    sudo ln -s ../init.d/rpimonitor S10rpimonitor
 
 ## FAQ
 
