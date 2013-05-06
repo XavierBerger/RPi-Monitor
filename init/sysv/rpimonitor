@@ -20,12 +20,25 @@ fi
 
 DAEMON="/usr/local/rpimonitor/rpimonitord"
 PIDFILE="/var/run/rpimonitord.pid"
+DEFAULTFILE="/etc/default/rpimonitor"
 
 [ -x $DAEMON ] || exit 0
 
+[ -r $DEFAULTFILE ] && . $DEFAULTFILE
+
 start() {
+	if [ "$DAEMON_START" = "0" ]; then
+        echo "Rpi-monitor deamon id disabled."
+        echo "Update /etc/default/rpimonitor and set DEAMON_START to 1."
+		return 0
+	fi
+	
+	
+	#TODO: check is already runing according to PIDFILE
+	rm /var/run/rpimonitord.pid
+
     log_daemon_msg "Starting RPi-Monitor" "rpimonitord"
-    $DAEMON -b
+    $DAEMON -b $PIDFILE $SECURE $CONFFILE
     status=$?
     log_end_msg $status
 }
@@ -40,10 +53,17 @@ stop() {
 }
 
 restart() {
-    echo -n "Restarting RPi-Minitor"
     stop
     sleep 2
     start
+}
+
+status(){
+    echo -n "RPi-Monitor status: "
+    for pid in $(cat $PIDFILE); do 
+        kill -0 $pid > /dev/null 2>&1 && echo -n "[ \033[1;32mok\033[0m ]" || echo -n "[\033[31mFAIL\033[0m]"; 
+    done; 
+    echo
 }
 
 case "$1" in
@@ -53,11 +73,14 @@ case "$1" in
     stop)
     	stop
     ;;
+    status)
+        status
+    ;;
     restart)
     	restart
     ;;
     *)
-    	echo "Usage: $0 {start|stop|restart}"
+    	echo "Usage: $0 {start|stop|restart|status}"
     ;;
 esac
 

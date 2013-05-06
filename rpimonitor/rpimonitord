@@ -23,13 +23,10 @@ my $VERSION  = 1.0;
 my $verbose  = 0;
 
 # prepare the shared memory for communication between Monitor and Server
-my $key      = 19740614;
+my $key      = $$;
 my $shm_size = 1024;
 
-
-$0 =~ /(\w+)$/;
-my $pidfle="/var/run/$1.pid";
--f $pidfle and unlink($pidfle);
+my $pidfile;
 
 package Configuration;
 use strict;
@@ -244,16 +241,6 @@ sub SendStatus
   return 1;
 }
 
-sub DoHEAD
-{
-  return;
-}
-
-sub DoPOST
-{
-  return;
-}
-
 sub DoGET
 {
   my $this = shift;
@@ -310,7 +297,7 @@ sub Run
     while ( $this->{'connection'} = $this->{'server'}->accept) {
       while (my $request = $this->{'connection'}->get_request) {
         my $method = "Do".$request->method();
-        $this->$method($request,$configuration);
+        $this->can($method) and $this->$method($request,$configuration);
       }
       $this->{'connection'}->close;
       undef($this->{'connection'});
@@ -455,8 +442,8 @@ NAME
   $1
 
 USAGE
-  $1 [-a address][-c configuration_file][-d delay][-h][-n]
-     [-p port][-s][-v[v[...]]][-V]
+  $1 [-a address][ -b pidfile][-c configuration_file][-d delay]
+     [-h][-n][-p port][-s][-v[v[...]]][-V]
 
 DESCRIPTION
   $1 is designed extract data from Raspberry Pi system and store
@@ -470,7 +457,8 @@ OPTIONS
   -d, --delay       Delay between check (default 10sec)
                       Note: If you want to change the default delay, the
                       rrd file will have to be deleted rpimonitord will
-                      recreate them at next startup.
+                      recreate them at next startupi with the new time
+                      slice.
   -h, --help        Shows this help and exit
   -n, --noserver    Don't start embeded server
   -p, --port        Web server port (Default: 8888)
@@ -510,7 +498,7 @@ EOF
 }
 
 sub writePID {
-  open(PID, ">> $pidfle") || die "Could not open '$pidfle' $!"; 
+  open(PID, ">> $pidfile") || die "Could not open '$pidfile' $!"; 
   print PID "$$\n"; 
   close(PID); 
 }
@@ -541,7 +529,7 @@ sub stop
 while($_ = shift)
 {
   /-a(ddr)?/        and $configuration->{'addr'} = shift and next;
-  /-b(ackground)?/  and $configuration->{'background'}++;
+  /-b(ackground)?/  and $pidfile = shift and next;
   /-c(onf)?/        and $configuration->{'conf_file'} = shift and next;
   /-d(elay)?/       and $configuration->{'delay'} = shift and next;
   /-h(elp)?/        and help;
@@ -559,7 +547,7 @@ $configuration->Load();
 my $pid;
 unless ( $configuration->{'noserver'} ){
   unless ($pid = fork) {
-    $configuration->{'background'} and writePID();
+    $pidfile and writePID();
     my $server = Server->new();
     setgid($configuration->{'gid'});
     setuid($configuration->{'uid'});
@@ -569,7 +557,7 @@ unless ( $configuration->{'noserver'} ){
   }
 }
 
-$configuration->{'background'} and &daemonize;
+$pidfile and &daemonize;
 
 $monitor->Run($configuration);
 $pid and kill (9,$pid);

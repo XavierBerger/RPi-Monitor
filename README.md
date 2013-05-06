@@ -76,43 +76,44 @@ If you want to start **RPi-Monitor** as a daemon at Raspberry Pi startup, copy t
 
     sudo cp -a RPi-Monitor/rpimonitor /usr/local/rpimonitor
 
-Copy the upstart script into _/etc/init.d_
+Copy the sysv startup script into _/etc/init.d_
 
     sudo cp RPi-Monitor/init/sysv/rpimonitor /etc/init.d/
 
-Start the daemon
+To startup automatically **RPi-Monitor** at boot execute the following command to install strtup script:
+
+    sudo update-rc.d rpimonitor defaults
+
+**RPi-Monitor** will automatically start at next reboot. You can start it manually with the following command:
 
     sudo /etc/init.d/rpimonitor start
 
 That's it, your Raspberry Pi is monitored. You can now browse <http://your_Raspberry_Pi_address:8888> to
 access to the interactive web interface. Note: you can delete the directory _RPi-Monitor_ which is no more used.
 
-To stop the daemon
+The following command will allow you to manually stop the daemon:
 
     sudo /etc/init.d/rpimonitor stop
-
-To startup automatically **RPi-Monitor** at startup execute the following command to install strtup script:
-
-    sudo update-rc.d rpimonitor defaults
 
 
 ## FAQ
 
-**When I try to start rpiminitord I've the error "Can't locate XXXXX.pm "**
+**When I try to start rpimonitord I've the error "Can't locate XXXXX.pm "**
 
 A perl package is missing, check the perequisit.
 
 **Can I  run RPi-Monitor on a computer other than a Raspberry Pi?**
 
-Yes, you can, you will just have to update rpimonitor.conf to reflect you hardware arhitecture.
+Yes, you can, you will just have to update rpimonitor.conf to reflect you hardware arhitecture. 
+If you system is using upstart (like Unbuntu), you can use the upstart script also provided.
 
 **I did update the configuration but I can't see the change in rrd**
 
 If you change the configuration , the _rrd_ files will have to be regenerated. 
-Delete the rrd file concerned by the change and restart rpimonitord. This can be 
+Delete the -rrd- file concerned by the change and restart rpimonitord. This can be 
 done with the following command is rpimonitord is installed as a daemon:
 
-    sudo restart rpimonitord
+    sudo /etc/init.d/rpimonitord restart
 
 **RPi-Monitor supports https. How to activate it?**
 
@@ -141,9 +142,14 @@ Now you can start _rpimonitord_ with the parameter "-s" and browse <https://your
 
     ./rpimonitord -s
 
-Note: if you you installed **RPi-Monitor** as a daemon, it will be required 
-to update the upstart script (/etc/init/rpimonitord) and append "-s" to the command line.
+If you you installed **RPi-Monitor** as a daemon, it will be required 
+to update the upstart script (/etc/init.d/rpimonitor) and append "-s" to the command line.
 Once the update will be done, restart rpimonitord. This can be 
 done with the following command:
 
     sudo /etc/init.d/rpimonitor restart
+
+**Will you provide a debian package to make the installation faster and easier?**
+
+Yes, it is plan for the next release. This page  will be updated and a dedicated post will be written in
+[RPi-Experience](http://rpi-experiences.blogspot.fr/) when it will be ready.

@@ -93,7 +93,7 @@ $(function () {
           '<h3 id="myModalLabel">About</h3>'+
         '</div>'+
         '<div class="modal-body">'+
-          '<p><b>Version</b>: 1.0'+
+          '<p><b>Version</b>: 1.0 '+
           '<b>by</b> Xavier Berger <a href="http://rpi-experiences.blogspot.fr/">Blog</a> <a href="https://github.com/XavierBerger/RPi-Monitor">GitHub</a></p>'+
           '<hr>'+
           '<p><b>RPI-Monitor</b> is free software developped on top of other open source'+
@@ -181,8 +181,8 @@ $(function () {
   function AddFooter(){
     $('#footer').html(
         '<div class="container">'+
-          '<p class="muted credit"><small>Follow RPi-Monitor news in <a href="http://rpi-experiences.blogspot.fr/">RPI-Experiences</a> blog'+
-          'and <a href="https://github.com/XavierBerger/RPi-Monitor">GitHub</a>.'+
+          '<p class="muted credit"><small>Follow RPi-Monitor news in <a href="http://rpi-experiences.blogspot.fr/">RPI-Experiences</a> blog '+
+          'and <a href="https://github.com/XavierBerger/RPi-Monitor">GitHub</a>. '+
           'Raspberry Pi brand and Raspberry Pi logo are properties of <a href="http://www.raspberrypi.org/">Raspberry Pi Fundation</a></small></p>'+
         '</div>'
     );

@@ -1,0 +1,10 @@
+# DEAMON_START=0 : do not start rpimonitord at boot
+# DEAMON_START=1 : rpimonitord start automatically at boot
+DAEMON_START=1
+
+# SECURE=     : do not start in secure mode
+# SECURE="-s" : start using secure https mode
+SECURE=
+
+# CONFFILE="-c /etc/rpimonitord.conf" : Define configuration file to use
+CONFFILE="-c /etc/rpimonitord.conf"
