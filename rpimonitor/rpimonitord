@@ -71,7 +71,21 @@ sub Load
     $this->{'source'}->{$switch}->{$source}->{$regexp} = \@names;
   }
   close(FILE);
+  
+  #Load default values is not defined yet
+  my $script = abs_path($0);
+  $script =~ /(.*)\/(\w+)$/;
 
+  $this->{'conf_file'}   ||= "$1/$2.conf";
+  $this->{'user'}        ||= "pi";
+  $this->{'group'}       ||= "pi";
+  $this->{'port'}        ||= 8888;
+  $this->{'addr'}        ||= '0.0.0.0';
+  $this->{'webroot'}     ||= "$1/web";
+  $this->{'status_file'} ||= "$2.json";
+  $this->{'delay'}       ||= 10;
+
+  #
   $this->{'gid'} = getgrnam($this->{'user'}) || 1000;
   $this->{'uid'} = getpwnam($this->{'group'}) || 1000;
 
@@ -91,18 +105,7 @@ sub Load
   $this->{'status'} = "\"section\":[".$this->{'status'} ;
   $this->{'rrds'} = \@rrds;
   
-  #Load default values is not defined yet
-  my $script = abs_path($0);
-  $script =~ /(.*)\/(\w+)$/;
 
-  $this->{'conf_file'}   ||= "$1/$2.conf";
-  $this->{'user'}        ||= "pi";
-  $this->{'group'}       ||= "pi";
-  $this->{'port'}        ||= 8888;
-  $this->{'addr'}        ||= '0.0.0.0';
-  $this->{'webroot'}     ||= "$1/web";
-  $this->{'status_file'} ||= "$2.json";
-  $this->{'delay'}       ||= 10;
 }
 
 sub CreateRRD
@@ -254,7 +257,7 @@ sub DoGET
   $this->Debug(2,$path);
 
   #The file need to be known or we return an error
-  $path ~~ @{$this->{'paths'}} or $connection->send_error(404) and return;
+  $path ~~ @{$this->{'paths'}} or $connection->send_error(404,"$path not in ". join ('<br>',@{$this->{'paths'}} )) and return;
 
   $path =~ /rpimonitord.json/ and $this->SendStatus() and return;
 
@@ -265,6 +268,7 @@ sub DoGET
   -f $configuration->{'webroot'}.$path and $this->SendFile($connection, $configuration->{'webroot'}.$path) and return;
 
   $this->Debug(2,"Can't find $configuration->{'webroot'}.$path");
+  
   #Finally send error
   $connection->send_error();
 }
