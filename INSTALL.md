@@ -12,7 +12,7 @@ Before installing **RPi-Monitor** you should install the dependencies. To do so,
 
 ## Package Installation
 
-Refer to [INSTALL.md](https://github.com/XavierBerger/RPi-Monitor/blob/master/README.md).
+Refer to [README.md](https://github.com/XavierBerger/RPi-Monitor/blob/master/README.md).
 
 
 ## Manual installation
