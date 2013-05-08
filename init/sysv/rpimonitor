@@ -10,11 +10,6 @@
 # Description:       Daemon for RPi serlf monitoring
 ### END INIT INFO
 
-if [ "$(id -u)" != "0" ]; then
-   echo "This script must be run as root" 
-   exit 1
-fi
-
 # Source function library.
 . /lib/lsb/init-functions
 
@@ -26,62 +21,79 @@ DEFAULTFILE="/etc/default/rpimonitor"
 
 [ -r $DEFAULTFILE ] && . $DEFAULTFILE
 
-start() {
-	if [ "$DAEMON_START" = "0" ]; then
-        echo "Rpi-monitor deamon id disabled."
-        echo "Update /etc/default/rpimonitor and set DEAMON_START to 1."
-		return 0
-	fi
-	
-	
-	#TODO: check is already runing according to PIDFILE
-	rm /var/run/rpimonitord.pid
+checkroot(){
+  if [ "$(id -u)" != "0" ]; then
+    echo "This script must be run as root"
+    exit 1
+  fi
+}
 
-    log_daemon_msg "Starting RPi-Monitor" "rpimonitord"
-    $DAEMON -b $PIDFILE $SECURE $CONFFILE
-    status=$?
-    log_end_msg $status
+start() {
+  if [ "$DAEMON_START" = "0" ]; then
+    echo "RPi-Monitor deamon id disabled."
+    echo "Update /etc/default/rpimonitor and set DEAMON_START to 1."
+    return 0
+  fi
+  
+  for pid in $(cat $PIDFILE); do
+     if ( kill -0 $pid > /dev/null 2>&1 ); then
+      echo "Rpi-Monitor is already running.";
+      status;
+      return 0;
+    fi
+  done;
+
+  rm /var/run/rpimonitord.pid
+
+  log_daemon_msg "Starting RPi-Monitor" "rpimonitord"
+  echo $DAEMON -b $PIDFILE $SECURE $CONFFILE -vvvv
+  $DAEMON -b $PIDFILE $SECURE $CONFFILE -vvvv
+  status=$?
+  log_end_msg $status
 }
 
 stop() {
-    log_daemon_msg "Stopping RPi-Monitor" "rpimonitord"
-    for pid in $(cat $PIDFILE); do
-        kill -9 $pid > /dev/null 2>&1
-      done
-    status=$?
-    log_end_msg $status
+  log_daemon_msg "Stopping RPi-Monitor" "rpimonitord"
+  for pid in $(cat $PIDFILE); do
+    kill -9 $pid > /dev/null 2>&1
+  done
+  status=$?
+  log_end_msg $status
+  rm /var/run/rpimonitord.pid
 }
 
 restart() {
-    stop
-    sleep 2
-    start
+  stop
+  sleep 2
+  start
 }
 
 status(){
-    echo -n "RPi-Monitor status: "
-    for pid in $(cat $PIDFILE); do 
-        kill -0 $pid > /dev/null 2>&1 && echo -n "[ \033[1;32mok\033[0m ]" || echo -n "[\033[31mFAIL\033[0m]"; 
-    done; 
-    echo
+  echo -n "RPi-Monitor status: "
+  for pid in $(cat $PIDFILE); do 
+    kill -0 $pid > /dev/null 2>&1 && echo -n "[ \033[1;32mok\033[0m ]" || echo -n "[\033[31mFAIL\033[0m]"; 
+  done; 
+  echo
 }
 
+
+checkroot
 case "$1" in
-    start)
-    	start
-    ;;
-    stop)
-    	stop
-    ;;
-    status)
-        status
-    ;;
-    restart)
-    	restart
-    ;;
-    *)
-    	echo "Usage: $0 {start|stop|restart|status}"
-    ;;
+  start)
+    start
+  ;;
+  stop)
+    stop
+  ;;
+  status)
+    status
+  ;;
+  restart)
+    restart
+  ;;
+  *)
+    echo "Usage: $0 {start|stop|restart|status}"
+  ;;
 esac
 
 exit 0

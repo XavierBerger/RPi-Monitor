@@ -280,7 +280,11 @@ sub Run
   if ( $configuration->{'ssl'} ) {
     $this->{'server'} = new HTTP::Daemon::SSL( ReuseAddr => 1,
                                                LocalAddr => $configuration->{'addr'},
-                                               LocalPort => $configuration->{'port'})
+                                               LocalPort => $configuration->{'port'},
+                                               SSL_cert_file => "$configuration->{'ssl'}/server-cert.pem",
+                                               SSL_key_file => "$configuration->{'ssl'}/server-key.pem",
+                                             )
+
       or die "Secure Web server not started because of error: $!\n";
   }
   else {
@@ -337,6 +341,7 @@ sub Run
   # start main loop
   my $this = shift;
   my $configuration = shift;
+  my $serverpid = shift;
   $this->Debug(2,"");
 
   if ( !$configuration->{'noserver'}) {
@@ -353,6 +358,9 @@ sub Run
     # Store and show extracted data
     $this->Status($configuration);
 
+    # Check if server is up 
+    kill(0,$serverpid) or last;
+    
     # tempo before next process
     $configuration->{'delay'} or last;
     sleep $configuration->{'delay'};
@@ -368,7 +376,7 @@ sub Process
 
   # for each source, read data and apply all regexp
   foreach my $source ( keys (%$list) ){
-    my $file = -f $source ? $source : "$source|";
+    my $file = -f $source ? $source : "$source 2>/dev/null|";
     open(FEED, $file);
     while (<FEED>){
       foreach my $regexp ( keys (%{$list->{$source}}) ){
@@ -425,7 +433,7 @@ sub Status
     foreach ( @{$rrd{$section}} ) {
       $data .= ":$this->{'result'}->{$_}";
     }
-    $this->Debug(4,"\nUpdate $configuration->{'webroot'}/stat/$section.rrd => $data");
+    $this->Debug(4,"Update $configuration->{'webroot'}/stat/$section.rrd => $data");
     RRDs::update("$configuration->{'webroot'}/stat/$section.rrd", $data);
   }
 }
@@ -474,7 +482,7 @@ CONFIGURATION
   default values. Configuration given as option of the command line
   always overwrite the one defined into a file.
 
-SECURE ACCESS WITH SSL
+SECURE ACCESS WITH SSL -- WARNING FEATURE NOT STABILIZED YET --
   $1 server can use SSL to secure the communication. It is
   required to add certificate into ./certs/ directory and start $1
   with the -s parameter.
@@ -509,16 +517,31 @@ sub daemonize {
   open STDOUT, '>>/dev/null' or die "Can't write to /dev/null: $!";
   open STDERR, '>>/dev/null' or die "Can't write to /dev/null: $!";
   defined(my $pid = fork) or die "Can't fork: $!";
-  $pid or writePID();
   exit if $pid;
   setsid or die "Can't start a new session: $!";
   umask 0;
 }
 
-
+sub StartServer
+{
+  #start server as a separate process with specific user right (user:pi)
+  my $configuration = shift;
+  my $serverpid;
+  unless ( $configuration->{'noserver'} ){
+    unless ($serverpid = fork) {
+      $pidfile and writePID();
+      my $server = Server->new();
+      setgid($configuration->{'gid'});
+      setuid($configuration->{'uid'});
+      $server->Run($configuration);
+      exit;
+    }
+  }
+  return $serverpid;
+}
 
 my $configuration = Configuration->new();
-my $monitor = Monitor->new();
+$configuration->Load();
 
 sub stop
 {
@@ -535,29 +558,33 @@ while($_ = shift)
   /-h(elp)?/        and help;
   /-n(oserver)?/    and $configuration->{'noserver'}++ and next;
   /-p(ort)?/        and $configuration->{'port'} = shift and next;
-  /-s(sl)?/         and $configuration->{'ssl'}++ and next;
+  #/-r(etry)?/       and $configuration->{'retry'} = shift and next;
+    /-s(sl)?/         and $configuration->{'ssl'} = shift and next;
   /^-([v]+)$/       and $verbose = length $1 and next;
   /-V(ersion)?/     and die "$0 version $VERSION\n";
 } 
 
-# Start monitor manager
-$configuration->Load();
-
-#start server as a separate process with specific user right (user:pi)
-my $pid;
-unless ( $configuration->{'noserver'} ){
-  unless ($pid = fork) {
-    $pidfile and writePID();
-    my $server = Server->new();
-    setgid($configuration->{'gid'});
-    setuid($configuration->{'uid'});
-    $server->Run($configuration);
-    print "Server crashed";
-    exit;
-  }
-}
-
 $pidfile and &daemonize;
 
-$monitor->Run($configuration);
-$pid and kill (9,$pid);
+my $monitor = Monitor->new();
+my $serverpid;
+
+for (my $retry=0; $retry<6; $retry++) {
+  unlink $pidfile;
+  $pidfile and writePID();
+  #open(PID, ">> $pidfile") || die "Could not open '$pidfile' $!"; 
+  #  my @pidfilecontent=<PID>; 
+  #close(PID); 
+  $serverpid = StartServer($configuration);
+  $monitor->Run($configuration, $serverpid);
+  
+  #open(PID, "> $pidfile") || die "Could not open '$pidfile' $!"; 
+  #  foreach () {
+  #}
+  close(PID);
+  if ($retry == 5) { $configuration->{'ssl'}=''; }
+  #TODO: fall down to unsecure
+  $configuration->{'delay'} or last;
+}
+
+$serverpid and kill (9,$serverpid);

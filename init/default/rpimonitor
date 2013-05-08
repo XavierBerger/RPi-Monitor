@@ -2,8 +2,8 @@
 # DEAMON_START=1 : rpimonitord start automatically at boot
 DAEMON_START=1
 
-# SECURE=     : do not start in secure mode
-# SECURE="-s" : start using secure https mode
+# SECURE="-s /usr/share/rpimonitor/certs" : start using secure https mode
+# It is required to create dertificates into certs before using this parameter.
 SECURE=
 
 # CONFFILE="-c /etc/rpimonitord.conf" : Define configuration file to use
