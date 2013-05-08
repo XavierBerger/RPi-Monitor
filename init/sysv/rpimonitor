@@ -46,7 +46,6 @@ start() {
   rm /var/run/rpimonitord.pid
 
   log_daemon_msg "Starting RPi-Monitor" "rpimonitord"
-  echo $DAEMON -b $PIDFILE $SECURE $CONFFILE -vvvv
   $DAEMON -b $PIDFILE $SECURE $CONFFILE -vvvv
   status=$?
   log_end_msg $status

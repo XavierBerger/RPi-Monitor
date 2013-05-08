@@ -38,18 +38,6 @@ sub new
   my $this = bless { }, shift;
   $this->Debug(3,"");
 
-  my $script = abs_path($0);
-  $script =~ /(.*)\/(\w+)$/;
-
-  $this->{'conf_file'} = "$1/$2.conf";
-  $this->{'user'} = "pi";
-  $this->{'group'} = "pi";
-  $this->{'port'} = 8888;
-  $this->{'addr'} = '0.0.0.0';
-  $this->{'webroot'} = "$1/web";
-  $this->{'status_file'} = "$2.json";
-  $this->{'delay'} = 10;
-
   return $this;
 }
 
@@ -75,7 +63,7 @@ sub Load
     chomp;
     /^\s*#|^$/ and next;
     /\[(.*)\]/ and $section=$1 and next;
-    /^([^=]+)=([^=]+)$/ and $this->{$1}=$2 and next;
+    /^([^=]+)=([^=]+)$/ and ( ( $this->{$1} or $this->{$1}=$2 ) and next );
     my ($namelist,$source,$regexp)= split('=',$_);
     my @names=split(',',$namelist);
     push(@{$this->{'section'}->{$section}}, @names);
@@ -102,6 +90,19 @@ sub Load
   $this->{'status'} =~ s/,$/]/;
   $this->{'status'} = "\"section\":[".$this->{'status'} ;
   $this->{'rrds'} = \@rrds;
+  
+  #Load default values is not defined yet
+  my $script = abs_path($0);
+  $script =~ /(.*)\/(\w+)$/;
+
+  $this->{'conf_file'}   ||= "$1/$2.conf";
+  $this->{'user'}        ||= "pi";
+  $this->{'group'}       ||= "pi";
+  $this->{'port'}        ||= 8888;
+  $this->{'addr'}        ||= '0.0.0.0';
+  $this->{'webroot'}     ||= "$1/web";
+  $this->{'status_file'} ||= "$2.json";
+  $this->{'delay'}       ||= 10;
 }
 
 sub CreateRRD
@@ -541,7 +542,6 @@ sub StartServer
 }
 
 my $configuration = Configuration->new();
-$configuration->Load();
 
 sub stop
 {
@@ -563,6 +563,8 @@ while($_ = shift)
   /^-([v]+)$/       and $verbose = length $1 and next;
   /-V(ersion)?/     and die "$0 version $VERSION\n";
 } 
+
+$configuration->Load();
 
 $pidfile and &daemonize;
 
