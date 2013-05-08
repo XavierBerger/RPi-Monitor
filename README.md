@@ -43,7 +43,7 @@ Before installing **RPi-Monitor** you should install the dependencies. To do so,
 
 ## Installation
 
-Download **RPI-Monitor** debian package from <https://github.com/XavierBerger/RPi-Monitor-deb/master/packages> and install it
+Download **RPI-Monitor** debian package from <https://github.com/XavierBerger/RPi-Monitor-deb/tree/master/packages> and install it
 with the following command:
 
     sudo dpkg -i rpimonitor_1.0-1_all.deb
