@@ -4,10 +4,7 @@
 
 **Blog**: [RPi-Experience](http://rpi-experiences.blogspot.fr/)
 
-![screenshot](index.png)
-![screenshot](status.png)
-![screenshot](statistics.png)
-![screenshot](shellinabox.png)
+![screenshot](screenshot_thumb.png)
 
 ## About
 
