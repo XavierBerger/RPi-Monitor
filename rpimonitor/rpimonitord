@@ -377,7 +377,7 @@ sub Process
 {
   my $this = shift;
   my $list = shift;
-
+  
   # for each source, read data and apply all regexp
   foreach my $source ( keys (%$list) ){
     my $file = -f $source ? $source : "$source 2>/dev/null|";
@@ -388,7 +388,7 @@ sub Process
         my $i=0;
         my @names = @{$list->{$source}->{$regexp}};
         foreach ( @_ ) {
-          $this->{'result'}->{@names[$i]}||=@_[$i];
+          $this->{'result'}->{@names[$i]}=@_[$i];
           $i++;
         }
       }
