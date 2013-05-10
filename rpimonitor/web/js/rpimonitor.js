@@ -152,7 +152,7 @@ $(function () {
       AddConfigurationDialog();
     }
 
-      topmenu+=
+    topmenu+=
                   '<li class="dropdown">'+
                     '<a href="#" class="dropdown-toggle" data-toggle="dropdown">About <b class="caret"></b></a>'+
                     '<ul class="dropdown-menu">'+
@@ -167,6 +167,17 @@ $(function () {
                   '</li>'+
                 '</ul>'+
               '</div><!--/.nav-collapse -->'+
+              '<div class="navbar-inner pull-right hide">'+
+                '<ul class="nav">'+
+                  '<li class="dropdown">'+
+                    '<a href="#" class="dropdown-toggle" data-toggle="dropdown">Friends <b class="caret"></b></a>'+
+                    '<ul class="dropdown-menu">'+
+                      '<li><a href="#">Friend 1</a></li>'+
+                      '<li><a href="#">Friend 2</a></li>'+
+                   '</ul>'+
+                  '</li>'+
+                '</ul>'+
+              '</div>'+
             '</div>'+
           '</div>'+
         '</div>';
