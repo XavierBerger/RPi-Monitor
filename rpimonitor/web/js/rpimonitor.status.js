@@ -7,14 +7,25 @@ function FormatSize(size){
   }
 }
 
+function pad(n){
+  return n<10 ? '0'+n : n
+}
+
 function UpdateStatus () {
   $.getJSON('/stat/rpimonitord.json', function(data) {
     // Uptime
-    hour = Math.round(data.uptime / 3600);
+    uptimetext='';
+    days = Math.round(data.uptime / 86400);
+    rest = data.uptime % 86400;
+    hours = Math.round(rest / 3600);
     rest = data.uptime % 3600;
     minutes = Math.round(rest / 60);
     seconds = Math.round(rest % 60);
-    $('#uptimeText').html("<b>" + hour+"</b> hours <b>" + minutes + "</b> minutes <b>" + seconds + "</b> seconds");
+    if ( days != 0 ) { uptimetext = uptimetext + "<b>" + days + "</b> days " }
+    if ( ( days != 0 ) || ( hours != 0) )uptimetext += "<b>" + pad(hours) +"</b> hours "
+    uptimetext += "<b>" + pad(minutes) +"</b> minutes "
+    uptimetext += "<b>" + pad(seconds) +"</b> seconds "
+    $('#uptimeText').html(uptimetext);
 
     // temperature
     versionText="";
