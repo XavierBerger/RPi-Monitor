@@ -55,12 +55,19 @@ sub Load
   my $this = shift;
   $this->Debug(2,"");
 
+  my $script = abs_path($0);
+  $script =~ /(.*)\/(\w+)$/;
+  $this->{'conf_file'}   ||= "$1/$2.conf";
+  
   # load configuration
   my $section;
+  my $webparameter;
   open ( FILE, $this->{'conf_file'})
-    or die "Error while openning $this->{'conf_file'}: $!\n";
+    or die "Error while openning configuration file \"$this->{'conf_file'}\" because $!\n";
   while (<FILE>){
     chomp;
+    /^\s*#>\[(.*)\]/ and $webparameter=$1 and next;
+    /^\s*#>(.*)/ and push(@{$this->{'webconf'}->{$webparameter}}, $1) and next;
     /^\s*#|^$/ and next;
     /\[(.*)\]/ and $section=$1 and next;
     /^([^=]+)=([^=]+)$/ and ( ( $this->{$1} or $this->{$1}=$2 ) and next );
@@ -71,12 +78,12 @@ sub Load
     $this->{'source'}->{$switch}->{$source}->{$regexp} = \@names;
   }
   close(FILE);
-  
-  #Load default values is not defined yet
+    
+  # FIX ME
   my $script = abs_path($0);
   $script =~ /(.*)\/(\w+)$/;
-
-  $this->{'conf_file'}   ||= "$1/$2.conf";
+  
+  #Load default values is not defined yet
   $this->{'user'}        ||= "pi";
   $this->{'group'}       ||= "pi";
   $this->{'port'}        ||= 8888;
@@ -103,8 +110,13 @@ sub Load
   }
   $this->{'status'} =~ s/,$/]/;
   $this->{'status'} = "\"section\":[".$this->{'status'} ;
-  $this->{'rrds'} = \@rrds;
   
+  
+  for ( keys %{$this->{'webconf'}} ){
+    $this->{'status'}  .= ", \"$_\":[" . join (",", @{$this->{'webconf'}->{$_}}) . "]"; 
+  }
+  
+  $this->{'rrds'} = \@rrds;
 }
 
 sub CreateRRD
