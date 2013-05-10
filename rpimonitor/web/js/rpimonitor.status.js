@@ -96,12 +96,10 @@ $(function () {
   $.ajaxSetup({ cache: false });
   
   /* Start status update*/
+  UpdateStatus();
   if ( statusautorefresh ) { 
     refreshtimer = setInterval( UpdateStatus , 10000 ) 
   }
-  else {
-    UpdateStatus();
-  };
 });
 
 
