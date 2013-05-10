@@ -2,7 +2,7 @@ var animate;
 var shellinabox;
 var shellinaboxport;
 var statusautorefresh;
-var reloadneeded = false;
+var refreshtimer;
 
 function SetProgressBarAnimate(){
   $('#animate').attr('checked', animate );
@@ -222,12 +222,14 @@ $(function () {
   $('#statusautorefresh').click(function(){
     statusautorefresh = $('#statusautorefresh').is(":checked");
     localStorage.setItem('statusautorefresh', statusautorefresh);
-    reloadneeded = true;
+    if ( statusautorefresh ) {
+      UpdateStatus(); 
+      refreshtimer = setInterval( UpdateStatus , 10000 ) 
+    }
+    else {
+      clearInterval(refreshtimer);
+    };
   });
 
-
-  $('#closeconfiguration').click(function(){
-    if ( reloadneeded ) { location.reload() };
-  });
 
 });

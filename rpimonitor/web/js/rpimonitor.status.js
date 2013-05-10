@@ -81,12 +81,14 @@ function UpdateStatus () {
     );
 
     SetProgressBarAnimate();
-    if ( statusautorefresh ) { setTimeout(UpdateStatus(), 10000) };
+    
 
-  }).fail(function() {
+  })
+  .fail(function() {
       $('#message').html("<b>Can not get status information. Is rpimonitord.conf correctly configured on server? Is server running?</b>");
       $('#message').removeClass('hide');
     });
+  
 }
 
 $(function () {
@@ -94,7 +96,12 @@ $(function () {
   $.ajaxSetup({ cache: false });
   
   /* Start status update*/
-  UpdateStatus();
+  if ( statusautorefresh ) { 
+    refreshtimer = setInterval( UpdateStatus , 10000 ) 
+  }
+  else {
+    UpdateStatus();
+  };
 });
 
 
