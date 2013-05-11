@@ -93,6 +93,10 @@ function UpdateStatus () {
 
     SetProgressBarAnimate();
     
+    if ( firstload == true ){
+      firstload=false;
+      ShowFriends(data.friends);
+    }
 
   })
   .fail(function() {
@@ -111,6 +115,7 @@ $(function () {
   if ( statusautorefresh ) { 
     refreshtimer = setInterval( UpdateStatus , 10000 ) 
   }
+  
 });
 
 

@@ -3,6 +3,7 @@ var shellinabox;
 var shellinaboxport;
 var statusautorefresh;
 var refreshtimer;
+var firstload=true;
 
 function SetProgressBarAnimate(){
   $('#animate').attr('checked', animate );
@@ -27,6 +28,18 @@ function SetShellinaboxMenu(){
     $('#shellinaboxport').attr('disabled',true);
   }
 
+}
+
+function ShowFriends(friend){
+  if ( friend ) { 
+    $('#friends').empty();
+    for (var i = 0; i < friend.length; i++) {
+      details=friend[i].split('=');
+      $('#friends').append('<li><a href="http://'+details[0]+'">'+details[1]+'</a></li>');
+    
+    }
+    $('#divfriends').removeClass('hide');
+  }
 }
 
 $(function () {
@@ -167,14 +180,12 @@ $(function () {
                   '</li>'+
                 '</ul>'+
               '</div><!--/.nav-collapse -->'+
-              '<div class="navbar-inner pull-right hide">'+
+              '<div class="navbar-inner pull-right hide" id="divfriends">'+
                 '<ul class="nav">'+
                   '<li class="dropdown">'+
                     '<a href="#" class="dropdown-toggle" data-toggle="dropdown">Friends <b class="caret"></b></a>'+
-                    '<ul class="dropdown-menu">'+
-                      '<li><a href="#">Friend 1</a></li>'+
-                      '<li><a href="#">Friend 2</a></li>'+
-                   '</ul>'+
+                    '<ul class="dropdown-menu" id="friends">'+
+                    '</ul>'+
                   '</li>'+
                 '</ul>'+
               '</div>'+
@@ -241,6 +252,5 @@ $(function () {
       clearInterval(refreshtimer);
     };
   });
-
 
 });

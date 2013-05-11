@@ -61,6 +61,11 @@ $(function () {
         fname = this.value;
         fname_update();
       })
+      
+      if ( firstload == true ){
+        firstload=false;
+        ShowFriends(data.friends);
+      }
 
     }).fail(function() {
         $('#message').html("<b>Can not get status information. Is rpimonitord.conf correctly configured on server?</b>") ;
@@ -80,6 +85,5 @@ $(function () {
        alert("Failed loading "+fname+"\n"+err);
     }
   }
-
 
 });
