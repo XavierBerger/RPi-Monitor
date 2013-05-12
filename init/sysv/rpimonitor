@@ -46,7 +46,7 @@ start() {
   done;
 
   log_daemon_msg "Starting RPi-Monitor" "rpimonitord"
-  $DAEMON -b $PIDFILE $SECURE $CONFFILE
+  nice 19 $DAEMON -b $PIDFILE $SECURE $CONFFILE
   status=$?
   log_end_msg $status
 }
