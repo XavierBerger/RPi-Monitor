@@ -36,7 +36,7 @@ to not start the embeded web server and use an external web server to deliver th
 
 Before installing **RPi-Monitor** you should install the dependencies. To do so, execute the following command:
 
-    sudo apt-get install librrds-perl libhttp-daemon-perl libhttp-daemon-ssl-perl
+    sudo apt-get install librrds-perl libhttp-daemon-perl libhttp-daemon-ssl-perl libcrypt-openssl-rsa-perl
 
 ## Installation
 

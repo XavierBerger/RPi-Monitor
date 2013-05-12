@@ -298,7 +298,7 @@ sub Run
                                                LocalAddr => $configuration->{'addr'},
                                                LocalPort => $configuration->{'port'},
                                                SSL_cert_file => "$configuration->{'ssl'}/server-cert.pem",
-                                               SSL_key_file => "$configuration->{'ssl'}/server-key.pem",
+                                               SSL_key_file => "$configuration->{'ssl'}/server-key.pem"
                                              )
 
       or die "Secure Web server not started because of error: $!\n";
@@ -499,19 +499,22 @@ CONFIGURATION
   always overwrite the one defined into a file.
 
 SECURE ACCESS WITH SSL -- WARNING FEATURE NOT STABILIZED YET --
+
+  Note: This code works fine on Ubuntu 12.10 but crash on Raspian
+
   $1 server can use SSL to secure the communication. It is
   required to add certificate into ./certs/ directory and start $1
   with the -s parameter.
 
   To generate a certificate, execute the following commands
 
-    openssl req -config demoCA/openssl.cnf \
+    openssl req -config /etc/ssl/openssl.cnf \
             -new -days 365 -newkey rsa:1024 -x509 \
-            -keyout demoCA/certs/server-key-with-password.pem \
-            -out demoCA/certs/server-cert.pem
+            -keyout certs/server-key-with-password.pem \
+            -out certs/server-cert.pem
 
-    openssl rsa -in demoCA/certs/server-key-with-password.pem \
-                -out demoCA/certs/server-key.pem
+    openssl rsa -in certs/server-key-with-password.pem \
+                -out certs/server-key.pem
 
 AUTHOR
   Xavier Berger
