@@ -36,7 +36,6 @@ function ShowFriends(friend){
     for (var i = 0; i < friend.length; i++) {
       details=friend[i].split('=');
       $('#friends').append('<li><a href="http://'+details[0]+'">'+details[1]+'</a></li>');
-    
     }
     $('#divfriends').removeClass('hide');
   }
@@ -106,7 +105,7 @@ $(function () {
           '<h3 id="myModalLabel">About</h3>'+
         '</div>'+
         '<div class="modal-body">'+
-          '<p><b>Version</b>: 1.0 '+
+          '<p><b>Version</b>: {DEVELOPMENT} '+
           '<b>by</b> Xavier Berger <a href="http://rpi-experiences.blogspot.fr/">Blog</a> <a href="https://github.com/XavierBerger/RPi-Monitor">GitHub</a></p>'+
           '<hr>'+
           '<p><b>RPI-Monitor</b> is free software developped on top of other open source'+
