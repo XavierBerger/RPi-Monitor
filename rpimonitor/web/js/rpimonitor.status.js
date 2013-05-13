@@ -14,6 +14,7 @@ function pad(n){
 var clocksec=0;
 function clock(){
   clocksec++;
+  if (clocksec == 60) { clocksec=0 };
   $('#seconds').html(pad(clocksec));
 }
 
