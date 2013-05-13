@@ -11,10 +11,20 @@ function pad(n){
   return n<10 ? '0'+n : n
 }
 
+var clocksec=0;
+function clock(){
+  clocksec++;
+  $('#seconds').html(pad(clocksec));
+}
+
 function UpdateStatus () {
   $.getJSON('/stat/rpimonitord.json', function(data) {
+    $('#message').addClass('hide');
+
     // Uptime
-    uptimetext='';
+    clocksec=data.localtime[5];
+    uptimetext="<p>Raspberry Pi time: <b>" +  pad(data.localtime[3]) + "</b>:<b>" + pad(data.localtime[4]) +"</b>:<b><span id='seconds'>" + pad(clocksec) + "</span></b></p><p>";
+    
     days = Math.round(data.uptime / 86400);
     rest = data.uptime % 86400;
     hours = Math.round(rest / 3600);
@@ -24,7 +34,7 @@ function UpdateStatus () {
     if ( days != 0 ) { uptimetext = uptimetext + "<b>" + days + "</b> days " }
     if ( ( days != 0 ) || ( hours != 0) )uptimetext += "<b>" + pad(hours) +"</b> hours "
     uptimetext += "<b>" + pad(minutes) +"</b> minutes "
-    uptimetext += "<b>" + pad(seconds) +"</b> seconds "
+    uptimetext += "<b>" + pad(seconds) +"</b> seconds<p>"
     $('#uptimeText').html(uptimetext);
 
     // temperature
@@ -115,6 +125,8 @@ $(function () {
   if ( statusautorefresh ) { 
     refreshtimer = setInterval( UpdateStatus , 10000 ) 
   }
+
+  setInterval(clock,1000);
   
 });
 

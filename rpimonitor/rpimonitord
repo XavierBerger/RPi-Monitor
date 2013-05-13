@@ -421,12 +421,14 @@ sub Status
   my %result = %{$this->{'result'}};
   $status .= "\"$_\":\"$result{$_}\"\n" for (keys %result);
 
-  # Print status on screen if requested
   $this->Debug(5,"\n$status");
+
+  my ($sec,$min,$hour,$mday,$mon,$year) = (localtime)[0,1,2,3,4,5];
+  my $localtime=sprintf('"localtime":["%d","%d","%d","%d","%d","%d"]',$year+1900,$mon+1,$mday,$hour,$min,$sec);
 
   chomp($status);
   $status=~s/\n/, /g;
-  $status="{ $configuration->{'status'}, $status }";
+  $status="{ $configuration->{'status'}, $localtime, $status }";
 
   # if embeded server is not used, we write the json file else the
   # data are transmitted with a shared memory
@@ -491,8 +493,8 @@ OPTIONS
   -V, --Version     Show version and exit
 
 CONFIGURATION
-  Configuration can be defined into $1.conf or a file specified
-  by -c parameter. See the $1.conf file provided with at
+  Configuration can be defined into /etc/$1.conf or a file specified
+  by -c parameter. See the /etc/$1.conf file provided with at
   installation to see how to customize $1.
   Configuration defined inside a configuration file always overwrite
   default values. Configuration given as option of the command line
@@ -577,7 +579,7 @@ while($_ = shift)
   /-n(oserver)?/    and $configuration->{'noserver'}++ and next;
   /-p(ort)?/        and $configuration->{'port'} = shift and next;
   #/-r(etry)?/       and $configuration->{'retry'} = shift and next;
-    /-s(sl)?/         and $configuration->{'ssl'} = shift and next;
+  /-s(sl)?/         and $configuration->{'ssl'} = shift and next;
   /^-([v]+)$/       and $verbose = length $1 and next;
   /-V(ersion)?/     and die "$0 version $VERSION\n";
 } 

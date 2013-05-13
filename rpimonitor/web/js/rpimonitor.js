@@ -108,7 +108,7 @@ $(function () {
           '<p><b>Version</b>: {DEVELOPMENT} '+
           '<b>by</b> Xavier Berger <a href="http://rpi-experiences.blogspot.fr/">Blog</a> <a href="https://github.com/XavierBerger/RPi-Monitor">GitHub</a></p>'+
           '<hr>'+
-          '<p><b>RPI-Monitor</b> is free software developped on top of other open source'+
+          '<p><b>RPi-Monitor</b> is free software developped on top of other open source'+
             'tools : <a href="http://twitter.github.io/bootstrap/">bootstrap</a>, <a href="http://jquery.com/">jquery</a>, <a href="https://code.google.com/p/jsqrencode/">jsqrencode</a> and <a href="http://javascriptrrd.sourceforge.net/">javascriptrrd</a>.<br>'+
             'The look and feel of the status page is clearly inspired by <a href="https://github.com/Bioshox/Raspcontrol">Raspcontrol</a>.</p>'+
           '<p><b>Raspberry Pi</b> and Raspberry Pi logo are properties of <a href="http://www.raspberrypi.org/">Raspberry Pi Fundation</a>.</p>'+
@@ -168,12 +168,12 @@ $(function () {
                   '<li class="dropdown">'+
                     '<a href="#" class="dropdown-toggle" data-toggle="dropdown">About <b class="caret"></b></a>'+
                     '<ul class="dropdown-menu">'+
-                      '<li class="nav-header">RPI-Monitor</li>'+
+                      '<li class="nav-header">RPi-Monitor</li>'+
                       '<li><a href="#License" data-toggle="modal">License</a></li>'+
                       '<li><a href="#About" data-toggle="modal">About</a></li>'+
                       '<li class="divider"></li>'+
                       '<li class="nav-header">Related links</li>'+
-                      '<li><a href="http://rpi-experiences.blogspot.fr/">RPI-experiences</a></li>'+
+                      '<li><a href="http://rpi-experiences.blogspot.fr/">RPi-experiences</a></li>'+
                       '<li><a href="https://github.com/XavierBerger/RPi-Monitor">RPi-Monitor</a></li>'+
                     '</ul>'+
                   '</li>'+
@@ -202,7 +202,7 @@ $(function () {
   function AddFooter(){
     $('#footer').html(
         '<div class="container">'+
-          '<p class="muted credit"><small>Follow RPi-Monitor news in <a href="http://rpi-experiences.blogspot.fr/">RPI-Experiences</a> blog '+
+          '<p class="muted credit"><small>Follow RPi-Monitor news in <a href="http://rpi-experiences.blogspot.fr/">RPi-Experiences</a> blog '+
           'and <a href="https://github.com/XavierBerger/RPi-Monitor">GitHub</a>. '+
           'Raspberry Pi brand and Raspberry Pi logo are properties of <a href="http://www.raspberrypi.org/">Raspberry Pi Fundation</a></small></p>'+
         '</div>'
