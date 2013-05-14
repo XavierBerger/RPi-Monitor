@@ -38,8 +38,9 @@ function UpdateStatus () {
     uptimetext += "<b>" + pad(seconds) +"</b> seconds<p>"
     $('#uptimeText').html(uptimetext);
 
-    // temperature
+    // version
     versionText="";
+    if ( data.processor ) {  versionText+="<p>Processor: <b>" + data.processor + "</b></p>"}
     if ( data.distribution ) {  versionText+="<p>Distribtion: <b>" + data.distribution + "</b></p>"}
     if ( data.kernel_version ) {  versionText+="<p>Kernel version: <b>" + data.kernel_version + "</b></p>"}
     if ( data.firmware_version ) {  versionText+="<p>Firmvare version: <b>" + data.firmware_version + "</b></p>"}
@@ -124,11 +125,10 @@ $(function () {
   /* Start status update*/
   UpdateStatus();
   if ( statusautorefresh ) { 
-    refreshtimer = setInterval( UpdateStatus , 10000 ) 
+    refreshTimerId = setInterval( UpdateStatus , 10000 ) 
+    clockId=setInterval(clock,1000);
   }
 
-  setInterval(clock,1000);
-  
 });
 
 
