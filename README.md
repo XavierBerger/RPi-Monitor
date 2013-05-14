@@ -26,9 +26,6 @@ information extracted from the previous script and perform the rendering the in 
 This architecture has the advantage in an embedded architecture to offload the server task and delegate
 processing and rendering to the client.
 
-You may notice that the look and feel of the status page is clearly inspired by
-[Raspcontrol](https://github.com/Bioshox/Raspcontrol).
-
 Finnally note that the embedded server doesn't provide access control or authentication. It is still possible
 to not start the embeded web server and use an external web server to deliver the pages.
 
