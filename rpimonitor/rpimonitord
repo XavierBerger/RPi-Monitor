@@ -151,7 +151,6 @@ use strict;
 use POSIX;
 use IO::Handle;
 use HTTP::Daemon;
-use HTTP::Daemon::SSL;
 use HTTP::Status;
 
 sub new
@@ -293,22 +292,10 @@ sub Run
   push(@{$this->{'paths'}}, @{$configuration->{'rrds'}});
 
   # Create the server
-  if ( $configuration->{'ssl'} ) {
-    $this->{'server'} = new HTTP::Daemon::SSL( ReuseAddr => 1,
-                                               LocalAddr => $configuration->{'addr'},
-                                               LocalPort => $configuration->{'port'},
-                                               SSL_cert_file => "$configuration->{'ssl'}/server-cert.pem",
-                                               SSL_key_file => "$configuration->{'ssl'}/server-key.pem"
-                                             )
-
-      or die "Secure Web server not started because of error: $!\n";
-  }
-  else {
-    $this->{'server'} = new HTTP::Daemon     ( ReuseAddr => 1,
-                                               LocalAddr => $configuration->{'addr'},
-                                               LocalPort => $configuration->{'port'})
-      or die "Web server not started because or error: $!\n";
-  }
+  $this->{'server'} = new HTTP::Daemon     ( ReuseAddr => 1,
+                                             LocalAddr => $configuration->{'addr'},
+                                             LocalPort => $configuration->{'port'})
+    or die "Web server not started because or error: $!\n";
 
   $this->Debug(1,"< URL:", $this->{'server'}->url, ">");
 
@@ -488,7 +475,6 @@ OPTIONS
   -h, --help        Shows this help and exit
   -n, --noserver    Don't start embeded server
   -p, --port        Web server port (Default: 8888)
-  -s, --secure      Use https in web server
   -v, --verbose     Write debug info on screen
   -V, --Version     Show version and exit
 
@@ -499,24 +485,6 @@ CONFIGURATION
   Configuration defined inside a configuration file always overwrite
   default values. Configuration given as option of the command line
   always overwrite the one defined into a file.
-
-SECURE ACCESS WITH SSL -- WARNING FEATURE NOT STABILIZED YET --
-
-  Note: This code works fine on Ubuntu 12.10 but crash on Raspian
-
-  $1 server can use SSL to secure the communication. It is
-  required to add certificate into ./certs/ directory and start $1
-  with the -s parameter.
-
-  To generate a certificate, execute the following commands
-
-    openssl req -config /etc/ssl/openssl.cnf \
-            -new -days 365 -newkey rsa:1024 -x509 \
-            -keyout certs/server-key-with-password.pem \
-            -out certs/server-cert.pem
-
-    openssl rsa -in certs/server-key-with-password.pem \
-                -out certs/server-key.pem
 
 AUTHOR
   Xavier Berger
@@ -579,7 +547,6 @@ while($_ = shift)
   /-n(oserver)?/    and $configuration->{'noserver'}++ and next;
   /-p(ort)?/        and $configuration->{'port'} = shift and next;
   #/-r(etry)?/       and $configuration->{'retry'} = shift and next;
-  /-s(sl)?/         and $configuration->{'ssl'} = shift and next;
   /^-([v]+)$/       and $verbose = length $1 and next;
   /-V(ersion)?/     and die "$0 version $VERSION\n";
 } 
@@ -594,18 +561,9 @@ my $serverpid;
 for (my $retry=0; $retry<6; $retry++) {
   unlink $pidfile;
   $pidfile and writePID();
-  #open(PID, ">> $pidfile") || die "Could not open '$pidfile' $!"; 
-  #  my @pidfilecontent=<PID>; 
-  #close(PID); 
   $serverpid = StartServer($configuration);
   $monitor->Run($configuration, $serverpid);
-  
-  #open(PID, "> $pidfile") || die "Could not open '$pidfile' $!"; 
-  #  foreach () {
-  #}
   close(PID);
-  if ($retry == 5) { $configuration->{'ssl'}=''; }
-  #TODO: fall down to unsecure
   $configuration->{'delay'} or last;
 }
 

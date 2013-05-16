@@ -8,7 +8,7 @@
 
 Before installing **RPi-Monitor** you should install the dependencies. To do so, execute the following command:
 
-    sudo apt-get install librrds-perl libhttp-daemon-perl libhttp-daemon-ssl-perl
+    sudo apt-get install librrds-perl libhttp-daemon-perl
 
 ## Package Installation
 
