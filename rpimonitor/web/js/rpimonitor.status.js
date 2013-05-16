@@ -11,6 +11,10 @@ function pad(n){
   return n<10 ? '0'+n : n
 }
 
+function plural(n){
+  return n>1 ? 's ' : ' ' 
+}
+
 var clocksec=0;
 function clock(){
   clocksec++;
@@ -25,17 +29,20 @@ function UpdateStatus () {
     // Uptime
     clocksec=data.localtime[5];
     uptimetext="<p>Raspberry Pi time: <b>" +  pad(data.localtime[3]) + "</b>:<b>" + pad(data.localtime[4]) +"</b>:<b><span id='seconds'>" + pad(clocksec) + "</span></b></p><p>";
-    
-    days = Math.round(data.uptime / 86400);
+
+    years = Math.floor(data.uptime / 31556926);
+    rest = data.uptime % 31556926;    
+    days = Math.floor( rest / 86400);
     rest = data.uptime % 86400;
-    hours = Math.round(rest / 3600);
+    hours = Math.floor(rest / 3600);
     rest = data.uptime % 3600;
-    minutes = Math.round(rest / 60);
-    seconds = Math.round(rest % 60);
-    if ( days != 0 ) { uptimetext = uptimetext + "<b>" + days + "</b> days " }
-    if ( ( days != 0 ) || ( hours != 0) )uptimetext += "<b>" + pad(hours) +"</b> hours "
-    uptimetext += "<b>" + pad(minutes) +"</b> minutes "
-    uptimetext += "<b>" + pad(seconds) +"</b> seconds<p>"
+    minutes = Math.floor(rest / 60);
+    seconds = Math.floor(rest % 60);
+    if ( years != 0 ) { uptimetext += uptimetext + "<b>" + years + "</b> year" + plural(years) }
+    if ( ( years != 0 ) || ( days != 0) ) { uptimetext += "<b>" + days +"</b> day" + plural(days)}
+    if ( ( days != 0 ) || ( hours != 0) ) { uptimetext += "<b>" + pad(hours) +"</b> hour" + plural(hours)}
+    uptimetext += "<b>" + pad(minutes) +"</b> minute" + plural(minutes);
+    uptimetext += "<b>" + pad(seconds) +"</b> second"+plural(seconds)+"<p>"
     $('#uptimeText').html(uptimetext);
 
     // version
