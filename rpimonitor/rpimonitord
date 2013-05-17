@@ -57,7 +57,7 @@ sub Load
 
   my $script = abs_path($0);
   $script =~ /(.*)\/(\w+)$/;
-  $this->{'conf_file'}   ||= "$1/$2.conf";
+  $this->{'conf_file'} ||= "$1/$2.conf";
   
   # load configuration
   my $section;
@@ -260,14 +260,17 @@ sub DoGET
   my $this = shift;
   my $request = shift;
   my $configuration = shift;
-  $configuration->Debug(3,"");
+  $this->Debug(2,"");
 
   my $connection = $this->{'connection'};
-  my $path = $request->url->path;
-  $this->Debug(2,$path);
+  $_ = $request->url->path;
+  $configuration->{'weburi'} and s/^$configuration->{'weburi'}//; 
+  my $path = $_;
+  $this->Debug(2, "$configuration->{'weburi'}$path");
 
   #The file need to be known or we return an error
-  $path ~~ @{$this->{'paths'}} or $connection->send_error(404,"$path not in ". join ('<br>',@{$this->{'paths'}} )) and return;
+  #$path ~~ @{$this->{'paths'}} or $connection->send_error(404,"<br><b>$path</b> not in [$configuration->{'weburi'}]<br>". join ('<br>',@{$this->{'paths'}} )) and return;
+  $path ~~ @{$this->{'paths'}} or $connection->send_error(404) and return;
 
   $path =~ /rpimonitord.json/ and $this->SendStatus() and return;
 

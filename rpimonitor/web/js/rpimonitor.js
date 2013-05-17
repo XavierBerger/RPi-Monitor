@@ -1,6 +1,6 @@
 var animate;
 var shellinabox;
-var shellinaboxport;
+var shellinaboxuri;
 var statusautorefresh;
 var refreshTimerId;
 var clickId;
@@ -20,13 +20,13 @@ function SetShellinaboxMenu(){
   $('#shellinabox').attr('checked', shellinabox );
   if ( shellinabox ) {
     $('#shellinaboxmenu').removeClass('hide');
-    $('#shellinaboxport').val(shellinaboxport);
-    $('#shellinaboxport').attr('disabled',false);
+    $('#shellinaboxuri').val(shellinaboxuri);
+    $('#shellinaboxuri').attr('disabled',false);
   }
   else{
     $('#shellinaboxmenu').addClass('hide');
-    $('#shellinaboxport').val('');
-    $('#shellinaboxport').attr('disabled',true);
+    $('#shellinaboxuri').val('');
+    $('#shellinaboxuri').attr('disabled',true);
   }
 
 }
@@ -57,7 +57,7 @@ $(function () {
             '<p><label class="checkbox"><input type="checkbox" id="animate">Animate progress bar</label></p>'+
             '<p><form class="form-inline">'+
               '<label class="checkbox"><input type="checkbox" id="shellinabox">Show shellinabox menu</label> '+
-              '<input type="text" placeholder="Listen Port" id="shellinaboxport" class="input-small" >'+
+              '<input type="text" placeholder="Address" id="shellinaboxuri" class="input-medium" >'+
             '</form></p>'+
             '<p><label class="checkbox"><input type="checkbox" id="statusautorefresh">Auto refresh status page</label></p>'+
           '</div>'+
@@ -212,7 +212,7 @@ $(function () {
 
   animate=(localStorage.getItem('animate') === 'true');
   shellinabox=(localStorage.getItem('shellinabox') === 'true');
-  shellinaboxport=(localStorage.getItem('shellinaboxport') || '4200');
+  shellinaboxuri=(localStorage.getItem('shellinaboxuri') || '/shellinabox');
   statusautorefresh=(localStorage.getItem('statusautorefresh') === 'true');
 
   AddTopmenu();
@@ -234,9 +234,9 @@ $(function () {
     SetShellinaboxMenu();
   });
 
-  $('#shellinaboxport').keyup(function(){
-    shellinaboxport = $('#shellinaboxport').val();
-    localStorage.setItem('shellinaboxport', shellinaboxport);
+  $('#shellinaboxuri').keyup(function(){
+    shellinaboxuri = $('#shellinaboxuri').val();
+    localStorage.setItem('shellinaboxuri', shellinaboxuri);
   });
   
   

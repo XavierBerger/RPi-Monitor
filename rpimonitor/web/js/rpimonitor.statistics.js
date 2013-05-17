@@ -1,7 +1,7 @@
 $(function () {
 
   //
-  fname="/stat/cpuload.rrd";
+  fname="stat/cpuload.rrd";
 
   // Remove the Javascript warning
   document.getElementById("infotable").deleteRow(0);
@@ -46,12 +46,12 @@ $(function () {
 
     // Get json to extract the list of rrd availble
     $.ajaxSetup({ cache: false });
-    $.getJSON('/stat/rpimonitord.json', function(data) {
+    $.getJSON('stat/rpimonitord.json', function(data) {
       var graphlist="Graph: <select id='selected_graph'>\n";
       for (var i=0;i<data.section.length;i++)
       {
-        graphlist+="<option value='/stat/"+data.section[i]+".rrd'";
-        if ( fname=="/stat/"+data.section[i]+".rrd") { graphlist+=" selected "; }
+        graphlist+="<option value='stat/"+data.section[i]+".rrd'";
+        if ( fname=="stat/"+data.section[i]+".rrd") { graphlist+=" selected "; }
         graphlist+=">"+data.section[i]+"</option>\n";
       }
       graphlist+="</select>\n";

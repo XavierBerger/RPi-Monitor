@@ -23,7 +23,7 @@ function clock(){
 }
 
 function UpdateStatus () {
-  $.getJSON('/stat/rpimonitord.json', function(data) {
+  $.getJSON('stat/rpimonitord.json', function(data) {
     $('#message').addClass('hide');
 
     // Uptime
