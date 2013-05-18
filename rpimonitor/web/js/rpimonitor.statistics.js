@@ -67,10 +67,14 @@ $(function () {
         ShowFriends(data.friends);
       }
 
-    }).fail(function() {
+    })
+    .fail(function() {
         $('#message').html("<b>Can not get status information. Is rpimonitord.conf correctly configured on server?</b>") ;
         $('#message').removeClass('hide');
         $('#mygraph').addClass('hide');
+      })
+    .always(function(){
+        $('#preloader').addClass('hide');
       });
   }
 

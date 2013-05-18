@@ -19,7 +19,7 @@ $|=1;
 $SIG{CHLD}   = 'IGNORE';
 $SIG{INT}    = sub { stop(); }; # catch Ctrl+C
 
-my $VERSION  = "{DEVELOPMENT}";
+my $VERSION  = "1.2";
 my $verbose  = 0;
 
 # prepare the shared memory for communication between Monitor and Server
@@ -188,6 +188,7 @@ sub new
     "/img/cpu_temp.png",
     "/img/logo.png",
     "/img/sd.png",
+    "/img/preloader.gif",
 
     "/js/rpimonitor.shellinabox.js",
     "/js/rpimonitor.statistics.js",
