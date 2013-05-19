@@ -52,6 +52,8 @@ function UpdateStatus () {
     if ( data.kernel_version ) {  versionText+="<p>Kernel version: <b>" + data.kernel_version + "</b></p>"}
     if ( data.firmware_version ) {  versionText+="<p>Firmvare version: <b>" + data.firmware_version + "</b></p>"}
     if ( data.revision ) {  versionText+="<p>Revision: <b>" + data.revision + "</b></p>"}
+    if ( data.upgrade ) {  versionText+="<p>Packages in repository: <b>" + data.upgrade + "</b></p>"}
+    
     $('#versionText').html( versionText );
 
     // memory

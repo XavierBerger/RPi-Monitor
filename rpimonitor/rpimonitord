@@ -102,6 +102,7 @@ sub Load
   my @rrds=("/stat/$this->{'status_file'}");
   for ( keys %{$this->{'section'}} ){
     $_ or next;
+    /^_/ and next; 
     $this->{'status'} = $this->{'status'} . "\"$_\",";
     if ( $_ ) {
       -f "$this->{'webroot'}/stat/$_.rrd" or $this->CreateRRD($_);
