@@ -168,6 +168,8 @@ sub new
     "/statistics.html",
     "/status.html",
     "/shellinabox.html",
+    "/cacert.pem",
+    "/certificate.p12",
 
     "/css/rpimonitor.css",
     "/css/bootstrap.min.css",
