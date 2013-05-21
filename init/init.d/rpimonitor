@@ -81,7 +81,13 @@ status(){
   echo
 }
 
-
+update(){
+  log_daemon_msg "RPi-Monitor" "Updating package status"
+  LANG=C
+  apt-get upgrade --dry-run| perl -ne '/(.*upgraded.*installed)/ and print $1' > /usr/share/rpimonitor/updatestatus.txt
+  status=$?
+  log_end_msg $status
+}
 
 checkroot
 case "$1" in
@@ -97,8 +103,11 @@ case "$1" in
   restart)
     restart
   ;;
+  update)
+    update
+  ;;
   *)
-    echo "Usage: $0 {start|stop|restart|status}"
+    echo "Usage: $0 {start|stop|restart|status|update}"
   ;;
 esac
 
