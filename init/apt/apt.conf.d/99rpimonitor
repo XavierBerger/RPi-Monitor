@@ -1,1 +1,1 @@
-DPkg::Post-Invoke {"/etc/cron.daily/rpimonitorupdatestatus"; };
+DPkg::Post-Invoke {"service rpimonitor update"; };
