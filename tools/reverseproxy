@@ -1,0 +1,68 @@
+access_log off;
+add_header Cache-Control public;
+server_tokens off;
+
+# HTTP 80
+server {
+ listen         80;
+ #Force the usage of https
+ rewrite ^ https://$host$request_uri? permanent;
+}
+
+# HTTPS 443
+server  {
+  listen 443 ssl;
+  keepalive_timeout 70;
+
+  # SSL config
+  ssl on;
+  ssl_certificate /etc/ssl/localcerts/RPi-Experiences-cert.pem;
+  ssl_certificate_key /etc/ssl/localcerts/RPi-Experiences-key.pem;
+
+  ssl_session_timeout 5m;
+  ssl_protocols SSLv3 TLSv1.2;
+  ssl_ciphers RC4:HIGH:!aNULL:!MD5;
+  ssl_prefer_server_ciphers on;
+  ssl_session_cache shared:SSL:10m;
+
+  # Allow to use frame from same origin
+  add_header X-Frame-Options SAMEORIGIN;
+
+  # DDOS protection - Tune Values or deactivate in case of issue
+  # limit_conn conn_limit_per_ip 20;
+  # limit_req zone=req_limit_per_ip burst=20 nodelay;
+
+  # Proxy Config
+  proxy_redirect          off;
+  proxy_set_header        Host            $host;
+  proxy_set_header        X-Real-IP       $remote_addr;
+  proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+  client_max_body_size    10m;
+  client_body_buffer_size 128k;
+  proxy_connect_timeout   90;
+  proxy_send_timeout      90;
+  proxy_read_timeout      90;
+  proxy_buffers           32 4k;
+
+  # Define the default site
+  location / {
+    rewrite ^ /rpimonitor/ permanent;
+  }
+
+  location /rpimonitor/ {
+  proxy_pass http://localhost:8888;
+    auth_basic            "Access Restricted";
+    auth_basic_user_file  "/etc/nginx/.htpasswd";
+    access_log /var/log/nginx/rpimonitor.access.log;
+    error_log /var/log/nginx/rpimonitor.error.log;
+  }
+
+  location /shellinabox/ {
+  proxy_pass http://localhost:4200;
+    auth_basic            "Access Restricted";
+    auth_basic_user_file  "/etc/nginx/.htpasswd";
+    access_log /var/log/nginx/shellinabox.access.log;
+    error_log /var/log/nginx/shellinabox.error.log;
+  }
+}
+
