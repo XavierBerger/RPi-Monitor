@@ -4,3 +4,7 @@ DAEMON_START=1
 
 # CONFFILE="-c /etc/rpimonitord.conf" : Define configuration file to use
 CONFFILE="-c /etc/rpimonitord.conf"
+
+# SHOW_PACKAGE_UPDATE=0 : Do not show update packages
+# SHOW_PACKAGE_UPDATE=1 : Show update packages 
+SHOW_PACKAGE_UPDATE=1  

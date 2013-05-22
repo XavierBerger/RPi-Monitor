@@ -82,6 +82,11 @@ status(){
 }
 
 update(){
+  if [ "$SHOW_PACKAGE_UPDATE" = "0" ]; then
+    echo > /usr/share/rpimonitor/updatestatus.txt
+    return 0
+  fi
+
   log_daemon_msg "RPi-Monitor" "Updating package status"
   LANG=C
   apt-get upgrade --dry-run| perl -ne '/(.*upgraded.*installed)/ and print $1' > /usr/share/rpimonitor/updatestatus.txt

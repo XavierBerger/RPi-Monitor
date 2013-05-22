@@ -70,6 +70,7 @@ function UpdateStatus () {
     cpuText+="<p>CPU frequency: <b>"+ (data.cpu_frequency / 1000)+"MHz</b> "
     if ( data.voltage ) { cpuText+="Voltage: <b>" +data.voltage+"V</b>" }
     cpuText+="</p>"
+    if ( data.scaling_governor ) { cpuText+="<p>Scaling governor: <b>" +data.scaling_governor+"</b></p>" }
     $('#cpuText').html( cpuText );
 
     // temperature
