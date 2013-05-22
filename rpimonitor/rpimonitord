@@ -268,13 +268,20 @@ sub DoGET
 
   my $connection = $this->{'connection'};
   $_ = $request->url->path;
-  $configuration->{'weburi'} and s/^$configuration->{'weburi'}//; 
   my $path = $_;
-  $this->Debug(2, "$configuration->{'weburi'}$path");
+  $this->Debug(2, "$path");
 
   #The file need to be known or we return an error
-  #$path ~~ @{$this->{'paths'}} or $connection->send_error(404,"<br><b>$path</b> not in [$configuration->{'weburi'}]<br>". join ('<br>',@{$this->{'paths'}} )) and return;
-  $path ~~ @{$this->{'paths'}} or $connection->send_error(404) and return;
+  my $isvalid;
+  foreach(@{$this->{'paths'}}) {
+    if ( $path =~ /$_$/) { 
+      $isvalid=1;
+      $path=$_;
+      last;
+    }
+  }
+  #$isvalid or $connection->send_error(404,"<br><b>$path</b> not in <br>". join ('<br>',@{$this->{'paths'}} )) and return;
+  $isvalid or $connection->send_error(404);
 
   $path =~ /rpimonitord.json/ and $this->SendStatus() and return;
 
@@ -296,7 +303,7 @@ sub Run
   my $configuration=shift;
   $this->Debug(3,"");
 
-  push(@{$this->{'paths'}}, @{$configuration->{'rrds'}});
+  unshift(@{$this->{'paths'}}, @{$configuration->{'rrds'}});
 
   # Create the server
   $this->{'server'} = new HTTP::Daemon     ( ReuseAddr => 1,
@@ -463,7 +470,7 @@ NAME
 
 USAGE
   $1 [-a address][ -b pidfile][-c configuration_file][-d delay]
-     [-h][-n][-p port][-s][-v[v[...]]][-V]
+     [-h][-n][-p port][-v[v[...]]][-V]
 
 DESCRIPTION
   $1 is designed extract data from Raspberry Pi system and store
