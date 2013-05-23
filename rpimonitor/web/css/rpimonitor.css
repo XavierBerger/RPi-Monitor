@@ -108,3 +108,7 @@ code {
     padding-top: 18px;
     width: 400px;
 }
+
+.popover-content {
+    line-height: 16px;
+}

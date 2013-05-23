@@ -52,9 +52,20 @@ function UpdateStatus () {
     if ( data.kernel_version ) {  versionText+="<p>Kernel version: <b>" + data.kernel_version + "</b></p>"}
     if ( data.firmware_version ) {  versionText+="<p>Firmvare version: <b>" + data.firmware_version + "</b></p>"}
     if ( data.revision ) {  versionText+="<p>Revision: <b>" + data.revision + "</b></p>"}
-    if ( data.upgrade ) {  versionText+="<p>Packages in repository: <b>" + data.upgrade + "</b></p>"}
-    
+    if ( data.upgrade ) {
+      versionText+="<p>Packages in repository: <b>" + data.upgrade + 
+	               "</b> <a href='#' id='packages'><i class='icon-search'></i></p>";
+    }  
     $('#versionText').html( versionText );
+
+    if ( data.packages ){
+      $('#packages').removeClass('hide');
+      $('#packages').popover({trigger:'click',placement:'left',html:true, content:data.packages });
+    }
+    else {
+      $('#packages').addClass('hide');
+    }
+
 
     // memory
     mempercent=100*(data.memory_total-data.memory_free)/data.memory_total;
@@ -131,6 +142,8 @@ function UpdateStatus () {
 $(function () {
   /* set no cache */
   $.ajaxSetup({ cache: false });
+
+  $("#packages").popover();
   
   /* Start status update*/
   UpdateStatus();

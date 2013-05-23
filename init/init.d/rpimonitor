@@ -46,7 +46,6 @@ start() {
   done;
 
   log_daemon_msg "Starting RPi-Monitor" "rpimonitord"
-  /etc/cron.daily/rpimonitorupdatestatus > /dev/null 2>&1 &
   nice -n 19 $DAEMON -b $PIDFILE $CONFFILE
   status=$?
   log_end_msg $status
@@ -89,7 +88,7 @@ update(){
 
   log_daemon_msg "RPi-Monitor" "Updating package status"
   LANG=C
-  apt-get upgrade --dry-run| perl -ne '/(.*upgraded.*installed)/ and print $1' > /usr/share/rpimonitor/updatestatus.txt
+  apt-get upgrade --dry-run| perl -ne '/(.*upgraded.*installed|^  \S+.*)/ and print "$1 "' 2>/dev/null > /usr/share/rpimonitor/updatestatus.txt
   status=$?
   log_end_msg $status
 }
