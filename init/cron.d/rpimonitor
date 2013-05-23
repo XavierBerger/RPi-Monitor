@@ -2,5 +2,6 @@
 05 03 * * * root apt-get update > /dev/null 2>&1
 
 # run at 03:10 to update status
-10 03 * * * root service rpimonitor update
+10 03 * * * root service rpimonitor update  > /dev/null 2>&1
+
 
