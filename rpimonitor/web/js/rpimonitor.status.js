@@ -53,14 +53,14 @@ function UpdateStatus () {
     if ( data.firmware_version ) {  versionText+="<p>Firmvare version: <b>" + data.firmware_version + "</b></p>"}
     if ( data.revision ) {  versionText+="<p>Revision: <b>" + data.revision + "</b></p>"}
     if ( data.upgrade ) {
-      versionText+="<p>Packages in repository: <b>" + data.upgrade + 
+      versionText+="<p>Packages in repository to be: <b>" + data.upgrade + 
 	               "</b> <a href='#' id='packages'><i class='icon-search'></i></p>";
     }  
     $('#versionText').html( versionText );
 
     if ( data.packages ){
       $('#packages').removeClass('hide');
-      $('#packages').popover({trigger:'click',placement:'left',html:true, content:data.packages });
+      $('#packages').popover({trigger:'hover',placement:'left',html:true, title: "Upgradable packages", content:data.packages });
     }
     else {
       $('#packages').addClass('hide');
@@ -77,7 +77,7 @@ function UpdateStatus () {
 
     // cpu
     cpuText=""
-    cpuText+="<p>Load: 1 Min: <b>" + data.load1 + "</b> - 5 Min: <b>" + data.load5 +"</b> - 15 Min: <b>" + data.load15 + "</b>"
+    cpuText+="<p>Loads: <b>" + data.load1 + "</b> [1min] - <b>" + data.load5 +"</b> [5min] - <b>" + data.load15 + "</b> [15min]</p>"
     cpuText+="<p>CPU frequency: <b>"+ (data.cpu_frequency / 1000)+"MHz</b> "
     if ( data.voltage ) { cpuText+="Voltage: <b>" +data.voltage+"V</b>" }
     cpuText+="</p>"

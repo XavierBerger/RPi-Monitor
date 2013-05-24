@@ -112,3 +112,9 @@ code {
 .popover-content {
     line-height: 16px;
 }
+
+.popover {
+  max-width: 450px;
+}
+
+

@@ -24,7 +24,7 @@ my $verbose  = 0;
 
 # prepare the shared memory for communication between Monitor and Server
 my $key      = $$;
-my $shm_size = 1024;
+my $shm_size = 8192;
 
 my $pidfile;
 

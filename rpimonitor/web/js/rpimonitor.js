@@ -1,6 +1,7 @@
 var animate;
 var shellinabox;
 var shellinaboxuri;
+var shellinaboxwarning;
 var statusautorefresh;
 var refreshTimerId;
 var clickId;
@@ -18,17 +19,21 @@ function SetProgressBarAnimate(){
 
 function SetShellinaboxMenu(){
   $('#shellinabox').attr('checked', shellinabox );
+  $('#shellinaboxwarning').attr('checked', shellinaboxwarning );
   if ( shellinabox ) {
     $('#shellinaboxmenu').removeClass('hide');
     $('#shellinaboxuri').val(shellinaboxuri);
     $('#shellinaboxuri').attr('disabled',false);
+    $('#shellinaboxwarning').attr('disabled',false);
+    $('#shellinaboxwarninglabel').removeClass('muted');
   }
   else{
     $('#shellinaboxmenu').addClass('hide');
     $('#shellinaboxuri').val('');
     $('#shellinaboxuri').attr('disabled',true);
+    $('#shellinaboxwarning').attr('disabled',true);
+    $('#shellinaboxwarninglabel').addClass('muted');
   }
-
 }
 
 function ShowFriends(friend){
@@ -54,12 +59,15 @@ $(function () {
             '<h3 id="myModalLabel">Configuration</h3>'+
           '</div>'+
           '<div class="modal-body">'+
-            '<p><label class="checkbox"><input type="checkbox" id="animate">Animate progress bar</label></p>'+
+            '<p><label class="checkbox"><input type="checkbox" id="animate"> Animate progress bar</label></p>'+
             '<p><form class="form-inline">'+
-              '<label class="checkbox"><input type="checkbox" id="shellinabox">Show shellinabox menu</label> '+
-              '<input type="text" placeholder="Address" id="shellinaboxuri" class="input-medium" >'+
+              '<label class="checkbox"><input type="checkbox" id="shellinabox"> Show shellinabox menu</label> <br>'+
+              '&nbsp;&nbsp;&nbsp;&nbsp;'+
+              '<label class="checkbox"><input type="text" placeholder="Address" id="shellinaboxuri" class="input-medium"></label><br>'+
+              '&nbsp;&nbsp;&nbsp;&nbsp;'+
+              '<label class="checkbox" id="shellinaboxwarninglabel"><input type="checkbox" id="shellinaboxwarning"> Do not show warning on page close or refresh</label>'+
             '</form></p>'+
-            '<p><label class="checkbox"><input type="checkbox" id="statusautorefresh">Auto refresh status page</label></p>'+
+            '<p><label class="checkbox"><input type="checkbox" id="statusautorefresh"> Auto refresh status page</label></p>'+
           '</div>'+
           '<div class="modal-footer">'+
             '<button class="btn" data-dismiss="modal" aria-hidden="true" id="closeconfiguration">Close</button>'+
@@ -213,6 +221,7 @@ $(function () {
   animate=(localStorage.getItem('animate') === 'true');
   shellinabox=(localStorage.getItem('shellinabox') === 'true');
   shellinaboxuri=(localStorage.getItem('shellinaboxuri') || '/shellinabox');
+  shellinaboxwarning=(localStorage.getItem('shellinaboxwarning') === 'true' );
   statusautorefresh=(localStorage.getItem('statusautorefresh') === 'true');
 
   AddTopmenu();
@@ -237,6 +246,11 @@ $(function () {
   $('#shellinaboxuri').keyup(function(){
     shellinaboxuri = $('#shellinaboxuri').val();
     localStorage.setItem('shellinaboxuri', shellinaboxuri);
+  });
+
+  $('#shellinaboxwarning').click(function(){
+    shellinaboxwarning = $('#shellinaboxwarning').is(":checked");
+    localStorage.setItem('shellinaboxwarning', shellinaboxwarning);
   });
   
   
