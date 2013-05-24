@@ -1,7 +1,7 @@
 # run at 03:05 to update local repository database
-05 03 * * * root apt-get update > /dev/null 2>&1
+05 03 * * * root /usr/bin/apt-get update > /dev/null 2>&1
 
 # run at 03:10 to update status
-10 03 * * * root service rpimonitor update  > /dev/null 2>&1
+10 03 * * * root /etc/init.d/rpimonitor update > /dev/null 2>&1
 
 
