@@ -1,7 +1,7 @@
 $(function () {
 
   //
-  fname="stat/cpuload.rrd";
+  fname=(localStorage.getItem('activestatistic') || "stat/cpuload.rrd");
 
   // Remove the Javascript warning
   document.getElementById("infotable").deleteRow(0);
@@ -59,6 +59,7 @@ $(function () {
       $("#mygraph_res_title").html(graphlist);
       $('#selected_graph').on('change', function (e) {
         fname = this.value;
+        localStorage.setItem('activestatistic', fname);
         fname_update();
       })
       
