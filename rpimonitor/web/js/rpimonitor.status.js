@@ -54,7 +54,7 @@ function UpdateStatus () {
     if ( data.revision ) {  versionText+="<p>Revision: <b>" + data.revision + "</b></p>"}
     if ( data.upgrade ) {
       versionText+="<p>Packages in repository to be: <b>" + data.upgrade + 
-	               "</b> <a href='#' id='packages'><i class='icon-search'></i></p>";
+                 "</b> <a href='#' id='packages'><i class='icon-search'></i></p>";
     }  
     $('#versionText').html( versionText );
 
@@ -120,8 +120,8 @@ function UpdateStatus () {
     $('#netText').html(
       "Ethernet Sent: <b>" +
       FormatSize(data.net_send/1024) + " <i class='icon-arrow-up'></i>"+
-      "</b> Recieved: <b>" +
-      FormatSize(data.net_recived/1024) + " <i class='icon-arrow-down'></i></b>"
+      "</b> Received: <b>" +
+      FormatSize(data.net_received/1024) + " <i class='icon-arrow-down'></i></b>"
     );
 
     SetProgressBarAnimate();
