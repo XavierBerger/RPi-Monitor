@@ -177,6 +177,7 @@ $(function () {
                     '<a href="#" class="dropdown-toggle" data-toggle="dropdown">About <b class="caret"></b></a>'+
                     '<ul class="dropdown-menu">'+
                       '<li class="nav-header">RPi-Monitor</li>'+
+                      '<li><a href="http://rpi-experiences.blogspot.fr/p/rpi-monitor.html" data-toggle="modal">Help</a></li>'+
                       '<li><a href="#License" data-toggle="modal">License</a></li>'+
                       '<li><a href="#About" data-toggle="modal">About</a></li>'+
                       '<li class="divider"></li>'+
