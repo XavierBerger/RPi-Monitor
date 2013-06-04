@@ -14,10 +14,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+
+  #print encode_json \%{$configuration->{'config'}->{'web'}};
+  #print Data::Dumper->Dump([$configuration]);
+  
+  
 use IPC::SysV;
 $|=1;
 $SIG{CHLD}   = 'IGNORE';
-$SIG{INT}    = sub { stop(); }; # catch Ctrl+C
+#$SIG{INT}    = sub { stop(); }; # catch Ctrl+C
 
 my $VERSION  = "1.2";
 my $verbose  = 0;
@@ -105,6 +110,8 @@ sub Load
       -f "$filename" or $this->CreateRRD($filename,$_,$type);
     }
   }
+  #print Data::Dumper->Dump([$this]);
+  #exit;
 }
 
 sub CreateRRD
@@ -347,36 +354,61 @@ sub Run
   my $serverpid = shift;
   $this->Debug(2,"");
 
-  #print encode_json \%{$configuration->{'config'}->{'web'}};
-  #print Data::Dumper->Dump([$configuration]);
-  exit;
-
-
   if ( !$configuration->{'daemon'}->{'noserver'}) {
     $this->{'shmid'} = shmget($key, $shm_size, &IPC_CREAT | 0777 );
   }
-  
+ 
   # process data that should be extracted once
-  $this->Process($configuration->{'source'}->{'once'});
+  $this->Process($configuration->{'static'});
+
   for(;;)
   {
     # Process data
-    $this->Process($configuration->{'source'}->{'always'});
+    $this->Process($configuration->{'dynamic'});
 
     # Store and show extracted data
-    $this->Status($configuration);
+    #$this->Status($configuration);
 
     # Check if server is up 
-    kill(0,$serverpid) or last;
+    #kill(0,$serverpid) or last;
     
     # tempo before next process
-    $configuration->{'delay'} or last;
-    sleep $configuration->{'delay'};
+    $configuration->{'daemon'}->{'delay'} or last;
+    sleep $configuration->{'daemon'}->{'delay'};
   }
-  -f $configuration->{'status_file'} and unlink $configuration->{'status_file'};
-  $this->{'shmid'} and shmctl( $this->{'shmid'}, &IPC_RMID, 0 );
+  #-f $configuration->{'status_file'} and unlink $configuration->{'status_file'};
+  #$this->{'shmid'} and shmctl( $this->{'shmid'}, &IPC_RMID, 0 );
 }
 
+sub Process
+{
+  my $this = shift;
+  my $list = shift;
+  $this->Debug(2,"");
+  
+  foreach my $kpi ( values($list) ) {
+    my $file = -f $kpi->{'source'} ? $kpi->{'source'} : "$kpi->{'source'} 2>/dev/null|";
+    open(FEED, $file);
+    while (<FEED>){
+      @_ = /$kpi->{'regexp'}/;
+      $kpi->{'postprocess'} and eval( $kpi->{'postprocess'} );
+      my $i=0;
+      my @names = split(',',$kpi->{'name'});
+      foreach ( @_ ) { 
+        $this->{'result'}->{@names[$i]}=@_[$i];
+        $i++;
+      }
+    }
+    close(FEED);
+  }
+  
+  #print Data::Dumper->Dump([$list]);
+  print Data::Dumper->Dump([$this->{'result'}]);
+  
+  
+  exit;
+}
+=cut
 sub Process
 {
   my $this = shift;
@@ -409,6 +441,7 @@ sub Process
     close FEED;
   }
 }
+=cut
 
 sub Status
 {
