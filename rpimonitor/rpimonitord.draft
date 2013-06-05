@@ -91,7 +91,7 @@ sub Load
   $this->{'daemon'}->{'port'}        ||= 8888;
   $this->{'daemon'}->{'addr'}        ||= '0.0.0.0';
   $this->{'daemon'}->{'webroot'}     ||= "$path/web";
-  $this->{'daemon'}->{'status_file'} ||= "$file.json";
+  $this->{'daemon'}->{'status'}      ||= "/stat/$file.json";
   $this->{'daemon'}->{'delay'}       ||= 10;
 
   # Check user and group
@@ -110,8 +110,6 @@ sub Load
       -f "$filename" or $this->CreateRRD($filename,$_,$type);
     }
   }
-  #print Data::Dumper->Dump([$this]);
-  #exit;
 }
 
 sub CreateRRD
@@ -143,6 +141,8 @@ use POSIX;
 use IO::Handle;
 use HTTP::Daemon;
 use HTTP::Status;
+use Data::Dumper;
+use JSON;
 
 sub new
 {
@@ -270,18 +270,18 @@ sub DoGET
       last;
     }
   }
-  #$isvalid or $connection->send_error(404,"<br><b>$path</b> not in <br>". join ('<br>',@{$this->{'paths'}} )) and return;
-  $isvalid or $connection->send_error(404);
+  $isvalid or $connection->send_error(404,"<br><b>$path</b> not in <br>". join ('<br>',@{$this->{'paths'}} )) and return;
+  #$isvalid or $connection->send_error(404);
 
-  $path =~ /rpimonitord.json/ and $this->SendStatus() and return;
+  $path =~ /$configuration->{'daemon'}->{'status'}/ and $this->SendStatus() and return;
 
   #The main page (/) is requested
   $path =~ /^\/$/ and $path = "/index.html";
 
   #If the file exists we return it
-  -f $configuration->{'webroot'}.$path and $this->SendFile($connection, $configuration->{'webroot'}.$path) and return;
+  -f $configuration->{'daemon'}->{'webroot'}.$path and $this->SendFile($connection, $configuration->{'daemon'}->{'webroot'}.$path) and return;
 
-  $this->Debug(2,"Can't find $configuration->{'webroot'}.$path");
+  $this->Debug(2,"Can't find $configuration->{'daemon'}->{'webroot'}.$path");
   
   #Finally send error
   $connection->send_error();
@@ -292,13 +292,19 @@ sub Run
   my $this = shift;
   my $configuration=shift;
   $this->Debug(3,"");
-
-  unshift(@{$this->{'paths'}}, @{$configuration->{'rrds'}});
-
+  foreach  ( @{$configuration->{'rrd'}} ) {
+    foreach my $name ( split (',', $_->{'name'}) ) {
+      unshift(@{$this->{'paths'}}, "/stat/$name.rrd");
+    }
+  }
+  unshift(@{$this->{'paths'}}, $configuration->{'daemon'}->{'status'});
+  #print Data::Dumper->Dump([@{$this->{'paths'}}]);
+  
   # Create the server
+  #print Data::Dumper->Dump([$configuration->{'daemon'}]);
   $this->{'server'} = new HTTP::Daemon     ( ReuseAddr => 1,
-                                             LocalAddr => $configuration->{'addr'},
-                                             LocalPort => $configuration->{'port'})
+                                             LocalAddr => $configuration->{'daemon'}->{'addr'},
+                                             LocalPort => $configuration->{'daemon'}->{'port'})
     or die "Web server not started because or error: $!\n";
 
   $this->Debug(1,"< URL:", $this->{'server'}->url, ">");
@@ -367,17 +373,20 @@ sub Run
     $this->Process($configuration->{'dynamic'});
 
     # Store and show extracted data
-    #$this->Status($configuration);
+    $this->Status($configuration);
 
     # Check if server is up 
-    #kill(0,$serverpid) or last;
+    if ( !$configuration->{'daemon'}->{'noserver'}) {
+      kill(0,$serverpid) or last;
+    }
     
     # tempo before next process
     $configuration->{'daemon'}->{'delay'} or last;
     sleep $configuration->{'daemon'}->{'delay'};
   }
-  #-f $configuration->{'status_file'} and unlink $configuration->{'status_file'};
-  #$this->{'shmid'} and shmctl( $this->{'shmid'}, &IPC_RMID, 0 );
+  -f $configuration->{'daemon'}->{'webroot'}.$configuration->{'daemon'}->{'status'} 
+    and unlink $configuration->{'daemon'}->{'webroot'}.$configuration->{'daemon'}->{'status'};
+  $this->{'shmid'} and shmctl( $this->{'shmid'}, &IPC_RMID, 0 );
 }
 
 sub Process
@@ -390,8 +399,8 @@ sub Process
     my $file = -f $kpi->{'source'} ? $kpi->{'source'} : "$kpi->{'source'} 2>/dev/null|";
     open(FEED, $file);
     while (<FEED>){
-      @_ = /$kpi->{'regexp'}/;
-      $kpi->{'postprocess'} and eval( $kpi->{'postprocess'} );
+      @_ = /$kpi->{'regexp'}/ or next;
+      $kpi->{'postprocess'} and @_=eval( $kpi->{'postprocess'} );
       my $i=0;
       my @names = split(',',$kpi->{'name'});
       foreach ( @_ ) { 
@@ -403,90 +412,42 @@ sub Process
   }
   
   #print Data::Dumper->Dump([$list]);
-  print Data::Dumper->Dump([$this->{'result'}]);
-  
-  
-  exit;
+  #print Data::Dumper->Dump([$this->{'result'}]);
 }
-=cut
-sub Process
-{
-  my $this = shift;
-  my $list = shift;
-  
-  #cleanup results
-  foreach my $src ( keys (%$list) ){
-    foreach my $re ( keys (%{$list->{$src}}) ){
-      foreach ( @{$list->{$src}->{$re}} ) {
-        $this->{'result'}->{$_} = '';
-      }
-    }
-  }
-  
-  # for each source, read data and apply all regexp
-  foreach my $source ( keys (%$list) ){
-    my $file = -f $source ? $source : "$source 2>/dev/null|";
-    open(FEED, $file);
-    while (<FEED>){
-      foreach my $regexp ( keys (%{$list->{$source}}) ){
-        @_ = /$regexp/;
-        my $i=0;
-        my @names = @{$list->{$source}->{$regexp}};
-        foreach ( @_ ) { 
-          $this->{'result'}->{@names[$i]}=@_[$i];
-          $i++;
-        }
-      }
-    }
-    close FEED;
-  }
-}
-=cut
 
 sub Status
 {
   my $this = shift;
   my $configuration = shift;
+  $this->Debug(2,"");
 
   $this->{'result'} or return;
 
-  # construct printable status
-  my $status = "";
-  my %result = %{$this->{'result'}};
-  $status .= "\"$_\":\"$result{$_}\"\n" for (keys %result);
-
-  $this->Debug(5,"\n$status");
-
   my ($sec,$min,$hour,$mday,$mon,$year) = (localtime)[0,1,2,3,4,5];
-  my $localtime=sprintf('"localtime":["%d","%d","%d","%d","%d","%d"]',$year+1900,$mon+1,$mday,$hour,$min,$sec);
+  @{$this->{'result'}->{'localtime'}}=($year+1900,$mon+1,$mday,$hour,$min,$sec);
 
-  chomp($status);
-  $status=~s/\n/, /g;
-  $status="{ $configuration->{'status'}, $localtime, $status }";
+  my $json=encode_json \%{$this->{'result'}};
+  $this->Debug(4,"\n$json");
 
   # if embeded server is not used, we write the json file else the
   # data are transmitted with a shared memory
-  if ( $configuration->{'daemon'}->{'noserver'} ){
-    open(FILE, "> $configuration->{'webroot'}/stat/$this->{'status_file'}")
+  if ( $configuration->{'daemon'}->{'noserver'} == 1 ){
+    open(FILE, "> $configuration->{'daemon'}->{'webroot'}$configuration->{'daemon'}->{'status'}")
       or warn $!;
-      print FILE $status ;
+      print FILE $json ;
     close(FILE);
   }
   else{
     # write current status (JSON) in shared memory
-    shmwrite( $this->{'shmid'}, "$status" . " " x ($shm_size - length($status)), 0, $shm_size );
+    shmwrite( $this->{'shmid'}, "$json" . " " x ($shm_size - length($json)), 0, $shm_size );
   }
 
   # add data in round robin database
-  my %rrd = %{$configuration->{'section'}};
-  for my $section (keys %rrd){
-    $section or next;
-    my $data="N";
-    foreach ( @{$rrd{$section}} ) {
-      $data .= ":$this->{'result'}->{$_}";
+  #print Data::Dumper->Dump($configuration->{'rrd'});
+  foreach (@{$configuration->{'rrd'}}){
+    foreach my $name ( split(',',$_->{'name'}) ) {
+      RRDs::update("$configuration->{'daemon'}->{'webroot'}/stat/$name.rrd", "N:".$this->{'result'}->{$name});
     }
-    $this->Debug(4,"Update $configuration->{'webroot'}/stat/$section.rrd => $data");
-    RRDs::update("$configuration->{'webroot'}/stat/$section.rrd", $data);
   }
 }
 
