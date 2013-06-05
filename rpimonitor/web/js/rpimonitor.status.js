@@ -86,7 +86,7 @@ function UpdateStatus () {
 
     // temperature
     $('#tempText').html(
-      "CPU temperature: <b>" + (data.soc_temp/1000).toFixed(2) + "°C</b>"
+      "CPU temperature: <b>" + (data.soc_temp/1000).toFixed(2) + "&deg;C</b>"
     );
 
     // swap

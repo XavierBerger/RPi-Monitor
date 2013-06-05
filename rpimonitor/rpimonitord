@@ -56,7 +56,7 @@ sub Load
   $this->Debug(2,"");
 
   my $script = abs_path($0);
-  $script =~ /(.*)\/(\w+)$/;
+  $script =~ /(.*)\/([^\/]*)$/;
   $this->{'conf_file'} ||= "$1/$2.conf";
   
   # load configuration
@@ -81,7 +81,7 @@ sub Load
     
   # FIX ME
   my $script = abs_path($0);
-  $script =~ /(.*)\/(\w+)$/;
+  $script =~ /(.*)\/([^\/]*)$/;
   
   #Load default values is not defined yet
   $this->{'user'}        ||= "pi";
@@ -91,7 +91,6 @@ sub Load
   $this->{'webroot'}     ||= "$1/web";
   $this->{'status_file'} ||= "$2.json";
   $this->{'delay'}       ||= 10;
-
   #
   $this->{'gid'} = getgrnam($this->{'user'}) || 1000;
   $this->{'uid'} = getpwnam($this->{'group'}) || 1000;
@@ -376,7 +375,9 @@ sub Run
     $this->Status($configuration);
 
     # Check if server is up 
-    kill(0,$serverpid) or last;
+    if ( !$configuration->{'noserver'}) {
+      kill(0,$serverpid) or last;
+    }
     
     # tempo before next process
     $configuration->{'delay'} or last;
@@ -443,7 +444,7 @@ sub Status
   # if embeded server is not used, we write the json file else the
   # data are transmitted with a shared memory
   if ( $configuration->{'noserver'} ){
-    open(FILE, "> $configuration->{'webroot'}/stat/$this->{'status_file'}")
+    open(FILE, "> $configuration->{'webroot'}/stat/$configuration->{'status_file'}")
       or warn $!;
       print FILE $status ;
     close(FILE);
