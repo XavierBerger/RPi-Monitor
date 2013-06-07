@@ -14,10 +14,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+
+  #print encode_json \%{$configuration->{'config'}->{'web'}};
+  #print Data::Dumper->Dump([$configuration]);
+  
+  
 use IPC::SysV;
 $|=1;
 $SIG{CHLD}   = 'IGNORE';
-$SIG{INT}    = sub { stop(); }; # catch Ctrl+C
+#$SIG{INT}    = sub { stop(); }; # catch Ctrl+C
 
 my $VERSION  = "1.2";
 my $verbose  = 0;
@@ -37,7 +42,6 @@ sub new
 {
   my $this = bless { }, shift;
   $this->Debug(3,"");
-
   return $this;
 }
 
@@ -55,89 +59,74 @@ sub Load
   my $this = shift;
   $this->Debug(2,"");
 
-  my $script = abs_path($0);
-  $script =~ /(.*)\/([^\/]*)$/;
-  $this->{'conf_file'} ||= "$1/$2.conf";
-  
-  # load configuration
-  my $section;
-  my $webparameter;
-  open ( FILE, $this->{'conf_file'})
-    or die "Error while openning configuration file \"$this->{'conf_file'}\" because $!\n";
+  $_ = abs_path($0);
+  my ($path,$file) = /(.*)\/([^\/]*)$/;
+ 
+  $this->{'daemon'}->{'conf_file'} ||= "$path/$file.conf"; # Use default conf file is not already specified
+  $this->{'rrd'}=();
+
+  open ( FILE, $this->{'daemon'}->{'conf_file'})
+    or die "Error while openning configuration file \"$this->{'daemon'}->{'conf_file'}\" because $!\n";
   while (<FILE>){
     chomp;
-    /^\s*#>\[(.*)\]/ and $webparameter=$1 and next;
-    /^\s*#>(.*)/ and push(@{$this->{'webconf'}->{$webparameter}}, $1) and next;
-    /^\s*#|^$/ and next;
-    /\[(.*)\]/ and $section=$1 and next;
-    /^([^=]+)=([^=]+)$/ and ( ( $this->{$1} or $this->{$1}=$2 ) and next );
-    my ($namelist,$source,$regexp)= split('=',$_);
-    my @names=split(',',$namelist);
-    push(@{$this->{'section'}->{$section}}, @names);
-    my $switch = $section ? "always" : "once";
-    $this->{'source'}->{$switch}->{$source}->{$regexp} = \@names;
-  }
-  close(FILE);
-    
-  # FIX ME
-  my $script = abs_path($0);
-  $script =~ /(.*)\/([^\/]*)$/;
-  
-  #Load default values is not defined yet
-  $this->{'user'}        ||= "pi";
-  $this->{'group'}       ||= "pi";
-  $this->{'port'}        ||= 8888;
-  $this->{'addr'}        ||= '0.0.0.0';
-  $this->{'webroot'}     ||= "$1/web";
-  $this->{'status_file'} ||= "$2.json";
-  $this->{'delay'}       ||= 10;
-  #
-  $this->{'gid'} = getgrnam($this->{'user'}) || 1000;
-  $this->{'uid'} = getpwnam($this->{'group'}) || 1000;
+    /^\s*#|^$/ and next;                 # Ignore comments
+    my ($key, $value) = /^([^=]*)=(.*)/; # Extract key and value
+    my @leaves=split('\.', $key);        # Explode key and construct config hash
+    my $tree=$this;
+    my $branch;
+    my $leaf;
+    foreach (@leaves) {
+      $leaf = $_;
+      if ( ($leaf eq 'rrd') and $value) { push(@{$this->{'rrd'}},$tree) };
+      $branch=$tree;
+      $tree->{$leaf} ||= {};
+      $tree=$tree->{$leaf};
+    }
+    $branch->{$leaf}=$value;             # Assign value
+  }  
 
-  # check rrd directory and files and create them if they are missing
+  # Load default values is not defined yet defined
+  $this->{'daemon'}->{'user'}        ||= "pi";
+  $this->{'daemon'}->{'group'}       ||= "pi";
+  $this->{'daemon'}->{'port'}        ||= 8888;
+  $this->{'daemon'}->{'addr'}        ||= '0.0.0.0';
+  $this->{'daemon'}->{'webroot'}     ||= "$path/web";
+  $this->{'daemon'}->{'status'}      ||= "/stat/$file.json";
+  $this->{'daemon'}->{'delay'}       ||= 10;
+
+  # Check user and group
+  $this->{'daemon'}->{'gid'} = getgrnam($this->{'daemon'}->{'user'})  || 1000;
+  $this->{'daemon'}->{'uid'} = getpwnam($this->{'daemon'}->{'group'}) || 1000;
+
+  # Check rrd directory and files and create them if they are missing
   # construct the list of rrd page accessible
-  -d "$this->{'webroot'}/stat" or mkdir "$this->{'webroot'}/stat";
-  my @rrds=("/stat/$this->{'status_file'}");
-  for ( keys %{$this->{'section'}} ){
-    $_ or next;
-    /^_/ and next; 
-    $this->{'status'} = $this->{'status'} . "\"$_\",";
-    if ( $_ ) {
-      -f "$this->{'webroot'}/stat/$_.rrd" or $this->CreateRRD($_);
-      push(@rrds, "/stat/$_.rrd");
+  -d "$this->{'daemon'}->{'webroot'}/stat" or mkdir "$this->{'daemon'}->{'webroot'}/stat";
+
+  foreach (@{$this->{'rrd'}}){
+    my @name = split (',',$_->{'name'});
+    my $type = $_->{'rrd'};
+    foreach (@name) {
+      my $filename="$this->{'daemon'}->{'webroot'}/stat/$_.rrd";
+      -f "$filename" or $this->CreateRRD($filename,$_,$type);
     }
   }
-  $this->{'status'} =~ s/,$/]/;
-  $this->{'status'} = "\"section\":[".$this->{'status'} ;
-  
-  
-  for ( keys %{$this->{'webconf'}} ){
-    $this->{'status'}  .= ", \"$_\":[" . join (",", @{$this->{'webconf'}->{$_}}) . "]"; 
-  }
-  
-  $this->{'rrds'} = \@rrds;
 }
 
 sub CreateRRD
 {
   my $this = shift;
-  my $section = shift;
-  $this->Debug(2,"$this->{'webroot'}/stat/$section.rrd");
+  my $filename = shift;
+  my $name = shift;
+  my $type = shift;
+  $this->Debug(2,"$filename - $type");
 
   my $current = time();
   my $start = $current - 60;
-  my @data=();
 
-  # create the list of data to stor into the rrd
-  foreach ( @{$this->{'section'}->{$section}} ){
-     push(@data, "DS:$_:GAUGE:600:U:U");
-  }
-
-  RRDs::create( "$this->{'webroot'}/stat/$section.rrd",
+  RRDs::create( "$filename",
                 "--start", $start,
                 "--step", $this->{'delay'},
-                @data,
+                "DS:$name:$type:600:U:U",
                 "RRA:AVERAGE:0.5:1:8640",    # 1 day with interval of 10sec
                 "RRA:AVERAGE:0.5:6:2880",    # 2 day with interval of 1min
                 "RRA:AVERAGE:0.5:60:2016",   # 2 week with interval of 10min
@@ -152,6 +141,8 @@ use POSIX;
 use IO::Handle;
 use HTTP::Daemon;
 use HTTP::Status;
+use Data::Dumper;
+use JSON;
 
 sub new
 {
@@ -279,18 +270,18 @@ sub DoGET
       last;
     }
   }
-  #$isvalid or $connection->send_error(404,"<br><b>$path</b> not in <br>". join ('<br>',@{$this->{'paths'}} )) and return;
-  $isvalid or $connection->send_error(404);
+  $isvalid or $connection->send_error(404,"<br><b>$path</b> not in <br>". join ('<br>',@{$this->{'paths'}} )) and return;
+  #$isvalid or $connection->send_error(404);
 
-  $path =~ /rpimonitord.json/ and $this->SendStatus() and return;
+  $path =~ /$configuration->{'daemon'}->{'status'}/ and $this->SendStatus() and return;
 
   #The main page (/) is requested
   $path =~ /^\/$/ and $path = "/index.html";
 
   #If the file exists we return it
-  -f $configuration->{'webroot'}.$path and $this->SendFile($connection, $configuration->{'webroot'}.$path) and return;
+  -f $configuration->{'daemon'}->{'webroot'}.$path and $this->SendFile($connection, $configuration->{'daemon'}->{'webroot'}.$path) and return;
 
-  $this->Debug(2,"Can't find $configuration->{'webroot'}.$path");
+  $this->Debug(2,"Can't find $configuration->{'daemon'}->{'webroot'}.$path");
   
   #Finally send error
   $connection->send_error();
@@ -301,13 +292,19 @@ sub Run
   my $this = shift;
   my $configuration=shift;
   $this->Debug(3,"");
-
-  unshift(@{$this->{'paths'}}, @{$configuration->{'rrds'}});
-
+  foreach  ( @{$configuration->{'rrd'}} ) {
+    foreach my $name ( split (',', $_->{'name'}) ) {
+      unshift(@{$this->{'paths'}}, "/stat/$name.rrd");
+    }
+  }
+  unshift(@{$this->{'paths'}}, $configuration->{'daemon'}->{'status'});
+  #print Data::Dumper->Dump([@{$this->{'paths'}}]);
+  
   # Create the server
+  #print Data::Dumper->Dump([$configuration->{'daemon'}]);
   $this->{'server'} = new HTTP::Daemon     ( ReuseAddr => 1,
-                                             LocalAddr => $configuration->{'addr'},
-                                             LocalPort => $configuration->{'port'})
+                                             LocalAddr => $configuration->{'daemon'}->{'addr'},
+                                             LocalPort => $configuration->{'daemon'}->{'port'})
     or die "Web server not started because or error: $!\n";
 
   $this->Debug(1,"< URL:", $this->{'server'}->url, ">");
@@ -332,6 +329,9 @@ package Monitor;
 use strict;
 use POSIX;
 use RRDs;
+use Data::Dumper;
+use JSON;
+
 
 sub new
 {
@@ -360,30 +360,32 @@ sub Run
   my $serverpid = shift;
   $this->Debug(2,"");
 
-  if ( !$configuration->{'noserver'}) {
+  if ( !$configuration->{'daemon'}->{'noserver'}) {
     $this->{'shmid'} = shmget($key, $shm_size, &IPC_CREAT | 0777 );
   }
-  
+ 
   # process data that should be extracted once
-  $this->Process($configuration->{'source'}->{'once'});
+  $this->Process($configuration->{'static'});
+
   for(;;)
   {
     # Process data
-    $this->Process($configuration->{'source'}->{'always'});
+    $this->Process($configuration->{'dynamic'});
 
     # Store and show extracted data
     $this->Status($configuration);
 
     # Check if server is up 
-    if ( !$configuration->{'noserver'}) {
+    if ( !$configuration->{'daemon'}->{'noserver'}) {
       kill(0,$serverpid) or last;
     }
     
     # tempo before next process
-    $configuration->{'delay'} or last;
-    sleep $configuration->{'delay'};
+    $configuration->{'daemon'}->{'delay'} or last;
+    sleep $configuration->{'daemon'}->{'delay'};
   }
-  -f $configuration->{'status_file'} and unlink $configuration->{'status_file'};
+  -f $configuration->{'daemon'}->{'webroot'}.$configuration->{'daemon'}->{'status'} 
+    and unlink $configuration->{'daemon'}->{'webroot'}.$configuration->{'daemon'}->{'status'};
   $this->{'shmid'} and shmctl( $this->{'shmid'}, &IPC_RMID, 0 );
 }
 
@@ -391,79 +393,61 @@ sub Process
 {
   my $this = shift;
   my $list = shift;
+  $this->Debug(2,"");
   
-  #cleanup results
-  foreach my $src ( keys (%$list) ){
-    foreach my $re ( keys (%{$list->{$src}}) ){
-      foreach ( @{$list->{$src}->{$re}} ) {
-        $this->{'result'}->{$_} = '';
-      }
-    }
-  }
-  
-  # for each source, read data and apply all regexp
-  foreach my $source ( keys (%$list) ){
-    my $file = -f $source ? $source : "$source 2>/dev/null|";
+  foreach my $kpi ( values($list) ) {
+    my $file = -f $kpi->{'source'} ? $kpi->{'source'} : "$kpi->{'source'} 2>/dev/null|";
     open(FEED, $file);
     while (<FEED>){
-      foreach my $regexp ( keys (%{$list->{$source}}) ){
-        @_ = /$regexp/;
-        my $i=0;
-        my @names = @{$list->{$source}->{$regexp}};
-        foreach ( @_ ) { 
-          $this->{'result'}->{@names[$i]}=@_[$i];
-          $i++;
-        }
+      @_ = /$kpi->{'regexp'}/ or next;
+      $kpi->{'postprocess'} and @_=eval( $kpi->{'postprocess'} );
+      my $i=0;
+      my @names = split(',',$kpi->{'name'});
+      foreach ( @_ ) { 
+        $this->{'result'}->{@names[$i]}=@_[$i];
+        $i++;
       }
     }
-    close FEED;
+    close(FEED);
   }
+  
+  #print Data::Dumper->Dump([$list]);
+  #print Data::Dumper->Dump([$this->{'result'}]);
 }
 
 sub Status
 {
   my $this = shift;
   my $configuration = shift;
+  $this->Debug(2,"");
 
   $this->{'result'} or return;
 
-  # construct printable status
-  my $status = "";
-  my %result = %{$this->{'result'}};
-  $status .= "\"$_\":\"$result{$_}\"\n" for (keys %result);
-
-  $this->Debug(5,"\n$status");
-
   my ($sec,$min,$hour,$mday,$mon,$year) = (localtime)[0,1,2,3,4,5];
-  my $localtime=sprintf('"localtime":["%d","%d","%d","%d","%d","%d"]',$year+1900,$mon+1,$mday,$hour,$min,$sec);
+  @{$this->{'result'}->{'localtime'}}=($year+1900,$mon+1,$mday,$hour,$min,$sec);
 
-  chomp($status);
-  $status=~s/\n/, /g;
-  $status="{ $configuration->{'status'}, $localtime, $status }";
+  my $json=encode_json \%{$this->{'result'}};
+  $this->Debug(4,"\n$json");
 
   # if embeded server is not used, we write the json file else the
   # data are transmitted with a shared memory
-  if ( $configuration->{'noserver'} ){
-    open(FILE, "> $configuration->{'webroot'}/stat/$configuration->{'status_file'}")
+  if ( $configuration->{'daemon'}->{'noserver'} == 1 ){
+    open(FILE, "> $configuration->{'daemon'}->{'webroot'}$configuration->{'daemon'}->{'status'}")
       or warn $!;
-      print FILE $status ;
+      print FILE $json ;
     close(FILE);
   }
   else{
     # write current status (JSON) in shared memory
-    shmwrite( $this->{'shmid'}, "$status" . " " x ($shm_size - length($status)), 0, $shm_size );
+    shmwrite( $this->{'shmid'}, "$json" . " " x ($shm_size - length($json)), 0, $shm_size );
   }
 
   # add data in round robin database
-  my %rrd = %{$configuration->{'section'}};
-  for my $section (keys %rrd){
-    $section or next;
-    my $data="N";
-    foreach ( @{$rrd{$section}} ) {
-      $data .= ":$this->{'result'}->{$_}";
+  #print Data::Dumper->Dump($configuration->{'rrd'});
+  foreach (@{$configuration->{'rrd'}}){
+    foreach my $name ( split(',',$_->{'name'}) ) {
+      RRDs::update("$configuration->{'daemon'}->{'webroot'}/stat/$name.rrd", "N:".$this->{'result'}->{$name});
     }
-    $this->Debug(4,"Update $configuration->{'webroot'}/stat/$section.rrd => $data");
-    RRDs::update("$configuration->{'webroot'}/stat/$section.rrd", $data);
   }
 }
 
@@ -540,7 +524,7 @@ sub StartServer
   #start server as a separate process with specific user right (user:pi)
   my $configuration = shift;
   my $serverpid;
-  unless ( $configuration->{'noserver'} ){
+  unless ( $configuration->{'daemon'}->{'noserver'} ){
     unless ($serverpid = fork) {
       $pidfile and writePID();
       my $server = Server->new();
@@ -563,14 +547,14 @@ sub stop
 # read command lines
 while($_ = shift)
 {
-  /-a(ddr)?/        and $configuration->{'addr'} = shift and next;
+  /-a(ddr)?/        and $configuration->{'daemon'}->{'addr'} = shift and next;
   /-b(ackground)?/  and $pidfile = shift and next;
-  /-c(onf)?/        and $configuration->{'conf_file'} = shift and next;
-  /-d(elay)?/       and $configuration->{'delay'} = shift and next;
+  /-c(onf)?/        and $configuration->{'daemon'}->{'conf_file'} = shift and next;
+  /-d(elay)?/       and $configuration->{'daemon'}->{'delay'} = shift and next;
   /-h(elp)?/        and help;
-  /-n(oserver)?/    and $configuration->{'noserver'}++ and next;
-  /-p(ort)?/        and $configuration->{'port'} = shift and next;
-  #/-r(etry)?/       and $configuration->{'retry'} = shift and next;
+  /-n(oserver)?/    and $configuration->{'daemon'}->{'noserver'}++ and next;
+  /-p(ort)?/        and $configuration->{'daemon'}->{'port'} = shift and next;
+  #/-r(etry)?/       and $configuration->{'daemon'}->{'retry'} = shift and next;
   /^-([v]+)$/       and $verbose = length $1 and next;
   /-V(ersion)?/     and die "$0 version $VERSION\n";
 } 
