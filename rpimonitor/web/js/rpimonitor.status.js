@@ -1,3 +1,16 @@
+var pages;
+
+function RowTemplate(id,image,title){
+  return ""+
+        "<div class='row'>"+
+          "<div class='Icon'><img src='"+image+"' alt='"+title+"'></div>"+
+          "<div class='Title'>"+title+"</div>"+
+          "<div class='Warning'></div>"+
+          "<div class='Text' id='Text"+id+"'><b></b></div>"+
+        "</div>"+
+        "<hr>"
+}
+
 function FormatSize(size){
   if ( size < 1048576 ) {
     return ( size / 1024 ).toFixed(2)+"MB";
@@ -15,6 +28,15 @@ function plural(n){
   return n>1 ? 's ' : ' ' 
 }
 
+function uptime(input){
+  return input;
+}
+
+function kmg(input){
+  return input;
+}
+
+
 var clocksec=0;
 function clock(){
   clocksec++;
@@ -23,9 +45,23 @@ function clock(){
 }
 
 function UpdateStatus () {
-  $.getJSON('stat/rpimonitord.json', function(data) {
+  $.getJSON('stat/dynamic.json', function(data) {
+    var static = localStorage.getItem('static');
+    $.extend(data, eval('(' + static + ')'));
+    
     $('#message').addClass('hide');
-
+    
+    for (var iloop=0; iloop < pages.length; iloop++){
+      text = "";
+      for (var jloop=0; jloop < pages[iloop].line.length; jloop++){
+        var line = pages[iloop].line[jloop];
+        text = text + "<p>" + eval ( line ) + "</p>";
+      }
+      $("#Text"+iloop).html(text);
+    }
+    
+    return;
+    
     // Uptime
     clocksec=data.localtime[5];
     uptimetext="<p>Raspberry Pi time: <b>" +  pad(data.localtime[3]) + "</b>:<b>" + pad(data.localtime[4]) +"</b>:<b><span id='seconds'>" + pad(clocksec) + "</span></b></p><p>";
@@ -43,7 +79,7 @@ function UpdateStatus () {
     if ( ( days != 0 ) || ( hours != 0) ) { uptimetext += "<b>" + pad(hours) +"</b> hour" + plural(hours)}
     uptimetext += "<b>" + pad(minutes) +"</b> minute" + plural(minutes);
     uptimetext += "<b>" + pad(seconds) +"</b> second"+plural(seconds)+"<p>"
-    $('#uptimeText').html(uptimetext);
+    $('#Text2').html(uptimetext);
 
     // version
     versionText="";
@@ -139,9 +175,32 @@ function UpdateStatus () {
   
 }
 
+function ConstructPage()
+{
+  $.getJSON('web.json', function(data) {
+    localStorage.setItem('web', JSON.stringify(data));
+    for ( var iloop=0; iloop < data.status[0].content.length; iloop++) {
+      $(RowTemplate(iloop,"img/"+data.status[0].content[iloop].icon,data.status[0].content[iloop].name)).insertBefore("#insertionPoint");
+      pages=data.status[0].content;
+    }
+  })
+  .fail(function() {
+      $('#message').html("<b>Can not get status information. Is rpimonitord.conf correctly configured on server? Is server running?</b>");
+      $('#message').removeClass('hide');
+    });
+
+}
+
 $(function () {
-  /* set no cache */
+  /*set no cache */
   $.ajaxSetup({ cache: false });
+  
+  $.getJSON('stat/static.json', function(data) {
+    localStorage.setItem('static', JSON.stringify(data));
+  })
+
+  /* construct page */
+  ConstructPage();
 
   $("#packages").popover();
   

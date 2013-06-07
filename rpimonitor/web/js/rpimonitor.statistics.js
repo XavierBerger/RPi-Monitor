@@ -1,7 +1,7 @@
 $(function () {
 
   //
-  fname=(localStorage.getItem('activestatistic') || "stat/cpuload.rrd");
+  fname=localStorage.getItem('activestat');
 
   // Remove the Javascript warning
   document.getElementById("infotable").deleteRow(0);
@@ -31,13 +31,13 @@ $(function () {
     delete i_rrd_data;
     var i_rrd_data=undefined;
     if (bf.getLength()<1) {
-      alert("File "+fname+" is empty (possibly loading failed)!");
+      //alert("File "+fname+" is empty (possibly loading failed)!");
       return 1;
     }
     try {
       var i_rrd_data=new RRDFile(bf);
     } catch(err) {
-      alert("File "+fname+" is not a valid RRD archive!\n"+err);
+      //alert("File "+fname+" is not a valid RRD archive!\n"+err);
     }
     if (i_rrd_data!=undefined) {
       rrd_data=i_rrd_data;
@@ -46,20 +46,26 @@ $(function () {
 
     // Get json to extract the list of rrd availble
     $.ajaxSetup({ cache: false });
-    $.getJSON('stat/rpimonitord.json', function(data) {
+    $.getJSON('stat/rrds.json', function(data) {
       var graphlist="Graph: <select id='selected_graph'>\n";
-      for (var i=0;i<data.section.length;i++)
+      if ( fname == null) { 
+        fname = data[0]; 
+        localStorage.setItem('activestat', fname);
+        fname_update();
+      }
+
+      for (var i=0;i<data.length;i++)
       {
-        graphlist+="<option value='stat/"+data.section[i]+".rrd'";
-        if ( fname=="stat/"+data.section[i]+".rrd") { graphlist+=" selected "; }
-        graphlist+=">"+data.section[i]+"</option>\n";
+        graphlist+="<option value='"+data[i]+"'";
+        if ( fname==data[i]) { graphlist+=" selected "; }
+        graphlist+=">"+data[i]+"</option>\n";
       }
       graphlist+="</select>\n";
 
       $("#mygraph_res_title").html(graphlist);
       $('#selected_graph').on('change', function (e) {
         fname = this.value;
-        localStorage.setItem('activestatistic', fname);
+        localStorage.setItem('activestat', fname);
         fname_update();
       })
       
@@ -67,7 +73,6 @@ $(function () {
         firstload=false;
         ShowFriends(data.friends);
       }
-
     })
     .fail(function() {
         $('#message').html("<b>Can not get status information. Is rpimonitord.conf correctly configured on server?</b>") ;
@@ -87,7 +92,7 @@ $(function () {
     try {
       FetchBinaryURLAsync(fname,update_fname_handler);
     } catch (err) {
-       alert("Failed loading "+fname+"\n"+err);
+       //alert("Failed loading "+fname+"\n"+err);
     }
   }
 

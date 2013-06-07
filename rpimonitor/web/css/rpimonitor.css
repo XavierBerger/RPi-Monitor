@@ -109,6 +109,40 @@ code {
     width: 400px;
 }
 
+
+/*
+-------------------------------------------------- */
+.Icon {
+  float: left;
+  width: 50px;
+  padding-left: 40px;
+}
+.Title {
+  float: left;
+  font-family: Tahoma, Helvetica;
+  font-size: 21px;
+  padding-left: 18px;
+  padding-top: 12px;
+  width: 150px;
+}
+
+.Warning {
+    float: left;
+    width: 20px;
+    padding-left: 20px;
+    padding-top: 6px;
+}
+
+.Text {
+    float: left;
+    font-family: Tahoma, Helvetica;
+    font-size: 13px;
+    line-height: 8px;
+    padding-left: 15px;
+    padding-top: 18px;
+    width: 400px;
+}
+
 .popover-content {
     line-height: 16px;
 }
