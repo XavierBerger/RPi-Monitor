@@ -28,17 +28,37 @@ function plural(n){
   return n>1 ? 's ' : ' ' 
 }
 
-function uptime(input){
-  return input;
+function uptime(value){
+  return "TODO uptime()";
 }
 
-function kmg(input){
-  return input;
+function kmg(value){
+  unit = 1024;
+  try {
+    if (value < unit) { return value + " B" };
+    exp = Math.floor(Math.log(value) / Math.log(unit));
+    pre = "kMGTPE".charAt(exp);
+    return (value / Math.pow(unit, exp)).toFixed(2) + pre + "B";
+  }
+  catch (e) {
+    return "Error"
+  }
 }
 
+function percent(value,total){
+  return (100*(total-value)/total).toFixed(2)+"%";
+}
+
+function progressbar(value, max){
+  return "<div class='progress progress-striped'><div class='bar' style='width: "+((100 * ( max - value )) / max)+"%;'></div></div>"
+}
+
+function clock(input){
+  return "TODO clock()";
+}
 
 var clocksec=0;
-function clock(){
+function tick(){
   clocksec++;
   if (clocksec == 60) { clocksec=0 };
   $('#seconds').html(pad(clocksec));
@@ -55,7 +75,16 @@ function UpdateStatus () {
       text = "";
       for (var jloop=0; jloop < pages[iloop].line.length; jloop++){
         var line = pages[iloop].line[jloop];
-        text = text + "<p>" + eval ( line ) + "</p>";
+        text = text + "<p>"; 
+        try {
+          text = text + eval ( line );
+        }
+        catch (e) {
+          text = text + "ERROR: " + line;
+        }
+        finally {
+          text = text + "</p>";
+        }
       }
       $("#Text"+iloop).html(text);
     }
