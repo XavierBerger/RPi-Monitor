@@ -22,9 +22,9 @@
 use IPC::SysV;
 $|=1;
 $SIG{CHLD}   = 'IGNORE';
-#$SIG{INT}    = sub { stop(); }; # catch Ctrl+C
+$SIG{INT}    = sub { stop(); }; # catch Ctrl+C
 
-my $VERSION  = "1.2";
+my $VERSION  = "{DEVELOPMENT}";
 my $verbose  = 0;
 
 # prepare the shared memory for communication between Monitor and Server
@@ -61,8 +61,13 @@ sub Load
 
   $_ = abs_path($0);
   my ($path,$file) = /(.*)\/([^\/]*)$/;
- 
-  $this->{'daemon'}->{'conf_file'} ||= "$path/$file.conf"; # Use default conf file is not already specified
+
+  $this->{'daemon'}->{'conf_file'} = "$path/$file.conf"; 
+  if ( ! $this->{'daemon'}->{'conf_file'} ) {
+    # Use default conf file is not already specified
+    # Ajouter ici les sous fichiers de conf (/etc/rpimonitord.conf.d/*.conf))
+    $this->{'daemon'}->{'conf_file'} = '/etc/rpimonitord.conf'
+  }
   $this->{'rrd'}=();
 
   open ( FILE, $this->{'daemon'}->{'conf_file'})
@@ -100,15 +105,6 @@ sub Load
       if ( ($next eq 'rrd') and $value) { push(@{$this->{'rrd'}},$tree) };
       $current = $next;
     }
-=cut    
-    foreach (@leaves) {
-      $leaf = $_;
-      if ( ($leaf eq 'rrd') and $value) { push(@{$this->{'rrd'}},$tree) };
-      $branch=$tree;
-      $tree->{$leaf} ||= {};
-      $tree=$tree->{$leaf};
-    }
-=cut
     if ($current =~ /^\d+$/) {
       @{$tree}[$current-1] = $value;
     }
@@ -157,6 +153,17 @@ sub CreateRRD
   my $current = time();
   my $start = $current - 60;
 
+  $this->Debug(2,"$filename",
+                "--start", $start,
+                "--step", $this->{'daemon'}->{'delay'},
+                "DS:$name:$type:600:U:U",
+                "RRA:AVERAGE:0.5:1:8640",    # 1 day with interval of 10sec
+                "RRA:AVERAGE:0.5:6:2880",    # 2 day with interval of 1min
+                "RRA:AVERAGE:0.5:60:2016",   # 2 week with interval of 10min
+                "RRA:AVERAGE:0.5:180:1488",  # 1 mounth with interval of 30min
+                "RRA:AVERAGE:0.5:360:8784"   # 1 year with interval of 1hour
+                );
+
   RRDs::create( "$filename",
                 "--start", $start,
                 "--step", $this->{'daemon'}->{'delay'},
@@ -185,12 +192,13 @@ sub new
 
   # List of files to be delivered
   my @paths = (
+    "/",
     "/stat/rrds.json",
+    "/web.json",
     "/stat/static.json",
     "/stat/dynamic.json",
-
-    "/",
-    "/web.json",
+    "/stat/status.json",
+    "/stat/statistic.json",
     "/favicon.ico",
 
     "/index.html",
@@ -235,6 +243,7 @@ sub new
     "/js/javascriptrrd/binaryXHR.js",
     "/js/javascriptrrd/rrdFlotMatrix.js",
     "/js/javascriptrrd/rrdFlot.js",
+    "/js/javascriptrrd/rrdFilter.js",
     "/js/javascriptrrd/rrdMultiFile.js",
     "/js/javascriptrrd/rrdFile.js",
     "/js/javascriptrrd/rrdFlotSupport.js"
@@ -349,6 +358,8 @@ sub Run
   $this->{'rrds'} = encode_json(\@{$configuration->{'rrdlist'}});
   #print Data::Dumper->Dump([$this->{'paths'}]);
   $this->{'web'} = encode_json(\%{$configuration->{'web'}});
+  $this->{'status'} = encode_json(\@{$configuration->{'web'}->{'status'}});
+  $this->{'statistic'} = encode_json(\@{$configuration->{'web'}->{'statistic'}});
   $this->{'static'} = encode_json(\%{$monitor->{'static'}});
  
   # Create the server
@@ -579,8 +590,8 @@ sub StartServer
     unless ($serverpid = fork) {
       $pidfile and writePID();
       my $server = Server->new();
-      setgid($configuration->{'gid'});
-      setuid($configuration->{'uid'});
+      setgid($configuration->{'daemon'}->{'gid'});
+      setuid($configuration->{'daemon'}->{'uid'});
       $server->Run($configuration,$monitor);
       exit;
     }
@@ -592,7 +603,7 @@ my $configuration = Configuration->new();
 
 sub stop
 {
-  $configuration->{'delay'} = 0;
+  $configuration->{'daemon'}->{'delay'} = 0;
 }
 
 # read command lines
@@ -626,7 +637,7 @@ for (my $retry=0; $retry<6; $retry++) {
   $serverpid = StartServer($configuration,$monitor);
   $monitor->Run($configuration, $serverpid);
   close(PID);
-  $configuration->{'delay'} or last;
+  $configuration->{'daemon'}->{'delay'} or last;
 }
 
 $serverpid and kill (9,$serverpid);

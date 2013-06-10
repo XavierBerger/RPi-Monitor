@@ -11,15 +11,6 @@ function RowTemplate(id,image,title){
         "<hr>"
 }
 
-function FormatSize(size){
-  if ( size < 1048576 ) {
-    return ( size / 1024 ).toFixed(2)+"MB";
-  }
-  else{
-    return ( size / 1024 / 1024 ).toFixed(2) +"GB";
-  }
-}
-
 function pad(n){
   return n<10 ? '0'+n : n
 }
@@ -49,9 +40,9 @@ function uptime(value){
 function kmg(value){
   unit = 1024;
   try {
-    if (value < unit) { return value + " B" };
+    if (value < unit) { return value + "B" };
     exp = Math.floor(Math.log(value) / Math.log(unit));
-    pre = "kMGTPE".charAt(exp);
+    pre = "kMGTPE".charAt(exp-1);
     return (value / Math.pow(unit, exp)).toFixed(2) + pre + "B";
   }
   catch (e) {
@@ -71,7 +62,7 @@ function progressbar(value, max){
 var clocksec=0;
 function clock(localtime){
   clocksec=localtime[5];
-  return localtime[3]+":"+localtime[4]+"</b>:<b><span id='seconds'>" + pad(clocksec) + "</span></b>";
+  return pad(localtime[3])+":"+pad(localtime[4])+"</b>:<b><span id='seconds'>" + pad(clocksec) + "</span></b>";
 }
 
 function tick(){
@@ -114,7 +105,7 @@ function UpdateStatus () {
 
   })
   .fail(function() {
-      $('#message').html("<b>Can not get status information. Is rpimonitord.conf correctly configured on server? Is server running?</b>");
+      $('#message').html("<b>Can not get information (/stat/dynamic.json) from RPi-Monitor server.</b>");
       $('#message').removeClass('hide');
     });
   
@@ -122,15 +113,15 @@ function UpdateStatus () {
 
 function ConstructPage()
 {
-  $.getJSON('web.json', function(data) {
-    localStorage.setItem('web', JSON.stringify(data));
-    for ( var iloop=0; iloop < data.status[0].content.length; iloop++) {
-      $(RowTemplate(iloop,"img/"+data.status[0].content[iloop].icon,data.status[0].content[iloop].name)).insertBefore("#insertionPoint");
-      pages=data.status[0].content;
+  $.getJSON('stat/status.json', function(data) {
+    localStorage.setItem('status', JSON.stringify(data));
+    for ( var iloop=0; iloop < data[0].content.length; iloop++) {
+      $(RowTemplate(iloop,"img/"+data[0].content[iloop].icon,data[0].content[iloop].name)).insertBefore("#insertionPoint");
+      pages=data[0].content;
     }
   })
   .fail(function() {
-      $('#message').html("<b>Can not get status information. Is rpimonitord.conf correctly configured on server? Is server running?</b>");
+      $('#message').html("<b>Can not get information (stat/status.json) from RPi-Monitor server.</b>");
       $('#message').removeClass('hide');
     });
 
@@ -144,6 +135,10 @@ $(function () {
   $.getJSON('stat/static.json', function(data) {
     localStorage.setItem('static', JSON.stringify(data));
   })
+  .fail(function() {
+    $('#message').html("<b>Can not get information (stat/static.json) from RPi-Monitor server.</b>");
+    $('#message').removeClass('hide');
+  });
 
   /* construct page */
   ConstructPage();

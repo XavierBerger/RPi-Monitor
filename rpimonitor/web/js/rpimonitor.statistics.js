@@ -1,99 +1,146 @@
 $(function () {
+	// Remove the Javascript warning
+	document.getElementById("infotable").deleteRow(0);
 
-  //
-  fname=localStorage.getItem('activestat');
+	rrd_data = [];
 
-  // Remove the Javascript warning
-  document.getElementById("infotable").deleteRow(0);
+	$.ajaxSetup({
+		cache : false
+	});
 
-  // fname and rrd_data are the global variable used by all the functions below
-  fname_update();
+	//Load data from localStorage
+	var activestat = localStorage.getItem('activestat') || 0;
+	var graphconf;
 
-  // This function updates the Web Page with the data from the RRD
-  // archive header  when a new file is selected
-  function update_fname() {
-    var graph_opts={legend: { noColumns:4}};
-    var ds_graph_opts={'Oscilator':{ color: "#ff8000",
-                                     lines: { show: true, fill: true, fillColor:"#ffff80"} },
-                       'Idle':{ label: 'IdleJobs', color: "#00c0c0",
-                                lines: { show: true, fill: true} },
-                       'Running':{color: "#000000",yaxis:2}};
+	function load_conf() {
+		$.getJSON('stat/statistic.json', function (data) {
+			localStorage.setItem('graphconf', JSON.stringify(data));
+			graphconf = localStorage.getItem('graphconf');
+		})
+		.fail(function () {
+			$('#message').html("<b>Can not get information (/stat/statistics.json) from RPi-Monitor server.</b>");
+			$('#message').removeClass('hide');
+			$('#mygraph').addClass('hide');
+		})
+		.always(function () {
+			$('#preloader').addClass('hide');
+		});
+	}
 
-    // the rrdFlot object creates and handles the graph
-    var f=new rrdFlot("mygraph",rrd_data,graph_opts,ds_graph_opts);
-  }
+	function set_graphlist() {
+		var graphlist = "Graph: <select id='selected_graph'>\n";
+		graphconf = localStorage.getItem('graphconf');
+		conf = eval('(' + graphconf + ')');
+		pageid = 0;
+		for (var iloop = 0; iloop < conf[pageid].content.length; iloop++) {
+			graphlist += "<option value='" + iloop + "'";
+			if (activestat == iloop) {
+				graphlist += " selected ";
+			}
+			graphlist += ">" + conf[pageid].content[iloop].name + "</option>\n";
+		}
+		graphlist += "</select>\n";
 
-  // This is the callback function that, given a binary file object,
-  // verifies that it is a valid RRD archive and performs the update
-  // of the Web page
-  function update_fname_handler(bf) {
-    delete rrd_data;
-    delete i_rrd_data;
-    var i_rrd_data=undefined;
-    if (bf.getLength()<1) {
-      //alert("File "+fname+" is empty (possibly loading failed)!");
-      return 1;
-    }
-    try {
-      var i_rrd_data=new RRDFile(bf);
-    } catch(err) {
-      //alert("File "+fname+" is not a valid RRD archive!\n"+err);
-    }
-    if (i_rrd_data!=undefined) {
-      rrd_data=i_rrd_data;
-      update_fname()
-    }
+		$("#mygraph_res_title").html(graphlist);
+		$('#selected_graph').on('change', function (e) {
+			localStorage.setItem('activestat', this.value);
+			update_graph();
+		});
+	}
 
-    // Get json to extract the list of rrd availble
-    $.ajaxSetup({ cache: false });
-    $.getJSON('stat/rrds.json', function(data) {
-      var graphlist="Graph: <select id='selected_graph'>\n";
-      if ( fname == null) { 
-        fname = data[0]; 
-        localStorage.setItem('activestat', fname);
-        fname_update();
-      }
+	function fetch_graph() {
+		pageid = 0;
+		graphconf = localStorage.getItem('graphconf');
+		conf = eval('(' + graphconf + ')');
+		graph = conf[pageid].content[activestat].graph;
+		try {
+			for (var iloop = 0; iloop < graph.length; iloop++) {
+				FetchBinaryURLAsync('stat/' + graph[iloop] + '.rrd', update_handler, iloop, graph.length);
+			}
+		} catch (err) {
+			alert("Failed loading stat/" + graph[iloop] + ".rrd\n" + err);
+		}
+	}
 
-      for (var i=0;i<data.length;i++)
-      {
-        graphlist+="<option value='"+data[i]+"'";
-        if ( fname==data[i]) { graphlist+=" selected "; }
-        graphlist+=">"+data[i]+"</option>\n";
-      }
-      graphlist+="</select>\n";
+	function update_handler(bf, idx) {
+		var i_rrd_data = undefined;
+		pageid = 0;
+		graphconf = localStorage.getItem('graphconf');
+		conf = eval('(' + graphconf + ')');
+		graph = conf[pageid].content[activestat].graph;
+		try {
+			var i_rrd_data = new RRDFile(bf);
+		} catch (err) {
+			alert("File at idx " + idx + " is not a valid RRD archive!");
+		}
+		if (i_rrd_data != undefined) {
+			rrd_data[idx]= i_rrd_data;
+			prepare_graph(idx);
+		}
+		ready = 0;
+		for (var iloop = 0; iloop < graph.length; iloop++) {
+			if (rrd_data[iloop] != undefined) {
+				ready++
+			}
+		}
+		if (ready == graph.length) {
+			update_graph()
+		}
+	}
 
-      $("#mygraph_res_title").html(graphlist);
-      $('#selected_graph').on('change', function (e) {
-        fname = this.value;
-        localStorage.setItem('activestat', fname);
-        fname_update();
-      })
-      
-      if ( firstload == true ){
-        firstload=false;
-        ShowFriends(data.friends);
-      }
-    })
-    .fail(function() {
-        $('#message').html("<b>Can not get status information. Is rpimonitord.conf correctly configured on server?</b>") ;
-        $('#message').removeClass('hide');
-        $('#mygraph').addClass('hide');
-      })
-    .always(function(){
-        $('#preloader').addClass('hide');
-      });
-  }
+	function DoNothing(ds) {
+		this.getName = function () {
+			return ds;
+		}
+		this.getDSNames = function () {
+			return [ds];
+		}
+		this.computeResult = function (val_list) {
+			return val_list[0];
+		}
+	}
 
-  // this function is invoked when the RRD file name changes
-  function fname_update() {
-    // invalidate them, so we know when they are both loaded
-    rrd_data=undefined;
+	function Zero(ds_name) { //create a fake DS.
+		this.getName = function () {
+			return ds_name;
+		}
+		this.getDSNames = function () {
+			return [];
+		}
+		this.computeResult = function (val_list) {
+			return 0;
+		}
+	}
 
-    try {
-      FetchBinaryURLAsync(fname,update_fname_handler);
-    } catch (err) {
-       //alert("Failed loading "+fname+"\n"+err);
-    }
-  }
+	function prepare_graph(idx) {
+		var op_list = [];
 
+		//http://javascriptrrd.sourceforge.net/docs/javascriptrrd_v0.6.0/src/examples/rrdJFlotFilter.html
+		//http://sourceforge.net/p/javascriptrrd/discussion/914914/thread/935d8541/#17d3
+		// Create a RRDFilterOp object that has the all DS's, with the one
+		// existing in the original RRD populated with real values, and the other set to 0.
+		pageid = 0;
+		graphconf = localStorage.getItem('graphconf');
+		conf = eval('(' + graphconf + ')');
+		graph = conf[pageid].content[activestat].graph;
+		var op_list = []; //list of operations
+		//create a new rrdlist, which contains all original elements
+		//    (kept the same by DoNothing())
+		op_list.push(new DoNothing(rrd_data[idx].getDS(0).getName()));
+		for (var iloop = 0; iloop < graph.length; iloop++) {
+			if (iloop != idx) {
+				op_list.push(new Zero(graph[iloop]));
+			}
+		}
+		rrd_data[idx] = new RRDFilterOp(rrd_data[idx], op_list);
+	}
+
+	function update_graph() {
+		rrd_data_sum = new RRDFileSum([rrd_data[0],rrd_data[2]]);
+		var f = new rrdFlot("mygraph", rrd_data_sum);
+	}
+
+	load_conf();
+	set_graphlist();
+	fetch_graph();
 });
