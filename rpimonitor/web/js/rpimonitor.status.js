@@ -1,4 +1,6 @@
+$(function () {
 var pages;
+var postProcessInfo=[];
 
 function RowTemplate(id,image,title){
   return ""+
@@ -9,6 +11,13 @@ function RowTemplate(id,image,title){
           "<div class='Text' id='Text"+id+"'><b></b></div>"+
         "</div>"+
         "<hr>"
+}
+
+function showInfo(id,title,text){
+  if ( text ) {
+    postProcessInfo.push(["#"+id, title, text]);
+    return "<a href='#' id='"+id+"'><i class='icon-search'></i>"
+  }
 }
 
 function pad(n){
@@ -37,8 +46,12 @@ function uptime(value){
   return uptimetext;
 }
 
-function kmg(value){
+function kmg(value, initPre){
   unit = 1024;
+  prefix = "kMGTPE";
+  if (initPre){
+    value *= Math.pow(unit,prefix.indexOf(initPre)+1);
+  }
   try {
     if (value < unit) { return value + "B" };
     exp = Math.floor(Math.log(value) / Math.log(unit));
@@ -55,7 +68,7 @@ function percent(value,total){
 }
 
 function progressbar(value, max){
-  return "<div class='progress progress-striped'><div class='bar' style='width: "+((100 * ( max - value )) / max)+"%;'></div></div>"
+  return "<div class='progress progress-striped'><div class='bar' style='width: "+((100 * value ) / max)+"%;'></div></div>"
 }
 
 
@@ -69,6 +82,14 @@ function tick(){
   clocksec++;
   if (clocksec == 60) { clocksec=0 };
   $('#seconds').html(pad(clocksec));
+}
+
+function ActivatePopover(){
+  for ( var iloop=0; iloop < postProcessInfo.length; iloop++) {
+    $(postProcessInfo[iloop][0]).popover({trigger:'hover',placement:'left',html:true, title: postProcessInfo[iloop][1], content: postProcessInfo[iloop][2] });
+  }
+  $("#packages").popover();
+
 }
 
 function UpdateStatus () {
@@ -97,6 +118,7 @@ function UpdateStatus () {
     }
     
     SetProgressBarAnimate();
+    ActivatePopover();
     
     if ( firstload == true ){
       firstload=false;
@@ -127,7 +149,6 @@ function ConstructPage()
 
 }
 
-$(function () {
   /*set no cache */
   $.ajaxSetup({ cache: false });
   
@@ -143,8 +164,6 @@ $(function () {
   /* construct page */
   ConstructPage();
 
-  $("#packages").popover();
-  
   /* Start status update*/
   UpdateStatus();
   if ( statusautorefresh ) { 
