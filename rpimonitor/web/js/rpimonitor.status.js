@@ -1,4 +1,3 @@
-$(function () {
 var pages;
 var postProcessInfo=[];
 
@@ -13,22 +12,22 @@ function RowTemplate(id,image,title){
         "<hr>"
 }
 
-function showInfo(id,title,text){
+function ShowInfo(id,title,text){
   if ( text ) {
     postProcessInfo.push(["#"+id, title, text]);
     return "<a href='#' id='"+id+"'><i class='icon-search'></i>"
   }
 }
 
-function pad(n){
+function Pad(n){
   return n<10 ? '0'+n : n
 }
 
-function plural(n){
+function Plural(n){
   return n>1 ? 's ' : ' ' 
 }
 
-function uptime(value){
+function Uptime(value){
   uptimetext='';
   years = Math.floor(value / 31556926);
   rest = value % 31556926;    
@@ -38,15 +37,15 @@ function uptime(value){
   rest = value % 3600;
   minutes = Math.floor(rest / 60);
   seconds = Math.floor(rest % 60);
-  if ( years != 0 ) { uptimetext += uptimetext + "<b>" + years + "</b> year" + plural(years) }
-  if ( ( years != 0 ) || ( days != 0) ) { uptimetext += "<b>" + days +"</b> day" + plural(days)}
-  if ( ( days != 0 ) || ( hours != 0) ) { uptimetext += "<b>" + pad(hours) +"</b> hour" + plural(hours)}
-  uptimetext += "<b>" + pad(minutes) +"</b> minute" + plural(minutes);
-  uptimetext += "<b>" + pad(seconds) +"</b> second"+plural(seconds)+"<p>"
+  if ( years != 0 ) { uptimetext += uptimetext + "<b>" + years + "</b> year" + Plural(years) }
+  if ( ( years != 0 ) || ( days != 0) ) { uptimetext += "<b>" + days +"</b> day" + Plural(days)}
+  if ( ( days != 0 ) || ( hours != 0) ) { uptimetext += "<b>" + Pad(hours) +"</b> hour" + Plural(hours)}
+  uptimetext += "<b>" + Pad(minutes) +"</b> minute" + Plural(minutes);
+  uptimetext += "<b>" + Pad(seconds) +"</b> second" + Plural(seconds)+"<p>"
   return uptimetext;
 }
 
-function kmg(value, initPre){
+function KMG(value, initPre){
   unit = 1024;
   prefix = "kMGTPE";
   if (initPre){
@@ -63,25 +62,24 @@ function kmg(value, initPre){
   }
 }
 
-function percent(value,total){
+function Percent(value,total){
   return (100*(total-value)/total).toFixed(2)+"%";
 }
 
-function progressbar(value, max){
+function ProgressBar(value, max){
   return "<div class='progress progress-striped'><div class='bar' style='width: "+((100 * value ) / max)+"%;'></div></div>"
 }
 
-
 var clocksec=0;
-function clock(localtime){
+function Clock(localtime){
   clocksec=localtime[5];
-  return pad(localtime[3])+":"+pad(localtime[4])+"</b>:<b><span id='seconds'>" + pad(clocksec) + "</span></b>";
+  return Pad(localtime[3])+":"+Pad(localtime[4])+"</b>:<b><span id='seconds'>" + Pad(clocksec) + "</span></b>";
 }
 
-function tick(){
+function Tick(){
   clocksec++;
   if (clocksec == 60) { clocksec=0 };
-  $('#seconds').html(pad(clocksec));
+  $('#seconds').html(Pad(clocksec));
 }
 
 function ActivatePopover(){
@@ -89,7 +87,6 @@ function ActivatePopover(){
     $(postProcessInfo[iloop][0]).popover({trigger:'hover',placement:'left',html:true, title: postProcessInfo[iloop][1], content: postProcessInfo[iloop][2] });
   }
   $("#packages").popover();
-
 }
 
 function UpdateStatus () {
@@ -145,10 +142,11 @@ function ConstructPage()
   .fail(function() {
       $('#message').html("<b>Can not get information (stat/status.json) from RPi-Monitor server.</b>");
       $('#message').removeClass('hide');
-    });
+  });
 
 }
 
+$(function () {
   /*set no cache */
   $.ajaxSetup({ cache: false });
   
@@ -168,7 +166,7 @@ function ConstructPage()
   UpdateStatus();
   if ( statusautorefresh ) { 
     refreshTimerId = setInterval( UpdateStatus , 10000 ) 
-    clockId=setInterval(tick,1000);
+    clockId=setInterval(Tick,1000);
   }
 
 });
