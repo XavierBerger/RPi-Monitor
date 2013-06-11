@@ -4,7 +4,7 @@ var graphconf;
 var pageid;
 
 function Start() {
-  $.getJSON('stat/statistic.json', function (data) {
+  $.getJSON('statistic.json', function (data) {
     localStorage.setItem('graphconf', JSON.stringify(data));
     graphconf = eval('(' + localStorage.getItem('graphconf') + ')');
     activestat = localStorage.getItem('activestat') || 0;
@@ -12,7 +12,7 @@ function Start() {
     FetchGraph();
   })
   .fail(function () {
-    $('#message').html("<b>Can not get information (/stat/statistics.json) from RPi-Monitor server.</b>");
+    $('#message').html("<b>Can not get information (statistics.json) from RPi-Monitor server.</b>");
     $('#message').removeClass('hide');
   })
 }

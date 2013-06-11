@@ -193,12 +193,10 @@ sub new
   # List of files to be delivered
   my @paths = (
     "/",
-    "/stat/rrds.json",
-    "/web.json",
-    "/stat/static.json",
-    "/stat/dynamic.json",
-    "/stat/status.json",
-    "/stat/statistic.json",
+    "/static.json",
+    "/dynamic.json",
+    "/status.json",
+    "/statistic.json",
     "/favicon.ico",
 
     "/index.html",
@@ -328,8 +326,8 @@ sub DoGET
       last;
     }
   }
-  $isvalid or $connection->send_error(404,"<br><b>$path</b> not in <br>". join ('<br>',@{$this->{'paths'}} )) and return;
-  #$isvalid or $connection->send_error(404);
+  #$isvalid or $connection->send_error(404,"<br><b>$path</b> not in <br>". join ('<br>',@{$this->{'paths'}} )) and return;
+  $isvalid or $connection->send_error(404);
 
   $path =~ /dynamic\.json/ and $this->SendStatus() and return;
   $path =~ /([^\/]+)\.json/ and $this->SendResponse($this->{$1}) and return;
@@ -355,13 +353,11 @@ sub Run
 
   # Add rrds available and status file to the authorized pages
   @{$this->{'paths'}} = ( @{ $configuration->{'rrdlist'}}, @{$this->{'paths'}} );  
-  $this->{'rrds'} = encode_json(\@{$configuration->{'rrdlist'}});
-  #print Data::Dumper->Dump([$this->{'paths'}]);
-  $this->{'web'} = encode_json(\%{$configuration->{'web'}});
   $this->{'status'} = encode_json(\@{$configuration->{'web'}->{'status'}});
   $this->{'statistic'} = encode_json(\@{$configuration->{'web'}->{'statistic'}});
   $this->{'static'} = encode_json(\%{$monitor->{'static'}});
- 
+  #print Data::Dumper->Dump([$this->{'paths'}]);
+  
   # Create the server
   #print Data::Dumper->Dump([$configuration->{'daemon'}]);
   $this->{'server'} = new HTTP::Daemon     ( ReuseAddr => 1,
@@ -399,6 +395,7 @@ sub new
 {
   my $this = bless { }, shift;
   $this->Debug(3,"");
+  @{$this->{'files'}} = ("static.json","status.json","statistic.json");
   return $this;
 }
 
@@ -425,6 +422,20 @@ sub Run
   if ( !$configuration->{'daemon'}->{'noserver'}) {
     $this->{'shmid'} = shmget($key, $shm_size, &IPC_CREAT | 0777 );
   }
+  else {
+    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/static.json")
+      or warn $!;
+      print FILE encode_json \%{$configuration->{'web'}->{'static'}} ;
+    close(FILE);
+    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/status.json")
+      or warn $!;
+      print FILE encode_json \%{$this->{'web'}->{'status'}} ;
+    close(FILE);
+    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/statistic.json")
+      or warn $!;
+      print FILE encode_json \%{$this->{'web'}->{'statistic'}} ;
+    close(FILE);
+  }
 
   for(;;)
   {
@@ -443,9 +454,10 @@ sub Run
     $configuration->{'daemon'}->{'delay'} or last;
     sleep $configuration->{'daemon'}->{'delay'};
   }
-  # TODO Cleanup JSONs
-  #-f $configuration->{'daemon'}->{'webroot'}.$configuration->{'daemon'}->{'status'} 
-  #  and unlink $configuration->{'daemon'}->{'webroot'}.$configuration->{'daemon'}->{'status'};
+  foreach (@{$this->{'files'}}) {
+    -f "$configuration->{'daemon'}->{'webroot'}/$_"
+      and unlink "$configuration->{'daemon'}->{'webroot'}/$_";
+  }
   $this->{'shmid'} and shmctl( $this->{'shmid'}, &IPC_RMID, 0 );
 }
 
@@ -493,7 +505,8 @@ sub Status
   # if embeded server is not used, we write the json file else the
   # data are transmitted with a shared memory
   if ( $configuration->{'daemon'}->{'noserver'} == 1 ){
-    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/stat/dynamic.json")
+    push (@{$this->{'files'}},"dynamic.json");
+    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/dynamic.json")
       or warn $!;
       print FILE $json ;
     close(FILE);

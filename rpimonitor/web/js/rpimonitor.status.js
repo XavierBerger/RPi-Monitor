@@ -90,7 +90,7 @@ function ActivatePopover(){
 }
 
 function UpdateStatus () {
-  $.getJSON('stat/dynamic.json', function(data) {
+  $.getJSON('dynamic.json', function(data) {
     var static = localStorage.getItem('static');
     $.extend(data, eval('(' + static + ')'));
     
@@ -132,7 +132,7 @@ function UpdateStatus () {
 
 function ConstructPage()
 {
-  $.getJSON('stat/status.json', function(data) {
+  $.getJSON('status.json', function(data) {
     localStorage.setItem('status', JSON.stringify(data));
     for ( var iloop=0; iloop < data[0].content.length; iloop++) {
       $(RowTemplate(iloop,"img/"+data[0].content[iloop].icon,data[0].content[iloop].name)).insertBefore("#insertionPoint");
@@ -140,7 +140,7 @@ function ConstructPage()
     }
   })
   .fail(function() {
-      $('#message').html("<b>Can not get information (stat/status.json) from RPi-Monitor server.</b>");
+      $('#message').html("<b>Can not get information (status.json) from RPi-Monitor server.</b>");
       $('#message').removeClass('hide');
   });
 
@@ -151,11 +151,11 @@ $(function () {
   $.ajaxSetup({ cache: false });
   
   /* get static values once */
-  $.getJSON('stat/static.json', function(data) {
+  $.getJSON('static.json', function(data) {
     localStorage.setItem('static', JSON.stringify(data));
   })
   .fail(function() {
-    $('#message').html("<b>Can not get information (stat/static.json) from RPi-Monitor server.</b>");
+    $('#message').html("<b>Can not get information (static.json) from RPi-Monitor server.</b>");
     $('#message').removeClass('hide');
   });
 
