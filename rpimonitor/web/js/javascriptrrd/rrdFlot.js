@@ -184,6 +184,7 @@ rrdFlot.prototype.createHTML = function() {
   var rowScale=external_table.insertRow(-1);
 
   var cellScaleLegend=rowScale.insertCell(-1);
+  cellScaleLegend.id='Legend';
   cellScaleLegend.vAlign="top";
   cellScaleLegend.appendChild(document.createTextNode("Legend:"));
   cellScaleLegend.appendChild(document.createElement('br'));
@@ -432,6 +433,7 @@ rrdFlot.prototype.drawFlotGraph = function() {
       local_checked_DSs.push(ds_name);
     }
   }
+
 
   var timeSelect=document.getElementById(this.time_sel_id);
   timezone_shift=timeSelect.options[timeSelect.selectedIndex].value;

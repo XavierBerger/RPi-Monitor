@@ -20,11 +20,7 @@ $(function () {
     .fail(function () {
       $('#message').html("<b>Can not get information (/stat/statistics.json) from RPi-Monitor server.</b>");
       $('#message').removeClass('hide');
-      $('#mygraph').addClass('hide');
     })
-    .always(function () {
-      $('#preloader').addClass('hide');
-    });
   }
 
   function set_graphlist() {
@@ -43,12 +39,14 @@ $(function () {
     $("#mygraph_res_title").html(graphlist);
     
     $('#selected_graph').on('change', function (e) {
-      localStorage.setItem('activestat', this.value);
-      update_graph();
+      activestat = this.value;
+      localStorage.setItem('activestat', activestat);
+      fetch_graph();
     });
   }
 
   function fetch_graph() {
+    $('#preloader').removeClass('hide');
     pageid = 0;
     graphconf = localStorage.getItem('graphconf');
     conf = eval('(' + graphconf + ')');
@@ -70,7 +68,7 @@ $(function () {
     try {
       var i_rrd_data = new RRDFile(bf);
     } catch (err) {
-      alert("File at idx " + idx + " is not a valid RRD archive!");
+      alert("File stat/" + graph[idx] + ".rrd is not a valid RRD archive!");
     }
     if (i_rrd_data != undefined) {
       rrd_data[idx] = i_rrd_data;
@@ -133,11 +131,20 @@ $(function () {
   }
 
   function update_graph() {
+    graph_opts=null;
+    ds_graph_opts=null;
+    rrdflot_defaults={ graph_width:"700px",graph_height:"300px", scale_width:"350px", scale_height:"100px" };
+    pageid = 0;
+    conf = eval('(' + localStorage.getItem('graphconf') + ')');
+    ds_graph_opts = conf[pageid].content[activestat].ds_graph_opts;
+
     rrd_data_sum = new RRDFileSum( rrd_data );
-    var f = new rrdFlot("mygraph", rrd_data_sum);
+    var f = new rrdFlot("mygraph", rrd_data_sum, graph_opts, ds_graph_opts, rrdflot_defaults );
+    set_graphlist();
+    $('#preloader').addClass('hide');
+    $('#Legend').addClass('hide');
   }
 
   load_conf();
-  set_graphlist();
   fetch_graph();
 });
