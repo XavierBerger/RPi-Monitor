@@ -118,7 +118,7 @@ function PrepareGraph(idx) {
 function UpdateGraph() {
   graph_opts=null;
   ds_graph_opts=null;
-  rrdflot_defaults={ graph_width:"700px",graph_height:"300px", scale_width:"350px", scale_height:"100px" };
+  rrdflot_defaults={ graph_width:"750px",graph_height:"285px", scale_width:"350px", scale_height:"90px" };
   pageid = 0;
   ds_graph_opts = graphconf[pageid].content[activestat].ds_graph_opts;
 
