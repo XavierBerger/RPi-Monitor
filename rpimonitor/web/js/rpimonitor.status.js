@@ -54,7 +54,7 @@ function KMG(value, initPre){
   try {
     if (value < unit) { return value + "B" };
     exp = Math.floor(Math.log(value) / Math.log(unit));
-    pre = "kMGTPE".charAt(exp-1);
+    pre = prefix.charAt(exp-1);
     return (value / Math.pow(unit, exp)).toFixed(2) + pre + "B";
   }
   catch (e) {
@@ -124,7 +124,7 @@ function UpdateStatus () {
 
   })
   .fail(function() {
-      $('#message').html("<b>Can not get information (/stat/dynamic.json) from RPi-Monitor server.</b>");
+      $('#message').html("<b>Can not get information (dynamic.json) from RPi-Monitor server.</b>");
       $('#message').removeClass('hide');
     });
   
@@ -138,6 +138,7 @@ function ConstructPage()
       $(RowTemplate(iloop,"img/"+data[0].content[iloop].icon,data[0].content[iloop].name)).insertBefore("#insertionPoint");
       pages=data[0].content;
     }
+    UpdateStatus();
   })
   .fail(function() {
       $('#message').html("<b>Can not get information (status.json) from RPi-Monitor server.</b>");
@@ -153,17 +154,14 @@ $(function () {
   /* get static values once */
   $.getJSON('static.json', function(data) {
     localStorage.setItem('static', JSON.stringify(data));
+    ConstructPage();
+
   })
   .fail(function() {
     $('#message').html("<b>Can not get information (static.json) from RPi-Monitor server.</b>");
     $('#message').removeClass('hide');
   });
 
-  /* construct page */
-  ConstructPage();
-
-  /* Start status update*/
-  UpdateStatus();
   if ( statusautorefresh ) { 
     refreshTimerId = setInterval( UpdateStatus , 10000 ) 
     clockId=setInterval(Tick,1000);
