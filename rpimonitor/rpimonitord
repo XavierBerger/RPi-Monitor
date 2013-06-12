@@ -42,6 +42,8 @@ sub new
 {
   my $this = bless { }, shift;
   $this->Debug(3,"");
+  $this->{'rrd'}=();
+  $this->{'daemon'}->{'confFiles'} = [];
   return $this;
 }
 
@@ -62,16 +64,56 @@ sub Load
   $_ = abs_path($0);
   my ($path,$file) = /(.*)\/([^\/]*)$/;
 
-  $this->{'daemon'}->{'conf_file'} = "$path/$file.conf"; 
-  if ( ! $this->{'daemon'}->{'conf_file'} ) {
-    # Use default conf file is not already specified
-    # Ajouter ici les sous fichiers de conf (/etc/rpimonitord.conf.d/*.conf))
-    $this->{'daemon'}->{'conf_file'} = '/etc/rpimonitord.conf'
+  if ( scalar(@{$this->{'daemon'}->{'confFiles'}}) == 0 ) {
+    push (@{$this->{'daemon'}->{'confFiles'}}, '/etc/rpimonitord.conf');
+    opendir( DIR, "/etc/rpimonitord.conf.d/*.conf") 
+      or warn "Can't open directory /etc/rpimonitord.conf.d/";
+      @{$this->{'daemon'}->{'confFiles'}} = ( @{$this->{'daemon'}->{'confFiles'}}, readdir(DIR) ) ;
+    closedir(DIR);
   }
-  $this->{'rrd'}=();
 
-  open ( FILE, $this->{'daemon'}->{'conf_file'})
-    or die "Error while openning configuration file \"$this->{'daemon'}->{'conf_file'}\" because $!\n";
+  foreach ( @{$this->{'daemon'}->{'confFiles'}} ) {
+    $this->LoadFile($_);
+  }
+
+  # Load default values is not defined yet defined
+  $this->{'daemon'}->{'user'}        ||= "pi";
+  $this->{'daemon'}->{'group'}       ||= "pi";
+  $this->{'daemon'}->{'port'}        ||= 8888;
+  $this->{'daemon'}->{'addr'}        ||= '0.0.0.0';
+  $this->{'daemon'}->{'webroot'}     ||= "$path/web";
+  $this->{'daemon'}->{'delay'}       ||= 10;
+
+  # Check user and group
+  $this->{'daemon'}->{'gid'} = getgrnam($this->{'daemon'}->{'user'})  || 1000;
+  $this->{'daemon'}->{'uid'} = getpwnam($this->{'daemon'}->{'group'}) || 1000;
+
+  # Check rrd directory and files and create them if they are missing
+  # construct the list of rrd page accessible
+  -d "$this->{'daemon'}->{'webroot'}/stat" or mkdir "$this->{'daemon'}->{'webroot'}/stat";
+
+  # manage rrds
+  foreach (@{$this->{'rrd'}}){
+    my @name = split (',',$_->{'name'});
+    my $type = $_->{'rrd'};
+    foreach (@name) {
+      my $filename="$this->{'daemon'}->{'webroot'}/stat/$_.rrd";
+      -f "$filename" or $this->CreateRRD($filename,$_,$type);
+      push(@{$this->{'rrdlist'}},"stat/$_.rrd");
+    }
+  }
+  #die Data::Dumper->Dump([$this->{'rrd'}]);
+
+}
+
+sub LoadFile
+{
+  my $this = shift;
+  my $confFile = shift;
+  $this->Debug(2,"");
+
+  open ( FILE, $confFile)
+    or die "Error while openning configuration file \"$confFile'}\" because $!\n";
   while (<FILE>){
     chomp;
     /^\s*#|^$/ and next;                 # Ignore comments
@@ -112,34 +154,6 @@ sub Load
       $tree->{$current} = $value;
     }
   }  
-
-  # Load default values is not defined yet defined
-  $this->{'daemon'}->{'user'}        ||= "pi";
-  $this->{'daemon'}->{'group'}       ||= "pi";
-  $this->{'daemon'}->{'port'}        ||= 8888;
-  $this->{'daemon'}->{'addr'}        ||= '0.0.0.0';
-  $this->{'daemon'}->{'webroot'}     ||= "$path/web";
-  $this->{'daemon'}->{'delay'}       ||= 10;
-
-  # Check user and group
-  $this->{'daemon'}->{'gid'} = getgrnam($this->{'daemon'}->{'user'})  || 1000;
-  $this->{'daemon'}->{'uid'} = getpwnam($this->{'daemon'}->{'group'}) || 1000;
-
-  # Check rrd directory and files and create them if they are missing
-  # construct the list of rrd page accessible
-  -d "$this->{'daemon'}->{'webroot'}/stat" or mkdir "$this->{'daemon'}->{'webroot'}/stat";
-
-  # manage rrds
-  foreach (@{$this->{'rrd'}}){
-    my @name = split (',',$_->{'name'});
-    my $type = $_->{'rrd'};
-    foreach (@name) {
-      my $filename="$this->{'daemon'}->{'webroot'}/stat/$_.rrd";
-      -f "$filename" or $this->CreateRRD($filename,$_,$type);
-      push(@{$this->{'rrdlist'}},"stat/$_.rrd");
-    }
-  }
-  #die Data::Dumper->Dump([$this->{'rrd'}]);
 }
 
 sub CreateRRD
@@ -531,28 +545,29 @@ use POSIX;
 
 sub help
 {
-  $0 =~ /(\w+)$/;
   die <<EOF;
 NAME
-  $1
+  rpimonitord
 
 USAGE
-  $1 [-a address][ -b pidfile][-c configuration_file][-d delay]
-     [-h][-n][-p port][-v[v[...]]][-V]
+  rpimonitord [-a address][ -b pidfile][[-c configuration_file]...]
+     [-d delay][-h][-n][-p port][-v[v[...]]][-V]
 
 DESCRIPTION
-  $1 is designed extract data from Raspberry Pi system and store
-  statistic into RRD. $1 embed a web server allowing to display
-  current status and statistics.
+  rpimonitord is designed extract data from Raspberry Pi system and 
+  store statistic into RRD. rpimonitord embed a web server allowing 
+  to display current status and statistics.
 
 OPTIONS
   -a, --addr        Web server bind address (Default: 0.0.0.0)
   -b, --background  Define the pid file when run in background
-  -c, --conf        Define the configuration file (Default: ./$1.conf)
+  -c, --conf        Define the configuration file
+                     (Default: /etc/rpimonitord.conf and 
+                               /etc/rpimonitord.conf.d/*.conf)
   -d, --delay       Delay between check (default 10sec)
                       Note: If you want to change the default delay, the
                       rrd file will have to be deleted rpimonitord will
-                      recreate them at next startupi with the new time
+                      recreate them at next startup with the new time
                       slice.
   -h, --help        Shows this help and exit
   -n, --noserver    Don't start embeded server
@@ -561,16 +576,16 @@ OPTIONS
   -V, --Version     Show version and exit
 
 CONFIGURATION
-  Configuration can be defined into /etc/$1.conf or a file specified
-  by -c parameter. See the /etc/$1.conf file provided with at
-  installation to see how to customize $1.
+  Configuration can be defined into /etc/rpimonitord.conf and
+  /etc/rpimonitord.conf.d/*.conf or in a list of files specified
+  by -c parameter. See the /etc/rpimonitord.conf file provided with at
+  installation to see how to customize rpimonitord.
   Configuration defined inside a configuration file always overwrite
   default values. Configuration given as option of the command line
   always overwrite the one defined into a file.
 
 AUTHOR
   Xavier Berger
-    https://github.com/XavierBerger/RPi-Monitor
     http://rpi-experiences.blogspot.fr
 
 EOF
@@ -624,7 +639,7 @@ while($_ = shift)
 {
   /-a(ddr)?/        and $configuration->{'daemon'}->{'addr'} = shift and next;
   /-b(ackground)?/  and $pidfile = shift and next;
-  /-c(onf)?/        and $configuration->{'daemon'}->{'conf_file'} = shift and next;
+  /-c(onf)?/        and push @{$configuration->{'daemon'}->{'confFiles'}}, shift and next;
   /-d(elay)?/       and $configuration->{'daemon'}->{'delay'} = shift and next;
   /-h(elp)?/        and help;
   /-n(oserver)?/    and $configuration->{'daemon'}->{'noserver'}++ and next;
@@ -633,7 +648,6 @@ while($_ = shift)
   /^-([v]+)$/       and $verbose = length $1 and next;
   /-V(ersion)?/     and die "$0 version $VERSION\n";
 } 
-
 $configuration->Load();
 
 $pidfile and &daemonize;
