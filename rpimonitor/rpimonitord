@@ -18,7 +18,7 @@
   #print encode_json \%{$configuration->{'config'}->{'web'}};
   #print Data::Dumper->Dump([$configuration]);
   
-  
+use strict;
 use IPC::SysV;
 $|=1;
 $SIG{CHLD}   = 'IGNORE';
@@ -66,22 +66,21 @@ sub Load
 
   if ( scalar(@{$this->{'daemon'}->{'confFiles'}}) == 0 ) {
     push (@{$this->{'daemon'}->{'confFiles'}}, '/etc/rpimonitord.conf');
-    opendir( DIR, "/etc/rpimonitord.conf.d/*.conf") 
-      or warn "Can't open directory /etc/rpimonitord.conf.d/";
-      @{$this->{'daemon'}->{'confFiles'}} = ( @{$this->{'daemon'}->{'confFiles'}}, readdir(DIR) ) ;
-    closedir(DIR);
+    @{$this->{'daemon'}->{'confFiles'}} = ( @{$this->{'daemon'}->{'confFiles'}}, glob "/etc/rpimonitord.conf.d/*.conf" ) ;
   }
+  #die Data::Dumper->Dump([$this->{'daemon'}]);
 
   foreach ( @{$this->{'daemon'}->{'confFiles'}} ) {
     $this->LoadFile($_);
   }
-
+  
   # Load default values is not defined yet defined
   $this->{'daemon'}->{'user'}        ||= "pi";
   $this->{'daemon'}->{'group'}       ||= "pi";
   $this->{'daemon'}->{'port'}        ||= 8888;
   $this->{'daemon'}->{'addr'}        ||= '0.0.0.0';
-  $this->{'daemon'}->{'webroot'}     ||= "$path/web";
+  -d "$path/web" and $this->{'daemon'}->{'webroot'}     ||= "$path/web";
+  $this->{'daemon'}->{'webroot'}     ||= "/usr/share/rpimonitor/web";
   $this->{'daemon'}->{'delay'}       ||= 10;
 
   # Check user and group
@@ -113,7 +112,7 @@ sub LoadFile
   $this->Debug(2,"");
 
   open ( FILE, $confFile)
-    or die "Error while openning configuration file \"$confFile'}\" because $!\n";
+    or die "Error while openning configuration file \"$confFile\" because $!\n";
   while (<FILE>){
     chomp;
     /^\s*#|^$/ and next;                 # Ignore comments
@@ -211,6 +210,7 @@ sub new
     "/dynamic.json",
     "/status.json",
     "/statistic.json",
+    "/friends.json",
     "/favicon.ico",
 
     "/index.html",
@@ -219,6 +219,7 @@ sub new
     "/shellinabox.html",
     "/cacert.pem",
     "/certificate.p12",
+    "/shellinabox",
 
     "/css/rpimonitor.css",
     "/css/bootstrap.min.css",
@@ -319,6 +320,30 @@ sub SendStatus
   return 1;
 }
 
+sub SendRedirect
+{
+  my $this = shift;
+  my $destination = shift;
+  $this->Debug(2,$destination);
+
+  $this->{'connection'}->send_redirect($destination, 302);
+  $this->{'connection'}->close();
+
+  return 1;
+}
+
+sub SendError
+{
+  my $this=shift;
+  my $errorcode= shift;
+  $this->Debug(2,$errorcode);
+
+  $this->{'connection'}->send_error($errorcode);
+  $this->{'connection'}->close();
+
+  return 1;
+}
+
 sub DoGET
 {
   my $this = shift;
@@ -341,8 +366,9 @@ sub DoGET
     }
   }
   #$isvalid or $connection->send_error(404,"<br><b>$path</b> not in <br>". join ('<br>',@{$this->{'paths'}} )) and return;
-  $isvalid or $connection->send_error(404);
+  $isvalid or $this->SendError(404);
 
+  $path =~ /shellinabox$/ and $this->SendRedirect( $configuration->{'daemon'}->{'shellinabox'} ) and return;
   $path =~ /dynamic\.json/ and $this->SendStatus() and return;
   $path =~ /([^\/]+)\.json/ and $this->SendResponse($this->{$1}) and return;
 
@@ -355,7 +381,7 @@ sub DoGET
   $this->Debug(2,"Can't find $configuration->{'daemon'}->{'webroot'}/$path");
   
   #Finally send error
-  $connection->send_error();
+  $this->SendError();
 }
 
 sub Run
@@ -369,11 +395,12 @@ sub Run
   @{$this->{'paths'}} = ( @{ $configuration->{'rrdlist'}}, @{$this->{'paths'}} );  
   $this->{'status'} = encode_json(\@{$configuration->{'web'}->{'status'}});
   $this->{'statistic'} = encode_json(\@{$configuration->{'web'}->{'statistic'}});
+  $this->{'friends'} = encode_json(\@{$configuration->{'web'}->{'friends'}});
   $this->{'static'} = encode_json(\%{$monitor->{'static'}});
   #print Data::Dumper->Dump([$this->{'paths'}]);
   
   # Create the server
-  #print Data::Dumper->Dump([$configuration->{'daemon'}]);
+  #print Data::Dumper->Dump([$configuration]);
   $this->{'server'} = new HTTP::Daemon     ( ReuseAddr => 1,
                                              LocalAddr => $configuration->{'daemon'}->{'addr'},
                                              LocalPort => $configuration->{'daemon'}->{'port'})
@@ -658,7 +685,11 @@ $monitor->Process($configuration,'static');
 
 my $serverpid;
 
-for (my $retry=0; $retry<6; $retry++) {
+my $startTime = 0;
+for (;;) {
+  my $currentTime=mktime(localtime());
+  ( $currentTime - $startTime ) < 2 and last;
+  $startTime = $currentTime;
   unlink $pidfile;
   $pidfile and writePID();
   $serverpid = StartServer($configuration,$monitor);
