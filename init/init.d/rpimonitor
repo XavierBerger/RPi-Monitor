@@ -13,7 +13,7 @@
 # Source function library.
 . /lib/lsb/init-functions
 
-DAEMON="/usr/local/rpimonitor/rpimonitord"
+DAEMON="/usr/bin/rpimonitord"
 PIDFILE="/var/run/rpimonitord.pid"
 DEFAULTFILE="/etc/default/rpimonitor"
 
