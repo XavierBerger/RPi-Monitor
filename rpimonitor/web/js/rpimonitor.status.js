@@ -17,6 +17,9 @@ function ShowInfo(id,title,text){
     postProcessInfo.push(["#"+id, title, text]);
     return "<a href='#' id='"+id+"'><i class='icon-search'></i>"
   }
+  else {
+    return "";
+  }
 }
 
 function Pad(n){
@@ -102,8 +105,8 @@ function UpdateStatus () {
         var line = pages[iloop].line[jloop];
         text = text + "<p>"; 
         try {
-          text = text + eval ( line );
-        }
+            text = text + eval( line ); 
+  	}
         catch (e) {
           text = text + "ERROR: " + line;
         }

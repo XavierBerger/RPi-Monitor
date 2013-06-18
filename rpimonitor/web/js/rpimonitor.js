@@ -261,7 +261,7 @@ $(function () {
     if ( statusautorefresh ) {
       UpdateStatus(); 
       refreshTimerId = setInterval( UpdateStatus , 10000 ) 
-      clockId=setInterval(clock,1000);
+      clockId=setInterval(Tick,1000);
     }
     else {
       clearInterval(refreshTimerId);
