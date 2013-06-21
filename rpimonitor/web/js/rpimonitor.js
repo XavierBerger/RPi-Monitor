@@ -36,15 +36,16 @@ function SetShellinaboxMenu(){
   }
 }
 
-function ShowFriends(friend){
-  if ( friend ) { 
-    $('#friends').empty();
-    for (var i = 0; i < friend.length; i++) {
-      details=friend[i].split('=');
-      $('#friends').append('<li><a href="http://'+details[0]+'">'+details[1]+'</a></li>');
+function ShowFriends(){
+  $.getJSON('friends.json', function(data) {
+    if ( data.length > 0 ) { 
+      $('#friends').empty();
+      for (var i = 0; i < data.length; i++) {
+        $('#friends').append('<li><a href="http://'+data[i].link+'">'+data[i].name+'</a></li>');
+      }
+      $('#divfriends').removeClass('hide');
     }
-    $('#divfriends').removeClass('hide');
-  }
+  })
 }
 
 $(function () {

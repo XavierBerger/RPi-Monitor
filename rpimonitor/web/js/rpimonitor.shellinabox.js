@@ -1,8 +1,5 @@
 $(function () {
-  $("#shellinaboxframe").attr('src', shellinaboxuri);
-  $.getJSON('friends.json', function(data) {
-    ShowFriends(data.friends);
-  });
+  ShowFriends();
 });
 
 window.onbeforeunload = function (e) {

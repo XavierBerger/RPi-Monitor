@@ -4,7 +4,7 @@ var graphconf;
 var pageid;
 
 function Start() {
-  $.getJSON('statistic.json', function (data) {
+  $.getJSON('statistics.json', function (data) {
     localStorage.setItem('graphconf', JSON.stringify(data));
     graphconf = eval('(' + localStorage.getItem('graphconf') + ')');
     activestat = localStorage.getItem('activestat') || 0;
@@ -138,6 +138,8 @@ $(function () {
   $.ajaxSetup({
     cache : false
   });
+
+  ShowFriends();
 
   Start();
 });

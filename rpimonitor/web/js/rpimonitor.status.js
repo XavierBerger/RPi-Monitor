@@ -151,10 +151,13 @@ function ConstructPage()
 }
 
 $(function () {
-  /*set no cache */
+  /* Set no cache */
   $.ajaxSetup({ cache: false });
-  
-  /* get static values once */
+
+  /* Show friends */
+  ShowFriends();
+
+  /* Get static values once */
   $.getJSON('static.json', function(data) {
     localStorage.setItem('static', JSON.stringify(data));
     ConstructPage();
