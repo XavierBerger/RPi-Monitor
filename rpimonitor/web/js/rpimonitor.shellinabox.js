@@ -1,4 +1,5 @@
 $(function () {
+  $("#shellinaboxframe").attr('src', shellinaboxuri);
   ShowFriends();
 });
 
