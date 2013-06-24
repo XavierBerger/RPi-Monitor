@@ -48,7 +48,7 @@ if [ "${CERT}" == "2" ]; then
   openssl ca -out public/$1-cert.pem -extensions v3_req -config ../openssl.cnf -infiles public/$1-req.pem
 fi
 
-echp "**** Exporting kay"
+echo "**** Exporting kay"
 openssl pkcs12 -export -in public/$1-cert.pem -inkey private/$1-key.pem -out public/$1-bundle.p12
  
 echo ""
