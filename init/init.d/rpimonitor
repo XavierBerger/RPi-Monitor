@@ -93,10 +93,6 @@ update(){
   log_end_msg $status
 }
 
-info(){
-  echo "RPi-Monitor: To update status execute 'sudo service rpimonitord update'"
-}
-
 checkroot
 case "$1" in
   start)
@@ -113,9 +109,6 @@ case "$1" in
   ;;
   update)
     update
-  ;;
-  info)
-    info
   ;;
   *)
     echo "Usage: $0 {start|stop|restart|status|update}"
