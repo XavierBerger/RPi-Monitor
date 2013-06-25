@@ -225,21 +225,6 @@ sub new
     "/css/bootstrap.min.css",
     "/css/bootstrap-responsive.min.css",
 
-    "/img/cpu.png",
-    "/img/glyphicons-halflings.png",
-    "/img/network.png",
-    "/img/warning.png",
-    "/img/uptime.png",
-    "/img/glyphicons-halflings-white.png",
-    "/img/ok.png",
-    "/img/version.png",
-    "/img/user.png",
-    "/img/favicon.png",
-    "/img/memory.png",
-    "/img/swap.png",
-    "/img/cpu_temp.png",
-    "/img/logo.png",
-    "/img/sd.png",
     "/img/preloader.gif",
 
     "/js/rpimonitor.shellinabox.js",
@@ -392,6 +377,10 @@ sub Run
   $this->Debug(3,"");
 
   # Add rrds available and status file to the authorized pages
+  foreach (glob("$configuration->{'daemon'}->{'webroot'}/img/*.png")){
+    /(img\/.*\.png)$/;
+    unshift ( @{$this->{'paths'}}, $1);
+  }
   @{$this->{'paths'}} = ( @{ $configuration->{'rrdlist'}}, @{$this->{'paths'}} );  
   $this->{'status'} = encode_json(\@{$configuration->{'web'}->{'status'}});
   $this->{'statistics'} = encode_json(\@{$configuration->{'web'}->{'statistics'}});
