@@ -449,23 +449,29 @@ sub Run
   my $serverpid = shift;
   $this->Debug(2,"");
 
+  # process data that should be extracted once
+  $this->Process($configuration,'static');
+
   if ( !$configuration->{'daemon'}->{'noserver'}) {
     $this->{'shmid'} = shmget($key, $shm_size, &IPC_CREAT | 0777 );
   }
   else {
+    # write json if server is not running 
     open(FILE, "> $configuration->{'daemon'}->{'webroot'}/static.json")
       or warn $!;
-      print FILE encode_json \%{$configuration->{'web'}->{'static'}} ;
-    close(FILE);
+      print FILE encode_json \%{$this->{'static'}} ;
+    close(FILE); 
     open(FILE, "> $configuration->{'daemon'}->{'webroot'}/status.json")
       or warn $!;
-      print FILE encode_json \%{$this->{'web'}->{'status'}} ;
+      print FILE encode_json \@{$configuration->{'web'}->{'status'}} ;
     close(FILE);
     open(FILE, "> $configuration->{'daemon'}->{'webroot'}/statistics.json")
       or warn $!;
-      print FILE encode_json \%{$this->{'web'}->{'statistics'}} ;
+      print FILE encode_json \@{$configuration->{'web'}->{'statistics'}} ;
     close(FILE);
   }
+
+#die Data::Dumper->Dump([$configuration]);
 
   for(;;)
   {
@@ -688,8 +694,6 @@ $configuration->Load();
 $pidfile and &daemonize;
 
 my $monitor = Monitor->new();
-# process data that should be extracted once
-$monitor->Process($configuration,'static');
 
 my $serverpid;
 
