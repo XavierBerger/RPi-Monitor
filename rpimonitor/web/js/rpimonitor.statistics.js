@@ -122,6 +122,16 @@ function UpdateGraph() {
   pageid = 0;
   ds_graph_opts = graphconf[pageid].content[activestat].ds_graph_opts;
 
+  for(var graph in ds_graph_opts) {
+    for(var param in ds_graph_opts[graph]) {
+      try {
+	ds_graph_opts[graph][param]=eval('(' + ds_graph_opts[graph][param] + ')');
+      }
+      catch(e) {
+      }
+    }
+  }
+
   rrd_data_sum = new RRDFileSum( rrd_data );
   var f = new rrdFlot("mygraph", rrd_data_sum, graph_opts, ds_graph_opts, rrdflot_defaults );
   SetGraphlist();
