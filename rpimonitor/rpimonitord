@@ -68,12 +68,11 @@ sub Load
     push (@{$this->{'daemon'}->{'confFiles'}}, '/etc/rpimonitord.conf');
     @{$this->{'daemon'}->{'confFiles'}} = ( @{$this->{'daemon'}->{'confFiles'}}, glob "/etc/rpimonitord.conf.d/*.conf" ) ;
   }
-  #die Data::Dumper->Dump([$this->{'daemon'}]);
 
   foreach ( @{$this->{'daemon'}->{'confFiles'}} ) {
     $this->LoadFile($_);
   }
-  
+ 
   # Load default values is not defined yet defined
   $this->{'daemon'}->{'user'}        ||= "pi";
   $this->{'daemon'}->{'group'}       ||= "pi";
@@ -109,7 +108,7 @@ sub LoadFile
 {
   my $this = shift;
   my $confFile = shift;
-  $this->Debug(2,"");
+  $this->Debug(2,"Loading file: $confFile");
 
   open ( FILE, $confFile)
     or die "Error while openning configuration file \"$confFile\" because $!\n";
@@ -502,12 +501,13 @@ sub Process
   my $this = shift;
   my $configuration = shift;
   my $list = shift;
-  $this->Debug(2,"");
+  $this->Debug(2,"Processing $list");
  
   $this->{$list} and delete $this->{$list};
   foreach my $kpi ( values($configuration->{$list}) ) {
+    $kpi or next;
     my $file = -f $kpi->{'source'} ? $kpi->{'source'} : "$kpi->{'source'} 2>/dev/null|";
-    open(FEED, $file);
+    open(FEED, $file) or warn "Can't open $file because $!\n";
     while (<FEED>){
       @_ = /$kpi->{'regexp'}/ or next;
       $kpi->{'postprocess'} and @_=eval( $kpi->{'postprocess'} );
