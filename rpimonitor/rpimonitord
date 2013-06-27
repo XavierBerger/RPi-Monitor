@@ -89,6 +89,9 @@ sub Load
   # Check rrd directory and files and create them if they are missing
   # construct the list of rrd page accessible
   -d "$this->{'daemon'}->{'webroot'}/stat" or mkdir "$this->{'daemon'}->{'webroot'}/stat";
+  -f "$this->{'daemon'}->{'webroot'}/stat/empty.rrd" or $this->CreateRRD( "$this->{'daemon'}->{'webroot'}/stat/empty.rrd", 'empty', 'GAUGE' ); 
+
+  #die Data::Dumper->Dump([$this->{'rrd'}]);
 
   # manage rrds
   foreach (@{$this->{'rrd'}}){
@@ -224,6 +227,8 @@ sub new
     "/css/bootstrap.min.css",
     "/css/bootstrap-responsive.min.css",
 
+    "/stat/empty.rrd",
+
     "/img/preloader.gif",
 
     "/js/rpimonitor.shellinabox.js",
@@ -275,7 +280,7 @@ sub SendFile
   return 1;
 }
 
-sub SendResponse
+sub SendJSON
 {
   my $this = shift;
   my $message =shift;
@@ -299,7 +304,7 @@ sub SendStatus
   
   $var =~ s/\s+$//g; 
   $this->Debug(3,"JSON: $var");
-  $this->SendResponse($var);
+  $this->SendJSON($var);
 
   return 1;
 }
@@ -354,7 +359,7 @@ sub DoGET
 
   $path =~ /shellinabox$/ and $this->SendRedirect( $configuration->{'daemon'}->{'shellinabox'} ) and return;
   $path =~ /dynamic\.json/ and $this->SendStatus() and return;
-  $path =~ /([^\/]+)\.json/ and $this->SendResponse($this->{$1}) and return;
+  $path =~ /([^\/]+)\.json/ and $this->SendJSON($this->{$1}) and return;
 
   #The main page (/) is requested
   $path =~ /^\/$/ and $path = "/index.html";
@@ -448,9 +453,6 @@ sub Run
   my $serverpid = shift;
   $this->Debug(2,"");
 
-  # process data that should be extracted once
-  $this->Process($configuration,'static');
-
   if ( !$configuration->{'daemon'}->{'noserver'}) {
     $this->{'shmid'} = shmget($key, $shm_size, &IPC_CREAT | 0777 );
   }
@@ -469,8 +471,8 @@ sub Run
       print FILE encode_json \@{$configuration->{'web'}->{'statistics'}} ;
     close(FILE);
   }
-
-#die Data::Dumper->Dump([$configuration]);
+  
+  #die Data::Dumper->Dump([$this]);
 
   for(;;)
   {
@@ -694,6 +696,9 @@ $configuration->Load();
 $pidfile and &daemonize;
 
 my $monitor = Monitor->new();
+# Process data that should be extracted once, before the server starts
+$monitor->Process($configuration,'static');
+
 
 my $serverpid;
 

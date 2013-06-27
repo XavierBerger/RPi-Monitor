@@ -2,8 +2,21 @@
 var activestat;
 var graphconf;
 var pageid;
+var static;
 
 function Start() {
+  $.getJSON('static.json', function (data) {
+	      try {
+		            static = data;
+			        }
+	          catch(e){
+			        static = null;
+				    }
+		    })  .fail(function () {
+			        $('#message').html("<b>Can not get information (static.json) from RPi-Monitor server.</b>");
+				    $('#message').removeClass('hide');
+				      });
+      
   $.getJSON('statistics.json', function (data) {
     localStorage.setItem('graphconf', JSON.stringify(data));
     graphconf = eval('(' + localStorage.getItem('graphconf') + ')');
@@ -14,7 +27,7 @@ function Start() {
   .fail(function () {
     $('#message').html("<b>Can not get information (statistics.json) from RPi-Monitor server.</b>");
     $('#message').removeClass('hide');
-  })
+  });
 }
 
 function SetGraphlist() {
@@ -40,27 +53,34 @@ function SetGraphlist() {
 function FetchGraph() {
   $('#preloader').removeClass('hide');
   graph = graphconf[pageid].content[activestat].graph;
-  try {
-    for (var iloop = 0; iloop < graph.length; iloop++) {
-      FetchBinaryURLAsync('stat/' + graph[iloop] + '.rrd', UpdateHandler, iloop);
+  for ( var iloop = 0; iloop < graph.length; iloop++) {
+    if (  ( static==null ) || ( eval ( "static."+graph[iloop] ) ) ){
+      try {
+        FetchBinaryURLAsync('stat/empty.rrd', UpdateHandler, iloop);
+      }
+      catch (err) {
+        alert("Failed loading stat/empty.rrd\n" + err);
+      }
     }
-  } catch (err) {
-    alert("Failed loading stat/" + graph[iloop] + ".rrd\n" + err);
+    else {
+      try {
+        FetchBinaryURLAsync('stat/' + graph[iloop] + '.rrd', UpdateHandler, iloop);
+      }
+      catch (err) {
+        alert("Failed loading stat/" + graph[iloop] + ".rrd\n" + err);
+      }
+    }
   }
 }
 
 function UpdateHandler(bf, idx) {
-  var i_rrd_data = undefined;
   graph = graphconf[pageid].content[activestat].graph;
   try {
-    var i_rrd_data = new RRDFile(bf);
+    rrd_data[idx] = new RRDFile(bf);
   } catch (err) {
     alert("File stat/" + graph[idx] + ".rrd is not a valid RRD archive!");
   }
-  if (i_rrd_data != undefined) {
-    rrd_data[idx] = i_rrd_data;
-    PrepareGraph(idx);
-  }
+  PrepareGraph(idx);
   ready = 0;
   for (var iloop = 0; iloop < graph.length; iloop++) {
     if (rrd_data[iloop] != undefined) {
@@ -72,12 +92,12 @@ function UpdateHandler(bf, idx) {
   }
 }
 
-function DoNothing(ds) {
+function DoNothing(ds_name) {
   this.getName = function () {
-    return ds;
+    return ds_name;
   }
   this.getDSNames = function () {
-    return [ds];
+    return [ds_name];
   }
   this.computeResult = function (val_list) {
     return val_list[0];
@@ -96,6 +116,19 @@ function Zero(ds_name) { //create a fake DS.
   }
 }
 
+function SetValue(ds_name,value) { //create a fake DS.
+  this.getName = function () {
+    return ds_name;
+  }
+  this.getDSNames = function () {
+    return [];
+  }
+  this.computeResult = function (val_list) {
+    return value;
+  }
+}
+
+
 function PrepareGraph(idx) {
   // http://javascriptrrd.sourceforge.net/docs/javascriptrrd_v0.6.0/src/examples/rrdJFlotFilter.html
   // http://sourceforge.net/p/javascriptrrd/discussion/914914/thread/935d8541/#17d3
@@ -109,7 +142,13 @@ function PrepareGraph(idx) {
       op_list.push(new Zero(graph[iloop]));
     }
     else {
-      op_list.push(new DoNothing(rrd_data[idx].getDS(0).getName()));
+      // If the graph should represent a static data, construct the line
+      if ( rrd_data[idx].getDS(0).getName() == "empty" ) {
+        op_list.push(new SetValue( graph[iloop], eval( "static."+graph[iloop] ) ) );
+      }
+      else {
+        op_list.push(new DoNothing(rrd_data[idx].getDS(0).getName()));
+      }
     }
   }
   rrd_data[idx] = new RRDFilterOp(rrd_data[idx], op_list);
@@ -125,7 +164,7 @@ function UpdateGraph() {
   for(var graph in ds_graph_opts) {
     for(var param in ds_graph_opts[graph]) {
       try {
-	ds_graph_opts[graph][param]=eval('(' + ds_graph_opts[graph][param] + ')');
+  ds_graph_opts[graph][param]=eval('(' + ds_graph_opts[graph][param] + ')');
       }
       catch(e) {
       }
