@@ -55,8 +55,8 @@ function KMG(value, initPre){
     value *= Math.pow(unit,prefix.indexOf(initPre)+1);
   }
   try {
-    if (value < unit) { return value + "B" };
-    exp = Math.floor(Math.log(value) / Math.log(unit));
+    if (Math.abs(value) < unit) { return value + "B" };
+    exp = Math.floor(Math.log(Math.abs(value)) / Math.log(unit));
     pre = prefix.charAt(exp-1);
     return (value / Math.pow(unit, exp)).toFixed(2) + pre + "B";
   }
