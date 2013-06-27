@@ -66,7 +66,7 @@ function KMG(value, initPre){
 }
 
 function Percent(value,total){
-  return (100*(total-value)/total).toFixed(2)+"%";
+  return (100*value/total).toFixed(2)+"%";
 }
 
 function ProgressBar(value, max){
