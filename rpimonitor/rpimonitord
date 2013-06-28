@@ -197,8 +197,8 @@ use POSIX;
 use IO::Handle;
 use HTTP::Daemon;
 use HTTP::Status;
-use Data::Dumper;
 use JSON;
+#use Data::Dumper;
 
 sub new
 {
@@ -421,9 +421,8 @@ package Monitor;
 use strict;
 use POSIX;
 use RRDs;
-use Data::Dumper;
 use JSON;
-
+#use Data::Dumper;
 
 sub new
 {
