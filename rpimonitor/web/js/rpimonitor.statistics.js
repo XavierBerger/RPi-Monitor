@@ -52,6 +52,10 @@ function SetGraphlist() {
 
 function FetchGraph() {
   $('#preloader').removeClass('hide');
+  if ( activestat >= graphconf[pageid].content.length ){
+    activestat = 0;
+    localStorage.setItem('activestat', activestat);
+  }
   graph = graphconf[pageid].content[activestat].graph;
   for ( var iloop = 0; iloop < graph.length; iloop++) {
     if (  ( static==null ) || ( eval ( "static."+graph[iloop] ) ) ){
