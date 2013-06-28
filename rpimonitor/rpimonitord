@@ -506,7 +506,7 @@ sub Process
   $this->Debug(2,"Processing $list");
  
   $this->{$list} and delete $this->{$list};
-  foreach my $kpi ( values($configuration->{$list}) ) {
+  foreach my $kpi ( @{$configuration->{$list}} ) {
     $kpi or next;
     my $file = -f $kpi->{'source'} ? $kpi->{'source'} : "$kpi->{'source'} 2>/dev/null|";
     open(FEED, $file) or warn "Can't open $file because $!\n";
@@ -522,7 +522,7 @@ sub Process
     }
     close(FEED);
   }
-  
+
   #print Data::Dumper->Dump([$list]);
   #print Data::Dumper->Dump([$this->{'dynamic'}]);
 }
