@@ -422,6 +422,7 @@ use strict;
 use POSIX;
 use RRDs;
 use JSON;
+use Scalar::Util qw(looks_like_number);
 #use Data::Dumper;
 
 sub new
@@ -558,7 +559,9 @@ sub Status
   #print Data::Dumper->Dump($configuration->{'rrd'});
   foreach (@{$configuration->{'rrd'}}){
     foreach my $name ( split(',',$_->{'name'}) ) {
-      RRDs::update("$configuration->{'daemon'}->{'webroot'}/stat/$name.rrd", "N:".$this->{'dynamic'}->{$name});
+      if ( looks_like_number( $this->{'dynamic'}->{$name} ) ) { 
+        RRDs::update("$configuration->{'daemon'}->{'webroot'}/stat/$name.rrd", "N:".$this->{'dynamic'}->{$name});
+      }
     }
   }
 }
@@ -578,7 +581,7 @@ USAGE
      [-d delay][-h][-n][-p port][-v[v[...]]][-V]
 
 DESCRIPTION
-  rpimonitord is designed extract data from Raspberry Pi system and 
+  rpimonitord is designed to extract data from Raspberry Pi system and 
   store statistic into RRD. rpimonitord embed a web server allowing 
   to display current status and statistics.
 
@@ -686,7 +689,6 @@ while($_ = shift)
   /-h(elp)?/        and help;
   /-n(oserver)?/    and $configuration->{'daemon'}->{'noserver'}++ and next;
   /-p(ort)?/        and $configuration->{'daemon'}->{'port'} = shift and next;
-  #/-r(etry)?/       and $configuration->{'daemon'}->{'retry'} = shift and next;
   /^-([v]+)$/       and $verbose = length $1 and next;
   /-V(ersion)?/     and die "$0 version $VERSION\n";
 } 
