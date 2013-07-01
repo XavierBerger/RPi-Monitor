@@ -159,16 +159,26 @@ function PrepareGraph(idx) {
 }
 
 function UpdateGraph() {
-  graph_opts=null;
-  ds_graph_opts=null;
+  graph_options={};
   rrdflot_defaults={ graph_width:"750px",graph_height:"285px", scale_width:"350px", scale_height:"90px" };
   pageid = 0;
-  ds_graph_opts = graphconf[pageid].content[activestat].ds_graph_opts;
+  options = graphconf[pageid].content[activestat];
+  ds_graph_options = options.ds_graph_options;
 
-  for(var graph in ds_graph_opts) {
-    for(var param in ds_graph_opts[graph]) {
+  for(var graph in ds_graph_options) {
+    for(var param in ds_graph_options[graph]) {
       try {
-  ds_graph_opts[graph][param]=eval('(' + ds_graph_opts[graph][param] + ')');
+        ds_graph_options[graph][param]=eval('(' + ds_graph_options[graph][param] + ')');
+      }
+      catch(e) {
+      }
+    }
+  }
+ 
+  if ( options.graph_options ) {
+    for(var param in options.graph_options) {
+      try {
+        graph_options[param]=eval('(' + options.graph_options[param] + ')');
       }
       catch(e) {
       }
@@ -176,7 +186,7 @@ function UpdateGraph() {
   }
 
   rrd_data_sum = new RRDFileSum( rrd_data );
-  var f = new rrdFlot("mygraph", rrd_data_sum, graph_opts, ds_graph_opts, rrdflot_defaults );
+  var f = new rrdFlot("mygraph", rrd_data_sum, graph_options, ds_graph_options, rrdflot_defaults );
   SetGraphlist();
   $('#preloader').addClass('hide');
   $('#Legend').addClass('hide');
