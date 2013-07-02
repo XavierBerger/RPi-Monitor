@@ -1,4 +1,4 @@
-var pages;
+var strips;
 var postProcessInfo=[];
 
 function RowTemplate(id,image,title){
@@ -99,10 +99,10 @@ function UpdateStatus () {
     
     $('#message').addClass('hide');
     
-    for (var iloop=0; iloop < pages.length; iloop++){
+    for (var iloop=0; iloop < strips.length; iloop++){
       text = "";
-      for (var jloop=0; jloop < pages[iloop].line.length; jloop++){
-        var line = pages[iloop].line[jloop];
+      for (var jloop=0; jloop < strips[iloop].line.length; jloop++){
+        var line = strips[iloop].line[jloop];
         text = text + "<p>"; 
         try {
             text = text + eval( line ); 
@@ -135,11 +135,12 @@ function UpdateStatus () {
 
 function ConstructPage()
 {
+  activePage=0
   $.getJSON('status.json', function(data) {
     localStorage.setItem('status', JSON.stringify(data));
-    for ( var iloop=0; iloop < data[0].content.length; iloop++) {
-      $(RowTemplate(iloop,"img/"+data[0].content[iloop].icon,data[0].content[iloop].name)).insertBefore("#insertionPoint");
-      pages=data[0].content;
+    for ( var iloop=0; iloop < data[activePage].content.length; iloop++) {
+      $(RowTemplate(iloop,"img/"+data[activePage].content[iloop].icon,data[activePage].content[iloop].name)).insertBefore("#insertionPoint");
+      strips=data[activePage].content;
     }
     UpdateStatus();
   })
