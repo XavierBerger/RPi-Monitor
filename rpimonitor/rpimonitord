@@ -81,6 +81,7 @@ sub Load
   -d "$path/web" and $this->{'daemon'}->{'webroot'}     ||= "$path/web";
   $this->{'daemon'}->{'webroot'}     ||= "/usr/share/rpimonitor/web";
   $this->{'daemon'}->{'delay'}       ||= 10;
+  $this->{'daemon'}->{'timeout'}     ||= 5;
 
   # Check user and group
   $this->{'daemon'}->{'gid'} = getgrnam($this->{'daemon'}->{'user'})  || 1000;
@@ -509,20 +510,26 @@ sub Process
   foreach my $kpi ( @{$configuration->{$list}} ) {
     $kpi or next;
     my $file = -f $kpi->{'source'} ? $kpi->{'source'} : "$kpi->{'source'} 2>/dev/null|";
-    open(FEED, $file) or warn "Can't open $file because $!\n";
-    while (<FEED>){
-      @_ = /$kpi->{'regexp'}/ or next;
-      $kpi->{'postprocess'} and @_=eval( $kpi->{'postprocess'} );
-      my $i=0;
-      my @names = split(',',$kpi->{'name'});
-      foreach ( @_ ) { 
-        $this->{$list}->{@names[$i]}=@_[$i];
-        $i++;
+    eval {
+      open(FEED, $file) or die "Can't open $file because $!\n";
+      local $SIG{ALRM} = sub { die "Timeout\n" };
+      alarm $configuration->{'daemon'}->{'timeout'};
+      while (<FEED>){
+        @_ = /$kpi->{'regexp'}/ or next;
+        if ( $kpi->{'postprocess'} ) {
+           @_=eval( $kpi->{'postprocess'} );
+        }
+        my $i=0;
+        my @names = split(',',$kpi->{'name'});
+        foreach ( @_ ) { 
+          $this->{$list}->{@names[$i]}=@_[$i];
+          $i++;
+        }
       }
+      close(FEED);
+      alarm 0;
     }
-    close(FEED);
   }
-
   #print Data::Dumper->Dump([$list]);
   #print Data::Dumper->Dump([$this->{'dynamic'}]);
 }
@@ -578,7 +585,7 @@ NAME
 
 USAGE
   rpimonitord [-a address][ -b pidfile][[-c configuration_file]...]
-     [-d delay][-h][-n][-p port][-v[v[...]]][-V]
+     [-d delay][-h][-n][-p port][-v[v[...]]][-t timeout][-V]
 
 DESCRIPTION
   rpimonitord is designed to extract data from Raspberry Pi system and 
@@ -591,7 +598,7 @@ OPTIONS
   -c, --conf        Define the configuration file
                      (Default: /etc/rpimonitord.conf and 
                                /etc/rpimonitord.conf.d/*.conf)
-  -d, --delay       Delay between check (default 10sec)
+  -d, --delay       Delay between check ins seconds (Default: 10)
                       Note: If you want to change the default delay, the
                       rrd file will have to be deleted rpimonitord will
                       recreate them at next startup with the new time
@@ -600,6 +607,7 @@ OPTIONS
   -n, --noserver    Don't start embeded server
   -p, --port        Web server port (Default: 8888)
   -v, --verbose     Write debug info on screen
+  -t, --timeout     KPI read timeoutin seconds (Default: 5)
   -V, --Version     Show version and exit
 
 CONFIGURATION
@@ -690,6 +698,7 @@ while($_ = shift)
   /-n(oserver)?/    and $configuration->{'daemon'}->{'noserver'}++ and next;
   /-p(ort)?/        and $configuration->{'daemon'}->{'port'} = shift and next;
   /^-([v]+)$/       and $verbose = length $1 and next;
+  /^-t(imeout)$/    and $configuration->{'daemon'}->{'timeout'} = shift and next;
   /-V(ersion)?/     and die "$0 version $VERSION\n";
 } 
 $configuration->Load();
