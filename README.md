@@ -1,10 +1,10 @@
-# RPi-Monitor
+# [**RPi-Monitor**](http://rpi-experiences.blogspot.fr/)
 
 ### Overview
 
-**RPi-Monitor** is a self monitoring application designed to run on [Raspberry Pi](http://raspberrypi.org).
+[**RPi-Monitor**](http://rpi-experiences.blogspot.fr/) is a self monitoring application designed to run on [Raspberry Pi](http://raspberrypi.org).
 
-For performance and security reason, **RPi-Monitor** separates the extraction of the information from the
+For performance and security reason, [**RPi-Monitor**](http://rpi-experiences.blogspot.fr/) separates the extraction of the information from the
 presentation of the information.
 
 The extraction of the information is done by a process designed to run as a daemon (which can be executed as root).
@@ -27,12 +27,12 @@ to not start the embeded web server and use an external web server to deliver th
 
 ### Screenshot
 
-You will find screenshot of **RPi-Monitor** in [RPi-Monitor Overview]
+You will find screenshot of [**RPi-Monitor**](http://rpi-experiences.blogspot.fr/) in [RPi-Monitor Overview]
 (http://rpi-experiences.blogspot.fr/p/rpi-monitor.html).
 
 ### Installation
 
-Installation of **RPi-Monitor** is detailled in every release announcement in [RPi-Experience]
+Installation of [**RPi-Monitor**](http://rpi-experiences.blogspot.fr/) is detailled in every release announcement in [RPi-Experience]
 (http://rpi-experiences.blogspot.fr/).
 
 For installation on other system than raspbian and for advanced customization read the article [RPi-Monitor: Version 2.0 advance usage and customization] (http://rpi-experiences.blogspot.fr/2013/06/rpi-monitor-version-20-advance-usage.html)
@@ -46,7 +46,7 @@ All articles realated to RPi-Monitor are gathered into the page [RPi-Monitor Ove
 
 Github is used to perform versionning of development and also to backup the development progress of future releases.
 The **Master branch** is the unstable development branch (The branch may have bugs and partially released
-code that could avoid **RPi-Monitor** to run as expected). It is not recommanded to install **RPi-Monitor** from
+code that could avoid [**RPi-Monitor**](http://rpi-experiences.blogspot.fr/) to run as expected). It is not recommanded to install **RPi-Monitor** from
 it unless you want to participate to its development.
 
 Each release is identified by a branch. This should be the source to use in you want a stable release.
@@ -55,4 +55,4 @@ Each release is identified by a branch. This should be the source to use in you 
 
 **Author**: Xavier Berger
 
-**Blog**: [RPi-Experience](http://rpi-experiences.blogspot.fr/)
+* [RPi-Experience](http://rpi-experiences.blogspot.fr/)
