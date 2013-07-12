@@ -17,7 +17,8 @@
 
   #print encode_json \%{$configuration->{'config'}->{'web'}};
   #print Data::Dumper->Dump([$configuration]);
-  
+
+#use diagnostics;
 use strict;
 use IPC::SysV;
 $|=1;
@@ -76,6 +77,7 @@ sub Load
   # Load default values is not defined yet defined
   $this->{'daemon'}->{'user'}        ||= "pi";
   $this->{'daemon'}->{'group'}       ||= "pi";
+  $this->{'daemon'}->{'noserver'}    ||= 0;
   $this->{'daemon'}->{'port'}        ||= 8888;
   $this->{'daemon'}->{'addr'}        ||= '0.0.0.0';
   -d "$path/web" and $this->{'daemon'}->{'webroot'}     ||= "$path/web";
@@ -511,9 +513,9 @@ sub Process
     $kpi or next;
     my $file = -f $kpi->{'source'} ? $kpi->{'source'} : "$kpi->{'source'} 2>/dev/null|";
     eval {
-      open(FEED, $file) or die "Can't open $file because $!\n";
       local $SIG{ALRM} = sub { die "Timeout\n" };
       alarm $configuration->{'daemon'}->{'timeout'};
+      open(FEED, $file) or die "Can't open $file because $!\n";
       while (<FEED>){
         @_ = /$kpi->{'regexp'}/ or next;
         if ( $kpi->{'postprocess'} ) {
@@ -522,7 +524,7 @@ sub Process
         my $i=0;
         my @names = split(',',$kpi->{'name'});
         foreach ( @_ ) { 
-          $this->{$list}->{@names[$i]}=@_[$i];
+          $this->{$list}->{$names[$i]}=$_[$i];
           $i++;
         }
       }
@@ -715,14 +717,22 @@ my $serverpid;
 my $startTime = 0;
 for (;;) {
   my $currentTime=mktime(localtime());
-  ( $currentTime - $startTime ) < 2 and last;
+  ( $currentTime - $startTime ) < 2 and die "rpimonitord stopped because respawning too fast.\n";
   $startTime = $currentTime;
-  unlink $pidfile;
-  $pidfile and writePID();
+  if ( $pidfile ) {
+    -f $pidfile and unlink $pidfile;
+    writePID();
+  }
   $serverpid = StartServer($configuration,$monitor);
-  $monitor->Run($configuration, $serverpid);
-  close(PID);
-  $configuration->{'daemon'}->{'delay'} or last;
+  #Start process respawner
+  if ( my $procpid = fork() ) {
+    waitpid($procpid,0);
+  }
+  else{
+    $pidfile and writePID();
+    $monitor->Run($configuration, $serverpid);
+    exit(0);
+  }
+  $serverpid and kill (9,$serverpid);
+  $configuration->{'daemon'}->{'delay'} or last; #delay == 0, it means we should stop the process.
 }
-
-$serverpid and kill (9,$serverpid);
