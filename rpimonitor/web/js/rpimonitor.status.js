@@ -151,7 +151,8 @@ function UpdateStatus () {
 
 function ConstructPage()
 {
-  activePage=0
+  var activePage = GetURLParameter('activePage');
+  if ( typeof activePage == 'undefined') { activePage=0 };
   $.getJSON('status.json', function(data) {
     localStorage.setItem('status', JSON.stringify(data));
     for ( var iloop=0; iloop < data[activePage].content.length; iloop++) {

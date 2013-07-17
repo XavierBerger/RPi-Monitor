@@ -39,6 +39,7 @@ package Configuration;
 use strict;
 use POSIX;
 use Cwd 'abs_path';
+#use Data::Dumper;
 
 sub new
 {
@@ -107,7 +108,18 @@ sub Load
       push(@{$this->{'rrdlist'}},"stat/$_.rrd");
     }
   }
-  #die Data::Dumper->Dump([$this->{'rrd'}]);
+ 
+  #print Data::Dumper->Dump([$this->{'web'}]);  
+ 
+  # manage menu
+  foreach (@{$this->{'web'}->{'status'}}) {
+    $_->{'name'} and push(@{$this->{'menu'}->{'status'}}, $_->{'name'});
+  }
+  foreach (@{$this->{'web'}->{'statistics'}}) {
+    $_->{'name'} and push(@{$this->{'menu'}->{'statistics'}}, $_->{'name'});
+  }
+
+  #die Data::Dumper->Dump([$this->{'menu'}]);
 
 }
 
@@ -216,6 +228,7 @@ sub new
     "/dynamic.json",
     "/status.json",
     "/statistics.json",
+    "/menu.json",
     "/friends.json",
     "/favicon.ico",
 
@@ -394,6 +407,7 @@ sub Run
   $this->{'statistics'} = encode_json(\@{$configuration->{'web'}->{'statistics'}});
   $this->{'friends'} = encode_json(\@{$configuration->{'web'}->{'friends'}});
   $this->{'static'} = encode_json(\%{$monitor->{'static'}});
+  $this->{'menu'} = encode_json(\%{$configuration->{'menu'}});
   #print Data::Dumper->Dump([$this->{'paths'}]);
   
   # Create the server
@@ -404,6 +418,9 @@ sub Run
     or die "Web server not started because or error: $!\n";
 
   $this->Debug(1,"< URL:", $this->{'server'}->url, ">");
+
+  setgid($configuration->{'daemon'}->{'gid'});
+  setuid($configuration->{'daemon'}->{'uid'});
 
   #Process requests
   for (;;){
@@ -610,7 +627,7 @@ OPTIONS
   -n, --noserver    Don't start embeded server
   -p, --port        Web server port (Default: 8888)
   -v, --verbose     Write debug info on screen
-  -t, --timeout     KPI read timeoutin seconds (Default: 5)
+  -t, --timeout     KPI read timeout in seconds (Default: 5)
   -V, --Version     Show version and exit
 
 CONFIGURATION
@@ -631,6 +648,8 @@ RAW DATA ACCESS
     static.json:    Static information extracted at startup
     dynamic.json:   Current values of dynamic information extracted 
                     periodically
+    menu.json:      Description of menus when multiple pages are 
+                    configured
 
   The web interface configuration can also be downloaded in json format:
     statistics.json: Description of statistics page
@@ -674,8 +693,6 @@ sub StartServer
     unless ($serverpid = fork) {
       $pidfile and writePID();
       my $server = Server->new();
-      setgid($configuration->{'daemon'}->{'gid'});
-      setuid($configuration->{'daemon'}->{'uid'});
       $server->Run($configuration,$monitor);
       exit;
     }

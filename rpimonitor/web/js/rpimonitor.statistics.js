@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 var activestat;
 var graphconf;
-var pageid;
+var activePage;
 var static;
 
 function Start() {
@@ -36,7 +36,8 @@ function Start() {
     localStorage.setItem('graphconf', JSON.stringify(data));
     graphconf = eval('(' + localStorage.getItem('graphconf') + ')');
     activestat = localStorage.getItem('activestat') || 0;
-    pageid = 0;
+    activePage = GetURLParameter('activePage');
+    if ( typeof activePage == 'undefined') { activePage=0 };
     FetchGraph();
   })
   .fail(function () {
@@ -47,12 +48,12 @@ function Start() {
 
 function SetGraphlist() {
   var graphlist = "Graph: <select id='selected_graph'>\n";
-  for (var iloop = 0; iloop < graphconf[pageid].content.length; iloop++) {
+  for (var iloop = 0; iloop < graphconf[activePage].content.length; iloop++) {
     graphlist += "<option value='" + iloop + "'";
     if (activestat == iloop) {
       graphlist += " selected ";
     }
-    graphlist += ">" + graphconf[pageid].content[iloop].name + "</option>\n";
+    graphlist += ">" + graphconf[activePage].content[iloop].name + "</option>\n";
   }
   graphlist += "</select>\n";
 
@@ -67,11 +68,11 @@ function SetGraphlist() {
 
 function FetchGraph() {
   $('#preloader').removeClass('hide');
-  if ( activestat >= graphconf[pageid].content.length ){
+  if ( activestat >= graphconf[activePage].content.length ){
     activestat = 0;
     localStorage.setItem('activestat', activestat);
   }
-  graph = graphconf[pageid].content[activestat].graph;
+  graph = graphconf[activePage].content[activestat].graph;
   for ( var iloop = 0; iloop < graph.length; iloop++) {
     if (  ( static==null ) || ( eval ( "static."+graph[iloop] ) ) ){
       try {
@@ -93,7 +94,7 @@ function FetchGraph() {
 }
 
 function UpdateHandler(bf, idx) {
-  graph = graphconf[pageid].content[activestat].graph;
+  graph = graphconf[activePage].content[activestat].graph;
   try {
     rrd_data[idx] = new RRDFile(bf);
   } catch (err) {
@@ -153,7 +154,7 @@ function PrepareGraph(idx) {
   // http://sourceforge.net/p/javascriptrrd/discussion/914914/thread/935d8541/#17d3
   // Create a RRDFilterOp object that has the all DS's, with the one
   // existing in the original RRD populated with real values, and the other set to 0.
-  graph = graphconf[pageid].content[activestat].graph;
+  graph = graphconf[activePage].content[activestat].graph;
   var op_list = []; //list of operations
   //create a new rrdlist, which contains all original elements (kept the same by DoNothing())
   for (var iloop = 0; iloop < graph.length; iloop++) {
@@ -176,8 +177,7 @@ function PrepareGraph(idx) {
 function UpdateGraph() {
   graph_options={};
   rrdflot_defaults={ graph_width:"750px",graph_height:"285px", scale_width:"350px", scale_height:"90px" };
-  pageid = 0;
-  options = graphconf[pageid].content[activestat];
+  options = graphconf[activePage].content[activestat];
   ds_graph_options = options.ds_graph_options;
 
   for(var graph in ds_graph_options) {
