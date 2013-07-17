@@ -36,8 +36,11 @@ function Start() {
     localStorage.setItem('graphconf', JSON.stringify(data));
     graphconf = eval('(' + localStorage.getItem('graphconf') + ')');
     activestat = localStorage.getItem('activestat') || 0;
-    activePage = GetURLParameter('activePage');
-    if ( typeof activePage == 'undefined') { activePage=0 };
+    if ( typeof activePage == 'undefined') { 
+      activePage=localStorage.getItem('activePage', activePage); 
+      if ( activePage ==null ) { activePage = 0 }
+    };
+    localStorage.setItem('activePage', activePage);localStorage.setItem('activePage', activePage);
     FetchGraph();
   })
   .fail(function () {

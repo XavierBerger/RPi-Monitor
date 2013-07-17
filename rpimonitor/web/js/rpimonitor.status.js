@@ -152,7 +152,12 @@ function UpdateStatus () {
 function ConstructPage()
 {
   var activePage = GetURLParameter('activePage');
-  if ( typeof activePage == 'undefined') { activePage=0 };
+  
+  if ( typeof activePage == 'undefined') { 
+    activePage=localStorage.getItem('activePage', activePage); 
+    if ( activePage ==null ) { activePage = 0 }
+  };
+  localStorage.setItem('activePage', activePage); 
   $.getJSON('status.json', function(data) {
     localStorage.setItem('status', JSON.stringify(data));
     for ( var iloop=0; iloop < data[activePage].content.length; iloop++) {
