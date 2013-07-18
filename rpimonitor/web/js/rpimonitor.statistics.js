@@ -20,39 +20,23 @@ var activePage;
 var static;
 
 function Start() {
-  $.getJSON('static.json', function (data) {
-        try {
-                static = data;
-              }
-            catch(e){
-              static = null;
-            }
-        })  .fail(function () {
-              $('#message').html("<b>Can not get information (static.json) from RPi-Monitor server.</b>");
-            $('#message').removeClass('hide');
-              });
-      
-  $.getJSON('statistics.json', function (data) {
-    localStorage.setItem('graphconf', JSON.stringify(data));
-    graphconf = eval('(' + localStorage.getItem('graphconf') + ')');
-    activestat = localStorage.getItem('activestat') || 0;
-    activePage = GetURLParameter('activePage');
-    if ( typeof activePage == 'undefined') { 
-      activePage=localStorage.getItem('activePage', activePage); 
-      if ( activePage == null ) { activePage = 0 }
-    }
-    localStorage.setItem('activePage', activePage);
-    if ( data.length > 1 ) {
-      $('<h2><p class="text-info">'+data[activePage].name+'</p></h2><hr>').insertBefore("#insertionPoint");
-    }
+  static = getData('static')
+  
+  graphconf = getData('statistics')
+    
+  activestat = localStorage.getItem('activestat') || 0;
+  activePage = GetURLParameter('activePage');
+  if ( typeof activePage == 'undefined') { 
+    activePage=localStorage.getItem('activePage', activePage); 
+    if ( activePage == null ) { activePage = 0 }
+  }
+  localStorage.setItem('activePage', activePage);
+  if ( graphconf.length > 1 ) {
+    $('<h2><p class="text-info">'+graphconf[activePage].name+'</p></h2><hr>').insertBefore("#insertionPoint");
+  }
 
     localStorage.setItem('activePage', activePage);localStorage.setItem('activePage', activePage);
     FetchGraph();
-  })
-  .fail(function () {
-    $('#message').html("<b>Can not get information (statistics.json) from RPi-Monitor server.</b>");
-    $('#message').removeClass('hide');
-  });
 }
 
 function SetGraphlist() {

@@ -136,11 +136,6 @@ function UpdateStatus () {
     SetProgressBarAnimate();
     ActivatePopover();
     
-    if ( firstload == true ){
-      firstload=false;
-      ShowFriends(data.friends);
-    }
-
   })
   .fail(function() {
       $('#message').html("<b>Can not get information (dynamic.json) from RPi-Monitor server.</b>");
@@ -158,22 +153,15 @@ function ConstructPage()
     if ( activePage ==null ) { activePage = 0 }
   };
   localStorage.setItem('activePage', activePage); 
-  $.getJSON('status.json', function(data) {
-    localStorage.setItem('status', JSON.stringify(data));
-    if ( data.length > 1 ) {
-      $('<h2><p class="text-info">'+data[activePage].name+'</p></h2><hr>').insertBefore("#insertionPoint");
-    }
-    for ( var iloop=0; iloop < data[activePage].content.length; iloop++) {
-      $(RowTemplate(iloop,"img/"+data[activePage].content[iloop].icon,data[activePage].content[iloop].name)).insertBefore("#insertionPoint");
-      strips=data[activePage].content;
-    }
-    UpdateStatus();
-  })
-  .fail(function() {
-      $('#message').html("<b>Can not get information (status.json) from RPi-Monitor server.</b>");
-      $('#message').removeClass('hide');
-  });
-
+  data = getData('status');
+  if ( data.length > 1 ) {
+    $('<h2><p class="text-info">'+data[activePage].name+'</p></h2><hr>').insertBefore("#insertionPoint");
+  }
+  for ( var iloop=0; iloop < data[activePage].content.length; iloop++) {
+    $(RowTemplate(iloop,"img/"+data[activePage].content[iloop].icon,data[activePage].content[iloop].name)).insertBefore("#insertionPoint");
+    strips=data[activePage].content;
+  }
+  UpdateStatus();
 }
 
 $(function () {
@@ -184,15 +172,9 @@ $(function () {
   ShowFriends();
 
   /* Get static values once */
-  $.getJSON('static.json', function(data) {
-    localStorage.setItem('static', JSON.stringify(data));
-    ConstructPage();
-
-  })
-  .fail(function() {
-    $('#message').html("<b>Can not get information (static.json) from RPi-Monitor server.</b>");
-    $('#message').removeClass('hide');
-  });
+  data = getData('static');  
+  localStorage.setItem('static', JSON.stringify(data));
+  ConstructPage();
 
   if ( statusautorefresh ) { 
     refreshTimerId = setInterval( UpdateStatus , 10000 ) 

@@ -76,6 +76,9 @@ sub Load
     $this->LoadFile($_);
   }
  
+  # Set version (used by web pagescache mechanism)
+  $this->{'version'} = localtime();
+
   # Load default values is not defined yet defined
   $this->{'daemon'}->{'user'}        ||= "pi";
   $this->{'daemon'}->{'group'}       ||= "pi";
@@ -230,6 +233,7 @@ sub new
     "/statistics.json",
     "/menu.json",
     "/friends.json",
+    "/version.json",
     "/favicon.ico",
 
     "/index.html",
@@ -408,6 +412,7 @@ sub Run
   $this->{'friends'} = encode_json(\@{$configuration->{'web'}->{'friends'}});
   $this->{'static'} = encode_json(\%{$monitor->{'static'}});
   $this->{'menu'} = encode_json(\%{$configuration->{'menu'}});
+  $this->{'version'} = "{\"version\":\"$configuration->{'version'}\"}";
   #print Data::Dumper->Dump([$this->{'paths'}]);
   
   # Create the server

@@ -66,16 +66,39 @@ function SetShellinaboxMenu(){
   }
 }
 
-function ShowFriends(){
-  $.getJSON('friends.json', function(data) {
-    if ( data.length > 0 ) { 
-      $('#friends').empty();
-      for (var i = 0; i < data.length; i++) {
-        $('#friends').append('<li><a href="http://'+data[i].link+'">'+data[i].name+'</a></li>');
+function getData( name ){
+  if ( localStorage.getItem(name+'Version') == localStorage.getItem('version') ) {
+    return eval("(" + localStorage.getItem(name) + ')');
+  }
+  else
+  {
+    return $.ajax({
+      url: name + '.json',
+      dataType: 'json',
+      async: false,
+      success: function(data) {
+        localStorage.setItem(name, JSON.stringify(data))
+        localStorage.setItem(name+'Version', localStorage.getItem('version'))
+        return data
+      },
+      fail: function () {
+        $('#message').html("<b>Can not get information ("+name+".json) from RPi-Monitor server.</b>");
+        $('#message').removeClass('hide');
+        return null
       }
-      $('#divfriends').removeClass('hide');
+    }).responseJSON
+  }
+}
+
+function ShowFriends(){
+  var data = getData('friends')
+  if ( data.length > 0 ) {
+    $('#friends').empty();
+    for (var i = 0; i < data.length; i++) {
+      $('#friends').append('<li><a href="http://'+data[i].link+'">'+data[i].name+'</a></li>');
     }
-  })
+    $('#divfriends').removeClass('hide');
+  } 
 }
 
 function AddFooter(){
@@ -245,39 +268,47 @@ function UpdateMenu(){
     return;
   }
   
-  $.getJSON('menu.json', function(data) {
-    if ( data.status.length > 1 ){
-      $('#statusmenu').addClass('dropdown');
-      var dropDownMenu='<ul class="dropdown-menu">';
-      dropDownMenu+='<li class="nav-header">Status</li>'
-      for ( var iloop=0; iloop < data.status.length; iloop++){
-        dropDownMenu+='<li><a href="status.html?activePage='+iloop+'">'+data.status[iloop]+'</a></li>';
-      }
-      dropDownMenu+='</ul>';
-      $('#statuslink').html( 'Status <b class="caret"></b>')
-      $(dropDownMenu).insertAfter('#statuslink');
-      $('#statuslink').addClass('dropdown-toggle');
-      $('#statuslink').attr('data-toggle','dropdown');
-      $('#statuslink').attr('href','#');
+  var data = getData('menu');
+  if ( data.status.length > 1 ){
+    $('#statusmenu').addClass('dropdown');
+    var dropDownMenu='<ul class="dropdown-menu">';
+    dropDownMenu+='<li class="nav-header">Status</li>'
+    for ( var iloop=0; iloop < data.status.length; iloop++){
+      dropDownMenu+='<li><a href="status.html?activePage='+iloop+'">'+data.status[iloop]+'</a></li>';
     }
-    if ( data.statistics.length > 1 ){
-      $('#statisticsmenu').addClass('dropdown');
-      var dropDownMenu='<ul class="dropdown-menu">';
-      dropDownMenu+='<li class="nav-header">Statistics</li>'
-      for ( var iloop=0; iloop < data.statistics.length; iloop++){
-        dropDownMenu+='<li><a href="statistics.html?activePage='+iloop+'">'+data.statistics[iloop]+'</a></li>';
-      }
-      dropDownMenu+='</ul>';
-      $('#statisticslink').html( 'Statistics <b class="caret"></b>')
-      $(dropDownMenu).insertAfter('#statisticslink');
-      $('#statisticslink').addClass('dropdown-toggle');
-      $('#statisticslink').attr('data-toggle','dropdown');
-      $('#statisticslink').attr('href','#');
+    dropDownMenu+='</ul>';
+    $('#statuslink').html( 'Status <b class="caret"></b>')
+    $(dropDownMenu).insertAfter('#statuslink');
+    $('#statuslink').addClass('dropdown-toggle');
+    $('#statuslink').attr('data-toggle','dropdown');
+    $('#statuslink').attr('href','#');
+  }
+  if ( data.statistics.length > 1 ){
+    $('#statisticsmenu').addClass('dropdown');
+    var dropDownMenu='<ul class="dropdown-menu">';
+    dropDownMenu+='<li class="nav-header">Statistics</li>'
+    for ( var iloop=0; iloop < data.statistics.length; iloop++){
+      dropDownMenu+='<li><a href="statistics.html?activePage='+iloop+'">'+data.statistics[iloop]+'</a></li>';
     }
-
-
-  });
+    dropDownMenu+='</ul>';
+    $('#statisticslink').html( 'Statistics <b class="caret"></b>')
+    $(dropDownMenu).insertAfter('#statisticslink');
+    $('#statisticslink').addClass('dropdown-toggle');
+    $('#statisticslink').attr('data-toggle','dropdown');
+    $('#statisticslink').attr('href','#');
+  }
   
+}
+
+function getVersion(){
+  $.ajax({
+    url: 'version.json',
+    dataType: 'json',
+    async: false,
+    success: function(data) {
+        localStorage.setItem('version', data.version);
+      }
+    })
 }
 
 $(function () {
@@ -290,6 +321,7 @@ $(function () {
   statusautorefresh=(localStorage.getItem('statusautorefresh') === 'true');
 
   // Construct the page template
+  getVersion();
   AddTopmenu();
   UpdateMenu();
   AddDialogs();
