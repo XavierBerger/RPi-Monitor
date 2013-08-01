@@ -18,6 +18,17 @@
 $(function () {
   $("#shellinaboxframe").attr('src', shellinaboxuri);
   ShowFriends();
+  resize_frame();
+});
+
+function resize_frame(){
+  var window_height = $(window).height() - 60 - 40;
+  $('#shellinaboxdiv').css('height',window_height+'px');
+}
+
+
+$(window).resize(function() {
+  resize_frame();
 });
 
 window.onbeforeunload = function (e) {
