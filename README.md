@@ -35,11 +35,11 @@ You will find screenshot of [**RPi-Monitor**](http://rpi-experiences.blogspot.fr
 Installation of [**RPi-Monitor**](http://rpi-experiences.blogspot.fr/) is detailled in every release announcement in [RPi-Experience]
 (http://rpi-experiences.blogspot.fr/).
 
-Debian package is available in [here](https://github.com/XavierBerger/RPi-Monitor-deb)
+Debian package is available in [here](https://github.com/XavierBerger/RPi-Monitor-deb).
 
-Gento users can find the ebuild Stuart Shelton [here](https://github.com/srcshelton/gentoo-ebuilds/tree/master/www-apps/rpi-monitor)
+Gentoo users can find the ebuild Stuart Shelton [here](https://github.com/srcshelton/gentoo-ebuilds/tree/master/www-apps/rpi-monitor).
 
-For installation on other system and for advanced customization read the article [RPi-Monitor: Version 2.0 advance usage and customization] (http://rpi-experiences.blogspot.fr/2013/06/rpi-monitor-version-20-advance-usage.html)
+For installation on other system and for advanced customization read the article [RPi-Monitor: Version 2.0 advance usage and customization] (http://rpi-experiences.blogspot.fr/2013/06/rpi-monitor-version-20-advance-usage.html).
 
 ### Other information
 
