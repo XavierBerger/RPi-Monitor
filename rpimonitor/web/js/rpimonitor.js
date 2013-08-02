@@ -95,7 +95,7 @@ function ShowFriends(){
   if ( data.length > 0 ) {
     $('#friends').empty();
     for (var i = 0; i < data.length; i++) {
-      $('#friends').append('<li><a href="http://'+data[i].link+'">'+data[i].name+'</a></li>');
+      $('#friends').append('<li><a href="'+data[i].link+'">'+data[i].name+'</a></li>');
     }
     $('#divfriends').removeClass('hide');
   } 
