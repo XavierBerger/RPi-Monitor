@@ -82,7 +82,7 @@ function getData( name ){
         return data
       },
       fail: function () {
-        $('#message').html("<b>Can not get information ("+name+".json) from RPi-Monitor server.</b>");
+        $('#message').html("<b>Can not get information (<a href='"+name.json+"'>"+name+".json</a>) from RPi-Monitor server.</b>");
         $('#message').removeClass('hide');
         return null
       }
