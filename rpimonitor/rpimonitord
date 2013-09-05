@@ -21,7 +21,7 @@
 
 #use diagnostics;
 use strict;
-use IPC::SysV;
+use IPC::ShareLite;
 $|=1;
 $SIG{CHLD}   = 'IGNORE';
 $SIG{INT}    = sub { stop(); }; # catch Ctrl+C
@@ -30,7 +30,7 @@ my $VERSION  = "{DEVELOPMENT}";
 my $verbose  = 0;
 
 # prepare the shared memory for communication between Monitor and Server
-my $key      = $$;
+my $key = $$;
 my $shm_size = 8192;
 
 my $pidfile;
@@ -39,7 +39,7 @@ package Configuration;
 use strict;
 use POSIX;
 use Cwd 'abs_path';
-#use Data::Dumper;
+use Data::Dumper;
 
 sub new
 {
@@ -122,8 +122,9 @@ sub Load
     $_->{'name'} and push(@{$this->{'menu'}->{'statistics'}}, $_->{'name'});
   }
 
-  #die Data::Dumper->Dump([$this->{'menu'}]);
-
+  if ( $this->{'test'} ) {
+    die Data::Dumper->Dump([$this]);
+  }
 }
 
 sub LoadFile
@@ -274,7 +275,11 @@ sub new
 
   $this->{'paths'} = \@paths;
 
-  $this->{'shmid'} = shmget( $key, $shm_size, 0777 );
+  $this->{'sharemem'} = IPC::ShareLite->new(
+        -key     => $key,
+        -create  => 'yes',
+        -destroy => 'yes'
+    ) or die $!;
     
   return $this;
 }
@@ -320,8 +325,7 @@ sub SendStatus
   my $this = shift;
   $this->Debug(2,"");
 
-  my $var;
-  shmread($this->{'shmid'}, $var, 0, $shm_size);
+  my $var = $this->{'sharemem'}->fetch();
   
   $var =~ s/\s+$//g; 
   $this->Debug(3,"JSON: $var");
@@ -420,7 +424,7 @@ sub Run
   $this->{'server'} = new HTTP::Daemon     ( ReuseAddr => 1,
                                              LocalAddr => $configuration->{'daemon'}->{'addr'},
                                              LocalPort => $configuration->{'daemon'}->{'port'})
-    or die "Web server not started because or error: $!\n";
+    or die "Web server not started because of error: $!\n";
 
   $this->Debug(1,"< URL:", $this->{'server'}->url, ">");
 
@@ -456,6 +460,11 @@ sub new
   my $this = bless { }, shift;
   $this->Debug(3,"");
   @{$this->{'files'}} = ("static.json","status.json","statistics.json");
+    $this->{'sharemem'} = IPC::ShareLite->new(
+        -key     => $key,
+        -create  => 'yes',
+        -destroy => 'no'
+    ) or die $!;
   return $this;
 }
 
@@ -479,10 +488,7 @@ sub Run
   my $serverpid = shift;
   $this->Debug(2,"");
 
-  if ( !$configuration->{'daemon'}->{'noserver'}) {
-    $this->{'shmid'} = shmget($key, $shm_size, &IPC_CREAT | 0777 );
-  }
-  else {
+  if ( $configuration->{'daemon'}->{'noserver'}) {
     # write json if server is not running 
     open(FILE, "> $configuration->{'daemon'}->{'webroot'}/static.json")
       or warn $!;
@@ -521,7 +527,6 @@ sub Run
     -f "$configuration->{'daemon'}->{'webroot'}/$_"
       and unlink "$configuration->{'daemon'}->{'webroot'}/$_";
   }
-  $this->{'shmid'} and shmctl( $this->{'shmid'}, &IPC_RMID, 0 );
 }
 
 sub Process
@@ -584,7 +589,7 @@ sub Status
   }
   else{
     # write current status (JSON) in shared memory
-    shmwrite( $this->{'shmid'}, "$json" . " " x ($shm_size - length($json)), 0, $shm_size );
+    $this->{'sharemem'}->store($json);
   }
 
   # add data in round robin database
@@ -722,6 +727,7 @@ while($_ = shift)
   /-h(elp)?/        and help;
   /-n(oserver)?/    and $configuration->{'daemon'}->{'noserver'}++ and next;
   /-p(ort)?/        and $configuration->{'daemon'}->{'port'} = shift and next;
+  /-t(est)?/        and $configuration->{'test'}++ and next; 
   /^-([v]+)$/       and $verbose = length $1 and next;
   /^-t(imeout)$/    and $configuration->{'daemon'}->{'timeout'} = shift and next;
   /-V(ersion)?/     and die "$0 version $VERSION\n";
