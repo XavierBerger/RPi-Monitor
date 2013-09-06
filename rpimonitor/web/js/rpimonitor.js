@@ -21,7 +21,7 @@ var shellinaboxwarning;
 var statusautorefresh;
 var refreshTimerId;
 var clickId;
-var firstload=true;
+var active_rra;
 
 function GetURLParameter(sParam)
 {
@@ -131,6 +131,13 @@ function AddDialogs(){
           '<label class="checkbox" id="shellinaboxwarninglabel"><input type="checkbox" id="shellinaboxwarning"> Do not show warning on page close or refresh</label>'+
         '</form></p>'+
         '<p><label class="checkbox"><input type="checkbox" id="statusautorefresh"> Auto refresh status page</label></p>'+
+        '<p><label class="checkbox">Default graph timeline <select class="span3" id="active_rra">'+
+          '<option value="0" '+ ( active_rra == 0 ? 'selected' : '' ) +'>10s (24h total)</option>'+
+          '<option value="1" '+ ( active_rra == 1 ? 'selected' : '' ) +'>60s (2 days total)</option>'+
+          '<option value="2" '+ ( active_rra == 2 ? 'selected' : '' ) +'>10min (14 days total)</option>'+
+          '<option value="3" '+ ( active_rra == 3 ? 'selected' : '' ) +'>30min (31 days total)</option>'+
+          '<option value="4" '+ ( active_rra == 4 ? 'selected' : '' ) +'>60min (12 months total)</option>'+
+          '</select></label></p>'+
       '</div>'+
       '<div class="modal-footer">'+
         '<button class="btn" data-dismiss="modal" aria-hidden="true" id="closeconfiguration">Close</button>'+
@@ -175,7 +182,7 @@ function AddDialogs(){
         '<h3 id="myModalLabel">About</h3>'+
       '</div>'+
       '<div class="modal-body">'+
-        '<p><b>Version</b>: {DEVELOPMENT} '+
+        '<p><b>Version</b>: 2.4 '+
         '<b>by</b> Xavier Berger <a href="http://rpi-experiences.blogspot.fr/">Blog</a> <a href="https://github.com/XavierBerger/RPi-Monitor">GitHub</a></p>'+
         '<hr>'+
         '<p><b>RPi-Monitor</b> is free software developped on top of other open source '+
@@ -319,6 +326,7 @@ $(function () {
   shellinaboxuri=(localStorage.getItem('shellinaboxuri') || '/shellinabox');
   shellinaboxwarning=(localStorage.getItem('shellinaboxwarning') === 'true' );
   statusautorefresh=(localStorage.getItem('statusautorefresh') === 'true');
+  active_rra=(localStorage.getItem('active_rra') || 0);
 
   // Construct the page template
   getVersion();
@@ -364,6 +372,10 @@ $(function () {
       clearInterval(refreshTimerId);
       clearInterval(clockId);
     };
+  });
+
+  $('#active_rra').change(function(){
+    localStorage.setItem('active_rra',$('#active_rra').val())
   });
 
 });

@@ -169,7 +169,8 @@ function PrepareGraph(idx) {
 
 function UpdateGraph() {
   graph_options={};
-  rrdflot_defaults={ graph_width:"750px",graph_height:"285px", scale_width:"350px", scale_height:"90px" };
+  active_rra=localStorage.getItem('active_rra') || 0;
+  rrdflot_defaults={ graph_width:"750px",graph_height:"285px", scale_width:"350px", scale_height:"90px", use_rra:true, rra:active_rra };
   options = graphconf[activePage].content[activestat];
   ds_graph_options = options.ds_graph_options;
 

@@ -27,12 +27,7 @@ $SIG{CHLD}   = 'IGNORE';
 $SIG{INT}    = sub { stop(); }; # catch Ctrl+C
 
 my $VERSION  = "{DEVELOPMENT}";
-my $verbose  = 0;
-
-# prepare the shared memory for communication between Monitor and Server
-my $key = $$;
-my $shm_size = 8192;
-
+our $verbose  = 0;
 my $pidfile;
 
 package Configuration;
@@ -89,6 +84,7 @@ sub Load
   $this->{'daemon'}->{'webroot'}     ||= "/usr/share/rpimonitor/web";
   $this->{'daemon'}->{'delay'}       ||= 10;
   $this->{'daemon'}->{'timeout'}     ||= 5;
+  $this->{'daemon'}->{'sharedmemkey'}||= 20130906;
 
   # Check user and group
   $this->{'daemon'}->{'gid'} = getgrnam($this->{'daemon'}->{'user'})  || 1000;
@@ -121,6 +117,12 @@ sub Load
   foreach (@{$this->{'web'}->{'statistics'}}) {
     $_->{'name'} and push(@{$this->{'menu'}->{'statistics'}}, $_->{'name'});
   }
+
+  $this->{'sharedmem'} = IPC::ShareLite->new(
+        -key     => $this->{'daemon'}->{'sharedmemkey'},
+        -create  => 'yes',
+        -destroy => 'no'
+    ) or die $!;
 
   if ( $this->{'test'} ) {
     die Data::Dumper->Dump([$this]);
@@ -275,12 +277,6 @@ sub new
 
   $this->{'paths'} = \@paths;
 
-  $this->{'sharemem'} = IPC::ShareLite->new(
-        -key     => $key,
-        -create  => 'yes',
-        -destroy => 'yes'
-    ) or die $!;
-    
   return $this;
 }
 
@@ -304,7 +300,7 @@ sub SendFile
   $connection->close();
 
   return 1;
-}
+<F3>}
 
 sub SendJSON
 {
@@ -323,9 +319,10 @@ sub SendJSON
 sub SendStatus
 {
   my $this = shift;
+  my $configuration = shift;
   $this->Debug(2,"");
 
-  my $var = $this->{'sharemem'}->fetch();
+  my $var = $configuration->{'sharedmem'}->fetch();
   
   $var =~ s/\s+$//g; 
   $this->Debug(3,"JSON: $var");
@@ -383,7 +380,7 @@ sub DoGET
   $isvalid or $this->SendError(404);
 
   $path =~ /shellinabox$/ and $this->SendRedirect( $configuration->{'daemon'}->{'shellinabox'} ) and return;
-  $path =~ /dynamic\.json/ and $this->SendStatus() and return;
+  $path =~ /dynamic\.json/ and $this->SendStatus( $configuration ) and return;
   $path =~ /([^\/]+)\.json/ and $this->SendJSON($this->{$1}) and return;
 
   #The main page (/) is requested
@@ -460,11 +457,6 @@ sub new
   my $this = bless { }, shift;
   $this->Debug(3,"");
   @{$this->{'files'}} = ("static.json","status.json","statistics.json");
-    $this->{'sharemem'} = IPC::ShareLite->new(
-        -key     => $key,
-        -create  => 'yes',
-        -destroy => 'no'
-    ) or die $!;
   return $this;
 }
 
@@ -589,7 +581,7 @@ sub Status
   }
   else{
     # write current status (JSON) in shared memory
-    $this->{'sharemem'}->store($json);
+    $configuration->{'sharedmem'}->store( $json );
   }
 
   # add data in round robin database
@@ -752,6 +744,7 @@ for (;;) {
     -f $pidfile and unlink $pidfile;
     writePID();
   }
+ 
   $serverpid = StartServer($configuration,$monitor);
   #Start process respawner
   if ( my $procpid = fork() ) {
