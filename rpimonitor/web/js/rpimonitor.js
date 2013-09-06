@@ -123,6 +123,7 @@ function AddDialogs(){
       '</div>'+
       '<div class="modal-body">'+
         '<p><label class="checkbox"><input type="checkbox" id="animate"> Animate progress bar</label></p>'+
+        '<hr>'+
         '<p><form class="form-inline">'+
           '<label class="checkbox"><input type="checkbox" id="shellinabox"> Show shellinabox menu</label> <br>'+
           '&nbsp;&nbsp;&nbsp;&nbsp;'+
@@ -130,7 +131,9 @@ function AddDialogs(){
           '&nbsp;&nbsp;&nbsp;&nbsp;'+
           '<label class="checkbox" id="shellinaboxwarninglabel"><input type="checkbox" id="shellinaboxwarning"> Do not show warning on page close or refresh</label>'+
         '</form></p>'+
+        '<hr>'+
         '<p><label class="checkbox"><input type="checkbox" id="statusautorefresh"> Auto refresh status page</label></p>'+
+        '<hr>'+
         '<p><label class="checkbox">Default graph timeline <select class="span3" id="active_rra">'+
           '<option value="0" '+ ( active_rra == 0 ? 'selected' : '' ) +'>10s (24h total)</option>'+
           '<option value="1" '+ ( active_rra == 1 ? 'selected' : '' ) +'>60s (2 days total)</option>'+
