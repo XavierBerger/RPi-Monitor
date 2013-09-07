@@ -124,7 +124,7 @@ sub Load
         -destroy => 'no'
     ) or die $!;
 
-  if ( $this->{'test'} ) {
+  if ( $this->{'show'} ) {
     die Data::Dumper->Dump([$this]);
   }
 }
@@ -628,8 +628,9 @@ OPTIONS
   -h, --help        Shows this help and exit
   -n, --noserver    Don't start embeded server
   -p, --port        Web server port (Default: 8888)
-  -v, --verbose     Write debug info on screen
+  -s, --show        Show configuration as loaded and exit
   -t, --timeout     KPI read timeout in seconds (Default: 5)
+  -v, --verbose     Write debug info on screen
   -V, --Version     Show version and exit
 
 CONFIGURATION
@@ -719,9 +720,9 @@ while($_ = shift)
   /-h(elp)?/        and help;
   /-n(oserver)?/    and $configuration->{'daemon'}->{'noserver'}++ and next;
   /-p(ort)?/        and $configuration->{'daemon'}->{'port'} = shift and next;
-  /-t(est)?/        and $configuration->{'test'}++ and next; 
+  /-s(how)?/        and $configuration->{'show'}++ and next; 
+  /-t(imeout)?/     and $configuration->{'daemon'}->{'timeout'} = shift and next;
   /^-([v]+)$/       and $verbose = length $1 and next;
-  /^-t(imeout)$/    and $configuration->{'daemon'}->{'timeout'} = shift and next;
   /-V(ersion)?/     and die "$0 version $VERSION\n";
 } 
 $configuration->Load();
