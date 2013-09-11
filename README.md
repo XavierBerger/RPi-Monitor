@@ -43,7 +43,7 @@ Arch Linux users can find the aur package created by ajs124 [here](https://aur.a
 
 For installation on other system and for advanced customization read the article [RPi-Monitor: Version 2.0 advance usage and customization] (http://rpi-experiences.blogspot.fr/2013/06/rpi-monitor-version-20-advance-usage.html).
 
-Note: **RPi-Monitor** is requiring the `librrds-perl libhttp-daemon-perl libjson-perl libipc-sharelite-perl`
+Note: **RPi-Monitor** is requiring `librrds-perl libhttp-daemon-perl libjson-perl libipc-sharelite-perl`
 
 ### Other information
 
