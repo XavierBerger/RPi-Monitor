@@ -643,6 +643,8 @@ CONFIGURATION
   default values. 
   Configuration given as option of the command line always overwrite 
   the one defined into a file.
+  ** Warning: Be sure to use Linux filefeed format with line ending with LF. 
+     (and not CR/LF like in Windows) **
 
 RAW DATA ACCESS
   Once RPi-Monitor is started the data representing the current status
