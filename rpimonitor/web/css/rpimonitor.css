@@ -153,13 +153,14 @@ code {
 }
 
 .Text {
-    float: left;
-    font-family: Tahoma, Helvetica;
-    font-size: 13px;
-    line-height: 8px;
-    padding-left: 15px;
-    padding-top: 18px;
-    width: 600px;
+float: left;
+font-family: Tahoma, Helvetica;
+font-size: 13px;
+line-height: 13px;
+padding-left: 15px;
+padding-top: 15px;
+width: 80%;
+max-width: 600px;
 }
 
 .popover-content {
