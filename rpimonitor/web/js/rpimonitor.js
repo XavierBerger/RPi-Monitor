@@ -185,8 +185,9 @@ function AddDialogs(){
         '<h3 id="myModalLabel">About</h3>'+
       '</div>'+
       '<div class="modal-body">'+
-        '<p><b>Version</b>: 2.4 '+
+        '<p><b>Version</b>: 2.5 '+
         '<b>by</b> Xavier Berger <a href="http://rpi-experiences.blogspot.fr/">Blog</a> <a href="https://github.com/XavierBerger/RPi-Monitor">GitHub</a></p>'+
+        'With the contribution of users sharing ideas and competences on Github.'+
         '<hr>'+
         '<p><b>RPi-Monitor</b> is free software developped on top of other open source '+
           'tools : <a href="http://twitter.github.io/bootstrap/">bootstrap</a>, <a href="http://jquery.com/">jquery</a>, <a href="https://code.google.com/p/jsqrencode/">jsqrencode</a>, <a href="http://javascriptrrd.sourceforge.net/">javascriptrrd</a> and <a href="http://www.flotcharts.org/">Flot</a>.<br>'+
