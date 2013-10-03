@@ -103,10 +103,10 @@ function ShowFriends(){
 
 function AddFooter(){
 $('#footer').html(
-	'<div class="container">'+
-	  '<p class="muted credit"><small>Follow RPi-Monitor news in <a href="http://rpi-experiences.blogspot.fr/">RPi-Experiences</a> blog '+
-	  'and <a href="https://github.com/XavierBerger/RPi-Monitor">GitHub</a>. '+
-	  'Raspberry Pi brand and Raspberry Pi logo are properties of <a href="http://www.raspberrypi.org/">Raspberry Pi Fundation</a></small></p>'+
+	'<div class="container text-center">'+
+	  '<p class="muted credit"><small><a href="http://rpi-experiences.blogspot.fr/">RPi-Experiences</a> | '+
+	  '<a href="https://github.com/XavierBerger/RPi-Monitor">GitHub</a> | '+
+	  '<a href="http://www.raspberrypi.org/">Raspberry Pi Fundation</a></small></p>'+
 	'</div>'
 );
 }
