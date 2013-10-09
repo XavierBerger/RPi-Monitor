@@ -101,9 +101,11 @@ sub Load
   foreach (@{$this->{'rrd'}}){
     my @name = split (',',$_->{'name'});
     my $type = $_->{'rrd'};
+    my $min = defined($_->{'min'}) ? $_->{'min'} : "U";
+    my $max = defined($_->{'max'}) ? $_->{'max'} : "U";
     foreach (@name) {
       my $filename="$this->{'daemon'}->{'webroot'}/stat/$_.rrd";
-      -f "$filename" or $this->CreateRRD($filename,$_,$type);
+      -f "$filename" or $this->CreateRRD($filename,$_,$type,$min,$max);
       push(@{$this->{'rrdlist'}},"stat/$_.rrd");
     }
   }
@@ -185,7 +187,9 @@ sub CreateRRD
   my $filename = shift;
   my $name = shift;
   my $type = shift;
-  $this->Debug(2,"$filename - $name - $type");
+  my $min = shift;
+  my $max = shift;
+  $this->Debug(2,"$filename - $name - $type - $min < value < $max");
 
   my $current = time();
   my $start = $current - 60;
@@ -193,7 +197,7 @@ sub CreateRRD
   $this->Debug(2,"$filename",
                 "--start", $start,
                 "--step", $this->{'daemon'}->{'delay'},
-                "DS:$name:$type:600:U:U",
+                "DS:$name:$type:600:$min:$max",
                 "RRA:AVERAGE:0.5:1:8640",    # 1 day with interval of 10sec
                 "RRA:AVERAGE:0.5:6:2880",    # 2 day with interval of 1min
                 "RRA:AVERAGE:0.5:60:2016",   # 2 week with interval of 10min
@@ -204,7 +208,7 @@ sub CreateRRD
   RRDs::create( "$filename",
                 "--start", $start,
                 "--step", $this->{'daemon'}->{'delay'},
-                "DS:$name:$type:600:U:U",
+                "DS:$name:$type:600:$min:$max",
                 "RRA:AVERAGE:0.5:1:8640",    # 1 day with interval of 10sec
                 "RRA:AVERAGE:0.5:6:2880",    # 2 day with interval of 1min
                 "RRA:AVERAGE:0.5:60:2016",   # 2 week with interval of 10min
