@@ -595,6 +595,9 @@ sub Status
       if ( looks_like_number( $this->{'dynamic'}->{$name} ) ) { 
         RRDs::update("$configuration->{'daemon'}->{'webroot'}/stat/$name.rrd", "N:".$this->{'dynamic'}->{$name});
       }
+      else {
+        RRDs::update("$configuration->{'daemon'}->{'webroot'}/stat/$name.rrd", "N:U");
+      }
     }
   }
 }
