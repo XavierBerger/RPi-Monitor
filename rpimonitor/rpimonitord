@@ -93,7 +93,7 @@ sub Load
   # Check rrd directory and files and create them if they are missing
   # construct the list of rrd page accessible
   -d "$this->{'daemon'}->{'webroot'}/stat" or mkdir "$this->{'daemon'}->{'webroot'}/stat";
-  -f "$this->{'daemon'}->{'webroot'}/stat/empty.rrd" or $this->CreateRRD( "$this->{'daemon'}->{'webroot'}/stat/empty.rrd", 'empty', 'GAUGE' ); 
+  -f "$this->{'daemon'}->{'webroot'}/stat/empty.rrd" or $this->CreateRRD( "$this->{'daemon'}->{'webroot'}/stat/empty.rrd", 'empty', 'GAUGE', 'U', 'U' ); 
 
   #die Data::Dumper->Dump([$this->{'rrd'}]);
 
