@@ -1,6 +1,4 @@
-[![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=xberger&url=https://github.com/XavierBerger/RPi-Monitor/&title=https://github.com/XavierBerger/RPi-Monitor/&tags=github&category=software)
-
-# [**RPi-Monitor**](http://rpi-experiences.blogspot.fr/)
+# [**RPi-Monitor**](http://rpi-experiences.blogspot.fr/) [![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=xberger&url=https://github.com/XavierBerger/RPi-Monitor/&title=https://github.com/XavierBerger/RPi-Monitor/&tags=github&category=software)
 
 ### Overview
 
