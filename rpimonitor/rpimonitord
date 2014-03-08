@@ -498,6 +498,10 @@ sub Run
       or warn $!;
       print FILE encode_json \@{$configuration->{'web'}->{'statistics'}} ;
     close(FILE);
+    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/version.json")
+      or warn $!;
+      print FILE  "{\"version\":\"$configuration->{'version'}\"}";
+    close(FILE);
   }
   
   #die Data::Dumper->Dump([$this]);
