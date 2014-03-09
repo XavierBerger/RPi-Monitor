@@ -456,6 +456,7 @@ use POSIX;
 use RRDs;
 use JSON;
 use Scalar::Util qw(looks_like_number);
+use File::Which;
 #use Data::Dumper;
 
 sub new
@@ -542,7 +543,9 @@ sub Process
   foreach my $kpi ( @{$configuration->{$list}} ) {
     $kpi or next;
     # if file is executable, execute it and process output else, read file content
-    my $file = -x $kpi->{'source'} ? "$kpi->{'source'} 2>/dev/null|" : $kpi->{'source'};
+    $_ = $kpi->{'source'};
+    /(.*)/; /(\S+)\s.*/; #Not so clean... Regexp to be reviewed
+    my $file = ( -x $1 || -x which($1) ) ? "$kpi->{'source'} 2>/dev/null|" : $kpi->{'source'};
     eval {
       local $SIG{ALRM} = sub { die "Timeout\n" };
       alarm $configuration->{'daemon'}->{'timeout'};
@@ -621,7 +624,7 @@ NAME
 
 USAGE
   rpimonitord [-a address][ -b pidfile][[-c configuration_file]...]
-     [-d delay][-h][-n][-p port][-v[v[...]]][-t timeout][-V]
+     [-d delay][-h][-n][-p port][-s][-t timeout][-v[v[...]]][-V]
 
 DESCRIPTION
   rpimonitord is designed to extract data from Raspberry Pi system and 
