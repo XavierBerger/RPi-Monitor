@@ -24,7 +24,6 @@ use strict;
 use IPC::ShareLite;
 $|=1;
 $SIG{CHLD}   = 'IGNORE';
-$SIG{INT}    = sub { stop(); }; # catch Ctrl+C
 
 my $VERSION  = "{DEVELOPMENT}";
 our $verbose  = 0;
@@ -631,6 +630,125 @@ sub Status
   }
 }
 
+package Interactive;
+use strict;
+use POSIX;
+use File::Which;
+
+sub new
+{
+  my $this = bless { }, shift;
+  $this->Debug(3,"");
+  return $this;
+}
+
+sub Debug
+{
+  my $this = shift;
+  my $level = shift;
+
+  $level <= $verbose or return;
+  print STDERR "[", strftime("%Y/%m/%d-%H:%M:%S", localtime), "] ", " " x (5-$level), (caller 1)[3], " @_\n";
+}
+
+sub title
+{  
+  my $this = shift;
+  system("clear");
+  print "**********************************************************************\n";
+  print "*                     RPi-Monitor Interactive                        *\n";
+  print "**********************************************************************\n";
+}
+
+sub page1
+{
+  my $this = shift;
+  print " RPi-Monitor Interactive is a tool to help you to define the\n";
+  print " parameter of the configuration file: source, regexp and postprocess\n";
+  print "\n";
+  print " Press any enter to continue: ";
+}
+
+sub page2
+{
+  my $this = shift;
+  my $prevAnswer = shift;
+  print " First you have to define the source. The source can be a file or a\n";
+  print " command to be executed.\n";
+  print "\n";
+  print " If source is a command, RPi-Monitor executes this command and parse\n";
+  print " <STDOUT>. If you need to parse <STDERR> add 2>&1 at the end of the\n";
+  print " command to redirect <STDERR> to <STDOUT>.\n";
+  print "\n";
+  print " If the source is a flat file, RPi-Monitor parses it line by line.\n";
+  print "\n";
+  print " Enter here the command or the file to use as source [$prevAnswer]: \n ";
+}
+
+sub executable
+{
+  my $this = shift;
+  my $executable = shift;
+  my $command = shift;
+  $this->title();
+  print " Find executable file: '$executable'\n";
+  print " Is that correct? Yes/No [Yes]: ";
+  $_=<>;
+  /^n(?:o)?$/i and return 0;
+  print "\n Execution of the command '$command' returns:\n\n";
+  system($command);
+  print "\n Is that the expected output? Yes/No [Yes]: ";
+  $_=<>;
+  /^n(?:o)?$/i and return 0;
+  return 1;
+}
+
+sub flatfile
+{
+  my $this = shift;
+  my $file = shift;
+  $this->title();
+  print " '$file' is a flat file\n";
+  print " Is that correct? Yes/No [Yes]: ";
+  $_=<>;
+  /^n(?:o)?$/i and return 0;
+  return 1;
+
+
+  print " is th.\n";
+  <>;
+  return 1;
+}
+
+
+sub Run
+{
+  my $this = shift;
+  $this->title();
+  $this->page1();
+  <>;
+  
+  my $source="";
+  for (;;) {
+    $this->title();
+    $this->page2($source);
+    $_ =<>;
+    chomp;
+    $source = $_ || $source;
+
+    $_ = $source;
+    /(.*)/; /(\S+)\s.*/; #Not so clean... Regexp to be reviewed
+    ( -x $1 || -x which($1) ) and $this->executable( $1, $source ) and last;
+
+    -f $source and $this->flatfile($source) and last;
+
+  }
+
+  print " DONE\n";
+}
+
+
+
 package main;
 use strict;
 use POSIX;
@@ -662,6 +780,7 @@ OPTIONS
                       recreate them at next startup with the new time
                       slice.
   -h, --help        Shows this help and exit
+  -i, --interactive Interactive configuration helper
   -n, --noserver    Don't start embeded server
   -p, --port        Web server port (Default: 8888)
   -s, --show        Show configuration as loaded and exit
@@ -748,6 +867,12 @@ sub stop
   $configuration->{'daemon'}->{'delay'} = 0;
 }
 
+sub interactive
+{
+  my $interactive = Interactive->new();
+  $interactive->Run();
+}
+
 # read command lines
 while($_ = shift)
 {
@@ -756,6 +881,7 @@ while($_ = shift)
   /-c(onf)?/        and push @{$configuration->{'daemon'}->{'confFiles'}}, shift and next;
   /-d(elay)?/       and $configuration->{'daemon'}->{'delay'} = shift and next;
   /-h(elp)?/        and help;
+  /-i(nteractive)?/ and interactive() and exit;
   /-n(oserver)?/    and $configuration->{'daemon'}->{'noserver'}++ and next;
   /-p(ort)?/        and $configuration->{'daemon'}->{'port'} = shift and next;
   /-s(how)?/        and $configuration->{'show'}++ and next; 
@@ -771,6 +897,7 @@ my $monitor = Monitor->new();
 # Process data that should be extracted once, before the server starts
 $monitor->Process($configuration,'static');
 
+$SIG{INT}    = sub { stop(); }; # catch Ctrl+C
 
 my $serverpid;
 
