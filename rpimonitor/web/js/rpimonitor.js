@@ -338,10 +338,14 @@ $(function () {
   UpdateMenu();
   AddDialogs();
   AddFooter();
-  
-  // Events management
-  $('#statusautorefresh').attr('checked', statusautorefresh );
 
+  SetShellinaboxMenu();
+  SetProgressBarAnimate();
+ 
+  //Initialize dialog values
+  $('#statusautorefresh').attr('checked', statusautorefresh );
+ 
+  // Events management
   $('#animate').click(function(){
     animate = $('#animate').is(":checked");
     localStorage.setItem('animate', animate);

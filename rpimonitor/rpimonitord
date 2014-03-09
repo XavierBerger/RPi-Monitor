@@ -295,6 +295,24 @@ sub Debug
   print STDERR "[", strftime("%Y/%m/%d-%H:%M:%S", localtime), "] ", " " x (5-$level), (caller 1)[3], " @_\n";
 }
 
+sub ShowShellinabox
+{
+  my $this = shift;
+  my $configuration = shift;  
+  my $host = shift;
+
+  if ( $configuration->{'daemon'}->{'shellinabox'} )
+  { 
+    $this->SendRedirect( $configuration->{'daemon'}->{'shellinabox'} );
+  }
+  else
+  {
+    $host =~ s/:\d+//;
+    $this->SendRedirect( "https://$host:4200/" );
+  }
+  return 1;
+}
+
 sub SendFile
 {
   my $this = shift;
@@ -306,7 +324,7 @@ sub SendFile
   $connection->close();
 
   return 1;
-<F3>}
+}
 
 sub SendJSON
 {
@@ -372,7 +390,7 @@ sub DoGET
   $_ = $request->url->path;
   my $path = $_;
   $this->Debug(2, "$path");
-
+  
   #The file need to be known or we return an error
   my $isvalid;
   foreach(@{$this->{'paths'}}) {
@@ -385,7 +403,8 @@ sub DoGET
   #$isvalid or $connection->send_error(404,"<br><b>$path</b> not in <br>". join ('<br>',@{$this->{'paths'}} )) and return;
   $isvalid or $this->SendError(404);
 
-  $path =~ /shellinabox$/ and $this->SendRedirect( $configuration->{'daemon'}->{'shellinabox'} ) and return;
+  #$path =~ /shellinabox$/ and $this->SendRedirect( $configuration->{'daemon'}->{'shellinabox'} ) and return;
+  $path =~ /shellinabox$/ and $this->ShowShellinabox( $configuration, $request->header('Host') ) and return;
   $path =~ /dynamic\.json/ and $this->SendStatus( $configuration ) and return;
   $path =~ /([^\/]+)\.json/ and $this->SendJSON($this->{$1}) and return;
 
