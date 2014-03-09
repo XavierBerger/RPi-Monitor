@@ -93,7 +93,9 @@ sub Load
   # Check rrd directory and files and create them if they are missing
   # construct the list of rrd page accessible
   -d "$this->{'daemon'}->{'webroot'}/stat" or mkdir "$this->{'daemon'}->{'webroot'}/stat";
-  -f "$this->{'daemon'}->{'webroot'}/stat/empty.rrd" or $this->CreateRRD( "$this->{'daemon'}->{'webroot'}/stat/empty.rrd", 'empty', 'GAUGE', 'U', 'U' ); 
+  #-f "$this->{'daemon'}->{'webroot'}/stat/empty.rrd" or
+  # Recreate empty file at each start 
+  $this->CreateRRD( "$this->{'daemon'}->{'webroot'}/stat/empty.rrd", 'empty', 'GAUGE', 'U', 'U' ); 
 
   #die Data::Dumper->Dump([$this->{'rrd'}]);
 
@@ -539,7 +541,8 @@ sub Process
   $this->{$list} and delete $this->{$list};
   foreach my $kpi ( @{$configuration->{$list}} ) {
     $kpi or next;
-    my $file = -f $kpi->{'source'} ? $kpi->{'source'} : "$kpi->{'source'} 2>/dev/null|";
+    # if file is executable, execute it and process output else, read file content
+    my $file = -x $kpi->{'source'} ? "$kpi->{'source'} 2>/dev/null|" : $kpi->{'source'};
     eval {
       local $SIG{ALRM} = sub { die "Timeout\n" };
       alarm $configuration->{'daemon'}->{'timeout'};
