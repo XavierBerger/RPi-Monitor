@@ -651,7 +651,7 @@ sub Debug
   print STDERR "[", strftime("%Y/%m/%d-%H:%M:%S", localtime), "] ", " " x (5-$level), (caller 1)[3], " @_\n";
 }
 
-sub title
+sub Title
 {  
   my $this = shift;
   system("clear");
@@ -660,7 +660,7 @@ sub title
   print "**********************************************************************\n";
 }
 
-sub page1
+sub Welcome
 {
   my $this = shift;
   print " RPi-Monitor Interactive is a tool to help you to define the\n";
@@ -669,7 +669,7 @@ sub page1
   print " Press any enter to continue: ";
 }
 
-sub page2
+sub GetSource
 {
   my $this = shift;
   my $prevAnswer = shift;
@@ -685,12 +685,12 @@ sub page2
   print " Enter here the command or the file to use as source [$prevAnswer]: \n ";
 }
 
-sub executable
+sub Executable
 {
   my $this = shift;
   my $executable = shift;
   my $command = shift;
-  $this->title();
+  $this->Title();
   print " Find executable file: '$executable'\n";
   print " Is that correct? Yes/No [Yes]: ";
   $_=<>;
@@ -703,45 +703,94 @@ sub executable
   return 1;
 }
 
-sub flatfile
+sub FlatFile
 {
   my $this = shift;
   my $file = shift;
-  $this->title();
+  $this->Title();
   print " '$file' is a flat file\n";
   print " Is that correct? Yes/No [Yes]: ";
   $_=<>;
   /^n(?:o)?$/i and return 0;
   return 1;
-
-
-  print " is th.\n";
-  <>;
-  return 1;
 }
 
+sub GetRegExp
+{
+  my $this = shift;
+  my $regexp = shift;
 
+  $this->Title();
+  print " The Regular Expression is here to extract the information from the\n";
+  print " source. To learn Perl Regular Expression you can refer to the\n"; 
+  print " documentation: http://perldoc.perl.org/perlretut.html \n";
+  print " It is required to put the value to extract into parenthesis.\n";
+  print "\n";
+  print " Enter your regular expression [$regexp]:";
+}
+
+sub CheckRegExp
+{
+  my $this = shift;
+  my $source = shift;
+  my $regexp = shift;
+
+  $this->Title();
+  print "**********************************************************************\n";
+  print " Applaying the Regular Expression '$regexp'\n";
+  print " on the source '$source' gives the following result:\n\n";
+  my $file = ( -x $1 || -x which($1) ) ? "$source 2>/dev/null|" : $source;
+  open(FEED, $file) or die "Can't open $file because $!\n";
+  while (<FEED>){
+    @_=/$regexp/ or next;
+    my $i=0;
+    foreach ( @_ ) {
+      $i++;
+      print " \$$i = $_\n";
+    }
+  }
+  close(FEED);
+ 
+  print "\n Is that correct? Yes/No [No]: ";
+  $_=<>;
+  /^Y(?:es)?$/i and return 1;
+
+  return 0;
+}
 sub Run
 {
   my $this = shift;
-  $this->title();
-  $this->page1();
+
+  # Show welcome page
+  $this->Title();
+  $this->Welcome();
   <>;
   
+  # Get the source
   my $source="";
   for (;;) {
-    $this->title();
-    $this->page2($source);
+    $this->Title();
+    $this->GetSource($source);
     $_ =<>;
     chomp;
     $source = $_ || $source;
 
     $_ = $source;
     /(.*)/; /(\S+)\s.*/; #Not so clean... Regexp to be reviewed
-    ( -x $1 || -x which($1) ) and $this->executable( $1, $source ) and last;
+    ( -x $1 || -x which($1) ) and $this->Executable( $1, $source ) and last;
 
-    -f $source and $this->flatfile($source) and last;
+    -f $source and $this->FlatFile($source) and last;
+  }
 
+  # Get the regular expression
+  my $regexp="";
+  for (;;) {
+    $this->Title();
+    $this->GetRegExp($regexp);
+    $_=<>;
+    chomp;
+    $regexp = $_ || $regexp;
+    $this->CheckRegExp($source,$regexp) and last;
   }
 
   print " DONE\n";
