@@ -718,15 +718,40 @@ sub FlatFile
 sub GetRegExp
 {
   my $this = shift;
-  my $regexp = shift;
 
   $this->Title();
   print " The Regular Expression is here to extract the information from the\n";
   print " source. To learn Perl Regular Expression you can refer to the\n"; 
   print " documentation: http://perldoc.perl.org/perlretut.html \n";
   print " It is required to put the value to extract into parenthesis.\n";
-  print "\n";
-  print " Enter your regular expression [$regexp]:";
+}
+
+sub ApplyRegExp
+{  
+  my $this = shift;
+  my $source = shift;
+  my $regexp = shift;
+  my $print = shift;
+
+  $_ = $source;
+  /(.*)/; /(\S+)\s.*/; #Not so clean... Regexp to be reviewed
+  my $file = ( -x $1 || -x which($1) ) ? "$source 2>/dev/null|" : $source;
+  open(FEED, $file) or die "Can't open $file because $!\n";
+  while (<FEED>){
+    @_=/$regexp/ or next;
+    my $i=0;
+    foreach ( @_ ) {
+      $i++;
+      if ( $print ) { 
+        print " \$$i = $_\n";
+      }
+      else {
+        close(FEED);
+        return $_;
+      }
+    }
+  }
+  close(FEED);
 }
 
 sub CheckRegExp
@@ -736,27 +761,46 @@ sub CheckRegExp
   my $regexp = shift;
 
   $this->Title();
-  print "**********************************************************************\n";
   print " Applaying the Regular Expression '$regexp'\n";
   print " on the source '$source' gives the following result:\n\n";
-  my $file = ( -x $1 || -x which($1) ) ? "$source 2>/dev/null|" : $source;
-  open(FEED, $file) or die "Can't open $file because $!\n";
-  while (<FEED>){
-    @_=/$regexp/ or next;
-    my $i=0;
-    foreach ( @_ ) {
-      $i++;
-      print " \$$i = $_\n";
-    }
-  }
-  close(FEED);
- 
+  $this->ApplyRegExp($source,$regexp,1);
   print "\n Is that correct? Yes/No [No]: ";
   $_=<>;
   /^Y(?:es)?$/i and return 1;
 
   return 0;
 }
+
+sub GetFormula
+{
+  my $this = shift;
+
+  $this->Title();
+  print " The post processing formula is designed to adjust the value extracted\n";
+  print " by the regular expression. This value is accessible using \$1 \n";
+  print " \n";
+}
+
+sub CheckFormula
+{
+  my $this = shift;
+  my $source = shift;
+  my $regexp = shift;
+  my $formula = shift;
+
+  $this->Title();
+  print " After applying the post precessing formule, the result is: ";
+  $_ = $this->ApplyRegExp($source,$regexp,0);
+  /(.*)/;
+  print eval($formula);
+  print "\n\n Is that correct? Yes/No [No]: ";
+  $_=<>;
+  /^Y(?:es)?$/i and return 1;
+
+  return 0;
+
+}
+
 sub Run
 {
   my $this = shift;
@@ -767,7 +811,7 @@ sub Run
   <>;
   
   # Get the source
-  my $source="";
+  my $source="df -h";
   for (;;) {
     $this->Title();
     $this->GetSource($source);
@@ -783,17 +827,32 @@ sub Run
   }
 
   # Get the regular expression
-  my $regexp="";
+  $this->Title();
+  $this->GetRegExp();
+  my $regexp="rootfs.* (\\d+)%";
   for (;;) {
-    $this->Title();
-    $this->GetRegExp($regexp);
+    print "\n";
+    print " Enter your regular expression /$regexp/:";
     $_=<>;
     chomp;
     $regexp = $_ || $regexp;
     $this->CheckRegExp($source,$regexp) and last;
   }
 
-  print " DONE\n";
+  # Get post processing formula
+  $this->Title();
+  $this->GetFormula();
+  my $formula="\$1*100";
+  for (;;) {
+    print "\n";
+    print " Enter your formula [$formula]:";
+    $_=<>;
+    chomp;
+    $formula = $_ || $formula;
+    $this->CheckFormula($source,$regexp,$formula) and last;
+  }
+
+  exit();
 }
 
 
