@@ -664,9 +664,10 @@ sub Welcome
 {
   my $this = shift;
   print " RPi-Monitor Interactive is a tool to help you to define the\n";
-  print " parameter of the configuration file: source, regexp and postprocess\n";
+  print " parameter of the configuration file: source, regexp, postprocess\n";
+  print " and type\n";
   print "\n";
-  print " Press any enter to continue: ";
+  print " Press [Enter] to continue: ";
 }
 
 sub GetSource
@@ -789,7 +790,7 @@ sub CheckFormula
   my $formula = shift;
 
   $this->Title();
-  print " After applying the post precessing formule, the result is: ";
+  print " After applying the post precessing formule, the result is: \n\n";
   $_ = $this->ApplyRegExp($source,$regexp,0);
   /(.*)/;
   print eval($formula);
@@ -799,6 +800,49 @@ sub CheckFormula
 
   return 0;
 
+}
+
+sub GetType
+{
+  my $this = shift;
+
+  $this->Title();
+  print " RPi-Monitor manage 2 types of data; static or dynamic.\n";
+  print " static data are not changing over the time like disk size.\n";
+  print " dynamic data can change over the time like disk usage.\n";
+  print "\n";
+  print " Is is a static data? [Yes]";
+  return /^N(?:o)?$/i ? "dynamic" : "static";
+}
+
+sub PrintConfiguration
+{
+  my $this = shift;
+  my $source = shift;
+  my $regexp = shift;
+  my $formula = shift;
+  my $type = shift;
+
+  my $configuration = Configuration->new();
+  $configuration->Load();
+  my $id = ( scalar @{$configuration->{$type}} ) + 1;
+
+  $this->Title();
+  print " We have now defined all the parameters allowing RPi-Monitor to\n";
+  print " extract the data from the system. Here is a template of configuration\n"; 
+  print " base on your actual configuration.\n";
+  print "\n";
+  print "$type.$id.name=<Add here the name>\n";
+  print "$type.$id.source=$source\n";
+  print "$type.$id.regexp=$regexp\n";
+  print "$type.$id.postprocess=$formula\n";
+  $_ = $type;
+  /dynamic/ and print "dynamic.$id.rrd=<Define the rrd type>\n";
+  print "\n You now have to copy it into an existing configuration file or\n";
+  print " add anew file into /etc/rpimonitord.conf.d/.\n";
+  print " <Note the some text require a manual update>\n";
+  print " Once the configuration will be apply, restart RPi-Monitor with the\n";
+  print " command: /etc/init.d/rpimonitor restart\n";
 }
 
 sub Run
@@ -811,7 +855,7 @@ sub Run
   <>;
   
   # Get the source
-  my $source="df -h";
+  my $source="";
   for (;;) {
     $this->Title();
     $this->GetSource($source);
@@ -829,7 +873,7 @@ sub Run
   # Get the regular expression
   $this->Title();
   $this->GetRegExp();
-  my $regexp="rootfs.* (\\d+)%";
+  my $regexp="(.*)";
   for (;;) {
     print "\n";
     print " Enter your regular expression /$regexp/:";
@@ -842,7 +886,7 @@ sub Run
   # Get post processing formula
   $this->Title();
   $this->GetFormula();
-  my $formula="\$1*100";
+  my $formula="";
   for (;;) {
     print "\n";
     print " Enter your formula [$formula]:";
@@ -851,6 +895,12 @@ sub Run
     $formula = $_ || $formula;
     $this->CheckFormula($source,$regexp,$formula) and last;
   }
+
+  # Get type static or dynamic
+  my $type = $this->GetType();
+
+  # Print configuration
+  $this->PrintConfiguration( $source, $regexp, $formula, $type );
 
   exit();
 }
