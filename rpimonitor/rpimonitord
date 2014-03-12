@@ -656,7 +656,7 @@ sub Title
   my $this = shift;
   system("clear");
   print "**********************************************************************\n";
-  print "*                     RPi-Monitor Interactive                        *\n";
+  print "*             RPi-Monitor Interactive Confuration Helper             *\n";
   print "**********************************************************************\n";
 }
 
@@ -821,6 +821,7 @@ sub GetType
   print " dynamic data can change over the time like disk usage.\n";
   print "\n";
   print " Is is a static data? [Yes]";
+  $_=<>;
   return /^N(?:o)?$/i ? "dynamic" : "static";
 }
 
