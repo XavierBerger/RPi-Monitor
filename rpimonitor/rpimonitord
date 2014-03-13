@@ -656,7 +656,7 @@ sub Title
   my $this = shift;
   system("clear");
   print "**********************************************************************\n";
-  print "*             RPi-Monitor Interactive Confuration Helper             *\n";
+  print "*           RPi-Monitor Interactive Configuration Helper             *\n";
   print "**********************************************************************\n";
 }
 
