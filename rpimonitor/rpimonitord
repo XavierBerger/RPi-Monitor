@@ -519,6 +519,14 @@ sub Run
       or warn $!;
       print FILE encode_json \@{$configuration->{'web'}->{'statistics'}} ;
     close(FILE);
+    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/friends.json")
+      or warn $!;
+      print FILE encode_json(\@{$configuration->{'web'}->{'friends'}});
+    close(FILE);
+    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/menu.json")
+      or warn $!;
+      print FILE encode_json(\%{$configuration->{'menu'}});
+    close(FILE);
     open(FILE, "> $configuration->{'daemon'}->{'webroot'}/version.json")
       or warn $!;
       print FILE  "{\"version\":\"$configuration->{'version'}\"}";
