@@ -194,6 +194,8 @@ sub CreateRRD
 
   my $current = time();
   my $start = $current - 60;
+ 
+  unlink $filename;
 
   $this->Debug(2,"$filename",
                 "--start", $start,
@@ -406,6 +408,8 @@ sub DoGET
   $path =~ /shellinabox$/ and $this->ShowShellinabox( $configuration, $request->header('Host') ) and return;
   $path =~ /dynamic\.json/ and $this->SendStatus( $configuration ) and return;
   $path =~ /([^\/]+)\.json/ and $this->SendJSON($this->{$1}) and return;
+  #Recreate empty rrd on demand
+  $path =~ /empty\.rrd/ and $configuration->CreateRRD( "$configuration->{'daemon'}->{'webroot'}/stat/empty.rrd", 'empty', 'GAUGE', 'U', 'U' ); 
 
   #The main page (/) is requested
   $path =~ /^\/$/ and $path = "/index.html";
