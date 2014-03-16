@@ -335,11 +335,10 @@ $(function () {
   // Construct the page template
   getVersion();
   AddTopmenu();
-  UpdateMenu();
   AddDialogs();
   AddFooter();
+  UpdateMenu();
 
-  SetShellinaboxMenu();
   SetProgressBarAnimate();
  
   //Initialize dialog values
