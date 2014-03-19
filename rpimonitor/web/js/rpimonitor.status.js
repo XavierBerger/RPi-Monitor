@@ -152,8 +152,11 @@ function ConstructPage()
     activePage=localStorage.getItem('activePage', activePage); 
     if ( activePage ==null ) { activePage = 0 }
   };
-  localStorage.setItem('activePage', activePage); 
   data = getData('status');
+  if ( activePage >= data.length ){
+    activePage=0;
+  }
+  localStorage.setItem('activePage', activePage); 
   if ( data.length > 1 ) {
     $('<h2><p class="text-info">'+data[activePage].name+'</p></h2><hr>').insertBefore("#insertionPoint");
   }
