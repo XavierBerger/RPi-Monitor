@@ -62,11 +62,11 @@ sub Load
   my ($path,$file) = /(.*)\/([^\/]*)$/;
 
   if ( scalar(@{$this->{'daemon'}->{'confFiles'}}) == 0 ) {
-    push (@{$this->{'daemon'}->{'confFiles'}}, '/etc/rpimonitord.conf');
-    @{$this->{'daemon'}->{'confFiles'}} = ( @{$this->{'daemon'}->{'confFiles'}}, glob "/etc/rpimonitord.conf.d/*.conf" ) ;
+    @{$this->{'daemon'}->{'confFiles'}} = ( @{$this->{'daemon'}->{'confFiles'}}, glob "/etc/rpimonitor/*.conf" ) ;
   }
 
   foreach ( @{$this->{'daemon'}->{'confFiles'}} ) {
+    /daemon.conf/ and next;
     $this->LoadFile($_);
   }
  
@@ -861,7 +861,7 @@ sub PrintConfiguration
   $_ = $type;
   /dynamic/ and print "dynamic.$id.rrd=<Define the rrd type>\n";
   print "\n You now have to copy it into an existing configuration file or\n";
-  print " add anew file into /etc/rpimonitord.conf.d/.\n";
+  print " add anew file into /etc/rpimonitor/.\n";
   print " <Note the some text require a manual update>\n";
   print " Once the configuration will be apply, restart RPi-Monitor with the\n";
   print " command: /etc/init.d/rpimonitor restart\n";
@@ -952,8 +952,7 @@ OPTIONS
   -a, --addr        Web server bind address (Default: 0.0.0.0)
   -b, --background  Define the pid file when run in background
   -c, --conf        Define the configuration file
-                     (Default: /etc/rpimonitord.conf and 
-                               /etc/rpimonitord.conf.d/*.conf)
+                      Default: /etc/rpimonitor/*.conf
   -d, --delay       Delay between check ins seconds (Default: 10)
                       Note: If you want to change the default delay, the
                       rrd file will have to be deleted rpimonitord will
@@ -969,11 +968,11 @@ OPTIONS
   -V, --Version     Show version and exit
 
 CONFIGURATION
-  Configuration can be defined into /etc/rpimonitord.conf and
-  /etc/rpimonitord.conf.d/*.conf or in a list of files specified
-  by -c parameter. See the /etc/rpimonitord.conf and 
-  /etc/rpimonitord.conf.d/default.conf files provided with at
-  installation to see how to customize rpimonitord.
+  Configuration can be defined into /etc/rpimonitor/rpimonitord.conf
+  and /etc/rpimonitor/*.conf or in a list of files specified
+  by -c parameter. See the /etc/rpimonitor/rpimonitord.conf and 
+  /etc/rpimonitor/default.conf files provided with at installation
+  to see how to customize rpimonitord.
   Configuration defined inside a configuration file always overwrite
   default values. 
   Configuration given as option of the command line always overwrite 
