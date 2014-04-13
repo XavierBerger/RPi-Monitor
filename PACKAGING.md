@@ -35,7 +35,7 @@ Since version 2.7:
 * /etc/rpimonitor/daemon.conf : *configuration of rpimonitord daemon*
 * /etc/rpimonitor/data.conf : *configuration of default data to be extracted and presented*
 * /etc/rpimonitor/\*.conf : *all other \*.conf file will be parsed to look for data to be monitored*
-* /etc/rpimonitor/\*.conf : *data configuration template custonized for different distribution and additionnal examples*
+* /etc/rpimonitor/template/\*.conf : *data configuration template customized for different distribution and additionnal examples*
 
 Some configuration files are provided for different distribution (raspbian, xbian, ...). These files are stored into the subdirectory /etc/rpimonitor/templates/. For supported distribution, the post installation script of package creates a link, data.conf, pointing to the configuration files dedicated to the distribution.
 
