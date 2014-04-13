@@ -29,25 +29,16 @@ This document intended to help [**RPi-Monitor**](http://rpi-experiences.blogspot
 
 ###Configuration
 
-* /etc/rpimonitord.conf : *rpimonitord configuration - The comments of this file are used to generate manpage*
-* /etc/rpimonitord.conf.d : *Directory storing data extraction configuration*
-* /etc/rpimonitord.conf.d/default.conf: *Sample script doing data extraction for Raspberry Pi - The comments of this file are used to generate manpage*
-* /etc/default/rpimonitor : *Startup script configuration*
+Since version 2.7:
 
-**Discussion**: 
-
-Suggested configuration organisation could be:
-
-* /etc/default/rpimonitor : *Unchanged*
+* /etc/default/rpimonitor : *Init script configuration file*
 * /etc/rpimonitor/daemon.conf : *configuration of rpimonitord daemon*
-* /etc/rpimonitor/\*.conf : *all other \*.conf file will be parsed to look for data to be monitored*. 
+* /etc/rpimonitor/data.conf : *configuration of default data to be extracted and presented*
+* /etc/rpimonitor/\*.conf : *all other \*.conf file will be parsed to look for data to be monitored*
+* /etc/rpimonitor/\*.conf : *data configuration template custonized for different distribution and additionnal examples*
 
-The file *default.conf* is provided with the package to have a working example when the program start. 
-We could imagine to have many default.conf files into the repository. Up to the package maintainer to include the good one.
+Some configuration files are provided for different distribution (raspbian, xbian, ...). These files are stored into the subdirectory /etc/rpimonitor/templates/. For supported distribution, the post installation script of package creates a link, data.conf, pointing to the configuration files dedicated to the distribution.
 
-I prefer to keep the name *default.conf* rather than *data.conf* to differenciate it from customization.
-
-Also, it would be better for end user to remove the constraint of *id* which have to be unique over all the configuration files... But this is not something trivial to develop.
 
 ###Manpages
 
