@@ -968,17 +968,16 @@ OPTIONS
   -V, --Version     Show version and exit
 
 CONFIGURATION
-  Configuration can be defined into /etc/rpimonitor/rpimonitord.conf
-  and /etc/rpimonitor/*.conf or in a list of files specified
-  by -c parameter. See the /etc/rpimonitor/rpimonitord.conf and 
-  /etc/rpimonitor/default.conf files provided with at installation
-  to see how to customize rpimonitord.
+  Configuration can be defined into /etc/rpimonitor/*.conf or in a 
+  list of files specified by -c parameter. See the files
+  /etc/rpimonitor/daemon.conf and /etc/rpimonitor/default.conf 
+  provided with at installation to see how to customize rpimonitord.
   Configuration defined inside a configuration file always overwrite
   default values. 
   Configuration given as option of the command line always overwrite 
   the one defined into a file.
-  ** Warning: Be sure to use Linux filefeed format with line ending with LF. 
-     (and not CR/LF like in Windows) **
+  ** Warning: Be sure to use Linux filefeed format with line ending 
+  with LF (and not CR/LF like in Windows) **
 
 RAW DATA ACCESS
   Once RPi-Monitor is started the data representing the current status
