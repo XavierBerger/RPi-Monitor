@@ -106,7 +106,7 @@ $('#footer').html(
 	'<div class="container text-center">'+
 	  '<p class="muted credit"><small><a href="http://rpi-experiences.blogspot.fr/">RPi-Experiences</a> | '+
 	  '<a href="https://github.com/XavierBerger/RPi-Monitor">GitHub</a> | '+
-	  '<a href="http://www.raspberrypi.org/">Raspberry Pi Fundation</a></small></p>'+
+	  '<a href="http://www.raspberrypi.org/">Raspberry Pi Foundation</a></small></p>'+
 	'</div>'
 );
 }
