@@ -4,8 +4,7 @@
 
 [**RPi-Monitor**](http://rpi-experiences.blogspot.fr/) is a self monitoring application designed to run on [Raspberry Pi](http://raspberrypi.org).
 
-For performance and security reason, [**RPi-Monitor**](http://rpi-experiences.blogspot.fr/) separates the extraction of the information from the
-presentation of the information.
+For performance and security reason, [**RPi-Monitor**](http://rpi-experiences.blogspot.fr/) separates the extraction of the information from the presentation of the information.
 
 The extraction of the information is done by a process designed to run as a daemon (which can be executed as root).
 The extracted key performance indicators (KPI) from the computer are stored them into a Round Robin Database (RRD)
@@ -32,23 +31,26 @@ You will find screenshot of [**RPi-Monitor**](http://rpi-experiences.blogspot.fr
 
 ### Installation
 
-Installation of [**RPi-Monitor**](http://rpi-experiences.blogspot.fr/) is detailled in every release announcement in [RPi-Experience]
-(http://rpi-experiences.blogspot.fr/).
+Installation of [**RPi-Monitor**](http://rpi-experiences.blogspot.fr/) is detailled in every release announcement in [RPi-Experience](http://rpi-experiences.blogspot.fr/).
 
-Debian package is available in [here](https://github.com/XavierBerger/RPi-Monitor-deb).
+Debian package for **Raspbian** is available in [here](https://github.com/XavierBerger/RPi-Monitor-deb).
 
-Gentoo users can find the ebuild created by Stuart Shelton [here](https://github.com/srcshelton/gentoo-ebuilds/tree/master/www-apps/rpi-monitor).
+**Gentoo** users can find the ebuild created by Stuart Shelton [here](https://github.com/srcshelton/gentoo-ebuilds/tree/master/www-apps/rpi-monitor).
 
-Arch Linux users can find the aur package created by ajs124 [here](https://aur.archlinux.org/packages/rpimonitor/).
+**Arch Linux** users can find the aur package created by ajs124 [here](https://aur.archlinux.org/packages/rpimonitor/).
+
+The dependencies and the detail of installation process are describe into [PACKAGING.md](PACKAGING.md)
 
 For installation on other system and for advanced customization read the article [RPi-Monitor: Version 2.0 advance usage and customization] (http://rpi-experiences.blogspot.fr/2013/06/rpi-monitor-version-20-advance-usage.html).
 
-Note: **RPi-Monitor** is requiring ```librrds-perl libhttp-daemon-perl libjson-perl libipc-sharelite-perl libfile-which-perl```
+Note: *"For various reasons"* **OpenElec** don't maintain a package repository. **RPi-Monitor** will then not be available on this distribution until the development team does the job.
 
 ### Other information
 
 All articles realated to RPi-Monitor are gathered into the page [RPi-Monitor Overview]
 (http://rpi-experiences.blogspot.fr/p/rpi-monitor-articles.html).
+
+Frequently Asked Question find answer into the [FAQ](http://rpi-experiences.blogspot.fr/p/rpi-monitor-faq.html) page.
 
 ### Development
 
