@@ -34,7 +34,7 @@ Since version 2.7:
 * /etc/default/rpimonitor : *Init script configuration file*
 * /etc/rpimonitor/daemon.conf : *configuration of rpimonitord daemon*
 * /etc/rpimonitor/data.conf : *configuration of default data to be extracted and presented*
-* /etc/rpimonitor/\*.conf : *all other \*.conf file will be parsed to look for data to be monitored*
+* /etc/rpimonitor/\*.conf : *all other *.conf file will be parsed to look for data to be monitored*
 * /etc/rpimonitor/template/\*.conf : *data configuration template customized for different distribution and additionnal examples*
 
 Some configuration files are provided for different distribution (raspbian, xbian, ...). These files are stored into the subdirectory /etc/rpimonitor/templates/. For supported distribution, the post installation script of package creates a link, data.conf, pointing to the configuration files dedicated to the distribution.
@@ -50,20 +50,20 @@ Some configuration files are provided for different distribution (raspbian, xbia
 * /usr/share/rpimonitor
 * /usr/share/rpimonitor/web : *Directory containing html (and json - cf note)*
 * /usr/share/rpimonitor/web/js: *Directory containing javascripts*
-* /usr/share/rpimonitor/web/css: *Directory containing style *
+* /usr/share/rpimonitor/web/css: *Directory containing style*
 * /usr/share/rpimonitor/web/img: *Directory containing images*
-
-**Note:**
-
-When **RPi-Monitor** is configured to not use the internal server, the json are writted down into the disk into the web root directory /usr/share/rpimonitor/web
 
 ###Data
 
 * /usr/share/rpimonitor/web/stat : *Directory containing \*.rrd*
 * /usr/share/rpimonitor/updatestatus.txt: * Current status of packages*
 
+**Note:**
+
+When **RPi-Monitor** is configured to not use the internal server, the json are writted down into the disk into the web root directory /usr/share/rpimonitor/web
+
 **Discussion**: 
-It has been suggested to move the data to /var/lib/rpimonitor/
+In issue #36, it has been suggested to move the data to /var/lib/rpimonitor/ and keep /usr/share/rpimonitor directory in read only.
 
 ###Additional scripts
 I plan to add usefull user scripts directly inside the package.
