@@ -576,10 +576,11 @@ sub Process
     $_ = $kpi->{'source'};
     /(.*)/; /(\S+)\s.*/; #Not so clean... Regexp to be reviewed
     my $file = ( -x $1 || -x which($1) ) ? "$kpi->{'source'} 2>/dev/null|" : $kpi->{'source'};
+    my $pid = 0;
     eval {
       local $SIG{ALRM} = sub { die "Timeout\n" };
       alarm $configuration->{'daemon'}->{'timeout'};
-      open(FEED, $file) or die "Can't open $file because $!\n";
+      $pid = open(FEED, $file) or die "Can't open $file because $!\n";
       while (<FEED>){
         @_ = /$kpi->{'regexp'}/ or next;
         if ( $kpi->{'postprocess'} ) {
@@ -594,7 +595,9 @@ sub Process
       }
       close(FEED);
       alarm 0;
-    }
+      $pid = 0;
+    };
+    $pid and kill( 9, $pid);
   }
   #print Data::Dumper->Dump([$list]);
   #print Data::Dumper->Dump([$this->{'dynamic'}]);
