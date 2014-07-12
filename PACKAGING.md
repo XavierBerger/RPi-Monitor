@@ -24,8 +24,7 @@ This document intended to help [**RPi-Monitor**](http://rpi-experiences.blogspot
 
 **Note**: 
 
-* **upstart** script is also avialable in the repository
-* **systemd** script will be also available in the repository (yamakaki, à toi de jouer ;-) )
+* **upstart** and **systemd** script are also avialable in the repository
 
 ###Configuration
 
