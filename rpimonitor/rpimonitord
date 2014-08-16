@@ -66,7 +66,6 @@ sub Load
   }
 
   foreach ( @{$this->{'daemon'}->{'confFiles'}} ) {
-    /daemon.conf/ and next;
     $this->LoadFile($_);
   }
 
@@ -512,27 +511,27 @@ sub Run
 
   if ( $configuration->{'daemon'}->{'noserver'}) {
     # write json if server is not running
-    open(FILE, "> $configuration->{'daemon'}->{'datastore'}/static.json")
+    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/static.json")
       or warn $!;
       print FILE encode_json \%{$this->{'static'}} ;
     close(FILE);
-    open(FILE, "> $configuration->{'daemon'}->{'datastore'}/status.json")
+    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/status.json")
       or warn $!;
       print FILE encode_json \@{$configuration->{'web'}->{'status'}} ;
     close(FILE);
-    open(FILE, "> $configuration->{'daemon'}->{'datastore'}/statistics.json")
+    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/statistics.json")
       or warn $!;
       print FILE encode_json \@{$configuration->{'web'}->{'statistics'}} ;
     close(FILE);
-    open(FILE, "> $configuration->{'daemon'}->{'datastore'}/friends.json")
+    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/friends.json")
       or warn $!;
       print FILE encode_json(\@{$configuration->{'web'}->{'friends'}});
     close(FILE);
-    open(FILE, "> $configuration->{'daemon'}->{'datastore'}/menu.json")
+    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/menu.json")
       or warn $!;
       print FILE encode_json(\%{$configuration->{'menu'}});
     close(FILE);
-    open(FILE, "> $configuration->{'daemon'}->{'datastore'}/version.json")
+    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/version.json")
       or warn $!;
       print FILE  "{\"version\":\"$configuration->{'version'}\"}";
     close(FILE);
