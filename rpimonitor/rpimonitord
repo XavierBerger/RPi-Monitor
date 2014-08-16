@@ -91,7 +91,7 @@ sub Load
 
   # Check rrd directory and files and create them if they are missing
   # Create storage directory if needed
-  -d "$this->{'daemon'}->{'datastore'}/stat" or mkdir "$this->{'daemon'}->{'rrd'}/stat";
+  -d "$this->{'daemon'}->{'datastore'}/stat" or mkdir "$this->{'daemon'}->{'datastore'}/stat";
   # Create empty file at each start
   $this->CreateRRD( "$this->{'daemon'}->{'datastore'}/stat/empty.rrd", 'empty', 'GAUGE', 'U', 'U' );
   chown($this->{'daemon'}->{'uid'},$this->{'daemon'}->{'gid'},"$this->{'daemon'}->{'datastore'}/stat/empty.rrd");
