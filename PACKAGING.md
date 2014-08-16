@@ -32,7 +32,7 @@ Since version 2.7:
 
 * /etc/default/rpimonitor : *Init script configuration file*
 * /etc/rpimonitor/daemon.conf : *configuration of rpimonitord daemon*
-* /etc/rpimonitor/data.conf : *configuration of default data to be extracted and presented*
+* /etc/rpimonitor/data.conf : *(symlink to template/raspbian.conf) configuration of default data to be extracted and presented*
 * /etc/rpimonitor/\*.conf : *all other *.conf file will be parsed to look for data to be monitored*
 * /etc/rpimonitor/template/\*.conf : *data configuration template customized for different distribution and additionnal examples*
 
