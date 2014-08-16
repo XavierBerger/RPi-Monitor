@@ -69,7 +69,7 @@ sub Load
     /daemon.conf/ and next;
     $this->LoadFile($_);
   }
- 
+
   # Set version (used by web pagescache mechanism)
   $this->{'version'} = localtime();
 
@@ -79,8 +79,8 @@ sub Load
   $this->{'daemon'}->{'noserver'}    ||= 0;
   $this->{'daemon'}->{'port'}        ||= 8888;
   $this->{'daemon'}->{'addr'}        ||= '0.0.0.0';
-  -d "$path/web" and $this->{'daemon'}->{'webroot'}     ||= "$path/web";
   $this->{'daemon'}->{'webroot'}     ||= "/usr/share/rpimonitor/web";
+  $this->{'daemon'}->{'datastore'}   ||= "/var/lib/rpimonitor";
   $this->{'daemon'}->{'delay'}       ||= 10;
   $this->{'daemon'}->{'timeout'}     ||= 5;
   $this->{'daemon'}->{'sharedmemkey'}||= 20130906;
@@ -90,13 +90,13 @@ sub Load
   $this->{'daemon'}->{'uid'} = getpwnam($this->{'daemon'}->{'group'}) || 1000;
 
   # Check rrd directory and files and create them if they are missing
-  # construct the list of rrd page accessible
-  -d "$this->{'daemon'}->{'webroot'}/stat" or mkdir "$this->{'daemon'}->{'webroot'}/stat";
-  #-f "$this->{'daemon'}->{'webroot'}/stat/empty.rrd" or
-  # Recreate empty file at each start 
-  $this->CreateRRD( "$this->{'daemon'}->{'webroot'}/stat/empty.rrd", 'empty', 'GAUGE', 'U', 'U' ); 
+  # Create storage directory if needed
+  -d "$this->{'daemon'}->{'datastore'}/stat" or mkdir "$this->{'daemon'}->{'rrd'}/stat";
+  # Create empty file at each start
+  $this->CreateRRD( "$this->{'daemon'}->{'datastore'}/stat/empty.rrd", 'empty', 'GAUGE', 'U', 'U' );
+  chown($this->{'daemon'}->{'uid'},$this->{'daemon'}->{'gid'},"$this->{'daemon'}->{'datastore'}/stat/empty.rrd");
 
-  #die Data::Dumper->Dump([$this->{'rrd'}]);
+  #print Data::Dumper->Dump([$this->{'daemon'}]);
 
   # manage rrds
   foreach (@{$this->{'rrd'}}){
@@ -105,14 +105,14 @@ sub Load
     my $min = defined($_->{'min'}) ? $_->{'min'} : "U";
     my $max = defined($_->{'max'}) ? $_->{'max'} : "U";
     foreach (@name) {
-      my $filename="$this->{'daemon'}->{'webroot'}/stat/$_.rrd";
+      my $filename="$this->{'daemon'}->{'datastore'}/stat/$_.rrd";
       -f "$filename" or $this->CreateRRD($filename,$_,$type,$min,$max);
       push(@{$this->{'rrdlist'}},"stat/$_.rrd");
     }
   }
- 
-  #print Data::Dumper->Dump([$this->{'web'}]);  
- 
+
+  #print Data::Dumper->Dump([$this->{'rrdlist'}]);
+
   # manage menu
   foreach (@{$this->{'web'}->{'status'}}) {
     $_->{'name'} and push(@{$this->{'menu'}->{'status'}}, $_->{'name'});
@@ -169,7 +169,7 @@ sub LoadFile
           $tree->{$current} ||= {};
           $tree=$tree->{$current};
         }
-      }      
+      }
       if ( ($next eq 'rrd') and $value) { push(@{$this->{'rrd'}},$tree) };
       $current = $next;
     }
@@ -179,7 +179,7 @@ sub LoadFile
     else {
       $tree->{$current} = $value;
     }
-  }  
+  }
 }
 
 sub CreateRRD
@@ -194,7 +194,7 @@ sub CreateRRD
 
   my $current = time();
   my $start = $current - 60;
- 
+
   unlink $filename;
 
   $this->Debug(2,"$filename",
@@ -299,11 +299,11 @@ sub Debug
 sub ShowShellinabox
 {
   my $this = shift;
-  my $configuration = shift;  
+  my $configuration = shift;
   my $host = shift;
 
   if ( $configuration->{'daemon'}->{'shellinabox'} )
-  { 
+  {
     $this->SendRedirect( $configuration->{'daemon'}->{'shellinabox'} );
   }
   else
@@ -348,8 +348,8 @@ sub SendStatus
   $this->Debug(2,"");
 
   my $var = $configuration->{'sharedmem'}->fetch();
-  
-  $var =~ s/\s+$//g; 
+
+  $var =~ s/\s+$//g;
   $this->Debug(3,"JSON: $var");
   $this->SendJSON($var);
 
@@ -391,11 +391,11 @@ sub DoGET
   $_ = $request->url->path;
   my $path = $_;
   $this->Debug(2, "$path");
-  
+
   #The file need to be known or we return an error
   my $isvalid;
   foreach(@{$this->{'paths'}}) {
-    if ( $path =~ /$_$/) { 
+    if ( $path =~ /$_$/) {
       $isvalid=1;
       $path=$_;
       last;
@@ -409,16 +409,17 @@ sub DoGET
   $path =~ /dynamic\.json/ and $this->SendStatus( $configuration ) and return;
   $path =~ /([^\/]+)\.json/ and $this->SendJSON($this->{$1}) and return;
   #Recreate empty rrd on demand
-  $path =~ /empty\.rrd/ and $configuration->CreateRRD( "$configuration->{'daemon'}->{'webroot'}/stat/empty.rrd", 'empty', 'GAUGE', 'U', 'U' ); 
+  $path =~ /empty\.rrd/ and $configuration->CreateRRD( "$configuration->{'daemon'}->{'webroot'}/stat/empty.rrd", 'empty', 'GAUGE', 'U', 'U' );
 
   #The main page (/) is requested
   $path =~ /^\/$/ and $path = "/index.html";
 
   #If the file exists we return it
   -f "$configuration->{'daemon'}->{'webroot'}/$path" and $this->SendFile($connection, "$configuration->{'daemon'}->{'webroot'}/$path") and return;
+  -f "$configuration->{'daemon'}->{'datastore'}/$path" and $this->SendFile($connection, "$configuration->{'daemon'}->{'datastore'}/$path") and return;
 
   $this->Debug(2,"Can't find $configuration->{'daemon'}->{'webroot'}/$path");
-  
+
   #Finally send error
   $this->SendError();
 }
@@ -435,7 +436,7 @@ sub Run
     /(img\/.*\.png)$/;
     unshift ( @{$this->{'paths'}}, $1);
   }
-  @{$this->{'paths'}} = ( @{ $configuration->{'rrdlist'}}, @{$this->{'paths'}} );  
+  @{$this->{'paths'}} = ( @{ $configuration->{'rrdlist'}}, @{$this->{'paths'}} );
   $this->{'status'} = encode_json(\@{$configuration->{'web'}->{'status'}});
   $this->{'statistics'} = encode_json(\@{$configuration->{'web'}->{'statistics'}});
   $this->{'friends'} = encode_json(\@{$configuration->{'web'}->{'friends'}});
@@ -443,7 +444,7 @@ sub Run
   $this->{'menu'} = encode_json(\%{$configuration->{'menu'}});
   $this->{'version'} = "{\"version\":\"$configuration->{'version'}\"}";
   #print Data::Dumper->Dump([$this->{'paths'}]);
-  
+
   # Create the server
   #print Data::Dumper->Dump([$configuration]);
   $this->{'server'} = new HTTP::Daemon     ( ReuseAddr => 1,
@@ -510,33 +511,33 @@ sub Run
   $this->Debug(2,"");
 
   if ( $configuration->{'daemon'}->{'noserver'}) {
-    # write json if server is not running 
-    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/static.json")
+    # write json if server is not running
+    open(FILE, "> $configuration->{'daemon'}->{'datastore'}/static.json")
       or warn $!;
       print FILE encode_json \%{$this->{'static'}} ;
-    close(FILE); 
-    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/status.json")
+    close(FILE);
+    open(FILE, "> $configuration->{'daemon'}->{'datastore'}/status.json")
       or warn $!;
       print FILE encode_json \@{$configuration->{'web'}->{'status'}} ;
     close(FILE);
-    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/statistics.json")
+    open(FILE, "> $configuration->{'daemon'}->{'datastore'}/statistics.json")
       or warn $!;
       print FILE encode_json \@{$configuration->{'web'}->{'statistics'}} ;
     close(FILE);
-    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/friends.json")
+    open(FILE, "> $configuration->{'daemon'}->{'datastore'}/friends.json")
       or warn $!;
       print FILE encode_json(\@{$configuration->{'web'}->{'friends'}});
     close(FILE);
-    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/menu.json")
+    open(FILE, "> $configuration->{'daemon'}->{'datastore'}/menu.json")
       or warn $!;
       print FILE encode_json(\%{$configuration->{'menu'}});
     close(FILE);
-    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/version.json")
+    open(FILE, "> $configuration->{'daemon'}->{'datastore'}/version.json")
       or warn $!;
       print FILE  "{\"version\":\"$configuration->{'version'}\"}";
     close(FILE);
   }
-  
+
   #die Data::Dumper->Dump([$this]);
 
   for(;;)
@@ -547,18 +548,18 @@ sub Run
     # Store and show extracted data
     $this->Status($configuration);
 
-    # Check if server is up 
+    # Check if server is up
     if ( !$configuration->{'daemon'}->{'noserver'}) {
       kill(0,$serverpid) or last;
     }
-    
+
     # tempo before next process
     $configuration->{'daemon'}->{'delay'} or last;
     sleep $configuration->{'daemon'}->{'delay'};
   }
   foreach (@{$this->{'files'}}) {
-    -f "$configuration->{'daemon'}->{'webroot'}/$_"
-      and unlink "$configuration->{'daemon'}->{'webroot'}/$_";
+    -f "$configuration->{'daemon'}->{'datastore'}/$_"
+      and unlink "$configuration->{'daemon'}->{'datastore'}/$_";
   }
 }
 
@@ -568,7 +569,7 @@ sub Process
   my $configuration = shift;
   my $list = shift;
   $this->Debug(2,"Processing $list");
- 
+
   $this->{$list} and delete $this->{$list};
   foreach my $kpi ( @{$configuration->{$list}} ) {
     $kpi or next;
@@ -588,7 +589,7 @@ sub Process
         }
         my $i=0;
         my @names = split(',',$kpi->{'name'});
-        foreach ( @_ ) { 
+        foreach ( @_ ) {
           $this->{$list}->{$names[$i]}=$_[$i];
           $i++;
         }
@@ -635,11 +636,11 @@ sub Status
   #print Data::Dumper->Dump($configuration->{'rrd'});
   foreach (@{$configuration->{'rrd'}}){
     foreach my $name ( split(',',$_->{'name'}) ) {
-      if ( looks_like_number( $this->{'dynamic'}->{$name} ) ) { 
-        RRDs::update("$configuration->{'daemon'}->{'webroot'}/stat/$name.rrd", "N:".$this->{'dynamic'}->{$name});
+      if ( looks_like_number( $this->{'dynamic'}->{$name} ) ) {
+        RRDs::update("$configuration->{'daemon'}->{'datastore'}/stat/$name.rrd", "N:".$this->{'dynamic'}->{$name});
       }
       else {
-        RRDs::update("$configuration->{'daemon'}->{'webroot'}/stat/$name.rrd", "N:U");
+        RRDs::update("$configuration->{'daemon'}->{'datastore'}/stat/$name.rrd", "N:U");
       }
     }
   }
@@ -667,7 +668,7 @@ sub Debug
 }
 
 sub Title
-{  
+{
   my $this = shift;
   system("clear");
   print "**********************************************************************\n";
@@ -737,13 +738,13 @@ sub GetRegExp
 
   $this->Title();
   print " The Regular Expression is here to extract the information from the\n";
-  print " source. To learn Perl Regular Expression you can refer to the\n"; 
+  print " source. To learn Perl Regular Expression you can refer to the\n";
   print " documentation: http://perldoc.perl.org/perlretut.html \n";
   print " It is required to put the value to extract into parenthesis.\n";
 }
 
 sub ApplyRegExp
-{  
+{
   my $this = shift;
   my $source = shift;
   my $regexp = shift;
@@ -758,7 +759,7 @@ sub ApplyRegExp
     my $i=0;
     foreach ( @_ ) {
       $i++;
-      if ( $print ) { 
+      if ( $print ) {
         print " \$$i = $_\n";
       }
       else {
@@ -854,7 +855,7 @@ sub PrintConfiguration
 
   $this->Title();
   print " We have now defined all the parameters allowing RPi-Monitor to\n";
-  print " extract the data from the system. Here is a template of configuration\n"; 
+  print " extract the data from the system. Here is a template of configuration\n";
   print " base on your actual configuration.\n";
   print "\n";
   print "$type.$id.name=<Add here the name>\n";
@@ -878,7 +879,7 @@ sub Run
   $this->Title();
   $this->Welcome();
   <>;
-  
+
   # Get the source
   my $source="";
   for (;;) {
@@ -947,8 +948,8 @@ USAGE
      [-d delay][-h][-n][-p port][-s][-t timeout][-v[v[...]]][-V]
 
 DESCRIPTION
-  rpimonitord is designed to extract data from Raspberry Pi system and 
-  store statistic into RRD. rpimonitord embed a web server allowing 
+  rpimonitord is designed to extract data from Raspberry Pi system and
+  store statistic into RRD. rpimonitord embed a web server allowing
   to display current status and statistics.
 
 OPTIONS
@@ -971,15 +972,15 @@ OPTIONS
   -V, --Version     Show version and exit
 
 CONFIGURATION
-  Configuration can be defined into /etc/rpimonitor/*.conf or in a 
+  Configuration can be defined into /etc/rpimonitor/*.conf or in a
   list of files specified by -c parameter. See the files
-  /etc/rpimonitor/daemon.conf and /etc/rpimonitor/default.conf 
+  /etc/rpimonitor/daemon.conf and /etc/rpimonitor/default.conf
   provided with at installation to see how to customize rpimonitord.
   Configuration defined inside a configuration file always overwrite
-  default values. 
-  Configuration given as option of the command line always overwrite 
+  default values.
+  Configuration given as option of the command line always overwrite
   the one defined into a file.
-  ** Warning: Be sure to use Linux filefeed format with line ending 
+  ** Warning: Be sure to use Linux filefeed format with line ending
   with LF (and not CR/LF like in Windows) **
 
 RAW DATA ACCESS
@@ -987,9 +988,9 @@ RAW DATA ACCESS
   are available in json format and can be downloaded from the root of
   the web interface (ex: http://RpiAddress:8888/static.json)
     static.json:    Static information extracted at startup
-    dynamic.json:   Current values of dynamic information extracted 
+    dynamic.json:   Current values of dynamic information extracted
                     periodically
-    menu.json:      Description of menus when multiple pages are 
+    menu.json:      Description of menus when multiple pages are
                     configured
 
   The web interface configuration can also be downloaded in json format:
@@ -1008,9 +1009,9 @@ EOF
 }
 
 sub writePID {
-  open(PID, ">> $pidfile") || die "Could not open '$pidfile' $!"; 
-  print PID "$$\n"; 
-  close(PID); 
+  open(PID, ">> $pidfile") || die "Could not open '$pidfile' $!";
+  print PID "$$\n";
+  close(PID);
 }
 
 sub daemonize {
@@ -1065,11 +1066,11 @@ while($_ = shift)
   /-i(nteractive)?/ and interactive() and exit;
   /-n(oserver)?/    and $configuration->{'daemon'}->{'noserver'}++ and next;
   /-p(ort)?/        and $configuration->{'daemon'}->{'port'} = shift and next;
-  /-s(how)?/        and $configuration->{'show'}++ and next; 
+  /-s(how)?/        and $configuration->{'show'}++ and next;
   /-t(imeout)?/     and $configuration->{'daemon'}->{'timeout'} = shift and next;
   /^-([v]+)$/       and $verbose = length $1 and next;
   /-V(ersion)?/     and die "$0 version $VERSION\n";
-} 
+}
 $configuration->Load();
 
 $pidfile and &daemonize;
@@ -1091,7 +1092,7 @@ for (;;) {
     -f $pidfile and unlink $pidfile;
     writePID();
   }
- 
+
   $serverpid = StartServer($configuration,$monitor);
   #Start process respawner
   if ( my $procpid = fork() ) {

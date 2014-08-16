@@ -1,7 +1,5 @@
 #Packaging
 
-WORKING COPY - THE INFORMATION OF THIS DOCUMENT ARE NOT YET FULLY VALIDATED - YOUR COMMENTS ARE WELCOME INTO ISSUE #36
-
 ## Introduction
 This document intended to help [**RPi-Monitor**](http://rpi-experiences.blogspot.fr/)'s package maintainer to know what to install and where.
 
@@ -19,10 +17,10 @@ This document intended to help [**RPi-Monitor**](http://rpi-experiences.blogspot
 ###Programs
 
 * /usr/bin/rpimonitord : *Daemon extracting data from the system and embedding the web application server - The help page is used to generate manpage*
-* /etc/cron.d/rpimonitor : *daily extraction the status of package update  updating the file updatestatus.txt*
+* /etc/cron.d/rpimonitor : *daily extraction the status of package update updating the file updatestatus.txt*
 * /etc/init.d/rpimonitor : *sysVinit startup script*
 
-**Note**: 
+**Note**:
 
 * **upstart** and **systemd** script are also avialable in the repository
 
@@ -32,12 +30,16 @@ Since version 2.7:
 
 * /etc/default/rpimonitor : *Init script configuration file*
 * /etc/rpimonitor/daemon.conf : *configuration of rpimonitord daemon*
-* /etc/rpimonitor/data.conf : *(symlink to template/raspbian.conf) configuration of default data to be extracted and presented*
+* /etc/rpimonitor/data.conf : *(symlink to template/<distribution>.conf) configuration of default data to be extracted and presented*
 * /etc/rpimonitor/\*.conf : *all other *.conf file will be parsed to look for data to be monitored*
 * /etc/rpimonitor/template/\*.conf : *data configuration template customized for different distribution and additionnal examples*
 
-Some configuration files are provided for different distribution (raspbian, xbian, ...). These files are stored into the subdirectory /etc/rpimonitor/templates/. For supported distribution, the post installation script of package creates a link, data.conf, pointing to the configuration files dedicated to the distribution.
+Some configuration files are provided for different distribution (raspbian, xbian, ...).
+These files are stored into the subdirectory /etc/rpimonitor/templates/.
+For supported distribution, the post installation script of package creates a link, data.conf, pointing to the configuration files dedicated to the distribution.
 
+** Note: **
+The template directory is also containing some templates that can be used as example to customize configuration.
 
 ###Manpages
 
@@ -47,25 +49,16 @@ Some configuration files are provided for different distribution (raspbian, xbia
 ###Web Interface
 
 * /usr/share/rpimonitor
-* /usr/share/rpimonitor/web : *Directory containing html (and json - cf note)*
+* /usr/share/rpimonitor/web : *Directory containing html*
 * /usr/share/rpimonitor/web/js: *Directory containing javascripts*
 * /usr/share/rpimonitor/web/css: *Directory containing style*
 * /usr/share/rpimonitor/web/img: *Directory containing images*
 
 ###Data
 
-* /usr/share/rpimonitor/web/stat : *Directory containing \*.rrd*
-* /usr/share/rpimonitor/updatestatus.txt: * Current status of packages*
+Since version 2.7:
 
-**Note:**
-
-When **RPi-Monitor** is configured to not use the internal server, the json are writted down into the disk into the web root directory /usr/share/rpimonitor/web
-
-**Discussion**: 
-In issue #36, it has been suggested to move the data to /var/lib/rpimonitor/ and keep /usr/share/rpimonitor directory in read only.
-
-###Additional scripts
-I plan to add usefull user scripts directly inside the package.
-
-* /usr/share/rpimonitor/scripts
+* /var/lib/rpimonitor/web/stat : *Directory containing \*.rrd*
+* /var/lib/rpimonitor/updatestatus.txt: * Current status of packages*
+* /var/lib/rpimonitor/*.json: * JSON storagewhen internal web server is not used*
 
