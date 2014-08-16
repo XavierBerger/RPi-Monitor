@@ -34,9 +34,9 @@ start() {
     echo "Update /etc/default/rpimonitor and set DEAMON_START to 1."
     return 0
   fi
-  
+
   touch $PIDFILE
-  
+
   for pid in $(cat $PIDFILE); do
      if ( kill -0 $pid > /dev/null 2>&1 ); then
       echo "Rpi-Monitor is already running.";
@@ -59,7 +59,7 @@ stop() {
   done
   status=$?
   log_end_msg $status
-  rm $PIDFILE 
+  rm $PIDFILE
 }
 
 restart() {
@@ -82,13 +82,13 @@ status(){
 
 update(){
   if [ "$SHOW_PACKAGE_UPDATE" = "0" ]; then
-    echo > /usr/share/rpimonitor/updatestatus.txt
+    echo > /var/lib/rpimonitor/updatestatus.txt
     return 0
   fi
 
   log_daemon_msg "RPi-Monitor" "Updating package status"
   LANG=C
-  apt-get upgrade --dry-run| perl -ne '/(.*upgraded.*installed|^  \S+.*)/ and print "$1 "' 2>/dev/null > /usr/share/rpimonitor/updatestatus.txt
+  apt-get upgrade --dry-run| perl -ne '/(.*upgraded.*installed|^  \S+.*)/ and print "$1 "' 2>/dev/null > /var/lib/rpimonitor/updatestatus.txt
   status=$?
   log_end_msg $status
 }
