@@ -408,7 +408,7 @@ sub DoGET
   $path =~ /dynamic\.json/ and $this->SendStatus( $configuration ) and return;
   $path =~ /([^\/]+)\.json/ and $this->SendJSON($this->{$1}) and return;
   #Recreate empty rrd on demand
-  $path =~ /empty\.rrd/ and $configuration->CreateRRD( "$configuration->{'daemon'}->{'webroot'}/stat/empty.rrd", 'empty', 'GAUGE', 'U', 'U' );
+  $path =~ /empty\.rrd/ and $configuration->CreateRRD( "$configuration->{'daemon'}->{'datastore'}/stat/empty.rrd", 'empty', 'GAUGE', 'U', 'U' );
 
   #The main page (/) is requested
   $path =~ /^\/$/ and $path = "/index.html";
