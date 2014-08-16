@@ -43,13 +43,13 @@ function Pad(n){
 }
 
 function Plural(n){
-  return n>1 ? 's ' : ' ' 
+  return n>1 ? 's ' : ' '
 }
 
 function Uptime(value){
   uptimetext='';
   years = Math.floor(value / 31556926);
-  rest = value % 31556926;    
+  rest = value % 31556926;
   days = Math.floor( rest / 86400);
   rest = value % 86400;
   hours = Math.floor(rest / 3600);
@@ -89,6 +89,12 @@ function ProgressBar(value, max){
   return "<div class='progress progress-striped'><div class='bar' style='width: "+((100 * value ) / max)+"%;'></div></div>"
 }
 
+function Label(data,formula, text, level){
+  var result="";
+  eval ( "if ("+data+formula+") result=\"<span class='label "+level+"'>"+text+"</span>\"" );
+  return result;
+}
+
 var clocksec=0;
 function Clock(localtime){
   clocksec=localtime[5];
@@ -112,17 +118,17 @@ function UpdateStatus () {
   $.getJSON('dynamic.json', function(data) {
     var static = localStorage.getItem('static');
     $.extend(data, eval('(' + static + ')'));
-    
+
     $('#message').addClass('hide');
-    
+
     for (var iloop=0; iloop < strips.length; iloop++){
       text = "";
       for (var jloop=0; jloop < strips[iloop].line.length; jloop++){
         var line = strips[iloop].line[jloop];
-        text = text + "<p>"; 
+        text = text + "<p>";
         try {
-            text = text + eval( line ); 
-    }
+            text = text + eval( line );
+        }
         catch (e) {
           text = text + "ERROR: " + line;
         }
@@ -132,31 +138,31 @@ function UpdateStatus () {
       }
       $("#Text"+iloop).html(text);
     }
-    
+
     SetProgressBarAnimate();
     ActivatePopover();
-    
+
   })
   .fail(function() {
       $('#message').html("<b>Can not get information (dynamic.json) from RPi-Monitor server.</b>");
       $('#message').removeClass('hide');
     });
-  
+
 }
 
 function ConstructPage()
 {
   var activePage = GetURLParameter('activePage');
-  
-  if ( typeof activePage == 'undefined') { 
-    activePage=localStorage.getItem('activePage', activePage); 
+
+  if ( typeof activePage == 'undefined') {
+    activePage=localStorage.getItem('activePage', activePage);
     if ( activePage ==null ) { activePage = 0 }
   };
   data = getData('status');
   if ( activePage >= data.length ){
     activePage=0;
   }
-  localStorage.setItem('activePage', activePage); 
+  localStorage.setItem('activePage', activePage);
   if ( data.length > 1 ) {
     $('<h2><p class="text-info">'+data[activePage].name+'</p></h2><hr>').insertBefore("#insertionPoint");
   }
@@ -175,12 +181,12 @@ $(function () {
   ShowFriends();
 
   /* Get static values once */
-  data = getData('static');  
+  data = getData('static');
   localStorage.setItem('static', JSON.stringify(data));
   ConstructPage();
 
-  if ( statusautorefresh ) { 
-    refreshTimerId = setInterval( UpdateStatus , 10000 ) 
+  if ( statusautorefresh ) {
+    refreshTimerId = setInterval( UpdateStatus , 10000 )
     clockId=setInterval(Tick,1000);
   }
 
