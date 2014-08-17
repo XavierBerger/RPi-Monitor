@@ -55,11 +55,12 @@ Frequently Asked Question find answer into the [FAQ](http://rpi-experiences.blog
 ### Development
 
 Github is used to perform versionning of development and also to backup the development progress of future releases.
-The **Master branch** is the unstable development branch (The branch may have bugs and partially released
-code that could avoid [**RPi-Monitor**](http://rpi-experiences.blogspot.fr/) to run as expected). It is not recommanded to install **RPi-Monitor** from
-it unless you want to participate to its development.
 
-Each release is identified by a branch. This should be the source to use in you want a stable release.
+The branch **master** contains the latest stable version.
+
+The branch **devel** is the unstable development branch (The branch may have bugs and partially released code that could avoid **RPi-Monitor** to run as expected). 
+
+Each release is identified by a tag. 
 
 ###Author
 
