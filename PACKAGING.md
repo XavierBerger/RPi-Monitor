@@ -54,11 +54,13 @@ The template directory is also containing some templates that can be used as exa
 * /usr/share/rpimonitor/web/css: *Directory containing style*
 * /usr/share/rpimonitor/web/img: *Directory containing images*
 
+**Note:**
+
+When **RPi-Monitor** is configured to not use the internal server, the json are written on the disk into the web root directory /usr/share/rpimonitor/web
+
 ###Data
 
 Since version 2.7:
 
 * /var/lib/rpimonitor/web/stat : *Directory containing \*.rrd*
 * /var/lib/rpimonitor/updatestatus.txt: * Current status of packages*
-* /var/lib/rpimonitor/*.json: * JSON storagewhen internal web server is not used*
-
