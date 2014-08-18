@@ -3,9 +3,8 @@ Description = System monitor for the Raspberry PI
 After = network.target
 
 [Service]
-EnvironmentFile = /etc/conf.d/rpimonitord
 Type = simple
-ExecStart = /usr/bin/rpimonitord $CONFFILE
+ExecStart = /usr/bin/rpimonitord
 
 [Install]
 WantedBy = multi-user.target
