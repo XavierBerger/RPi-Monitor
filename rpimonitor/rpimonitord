@@ -87,7 +87,7 @@ sub Load
   $this->{'daemon'}->{'delay'}       ||= 10;
   $this->{'daemon'}->{'timeout'}     ||= 5;
   $this->{'daemon'}->{'sharedmemkey'}||= 20130906;
-
+  
   # Check user and group
   $this->{'daemon'}->{'gid'} = getgrnam($this->{'daemon'}->{'user'})  || 1000;
   $this->{'daemon'}->{'uid'} = getpwnam($this->{'daemon'}->{'group'}) || 1000;
@@ -115,6 +115,11 @@ sub Load
   }
 
   #print Data::Dumper->Dump([$this->{'rrdlist'}]);
+
+  # manage page common parameters
+  $this->{'web'}->{'page'}->{'icon'}      ||= 'img/logo/png';
+  $this->{'web'}->{'page'}->{'menutitle'} ||= 'RPi-Monitor';
+  $this->{'web'}->{'page'}->{'pagetitle'} ||= 'RPi-Monitor';
 
   # manage menu
   foreach (@{$this->{'web'}->{'status'}}) {
@@ -188,8 +193,8 @@ sub LoadFile
             $index = $dict->{$root}[$current];
           }
           
-          @{$tree}[$index-1] ||= {};    # If the branch is not an array, create an empty hash
-          $tree=@{$tree}[$index-1];     # Define this hash as $tree root
+          @{$tree}[$index-1] ||= {};      # If the branch is not an array, create an empty hash
+          $tree=@{$tree}[$index-1];       # Define this hash as $tree root
         }
         else {                            # We are in a hash
           $tree->{$current} ||= {};       # If the branch is not an array, create an empty hash
@@ -256,6 +261,7 @@ use IO::Handle;
 use HTTP::Daemon;
 use HTTP::Status;
 use JSON;
+use Sys::Hostname;
 #use Data::Dumper;
 
 sub new
@@ -272,6 +278,7 @@ sub new
     "/statistics.json",
     "/menu.json",
     "/friends.json",
+    "/page.json",
     "/version.json",
     "/favicon.ico",
 
@@ -469,6 +476,8 @@ sub Run
   $this->{'status'} = encode_json(\@{$configuration->{'web'}->{'status'}});
   $this->{'statistics'} = encode_json(\@{$configuration->{'web'}->{'statistics'}});
   $this->{'friends'} = encode_json(\@{$configuration->{'web'}->{'friends'}});
+  $this->{'page'} = encode_json(\%{$configuration->{'web'}->{'page'}});
+  $monitor->{'static'}->{'hostname'} = hostname();
   $this->{'static'} = encode_json(\%{$monitor->{'static'}});
   $this->{'menu'} = encode_json(\%{$configuration->{'menu'}});
   $this->{'version'} = "{\"version\":\"$configuration->{'version'}\"}";

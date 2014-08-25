@@ -103,11 +103,11 @@ function ShowFriends(){
 
 function AddFooter(){
 $('#footer').html(
-	'<div class="container text-center">'+
-	  '<p class="muted credit"><small><a href="http://rpi-experiences.blogspot.fr/">RPi-Experiences</a> | '+
-	  '<a href="https://github.com/XavierBerger/RPi-Monitor">GitHub</a> | '+
-	  '<a href="http://www.raspberrypi.org/">Raspberry Pi Foundation</a></small></p>'+
-	'</div>'
+  '<div class="container text-center">'+
+    '<p class="muted credit"><small><a href="http://rpi-experiences.blogspot.fr/">RPi-Experiences</a> | '+
+    '<a href="https://github.com/XavierBerger/RPi-Monitor">GitHub</a> | '+
+    '<a href="http://www.raspberrypi.org/">Raspberry Pi Foundation</a></small></p>'+
+  '</div>'
 );
 }
 
@@ -202,6 +202,9 @@ function AddDialogs(){
 }
 
 function AddTopmenu(){
+  page = getData('page')
+  data = getData('static')
+  document.title = eval(page.pagetitle);
   topmenu=
       '<div class="navbar navbar-inverse navbar-fixed-top">'+
         '<div class="navbar-inner">'+
@@ -211,7 +214,7 @@ function AddTopmenu(){
               '<span class="icon-bar"></span>'+
               '<span class="icon-bar"></span>'+
             '</button>'+
-            '<a class="brand" href="index.html"><img src="img/logo.png"> RPi-Monitor</a>'+
+            '<a class="brand" href="index.html"><img src="'+eval(page.icon)+'"> '+eval(page.menutitle)+'</a>'+
             '<div class="nav-collapse collapse">'+
               '<ul class="nav">'+
                 '<li id="statusmenu"><a id="statuslink" href="status.html">Status</a></li>'+
