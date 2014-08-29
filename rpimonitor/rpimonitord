@@ -117,7 +117,7 @@ sub Load
   #print Data::Dumper->Dump([$this->{'rrdlist'}]);
 
   # manage page common parameters
-  $this->{'web'}->{'page'}->{'icon'}      ||= 'img/logo/png';
+  $this->{'web'}->{'page'}->{'icon'}      ||= 'img/logo.png';
   $this->{'web'}->{'page'}->{'menutitle'} ||= 'RPi-Monitor';
   $this->{'web'}->{'page'}->{'pagetitle'} ||= 'RPi-Monitor';
 
