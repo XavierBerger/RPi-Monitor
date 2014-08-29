@@ -1,1 +1,1 @@
-Update needed...</b></p><p><sup><font color='#AA0000'>&nbsp;&nbsp;&nbsp;&nbsp;Execute <b>Execute sudo apt-get update && sudo /usr/share/rpimonitor/scripts/updatePackagesStatus.sh</font></sup>
+Update needed...</b></p><p><sup><font color='#AA0000'>&nbsp;&nbsp;&nbsp;&nbsp;Execute <b>sudo apt-get update && sudo /usr/share/rpimonitor/scripts/updatePackagesStatus.sh</font></sup>
