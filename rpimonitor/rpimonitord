@@ -261,7 +261,6 @@ use IO::Handle;
 use HTTP::Daemon;
 use HTTP::Status;
 use JSON;
-use Sys::Hostname;
 #use Data::Dumper;
 
 sub new
@@ -477,7 +476,6 @@ sub Run
   $this->{'statistics'} = encode_json(\@{$configuration->{'web'}->{'statistics'}});
   $this->{'friends'} = encode_json(\@{$configuration->{'web'}->{'friends'}});
   $this->{'page'} = encode_json(\%{$configuration->{'web'}->{'page'}});
-  $monitor->{'static'}->{'hostname'} = hostname();
   $this->{'static'} = encode_json(\%{$monitor->{'static'}});
   $this->{'menu'} = encode_json(\%{$configuration->{'menu'}});
   $this->{'version'} = "{\"version\":\"$configuration->{'version'}\"}";
@@ -557,6 +555,10 @@ sub Run
     open(FILE, "> $configuration->{'daemon'}->{'webroot'}/status.json")
       or warn $!;
       print FILE encode_json \@{$configuration->{'web'}->{'status'}} ;
+    close(FILE);
+    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/page.json")
+      or warn $!;
+      print FILE encode_json \%{$configuration->{'web'}->{'page'}} ;
     close(FILE);
     open(FILE, "> $configuration->{'daemon'}->{'webroot'}/statistics.json")
       or warn $!;
@@ -974,6 +976,7 @@ sub Run
 package main;
 use strict;
 use POSIX;
+use Sys::Hostname;
 
 sub help
 {
@@ -1116,6 +1119,7 @@ $pidfile and &daemonize;
 my $monitor = Monitor->new();
 # Process data that should be extracted once, before the server starts
 $monitor->Process($configuration,'static');
+$monitor->{'static'}->{'hostname'} = hostname();
 
 $SIG{INT}    = sub { stop(); }; # catch Ctrl+C
 
