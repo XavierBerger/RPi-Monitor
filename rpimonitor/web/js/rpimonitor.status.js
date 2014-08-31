@@ -99,7 +99,6 @@ function Label(data,formula, text, level){
 function Badge(data,formula, text, level){
   var result="";
   if ( level.indexOf('badge-') < 0 ) { level = 'badge-'+level };
-  if ( false ) level = 'badge-'+level;
   eval ( "if ("+data+formula+") result=\"<span class='badge "+level+"'>"+text+"</span>\"" );
   return result;
 }
