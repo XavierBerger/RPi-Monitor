@@ -344,6 +344,11 @@ function getVersion(){
 
 $(function () {
 
+  if ( localStorage == null ) {
+    alert ("TypeError: localStorage is null\n\n" +
+           "Activate HTML5 localStorage before continuing."
+          );
+  }
   // Load data from local storage
   animate=(localStorage.getItem('animate') === 'true');
   shellinabox=(localStorage.getItem('shellinabox') === 'true');
