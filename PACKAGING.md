@@ -14,6 +14,7 @@ This document describe file organisation for **Version 2.8**
  * libjson-perl
  * libipc-sharelite-perl
  * libfile-which-perl
+ * aptitude (required by script checking upgradable packages)
 
 ## Installation
 
@@ -59,7 +60,7 @@ When **RPi-Monitor** is configured to not use the internal server, the json are 
 
 ###Scripts
 
-* /usr/share/rpimonitor/scripts/updatePackagesStatus.sh: *Script periodically executed to update /var/lib/rpimonitor/updatestatus.txt*
+* /usr/share/rpimonitor/scripts/updatePackagesStatus.pl: *Script periodically executed to update /var/lib/rpimonitor/updatestatus.txt*
 
 ###Data
 
