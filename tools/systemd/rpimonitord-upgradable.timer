@@ -1,0 +1,11 @@
+[Unit]
+Description = timer to search for upgradable packages to be displayed by rpimonitor
+After = network.target
+
+[Timer]
+OnCalendar = 03:10
+Persistent = true
+Unit = rpimonitord-upgradable.service
+
+[Install]
+WantedBy = multi-user.target
