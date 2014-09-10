@@ -15,9 +15,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+use File::Which;
 use strict;
 
-open ( FILE, 'aptitude -F%p --disable-columns search ~U |') or die "$!\n";
+if(which('aptitude')) {
+  open ( FILE, 'aptitude -F%p --disable-columns search ~U |') or die "$!\n";
+} elsif (which('pacman')) {
+  system ( 'pacman -Sy > /dev/null' );
+  open ( FILE, 'pacman -Quq |' ) or die "$!\n";
+} else {
+  die "Error: neither pacman nor aptitude seem to be available\n";
+}
+
 my $pkgnbr = 0;
 my $pkglist = "";
 while (<FILE>){
