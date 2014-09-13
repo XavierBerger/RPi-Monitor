@@ -91,9 +91,18 @@ function ProgressBar(value, max){
 
 function Label(data,formula, text, level){
   var result="";
+  if ( level.indexOf('label-') < 0 ) { level = 'label-'+level };
   eval ( "if ("+data+formula+") result=\"<span class='label "+level+"'>"+text+"</span>\"" );
   return result;
 }
+
+function Badge(data,formula, text, level){
+  var result="";
+  if ( level.indexOf('badge-') < 0 ) { level = 'badge-'+level };
+  eval ( "if ("+data+formula+") result=\"<span class='badge "+level+"'>"+text+"</span>\"" );
+  return result;
+}
+
 
 var clocksec=0;
 function Clock(localtime){

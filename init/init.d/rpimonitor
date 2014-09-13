@@ -15,11 +15,8 @@
 
 DAEMON="/usr/bin/rpimonitord"
 PIDFILE="/var/run/rpimonitord.pid"
-DEFAULTFILE="/etc/default/rpimonitor"
 
 [ -x $DAEMON ] || exit 0
-
-[ -r $DEFAULTFILE ] && . $DEFAULTFILE
 
 checkroot(){
   if [ "$(id -u)" != "0" ]; then
@@ -29,12 +26,6 @@ checkroot(){
 }
 
 start() {
-  if [ "$DAEMON_START" = "0" ]; then
-    echo "RPi-Monitor deamon id disabled."
-    echo "Update /etc/default/rpimonitor and set DEAMON_START to 1."
-    return 0
-  fi
-
   touch $PIDFILE
 
   for pid in $(cat $PIDFILE); do
@@ -80,19 +71,6 @@ status(){
   echo
 }
 
-update(){
-  if [ "$SHOW_PACKAGE_UPDATE" = "0" ]; then
-    echo > /var/lib/rpimonitor/updatestatus.txt
-    return 0
-  fi
-
-  log_daemon_msg "RPi-Monitor" "Updating package status"
-  LANG=C
-  apt-get upgrade --dry-run| perl -ne '/(.*upgraded.*installed|^  \S+.*)/ and print "$1 "' 2>/dev/null > /var/lib/rpimonitor/updatestatus.txt
-  status=$?
-  log_end_msg $status
-}
-
 checkroot
 case "$1" in
   start)
@@ -107,11 +85,8 @@ case "$1" in
   restart)
     restart
   ;;
-  update)
-    update
-  ;;
   *)
-    echo "Usage: $0 {start|stop|restart|status|update}"
+    echo "Usage: $0 {start|stop|restart|status}"
   ;;
 esac
 

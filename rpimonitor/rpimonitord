@@ -41,6 +41,10 @@ sub new
   $this->Debug(3,"");
   $this->{'rrd'}=();
   $this->{'daemon'}->{'confFiles'} = [];
+  $this->{'counter'}->{'static'}  = 0;
+  $this->{'counter'}->{'dynamic'} = 0;
+  $this->{'counter'}->{'status'} = 0;
+  $this->{'counter'}->{'statistics'} = 0;
   return $this;
 }
 
@@ -83,7 +87,7 @@ sub Load
   $this->{'daemon'}->{'delay'}       ||= 10;
   $this->{'daemon'}->{'timeout'}     ||= 5;
   $this->{'daemon'}->{'sharedmemkey'}||= 20130906;
-
+  
   # Check user and group
   $this->{'daemon'}->{'gid'} = getgrnam($this->{'daemon'}->{'user'})  || 1000;
   $this->{'daemon'}->{'uid'} = getpwnam($this->{'daemon'}->{'group'}) || 1000;
@@ -112,6 +116,11 @@ sub Load
 
   #print Data::Dumper->Dump([$this->{'rrdlist'}]);
 
+  # manage page common parameters
+  $this->{'web'}->{'page'}->{'icon'}      ||= 'img/logo.png';
+  $this->{'web'}->{'page'}->{'menutitle'} ||= 'RPi-Monitor';
+  $this->{'web'}->{'page'}->{'pagetitle'} ||= 'RPi-Monitor';
+
   # manage menu
   foreach (@{$this->{'web'}->{'status'}}) {
     $_->{'name'} and push(@{$this->{'menu'}->{'status'}}, $_->{'name'});
@@ -127,6 +136,7 @@ sub Load
     ) or die $!;
 
   if ( $this->{'show'} ) {
+    $Data::Dumper::Indent = 1;
     die Data::Dumper->Dump([$this]);
   }
 }
@@ -135,6 +145,7 @@ sub LoadFile
 {
   my $this = shift;
   my $confFile = shift;
+  my $dict;
   $this->Debug(2,"Loading file: $confFile");
 
   open ( FILE, $confFile)
@@ -142,36 +153,61 @@ sub LoadFile
   while (<FILE>){
     chomp;
     /^\s*#|^$/ and next;                 # Ignore comments
+    /^include=(.*)/ and -f $1 and push($this->{'daemon'}->{'confFiles'}, $1) and next;
     my ($key, $value) = /^([^=]*)=(.*)/; # Extract key and value
     my @leaves=split('\.', $key);        # Explode key and construct config hash
     my $tree=$this;
+    my $previous;
     my $current;
     my $next;
-    while (scalar(@leaves) > 0) {
-      $current ||= shift (@leaves);
-      $next = shift (@leaves);
-      if ( $next =~ /^\d+$/ ) {
-        if ($current =~ /^\d+$/) {
-          @{$tree}[$current-1] ||= [];
-          $tree=@{$tree}[$current-1];
+    my $root;
+    while (scalar(@leaves) > 0) {         # While @leaves contains data
+      $current ||= shift (@leaves);       # If root is empty, shift the first element of @leaves to $current 
+      $root ||= $current;
+      if ( $root eq 'web' ) { $root = $current }
+      $next = shift (@leaves);            # Shift the first element of @leaves in $next
+      if ( $next =~ /^\d+$/ ) {           # If $next is an integer -> we are in an array
+        if ($current =~ /^\d+$/) {        # If $current is an integer -> we are in an array
+          @{$tree}[$current-1] ||= [];    # If the branch is not an array, create an empty array
+          $tree=@{$tree}[$current-1];     # Define this array as $tree root
         }
         else {
-          $tree->{$current} ||= [];
-          $tree=$tree->{$current};
+          $tree->{$current} ||= [];       # If the branch is not an array, create an empty array
+          $tree=$tree->{$current};        # Define this array as $tree root
         }
-      } else {
-        if ($current =~ /^\d+$/) {
-          @{$tree}[$current-1] ||= {};
-          $tree=@{$tree}[$current-1];
+      } else {                            # If $next is not an integer -> We are in a hash
+        if ($current =~ /^\d+$/) {        # If $current is an integer -> we are in an array
+          my $index = $current; 
+                
+          # Manage per file indexes unicity
+          if ( ($root eq "static")            || 
+               ($root eq "dynamic")           || 
+               ( ( ($root eq 'status' )       || 
+                   ($root eq 'statistics' ) ) && 
+                 ($previous eq "content") ) ) 
+          {
+            # If $index is not in $dict, add it with counter++
+            if ( ! $dict->{$root}[$current] ) 
+            {
+              $dict->{$root}[$current] = ++$this->{'counter'}->{$root};
+            }
+            $index = $dict->{$root}[$current];
+          }
+          
+          @{$tree}[$index-1] ||= {};      # If the branch is not an array, create an empty hash
+          $tree=@{$tree}[$index-1];       # Define this hash as $tree root
         }
-        else {
-          $tree->{$current} ||= {};
-          $tree=$tree->{$current};
+        else {                            # We are in a hash
+          $tree->{$current} ||= {};       # If the branch is not an array, create an empty hash
+          $tree=$tree->{$current};        # Define this hash as $tree root
         }
       }
       if ( ($next eq 'rrd') and $value) { push(@{$this->{'rrd'}},$tree) };
+      $previous = $current;
       $current = $next;
     }
+    
+    # Add value
     if ($current =~ /^\d+$/) {
       @{$tree}[$current-1] = $value;
     }
@@ -242,6 +278,7 @@ sub new
     "/statistics.json",
     "/menu.json",
     "/friends.json",
+    "/page.json",
     "/version.json",
     "/favicon.ico",
 
@@ -439,6 +476,7 @@ sub Run
   $this->{'status'} = encode_json(\@{$configuration->{'web'}->{'status'}});
   $this->{'statistics'} = encode_json(\@{$configuration->{'web'}->{'statistics'}});
   $this->{'friends'} = encode_json(\@{$configuration->{'web'}->{'friends'}});
+  $this->{'page'} = encode_json(\%{$configuration->{'web'}->{'page'}});
   $this->{'static'} = encode_json(\%{$monitor->{'static'}});
   $this->{'menu'} = encode_json(\%{$configuration->{'menu'}});
   $this->{'version'} = "{\"version\":\"$configuration->{'version'}\"}";
@@ -518,6 +556,10 @@ sub Run
     open(FILE, "> $configuration->{'daemon'}->{'webroot'}/status.json")
       or warn $!;
       print FILE encode_json \@{$configuration->{'web'}->{'status'}} ;
+    close(FILE);
+    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/page.json")
+      or warn $!;
+      print FILE encode_json \%{$configuration->{'web'}->{'page'}} ;
     close(FILE);
     open(FILE, "> $configuration->{'daemon'}->{'webroot'}/statistics.json")
       or warn $!;
@@ -935,6 +977,7 @@ sub Run
 package main;
 use strict;
 use POSIX;
+use Sys::Hostname;
 
 sub help
 {
@@ -1077,6 +1120,7 @@ $pidfile and &daemonize;
 my $monitor = Monitor->new();
 # Process data that should be extracted once, before the server starts
 $monitor->Process($configuration,'static');
+$monitor->{'static'}->{'hostname'} = hostname();
 
 $SIG{INT}    = sub { stop(); }; # catch Ctrl+C
 

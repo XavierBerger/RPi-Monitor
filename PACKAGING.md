@@ -3,6 +3,9 @@
 ## Introduction
 This document intended to help [**RPi-Monitor**](http://rpi-experiences.blogspot.fr/)'s package maintainer to know what to install and where.
 
+## Version
+This document describe file organisation for **Version 2.8**
+
 ## Dependencies
 **rpimonitord** is a perl script which require the following perl modules to work:
 
@@ -11,6 +14,7 @@ This document intended to help [**RPi-Monitor**](http://rpi-experiences.blogspot
  * libjson-perl
  * libipc-sharelite-perl
  * libfile-which-perl
+ * aptitude (required by script checking upgradable packages)
 
 ## Installation
 
@@ -26,9 +30,6 @@ This document intended to help [**RPi-Monitor**](http://rpi-experiences.blogspot
 
 ###Configuration
 
-Since version 2.7:
-
-* /etc/default/rpimonitor : *Init script configuration file*
 * /etc/rpimonitor/daemon.conf : *configuration of rpimonitord daemon*
 * /etc/rpimonitor/data.conf : *(symlink to template/<distribution>.conf) configuration of default data to be extracted and presented*
 * /etc/rpimonitor/\*.conf : *all other *.conf file will be parsed to look for data to be monitored*
@@ -48,7 +49,6 @@ The template directory is also containing some templates that can be used as exa
 
 ###Web Interface
 
-* /usr/share/rpimonitor
 * /usr/share/rpimonitor/web : *Directory containing html*
 * /usr/share/rpimonitor/web/js: *Directory containing javascripts*
 * /usr/share/rpimonitor/web/css: *Directory containing style*
@@ -58,9 +58,11 @@ The template directory is also containing some templates that can be used as exa
 
 When **RPi-Monitor** is configured to not use the internal server, the json are written on the disk into the web root directory /usr/share/rpimonitor/web
 
+###Scripts
+
+* /usr/share/rpimonitor/scripts/updatePackagesStatus.pl: *Script periodically executed to update /var/lib/rpimonitor/updatestatus.txt*
+
 ###Data
 
-Since version 2.7:
-
 * /var/lib/rpimonitor/web/stat : *Directory containing \*.rrd*
-* /var/lib/rpimonitor/updatestatus.txt: * Current status of packages*
+* /var/lib/rpimonitor/updatestatus.txt: *Current status of packages update*

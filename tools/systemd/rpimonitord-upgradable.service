@@ -1,0 +1,6 @@
+[Unit]
+Description = search for upgradable packages to be displayed by rpimonitor
+After = network.target
+
+[Service]
+ExecStart = /usr/share/rpimonitor/scripts/updatePackagesStatus.pl

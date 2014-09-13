@@ -1,9 +1,0 @@
-# DEAMON_START=0 : do not start rpimonitord at boot
-# DEAMON_START=1 : rpimonitord start automatically at boot
-DAEMON_START=1
-
-#CONFFILE="-c /etc/rpimonitor/rpimonitord.conf -c /etc/rpimonitor/rpimonitord.conf.d/default.conf" : Define configuration file to use
-
-# SHOW_PACKAGE_UPDATE=0 : Do not show update packages
-# SHOW_PACKAGE_UPDATE=1 : Show update packages 
-SHOW_PACKAGE_UPDATE=1  
