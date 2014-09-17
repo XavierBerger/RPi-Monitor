@@ -22,7 +22,7 @@ function RowTemplate(id,image,title){
         "<div class='row'>"+
           "<div class='Icon'><img src='"+image+"' alt='"+title+"'></div>"+
           "<div class='Title'>"+title+"</div>"+
-          "<div class='Warning'></div>"+
+          //"<div class='Warning'></div>"+
           "<div class='Text' id='Text"+id+"'><b></b></div>"+
         "</div>"+
         "<hr>"

@@ -1,7 +1,7 @@
 /* 
  * This file is part of RPi-Monitor project
  * 
- * Copyright 2013 - Xavier Berger - http://rpi-experiences.blogspot.fr/
+ * Copyright 2013-2014 - Xavier Berger - http://rpi-experiences.blogspot.fr/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -140,7 +140,7 @@ code {
   float: left;
   font-family: Tahoma, Helvetica;
   font-size: 21px;
-  padding-left: 18px;
+  padding-left: 58px;
   padding-top: 12px;
   width: 150px;
 }
@@ -157,7 +157,7 @@ float: left;
 font-family: Tahoma, Helvetica;
 font-size: 13px;
 line-height: 13px;
-padding-left: 15px;
+padding-left: 55px;
 padding-top: 15px;
 width: 80%;
 max-width: 600px;

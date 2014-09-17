@@ -185,7 +185,7 @@ function AddDialogs(){
         '<h3 id="myModalLabel">About</h3>'+
       '</div>'+
       '<div class="modal-body">'+
-        '<p><b>Version</b>: {DEVELOPMENT} '+
+        '<p><b>Version</b>: 2.9 '+
         '<b>by</b> Xavier Berger <a href="http://rpi-experiences.blogspot.fr/">Blog</a> <a href="https://github.com/XavierBerger/RPi-Monitor">GitHub</a></p>'+
         'With the contribution of users sharing ideas and competences on Github.'+
         '<hr>'+
@@ -223,48 +223,49 @@ function AddTopmenu(){
     menutitle=page.menutitle;
   }
   topmenu=
-      '<div class="navbar navbar-inverse navbar-fixed-top">'+
-        '<div class="navbar-inner">'+
-          '<div class="container">'+
-            '<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">'+
-              '<span class="icon-bar"></span>'+
-              '<span class="icon-bar"></span>'+
-              '<span class="icon-bar"></span>'+
-            '</button>'+
-            '<a class="brand" href="index.html"><img src="'+icon+'"> '+menutitle+'</a>'+
-            '<div class="nav-collapse collapse">'+
-              '<ul class="nav">'+
-                '<li id="statusmenu"><a id="statuslink" href="status.html">Status</a></li>'+
-                '<li id="statisticsmenu"><a id="statisticslink" href="statistics.html">Statistics</a></li>'+
-                '<li id="shellinaboxmenu" class="hide"><a href="shellinabox.html">Shellinabox</a></li>'+
-                '<li id="configurationmenu"><a href="#Configuration" data-toggle="modal">Configuration</a></li>'+
-                '<li class="dropdown">'+
-                  '<a href="#" class="dropdown-toggle" data-toggle="dropdown">About <b class="caret"></b></a>'+
-                  '<ul class="dropdown-menu">'+
-                    '<li class="nav-header">RPi-Monitor</li>'+
-                    '<li><a href="http://rpi-experiences.blogspot.fr/p/rpi-monitor.html" data-toggle="modal">Help</a></li>'+
-                    '<li><a href="#License" data-toggle="modal">License</a></li>'+
-                    '<li><a href="#About" data-toggle="modal">About</a></li>'+
-                    '<li class="divider"></li>'+
-                    '<li class="nav-header">Related links</li>'+
-                    '<li><a href="http://rpi-experiences.blogspot.fr/">RPi-Experiences</a></li>'+
-                    '<li><a href="https://github.com/XavierBerger/RPi-Monitor">RPi-Monitor</a></li>'+
-                  '</ul>'+
-                '</li>'+
-              '</ul>'+
-            '</div><!--/.nav-collapse -->'+
-            '<div class="navbar-inner pull-right hide" id="divfriends">'+
-              '<ul class="nav">'+
-                '<li class="dropdown">'+
-                  '<a href="#" class="dropdown-toggle" data-toggle="dropdown">Friends <b class="caret"></b></a>'+
-                  '<ul class="dropdown-menu" id="friends">'+
-                  '</ul>'+
-                '</li>'+
-              '</ul>'+
-            '</div>'+
-          '</div>'+
-        '</div>'+
-      '</div>';
+	  '<nav class="navbar navbar-inverse" role="navigation">' +
+	  '<div class="container-fluid">' +
+		'<div class="navbar-header">' +
+		  '<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">' +
+			'<span class="sr-only">Toggle navigation</span>' +
+			'<span class="icon-bar"></span>' +
+			'<span class="icon-bar"></span>' +
+			'<span class="icon-bar"></span>' +
+		  '</button>' +
+		  '<a class="navbar-brand" href="#"><img src="'+icon+'"> &nbsp;'+menutitle+'</a>' +
+		'</div>' +
+		'<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">' +
+		  '<ul class="nav navbar-nav">' +
+		    '<li id="statusmenu"><a id="statuslink" href="status.html">Status</a></li>'+
+            '<li id="statisticsmenu"><a id="statisticslink" href="statistics.html">Statistics</a></li>'+
+            '<li id="shellinaboxmenu" class="hide"><a href="shellinabox.html">Shellinabox</a></li>'+
+            '<li id="configurationmenu"><a href="#Configuration" data-toggle="modal">Configuration</a></li>'+
+            '<li class="dropdown">' +
+			  '<a href="#" class="dropdown-toggle" data-toggle="dropdown">About <span class="caret"></span></a>' +
+			  '<ul class="dropdown-menu" role="menu">' +
+				'<li class="dropdown-header"> <b>RPi-Monitor</b></li>'+
+				'<li><a href="http://rpi-experiences.blogspot.fr/p/rpi-monitor.html" data-toggle="modal">Help</a></li>'+
+				'<li><a href="#License" data-toggle="modal">License</a></li>'+
+				'<li><a href="#About" data-toggle="modal">About</a></li>'+
+				'<li class="divider"></li>'+
+				'<li class="dropdown-header"> <b>Related links</b></li>'+
+				'<li><a href="http://rpi-experiences.blogspot.fr/">RPi-Experiences</a></li>'+
+				'<li><a href="https://github.com/XavierBerger/RPi-Monitor">RPi-Monitor</a></li>'+
+			  '</ul>' +
+			'</li>' +
+		  '</ul>' +
+			'<div class="pull-right hide" id="divfriends">'+
+			  '<ul class="nav navbar-nav">'+
+				'<li class="dropdown">'+
+				  '<a href="#" class="dropdown-toggle" data-toggle="dropdown">Friends <b class="caret"></b></a>'+
+				  '<ul class="dropdown-menu" id="friends">'+
+				  '</ul>'+
+				'</li>'+
+			  '</ul>'+
+			'</div>'+
+		'</div><!-- /.navbar-collapse -->' +
+	  '</div><!-- /.container-fluid -->' +
+	'</nav>'
   $('#topmenu').html(topmenu);
 }
 
