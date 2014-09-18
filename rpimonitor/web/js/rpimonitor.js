@@ -126,13 +126,6 @@ function AddDialogs(){
 		  '<div class="modal-body">'+
 			'<p>'+
 			  '<form class="form-inline">'+
-				'<label class="checkbox">'+
-				'<input type="checkbox" id="animate"> Animate progress bar</label>'+
-			  '</form>'+
-			'</p>'+
-			'<hr>'+
-			'<p>'+
-			  '<form class="form-inline">'+
 			    '<label class="checkbox"><input type="checkbox" id="shellinabox"> Show shellinabox menu</label> <br>'+
 			    '&nbsp;&nbsp;&nbsp;&nbsp;'+
 			    '<label class="checkbox"><input type="text" placeholder="Address" id="shellinaboxuri" class="input-medium"></label><br>'+

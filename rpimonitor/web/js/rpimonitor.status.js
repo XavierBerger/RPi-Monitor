@@ -86,7 +86,7 @@ function Percent(value,total){
 }
 
 function ProgressBar(value, max){
-  return "<div class='progress progress-striped'><div class='bar' style='width: "+((100 * value ) / max)+"%;'></div></div>"
+  return "<div class='progress'><div class='progress-bar' role='progressbar' aria-valuemin='0' aria-valuemax='100' aria-valuenow='"+((100 * value ) / max)+"' style='width: "+Percent(value,max)+";'>"+Percent(value,max)+"</div></div>"
 }
 
 function Label(data,formula, text, level){
