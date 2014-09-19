@@ -31,7 +31,7 @@ function RowTemplate(id,image,title){
 function ShowInfo(id,title,text){
   if ( text ) {
     postProcessInfo.push(["#"+id, title, text]);
-    return "<a href='#' id='"+id+"'><i class='icon-search'></i>"
+    return " <a href='#' id='"+id+"'><font color=black><span class='glyphicon glyphicon-search'></font></span>"
   }
   else {
     return "";
@@ -118,7 +118,7 @@ function Tick(){
 
 function ActivatePopover(){
   for ( var iloop=0; iloop < postProcessInfo.length; iloop++) {
-    $(postProcessInfo[iloop][0]).popover({trigger:'hover',placement:'left',html:true, title: postProcessInfo[iloop][1], content: postProcessInfo[iloop][2] });
+    $(postProcessInfo[iloop][0]).popover({trigger:'hover',placement:'bottom',html:true, title: postProcessInfo[iloop][1], content: postProcessInfo[iloop][2] });
   }
   $("#packages").popover();
 }

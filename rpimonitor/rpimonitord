@@ -292,7 +292,11 @@ sub new
 
     "/css/rpimonitor.css",
     "/css/bootstrap.min.css",
-    "/css/bootstrap-responsive.min.css",
+    
+    "/fonts/glyphicons-halflings-regular.eot",
+    "/fonts/glyphicons-halflings-regular.ttf",
+	"/fonts/glyphicons-halflings-regular.svg",
+	"/fonts/glyphicons-halflings-regular.woff",
 
     "/stat/empty.rrd",
 
