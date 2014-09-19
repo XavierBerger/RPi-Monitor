@@ -85,8 +85,18 @@ function Percent(value,total){
   return (100*value/total).toFixed(2)+"%";
 }
 
-function ProgressBar(value, max){
-  return "<div class='progress'><div class='progress-bar' role='progressbar' aria-valuemin='0' aria-valuemax='100' aria-valuenow='"+((100 * value ) / max)+"' style='width: "+Percent(value,max)+";'>"+Percent(value,max)+"</div></div>"
+function ProgressBar(value, max, warning, danger){
+  var percent = ((100 * value ) / max).toFixed(2)
+  var warning = warning || max 
+  var danger = danger || max
+  var color = ''
+  if (percent > warning) {
+	color = 'progress-bar-warning'
+  }
+  if (percent > danger) {
+	color = 'progress-bar-danger'
+  }
+  return "<div class='progress'><div class='progress-bar "+color+"' role='progressbar' aria-valuemin='0' aria-valuemax='100' aria-valuenow='"+percent+"' style='width: "+percent+"%;'>"+percent+"%</div></div>"
 }
 
 function Label(data,formula, text, level){
@@ -102,7 +112,6 @@ function Badge(data,formula, text, level){
   eval ( "if ("+data+formula+") result=\"<span class='badge "+level+"'>"+text+"</span>\"" );
   return result;
 }
-
 
 var clocksec=0;
 function Clock(localtime){
@@ -153,7 +162,7 @@ function UpdateStatus () {
 
   })
   .fail(function() {
-      $('#message').html("<b>Can not get information (dynamic.json) from RPi-Monitor server.</b>");
+      $('#message').html("<span class='glyphicon glyphicon-warning-sign'></span> &nbsp; Can not get information (dynamic.json) from <b>RPi-Monitor</b> server.");
       $('#message').removeClass('hide');
     });
 
