@@ -1,5 +1,5 @@
 <!--
-# Copyright 2013 - Xavier Berger - http://rpi-experiences.blogspot.fr/
+# Copyright 2013-2014 - Xavier Berger - http://rpi-experiences.blogspot.fr/
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,7 +28,6 @@
     <!-- CSS -->
     <link href="./css/bootstrap.min.css" rel="stylesheet">
     <link href="./css/rpimonitor.css" rel="stylesheet">
-    <link href="./css/bootstrap-responsive.min.css" rel="stylesheet">
 
     <!-- Favicon-->
     <link rel="shortcut icon" type="image/png" href="./img/favicon.png">
@@ -36,14 +35,11 @@
 
   <body>
 
-    <!-- Part 1: Wrap all page content here -->
-    <div id="wrap">
-
       <!-- Fixed navbar -->
       <div id='topmenu'></div>
 
       <!-- Begin page content -->
-      <div class="container">
+      <div class="container-fluid">
         <div class="alert alert-error hide" id="message"></div>
         <i id="insertionPoint"></i>
         <table id="infotable" border=0>
@@ -52,12 +48,10 @@
         <div id="preloader" class="text-center"><img src="img/preloader.gif"></div>
         <div id="mygraph"></div>
       </div>
-      <div id="push"></div>
-    </div>
-
-    <div id="dialogs"></div>
 
     <div id="footer"></div>
+
+    <div id="dialogs"></div>
 
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="./js/jquery.min.js"></script>
@@ -76,5 +70,6 @@
 
     <script src="./js/rpimonitor.js" charset="utf-8"></script>
     <script src="./js/rpimonitor.statistics.js" charset="utf-8"></script>
+    <script src="./js/jsqrencode.min.js"></script>
   </body>
 </html>

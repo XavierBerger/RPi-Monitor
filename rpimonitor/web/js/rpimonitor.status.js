@@ -20,9 +20,10 @@ var postProcessInfo=[];
 function RowTemplate(id,image,title){
   return ""+
         "<div class='row'>"+
-          "<div class='Icon'><img src='"+image+"' alt='"+title+"'></div>"+
-          "<div class='Title'>"+title+"</div>"+
-          "<div class='Warning'></div>"+
+          "<div class='Title'><img src='"+image+"' alt='"+title+"'> &nbsp;"+title+"</div>"+
+          //"<div class='Icon'><img src='"+image+"' alt='"+title+"'></div>"+
+          //"<div class='Title'>"+title+"</div>"+
+          //"<div class='Warning'></div>"+
           "<div class='Text' id='Text"+id+"'><b></b></div>"+
         "</div>"+
         "<hr>"
@@ -31,7 +32,7 @@ function RowTemplate(id,image,title){
 function ShowInfo(id,title,text){
   if ( text ) {
     postProcessInfo.push(["#"+id, title, text]);
-    return "<a href='#' id='"+id+"'><i class='icon-search'></i>"
+    return " <a href='#' id='"+id+"'><font color=black><span class='glyphicon glyphicon-search'></font></span>"
   }
   else {
     return "";
@@ -85,8 +86,18 @@ function Percent(value,total){
   return (100*value/total).toFixed(2)+"%";
 }
 
-function ProgressBar(value, max){
-  return "<div class='progress progress-striped'><div class='bar' style='width: "+((100 * value ) / max)+"%;'></div></div>"
+function ProgressBar(value, max, warning, danger){
+  var percent = ((100 * value ) / max).toFixed(2)
+  var warning = warning || max 
+  var danger = danger || max
+  var color = ''
+  if (percent > warning) {
+	color = 'progress-bar-warning'
+  }
+  if (percent > danger) {
+	color = 'progress-bar-danger'
+  }
+  return "<div class='progress'><div class='progress-bar "+color+"' role='progressbar' aria-valuemin='0' aria-valuemax='100' aria-valuenow='"+percent+"' style='width: "+percent+"%;'>"+percent+"%</div></div>"
 }
 
 function Label(data,formula, text, level){
@@ -103,7 +114,6 @@ function Badge(data,formula, text, level){
   return result;
 }
 
-
 var clocksec=0;
 function Clock(localtime){
   clocksec=localtime[5];
@@ -118,7 +128,7 @@ function Tick(){
 
 function ActivatePopover(){
   for ( var iloop=0; iloop < postProcessInfo.length; iloop++) {
-    $(postProcessInfo[iloop][0]).popover({trigger:'hover',placement:'left',html:true, title: postProcessInfo[iloop][1], content: postProcessInfo[iloop][2] });
+    $(postProcessInfo[iloop][0]).popover({trigger:'hover',placement:'bottom',html:true, title: postProcessInfo[iloop][1], content: postProcessInfo[iloop][2] });
   }
   $("#packages").popover();
 }
@@ -153,7 +163,7 @@ function UpdateStatus () {
 
   })
   .fail(function() {
-      $('#message').html("<b>Can not get information (dynamic.json) from RPi-Monitor server.</b>");
+      $('#message').html("<span class='glyphicon glyphicon-warning-sign'></span> &nbsp; Can not get information (dynamic.json) from <b>RPi-Monitor</b> server.");
       $('#message').removeClass('hide');
     });
 
@@ -188,6 +198,10 @@ $(function () {
 
   /* Show friends */
   ShowFriends();
+
+  /* Add qrcode shortcut*/
+  setupqr();
+  doqr(document.URL);
 
   /* Get static values once */
   data = getData('static');
