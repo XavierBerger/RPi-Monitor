@@ -92,25 +92,23 @@ function ProgressBar(value, max, warning, danger){
   var danger = danger || max
   var color = ''
   if (percent > warning) {
-	color = 'progress-bar-warning'
+  color = 'progress-bar-warning'
   }
   if (percent > danger) {
-	color = 'progress-bar-danger'
+  color = 'progress-bar-danger'
   }
   return "<div class='progress'><div class='progress-bar "+color+"' role='progressbar' aria-valuemin='0' aria-valuemax='100' aria-valuenow='"+percent+"' style='width: "+percent+"%;'>"+percent+"%</div></div>"
 }
 
 function Label(data,formula, text, level){
   var result="";
-  if ( level.indexOf('label-') < 0 ) { level = 'label-'+level };
-  eval ( "if ("+data+formula+") result=\"<span class='label "+level+"'>"+text+"</span>\"" );
+  eval ( "if ("+data+formula+") result=\"<span class='label label-"+level+"'>"+text+"</span>\"" );
   return result;
 }
 
 function Badge(data,formula, text, level){
   var result="";
-  if ( level.indexOf('badge-') < 0 ) { level = 'badge-'+level };
-  eval ( "if ("+data+formula+") result=\"<span class='badge "+level+"'>"+text+"</span>\"" );
+  eval ( "if ("+data+formula+") result=\"<span class='badge alert-"+level+"'>"+text+"</span>\"" );
   return result;
 }
 
