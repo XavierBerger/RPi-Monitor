@@ -131,25 +131,14 @@ code {
 
 /*
 -------------------------------------------------- */
-.Icon {
-  float: left;
-  width: 50px;
-  padding-left: 40px;
-}
+
 .Title {
   float: left;
   font-family: Tahoma, Helvetica;
   font-size: 21px;
-  padding-left: 58px;
-  padding-top: 12px;
-  width: 150px;
-}
-
-.Warning {
-    float: left;
-    width: 20px;
-    padding-left: 20px;
-    padding-top: 6px;
+  padding-left: 40px;
+  //padding-top: -25px;
+  width: 250px;
 }
 
 .Text {

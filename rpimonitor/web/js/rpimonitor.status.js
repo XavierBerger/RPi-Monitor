@@ -20,8 +20,9 @@ var postProcessInfo=[];
 function RowTemplate(id,image,title){
   return ""+
         "<div class='row'>"+
-          "<div class='Icon'><img src='"+image+"' alt='"+title+"'></div>"+
-          "<div class='Title'>"+title+"</div>"+
+          "<div class='Title'><img src='"+image+"' alt='"+title+"'> &nbsp;"+title+"</div>"+
+          //"<div class='Icon'><img src='"+image+"' alt='"+title+"'></div>"+
+          //"<div class='Title'>"+title+"</div>"+
           //"<div class='Warning'></div>"+
           "<div class='Text' id='Text"+id+"'><b></b></div>"+
         "</div>"+
