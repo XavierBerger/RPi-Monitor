@@ -136,8 +136,7 @@ code {
   float: left;
   font-family: Tahoma, Helvetica;
   font-size: 21px;
-  padding-left: 40px;
-  //padding-top: -25px;
+  padding-left: 30px;
   width: 250px;
 }
 
@@ -146,10 +145,11 @@ float: left;
 font-family: Tahoma, Helvetica;
 font-size: 13px;
 line-height: 13px;
-padding-left: 55px;
+padding-left: 30px;
+padding-right: 30px;
 padding-top: 15px;
-width: 80%;
-max-width: 600px;
+width: 518px;
+white-space: nowrap;
 }
 
 .popover-content {
