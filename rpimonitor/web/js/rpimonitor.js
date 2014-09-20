@@ -283,7 +283,7 @@ function AddTopmenu(){
 			  '<ul class="nav navbar-nav">'+
 				'<li class="dropdown">'+
 				  '<a href="#" class="dropdown-toggle" data-toggle="dropdown">Friends <b class="caret"></b></a>'+
-				  '<ul class="dropdown-menu" id="friends">'+
+				  '<ul class="dropdown-menu dropdown-menu-right" id="friends">'+
 				  '</ul>'+
 				'</li>'+
 			  '</ul>'+
