@@ -103,10 +103,17 @@ function ShowFriends(){
 
 function AddFooter(){
 $('#footer').html(
-  '<div class="container-fluid text-center">'+
-    '<p class="muted credit"><small><a href="http://rpi-experiences.blogspot.fr/">RPi-Experiences</a> | '+
-    '<a href="https://github.com/XavierBerger/RPi-Monitor">GitHub</a> | '+
-    '<a href="http://www.raspberrypi.org/">Raspberry Pi Foundation</a></small></p>'+
+  '<div class="navbar-inverse navbar-fixed-bottom text-center">'+
+  //'<div class="container-fluid text-center">'+
+    //'<p class="muted credit">'+
+      '<small>'+
+        '<a href="http://rpi-experiences.blogspot.fr/">RPi-Experiences</a>'+
+        '<font color="silver"> | </font>'+
+        '<a href="https://github.com/XavierBerger/RPi-Monitor">GitHub</a>'+
+        '<font color="silver"> | </font>'+
+        '<a href="http://www.raspberrypi.org/">Raspberry Pi Foundation</a>'+
+      '</small>'+
+    //'</p>'+
   '</div>'
 );
 }
@@ -240,7 +247,7 @@ function AddTopmenu(){
     menutitle=page.menutitle;
   }
   topmenu=
-	  '<nav class="navbar navbar-inverse" role="navigation">' +
+	  '<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">' +
 	  '<div class="container-fluid">' +
 		'<div class="navbar-header">' +
 		  '<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">' +
@@ -261,6 +268,7 @@ function AddTopmenu(){
 			  '<a href="#" class="dropdown-toggle" data-toggle="dropdown">About <span class="caret"></span></a>' +
 			  '<ul class="dropdown-menu" role="menu">' +
 				'<li class="dropdown-header"> <b>RPi-Monitor</b></li>'+
+				'<li><a href="#" title="Scan this qrcode to reach this page from your smartphone or tablet"><canvas id="qrcanv"><a></li>'+
 				'<li><a href="http://rpi-experiences.blogspot.fr/p/rpi-monitor.html" data-toggle="modal">Help</a></li>'+
 				'<li><a href="#License" data-toggle="modal">License</a></li>'+
 				'<li><a href="#About" data-toggle="modal">About</a></li>'+

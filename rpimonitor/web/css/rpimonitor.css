@@ -31,60 +31,17 @@
   padding: 14px 24px;
 }
 
-/* Sticky footer styles
--------------------------------------------------- */
-
-html,
-body {
-  height: 100%;
-  /* The html and body elements cannot have any padding or margin. */
+/* Move content away from navbar */
+body { 
+  padding-top: 50px;
 }
 
-/* Wrapper for page content to push down footer */
-#wrap {
-  min-height: 100%;
-  height: auto !important;
-  height: 100%;
-  /* Negative indent footer by it's height */
-  margin: 0 auto -22px;
+/* Move rrd graph away from navbar */
+#mygraph {
+  margin-top: 30px;
 }
 
-/* Set the fixed height of the footer here */
-#push,
-#footer {
-  height: 22px;
-}
-#footer {
-  background-color: #1b1b1b;
-}
-
-/* Lastly, apply responsive CSS fixes as necessary */
-@media (max-width: 767px) {
-  #footer {
-    margin-left: -2px;
-    margin-right: -2px;
-    padding-left: 2px;
-    padding-right: 2px;
-  }
-}
-
-
-
-/* Custom page CSS
--------------------------------------------------- */
-/* Not required for template or sticky footer method. */
-
-#wrap > .container {
-  padding-top: 60px;
-}
-.container .credit {
-  margin: 0px 0;
-}
-
-code {
-  font-size: 80%;
-}
-
+/* Draw a progression bar during rrd load */
 #preloader {
   position:fixed;
   z-index: 100;  
@@ -95,43 +52,6 @@ code {
   height:200px;  
 }
 
-/*
--------------------------------------------------- */
-.reportIcon {
-  float: left;
-  width: 50px;
-  padding-left: 40px;
-}
-.reportTitle {
-  float: left;
-  font-family: Tahoma, Helvetica;
-  font-size: 21px;
-  padding-left: 18px;
-  padding-top: 12px;
-  width: 150px;
-}
-
-.reportWarning {
-    float: left;
-    width: 20px;
-    padding-left: 20px;
-    padding-top: 6px;
-}
-
-.reportText {
-    float: left;
-    font-family: Tahoma, Helvetica;
-    font-size: 13px;
-    line-height: 8px;
-    padding-left: 15px;
-    padding-top: 18px;
-    width: 400px;
-}
-
-
-/*
--------------------------------------------------- */
-
 .Title {
   float: left;
   font-family: Tahoma, Helvetica;
@@ -141,15 +61,15 @@ code {
 }
 
 .Text {
-float: left;
-font-family: Tahoma, Helvetica;
-font-size: 13px;
-line-height: 13px;
-padding-left: 30px;
-padding-right: 30px;
-padding-top: 15px;
-width: 518px;
-white-space: nowrap;
+  float: left;
+  font-family: Tahoma, Helvetica;
+  font-size: 13px;
+  line-height: 13px;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 15px;
+  width: 518px;
+  white-space: nowrap;
 }
 
 .popover-content {
@@ -158,4 +78,11 @@ white-space: nowrap;
 
 .popover {
   max-width: 450px;
+}
+
+#shellinaboxframe,
+#shellinaboxdiv {
+  padding: 0px 0px 0px 0px; 
+  min-width: 100%;
+  min-height: 100%;
 }

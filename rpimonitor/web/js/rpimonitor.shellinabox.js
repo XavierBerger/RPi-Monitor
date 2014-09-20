@@ -18,6 +18,9 @@
 $(function () {
   $("#shellinaboxframe").attr('src', shellinaboxuri);
   ShowFriends();
+  /* Add qrcode shortcut*/
+  setupqr();
+  doqr(document.URL);
   resize_frame();
 });
 

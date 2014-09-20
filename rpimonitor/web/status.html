@@ -35,32 +35,26 @@
 
   <body>
 
+    <!-- Fixed navbar -->
+    <div id='topmenu'></div>
 
-    <!-- Part 1: Wrap all page content here -->
-    <div id="wrap">
-
-      <!-- Fixed navbar -->
-      <div id='topmenu'></div>
-
-      <!-- Begin page content -->
-      <div class="container-fluid">
-		<ul class="list-group">
-		  <li class="list-group-item list-group-item-danger hide" id="message"></span>
-          </li>
-		</ul>
-        <i id="insertionPoint"></i>
-      </div>
-      <div id="push"></div>
+    <!-- Begin page content -->
+    <div class="container-fluid">
+	  <ul class="list-group">
+  	    <li class="list-group-item list-group-item-danger hide" id="message"></li>
+  	  </ul>
+	  <i id="insertionPoint"></i>
     </div>
 
-    <div id="dialogs"></div>
-
     <div id="footer"></div>
+
+	<div id="dialogs"></div>
 
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="./js/jquery.min.js"></script>
     <script src="./js/bootstrap.min.js"></script>
     <script src="./js/rpimonitor.js" charset="utf-8"></script>
     <script src="./js/rpimonitor.status.js" charset="utf-8"></script>
+    <script src="./js/jsqrencode.min.js"></script>
   </body>
 </html>

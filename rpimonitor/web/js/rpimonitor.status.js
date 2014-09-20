@@ -199,6 +199,10 @@ $(function () {
   /* Show friends */
   ShowFriends();
 
+  /* Add qrcode shortcut*/
+  setupqr();
+  doqr(document.URL);
+
   /* Get static values once */
   data = getData('static');
   localStorage.setItem('static', JSON.stringify(data));
