@@ -16,6 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 var strips;
 var postProcessInfo=[];
+var justgageId=0;
+var postProcessCommand=[];
 
 function RowTemplate(id,image,title){
   return ""+
@@ -100,15 +102,34 @@ function ProgressBar(value, max, warning, danger){
   return "<div class='progress'><div class='progress-bar "+color+"' role='progressbar' aria-valuemin='0' aria-valuemax='100' aria-valuenow='"+percent+"' style='width: "+percent+"%;'>"+percent+"%</div></div>"
 }
 
+function JustGageBar(title, label,min, value, max, width, height){
+  width= width || 100
+  height= height || 80
+  justgageId++
+
+  div="<div class='justgage' id='gauge"+(justgageId)+"' style='width:"+width+"px; height:"+height+"px;'></div>"
+  postProcessCommand.push('var g = new JustGage({'+
+    'id: "gauge'+(justgageId)+'",'+
+    'value: '+value+','+
+    'min: '+min+','+
+    'max: '+max+','+
+    'label: "'+label+'",'+
+    'title: "'+title+'" })')
+    
+  return div
+}
+
 function Label(data,formula, text, level){
   var result="";
-  eval ( "if ("+data+formula+") result=\"<span class='label label-"+level+"'>"+text+"</span>\"" );
+  if ( level.indexOf('label-') < 0 ) { level = 'label-'+level };
+  eval ( "if ("+data+formula+") result=\"<span class='label "+level+"'>"+text+"</span>\"" );
   return result;
 }
 
 function Badge(data,formula, text, level){
   var result="";
-  eval ( "if ("+data+formula+") result=\"<span class='badge alert-"+level+"'>"+text+"</span>\"" );
+  if ( level.indexOf('alert-') < 0 ) { level = 'alert-'+level };
+  eval ( "if ("+data+formula+") result=\"<span class='badge "+level+"'>"+text+"</span>\"" );
   return result;
 }
 
@@ -147,7 +168,7 @@ function UpdateStatus () {
             text = text + eval( line );
         }
         catch (e) {
-          text = text + "ERROR: " + line;
+          text = text + "ERROR: " + line + " -> " + e;
         }
         finally {
           text = text + "</p>";
@@ -156,7 +177,10 @@ function UpdateStatus () {
       $("#Text"+iloop).html(text);
     }
 
-    SetProgressBarAnimate();
+    while((command=postProcessCommand.pop()) != null) {
+      eval( command )
+    }
+    
     ActivatePopover();
 
   })

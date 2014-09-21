@@ -86,3 +86,12 @@ body {
   min-width: 100%;
   min-height: 100%;
 }
+
+.justgage {
+  display: inline-block;
+  margin-bottom: -20px;
+}
+
+.justgage svg{
+  margin-top: -30px;
+}
