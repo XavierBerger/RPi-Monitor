@@ -21,14 +21,14 @@ var postProcessCommand=[];
 
 function RowTemplate(id,image,title){
   return ""+
-        "<div class='row'>"+
+        "<div class='row row"+id+"'>"+
           "<div class='Title'><img src='"+image+"' alt='"+title+"'> &nbsp;"+title+"</div>"+
           //"<div class='Icon'><img src='"+image+"' alt='"+title+"'></div>"+
           //"<div class='Title'>"+title+"</div>"+
           //"<div class='Warning'></div>"+
           "<div class='Text' id='Text"+id+"'><b></b></div>"+
         "</div>"+
-        "<hr>"
+        "<hr class='row"+id+"'>"
 }
 
 function ShowInfo(id,title,text){
@@ -160,6 +160,13 @@ function UpdateStatus () {
     $('#message').addClass('hide');
 
     for (var iloop=0; iloop < strips.length; iloop++){
+      eval( 'visibility = '+strips[iloop].visibility ) 
+      if ( visibility == 0) {
+        $('.row'+iloop).addClass('hide')
+      }
+      else {
+        $('.row'+iloop).removeClass('hide')
+      }
       text = "";
       for (var jloop=0; jloop < strips[iloop].line.length; jloop++){
         var line = strips[iloop].line[jloop];
@@ -174,9 +181,9 @@ function UpdateStatus () {
           text = text + "</p>";
         }
       }
-      $("#Text"+iloop).html(text);
+      $("#Text"+iloop).html(text);    
     }
-
+    
     while((command=postProcessCommand.pop()) != null) {
       eval( command )
     }
