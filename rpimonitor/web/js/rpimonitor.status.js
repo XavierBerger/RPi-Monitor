@@ -127,6 +127,8 @@ function JustGageBar(title, label,min, value, max, width, height, levelColors, w
     'max: '+max+','+
     'label: "'+label+'",'+
     'title: "'+title+'",'+
+    'startAnimationTime: 1,'+
+    'startAnimationType: "linear",'+
     'levelColors: ["'+ levelColors[0] +'","'+levelColors[1] +'","'+levelColors[2] +'"]'+
     '})') 
   return div
