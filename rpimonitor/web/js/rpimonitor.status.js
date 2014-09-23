@@ -102,9 +102,21 @@ function ProgressBar(value, max, warning, danger){
   return "<div class='progress'><div class='progress-bar "+color+"' role='progressbar' aria-valuemin='0' aria-valuemax='100' aria-valuenow='"+percent+"' style='width: "+percent+"%;'>"+percent+"%</div></div>"
 }
 
-function JustGageBar(title, label,min, value, max, width, height){
+function JustGageBar(title, label,min, value, max, width, height, levelColors, warning, critical){
   width= width || 100
   height= height || 80
+  levelColors = levelColors || percentColors
+  if (( warning != undefined ) && (critical != undefined)){
+    if ( value > critical ) { 
+      levelColors = [levelColors[2], levelColors[2], levelColors[2]];
+    } else 
+    if ( value > warning ) { 
+      levelColors = [levelColors[1], levelColors[1], levelColors[1]];
+    } else {
+      levelColors = [levelColors[0], levelColors[0], levelColors[0]];
+    }
+  }
+  
   justgageId++
 
   div="<div class='justgage' id='gauge"+(justgageId)+"' style='width:"+width+"px; height:"+height+"px;'></div>"
@@ -114,8 +126,9 @@ function JustGageBar(title, label,min, value, max, width, height){
     'min: '+min+','+
     'max: '+max+','+
     'label: "'+label+'",'+
-    'title: "'+title+'" })')
-    
+    'title: "'+title+'",'+
+    'levelColors: ["'+ levelColors[0] +'","'+levelColors[1] +'","'+levelColors[2] +'"]'+
+    '})') 
   return div
 }
 
