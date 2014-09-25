@@ -89,9 +89,11 @@ body {
 
 .justgage {
   display: inline-block;
-  margin-bottom: -10px;
+  /* margin-bottom: -10px; */
 }
 
+/*
 .justgage svg{
   margin-top: -20px;
 }
+*/

@@ -90,14 +90,24 @@ function Percent(value,total){
 
 function ProgressBar(value, max, warning, danger){
   var percent = ((100 * value ) / max).toFixed(2)
-  var warning = warning || max 
-  var danger = danger || max
+  var warning = warning || 0 
+  var danger = danger || 0
   var color = ''
-  if (percent > warning) {
-  color = 'progress-bar-warning'
+  if (danger > warning) {
+    if (percent > warning) {
+      color = 'progress-bar-warning'
+    }
+    if (percent > danger) {
+      color = 'progress-bar-danger'
+    }
   }
-  if (percent > danger) {
-  color = 'progress-bar-danger'
+  else {
+    if (percent < warning) {
+      color = 'progress-bar-warning'
+    }
+    if (percent < danger) {
+      color = 'progress-bar-danger'
+    }
   }
   return "<div class='progress'><div class='progress-bar "+color+"' role='progressbar' aria-valuemin='0' aria-valuemax='100' aria-valuenow='"+percent+"' style='width: "+percent+"%;'>"+percent+"%</div></div>"
 }
