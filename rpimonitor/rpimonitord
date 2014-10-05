@@ -72,6 +72,7 @@ sub Load
   foreach ( @{$this->{'daemon'}->{'confFiles'}} ) {
     $this->LoadFile($_);
   }
+  delete($this->{'daemon'}->{'confFiles'});
 
   # Set version (used by web pagescache mechanism)
   $this->{'version'} = localtime();
@@ -128,6 +129,11 @@ sub Load
   foreach (@{$this->{'web'}->{'statistics'}}) {
     $_->{'name'} and push(@{$this->{'menu'}->{'statistics'}}, $_->{'name'});
   }
+  foreach (@{$this->{'web'}->{'addons'}}) {
+    $_->{'name'} and push(@{$this->{'menu'}->{'addons'}}, $_->{'name'});
+  }
+
+  $this->{'addons'} = $this->{'web'}->{'addons'};
 
   $this->{'sharedmem'} = IPC::ShareLite->new(
         -key     => $this->{'daemon'}->{'sharedmemkey'},
@@ -272,6 +278,7 @@ sub new
   # List of files to be delivered
   my @paths = (
     "/",
+    "/addons.json",
     "/static.json",
     "/dynamic.json",
     "/status.json",
@@ -283,9 +290,9 @@ sub new
     "/favicon.ico",
 
     "/index.html",
+    "/addons.html",
     "/statistics.html",
     "/status.html",
-    "/shellinabox.html",
     "/cacert.pem",
     "/certificate.p12",
     "/shellinabox",
@@ -305,6 +312,7 @@ sub new
     "/js/rpimonitor.shellinabox.js",
     "/js/rpimonitor.statistics.js",
     "/js/rpimonitor.status.js",
+    "/js/rpimonitor.addons.js",
     "/js/rpimonitor.index.js",
     "/js/rpimonitor.js",
     "/js/jsqrencode.min.js",
@@ -437,12 +445,14 @@ sub DoGET
   #The file need to be known or we return an error
   my $isvalid;
   foreach(@{$this->{'paths'}}) {
-    if ( $path =~ /$_$/) {
+    if ( $path =~ /$_$/ ){
       $isvalid=1;
       $path=$_;
       last;
     }
   }
+  $isvalid ||= ( $path =~ /\/addons\// );
+
   #$isvalid or $connection->send_error(404,"<br><b>$path</b> not in <br>". join ('<br>',@{$this->{'paths'}} )) and return;
   $isvalid or $this->SendError(404);
 
@@ -485,6 +495,7 @@ sub Run
   $this->{'page'} = encode_json(\%{$configuration->{'web'}->{'page'}});
   $this->{'static'} = encode_json(\%{$monitor->{'static'}});
   $this->{'menu'} = encode_json(\%{$configuration->{'menu'}});
+  $this->{'addons'} = encode_json(\@{$configuration->{'addons'}});
   $this->{'version'} = "{\"version\":\"$configuration->{'version'}\"}";
   #print Data::Dumper->Dump([$this->{'paths'}]);
 
