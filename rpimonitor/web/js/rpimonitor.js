@@ -311,22 +311,25 @@ function UpdateMenu(){
     $('#statisticslink').attr('data-toggle','dropdown');
     $('#statisticslink').attr('href','#');
   }
-  if ( data.addons.length > 0 ){
-    $('#addonsmenu').removeClass('hide');
-    $('#addonslink').html(data.addons[0]);
-  }
-  if ( data.addons.length > 1 ){
-    $('#addonsmenu').addClass('dropdown');
-    var dropDownMenu='<ul class="dropdown-menu">';
-    for ( var iloop=0; iloop < data.addons.length; iloop++){
-      dropDownMenu+='<li><a href="addons.html?activePage='+iloop+'">'+data.addons[iloop]+'</a></li>';
+  
+  if ( data.addons != undefined ) {
+    if ( data.addons.length > 0 ){
+      $('#addonsmenu').removeClass('hide');
+      $('#addonslink').html(data.addons[0]);
     }
-    dropDownMenu+='</ul>';
-    $('#addonslink').html( 'Add-ons <b class="caret"></b>')
-    $(dropDownMenu).insertAfter('#addonslink');
-    $('#addonslink').addClass('dropdown-toggle');
-    $('#addonslink').attr('data-toggle','dropdown');
-    $('#addonslink').attr('href','#');
+    if ( data.addons.length > 1 ){
+      $('#addonsmenu').addClass('dropdown');
+      var dropDownMenu='<ul class="dropdown-menu">';
+      for ( var iloop=0; iloop < data.addons.length; iloop++){
+        dropDownMenu+='<li><a href="addons.html?activePage='+iloop+'">'+data.addons[iloop]+'</a></li>';
+      }
+      dropDownMenu+='</ul>';
+      $('#addonslink').html( 'Add-ons <b class="caret"></b>')
+      $(dropDownMenu).insertAfter('#addonslink');
+      $('#addonslink').addClass('dropdown-toggle');
+      $('#addonslink').attr('data-toggle','dropdown');
+      $('#addonslink').attr('href','#');
+    }
   }
 }
 
