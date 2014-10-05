@@ -224,7 +224,7 @@ function AddTopmenu(){
       '<ul class="nav navbar-nav">' +
         '<li id="statusmenu"><a id="statuslink" href="status.html">Status</a></li>'+
             '<li id="statisticsmenu"><a id="statisticslink" href="statistics.html">Statistics</a></li>'+
-            '<li id="addonsmenu"><a  id="addonslink" href="addons.html">Add-ons</a></li>'+
+            '<li id="addonsmenu" class="hide"><a id="addonslink" href="addons.html">Add-ons</a></li>'+
             '<li id="configurationmenu"><a href="#Configuration" data-toggle="modal">Configuration</a></li>'+
             '<li class="dropdown">' +
         '<a href="#" class="dropdown-toggle" data-toggle="dropdown">About <span class="caret"></span></a>' +
@@ -310,6 +310,10 @@ function UpdateMenu(){
     $('#statisticslink').addClass('dropdown-toggle');
     $('#statisticslink').attr('data-toggle','dropdown');
     $('#statisticslink').attr('href','#');
+  }
+  if ( data.addons.length > 0 ){
+    $('#addonsmenu').removeClass('hide');
+    $('#addonslink').html(data.addons[0]);
   }
   if ( data.addons.length > 1 ){
     $('#addonsmenu').addClass('dropdown');

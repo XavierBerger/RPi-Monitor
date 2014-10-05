@@ -30,9 +30,6 @@ function ConstructPage()
   if ( data.length > 1 ) {
     $('<h2 id="pagetitle"><p class="text-info">'+data[activePage].name+'</p><hr></h2>').insertBefore("#insertionPoint");
   }
-  else {
-    $('#addonslink').html(data[activePage].name)
-  }
   
   $("#insertionPoint").load("addons/"+data[activePage].addons+"/"+data[activePage].addons+".html")
   
