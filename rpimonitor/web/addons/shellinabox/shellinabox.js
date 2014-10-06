@@ -20,7 +20,7 @@ $(function () {
                 '<input type="checkbox" id="shellinaboxwarning"> Show warning on page close or refresh'+
               '</form>'+
             '</p>'
-  $(options).insertBefore("#configurationInsertionPoint")
+  $(options).insertBefore("#optionsInsertionPoint")
   
   
   $("#defaulturi").click(function(){

@@ -87,14 +87,14 @@ $('#footer').html(
 function AddDialogs(){
   var dialogs="";
 
-  // Add Configuration Dialog
+  // Add Options Dialog
   dialogs+=
-    '<div id="Configuration" class="modal fade">'+
+    '<div id="Options" class="modal fade">'+
       '<div class="modal-dialog">' +
         '<div class="modal-content">'+
       '<div class="modal-header">'+
       '<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>' +
-      '<h4 id="myModalLabel">Configuration</h4>'+
+      '<h4 id="myModalLabel">Options</h4>'+
       '</div>'+
       '<div class="modal-body">'+
         '<p>'+
@@ -116,10 +116,10 @@ function AddDialogs(){
             '</select></span>'+
           '</form>'+
         '</p>'+ 
-        '<i id="configurationInsertionPoint"></i>'+
+        '<i id="optionsInsertionPoint"></i>'+
       '</div>'+
       '<div class="modal-footer">'+
-      '<button class="btn" data-dismiss="modal" aria-hidden="true" id="closeconfiguration">Close</button>'+
+      '<button class="btn" data-dismiss="modal" aria-hidden="true" id="closeoptions">Close</button>'+
       '</div>'+
       '</div>'+
     '</div>'+
@@ -225,7 +225,7 @@ function AddTopmenu(){
         '<li id="statusmenu"><a id="statuslink" href="status.html">Status</a></li>'+
             '<li id="statisticsmenu"><a id="statisticslink" href="statistics.html">Statistics</a></li>'+
             '<li id="addonsmenu" class="hide"><a id="addonslink" href="addons.html">Add-ons</a></li>'+
-            '<li id="configurationmenu"><a href="#Configuration" data-toggle="modal">Configuration</a></li>'+
+            '<li id="optionsmenu"><a href="#Options" data-toggle="modal">Options</a></li>'+
             '<li class="dropdown">' +
         '<a href="#" class="dropdown-toggle" data-toggle="dropdown">About <span class="caret"></span></a>' +
         '<ul class="dropdown-menu" role="menu">' +
@@ -280,7 +280,7 @@ function UpdateMenu(){
     $('#statusmenu').addClass('hide');
     $('#statisticsmenu').addClass('hide');
     $('#addonsmenu').addClass('hide');
-    $('#configurationmenu').addClass('hide');
+    $('#optionsmenu').addClass('hide');
     return;
   }
   

@@ -8,7 +8,7 @@ $(function () {
                 '<input type="checkbox" id="shellinaboxwarning"> Add addons option(s)'+
               '</form>'+
             '</p>'
-  $(options).insertBefore("#configurationInsertionPoint")
+  $(options).insertBefore("#optionsInsertionPoint")
 });
 
 
