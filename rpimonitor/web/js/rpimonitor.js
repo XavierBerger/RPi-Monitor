@@ -20,6 +20,7 @@ var statusautorefresh;
 var refreshTimerId;
 var clickId;
 var active_rra;
+var current_path = window.location.pathname.split('/').pop();
 
 function GetURLParameter(sParam)
 {
@@ -96,15 +97,19 @@ function AddDialogs(){
       '<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>' +
       '<h4 id="myModalLabel">Options</h4>'+
       '</div>'+
-      '<div class="modal-body">'+
+      '<div class="modal-body">';
+    if (current_path == 'status.html') { 
+      dialogs+=
         '<p>'+
           '<b>Status</b><br>'+
           '<form class="form-inline">'+
             '<input type="checkbox" id="statusautorefresh"> Auto refresh status page'+
           '</form>'+
-        '</p>'+
-        '<hr>'+
-        '<p>'+
+        '</p>';
+    }
+    if (current_path == 'statistics.html') { 
+      dialogs+=
+          '<p>'+
           '<b>Statistic</b><br>'+
           '<form class="form-inline">'+
             '<span>Default graph timeline <select class="span3" id="active_rra">'+
@@ -115,8 +120,11 @@ function AddDialogs(){
             '<option value="4" '+ ( active_rra == 4 ? 'selected' : '' ) +'>60min (12 months total)</option>'+
             '</select></span>'+
           '</form>'+
-        '</p>'+ 
-        '<i id="optionsInsertionPoint"></i>'+
+        '</p>'; 
+       
+    }
+    dialogs+=
+         '<i id="optionsInsertionPoint"></i>'+
       '</div>'+
       '<div class="modal-footer">'+
       '<button class="btn" data-dismiss="modal" aria-hidden="true" id="closeoptions">Close</button>'+
@@ -259,7 +267,6 @@ function AddTopmenu(){
 function UpdateMenu(){
 
   var index=true;
-  var current_path = window.location.pathname.split('/').pop();
   
   // Manage active link
   if (current_path == 'status.html'){
