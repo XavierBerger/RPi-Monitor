@@ -124,16 +124,14 @@ sub Load
 
   # manage menu
   foreach (@{$this->{'web'}->{'status'}}) {
-    $_->{'name'} and push(@{$this->{'menu'}->{'status'}}, $_->{'name'});
+    $_->{'name'} and push(@{$this->{'web'}->{'menu'}->{'status'}}, $_->{'name'});
   }
   foreach (@{$this->{'web'}->{'statistics'}}) {
-    $_->{'name'} and push(@{$this->{'menu'}->{'statistics'}}, $_->{'name'});
+    $_->{'name'} and push(@{$this->{'web'}->{'menu'}->{'statistics'}}, $_->{'name'});
   }
   foreach (@{$this->{'web'}->{'addons'}}) {
-    $_->{'name'} and push(@{$this->{'menu'}->{'addons'}}, $_->{'name'});
+    $_->{'name'} and push(@{$this->{'web'}->{'menu'}->{'addons'}}, $_->{'name'});
   }
-
-  $this->{'addons'} = $this->{'web'}->{'addons'};
 
   $this->{'sharedmem'} = IPC::ShareLite->new(
         -key     => $this->{'daemon'}->{'sharedmemkey'},
@@ -267,7 +265,7 @@ use POSIX;
 use IO::Handle;
 use HTTP::Daemon;
 use HTTP::Status;
-use JSON;
+use JSON -convert_blessed_universally;
 #use Data::Dumper;
 
 sub new
@@ -278,6 +276,7 @@ sub new
   # List of files to be delivered
   my @paths = (
     "/",
+    "/all.json",
     "/addons.json",
     "/static.json",
     "/dynamic.json",
@@ -494,8 +493,12 @@ sub Run
   $this->{'friends'} = encode_json(\@{$configuration->{'web'}->{'friends'}});
   $this->{'page'} = encode_json(\%{$configuration->{'web'}->{'page'}});
   $this->{'static'} = encode_json(\%{$monitor->{'static'}});
-  $this->{'menu'} = encode_json(\%{$configuration->{'menu'}});
-  $this->{'addons'} = encode_json(\@{$configuration->{'addons'}});
+  $this->{'menu'} = encode_json(\%{$configuration->{'web'}->{'menu'}});
+  $this->{'addons'} = encode_json(\@{$configuration->{'web'}->{'addons'}});
+  my $json = JSON->new;
+  $json = $json->allow_blessed([$configuration]);
+  $json = $json->convert_blessed([$configuration]);
+  $this->{'all'} = $json->encode( \%{$configuration} );
   $this->{'version'} = "{\"version\":\"$configuration->{'version'}\"}";
   #print Data::Dumper->Dump([$this->{'paths'}]);
 
