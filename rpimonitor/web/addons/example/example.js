@@ -1,5 +1,7 @@
+var activePage = GetURLParameter('activePage');
+
 $(function () {
-  alert('Example addons javascript')
+  alert('Example addons javascript on activePage n°'+activePage)
   
   options = '<hr>'+
             '<p>'+

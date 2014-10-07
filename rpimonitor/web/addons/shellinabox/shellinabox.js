@@ -1,23 +1,24 @@
-var shellinaboxwarning = false;
+var shellinaboxwarning = true;
 var shellinaboxuri;
+var activePage = GetURLParameter('activePage');
+
 
 $(function () {
   $('#pagetitle').remove();
 
   resize_frame();
   
-  options = '<hr>'+
-            '<p>'+
+  options = '<p>'+
               '<b>Shellinabox</b><br>'+
               '<form class="form-inline">'+
                 'Shellinabox url: '+
                 '<div class="input-group">'+
-                  '<input type="text" class="form-control" id="shellinaboxuri">'+
+                  '<input type="text" class="form-control" id="shellinaboxuri'+activePage+'">'+
                   '<span class="input-group-btn">'+
                     '<button id="defaulturi" class="btn" type="button">Default</button>'+
                   '</span>'+
                 '</div><br>'+
-                '<input type="checkbox" id="shellinaboxwarning"> Show warning on page close or refresh'+
+                '<input type="checkbox" id="shellinaboxwarning'+activePage+'"> Show warning on page close or refresh'+
               '</form>'+
             '</p>'
   $(options).insertBefore("#optionsInsertionPoint")
@@ -25,24 +26,24 @@ $(function () {
   
   $("#defaulturi").click(function(){
     shellinaboxuri = "/shellinabox";
-    $('#shellinaboxuri').val(shellinaboxuri);
-    localStorage.setItem('shellinaboxuri', shellinaboxuri);
+    $('#shellinaboxuri'+activePage).val(shellinaboxuri);
+    localStorage.setItem('shellinaboxuri'+activePage, shellinaboxuri);
     $("#shellinaboxframe").attr('src', shellinaboxuri);
   });
 
-  shellinaboxwarning=(localStorage.getItem('shellinaboxwarning') === 'true' );
-  $('#shellinaboxwarning').attr('checked', shellinaboxwarning );
+  shellinaboxwarning=(localStorage.getItem('shellinaboxwarning'+activePage) === 'true' );
+  $('#shellinaboxwarning'+activePage).attr('checked', shellinaboxwarning );
   
-  $('#shellinaboxwarning').click(function(){
-    shellinaboxwarning = $('#shellinaboxwarning').is(":checked");
-    localStorage.setItem('shellinaboxwarning', shellinaboxwarning);
+  $('#shellinaboxwarning'+activePage).click(function(){
+    shellinaboxwarning = $('#shellinaboxwarning'+activePage).is(":checked");
+    localStorage.setItem('shellinaboxwarning'+activePage, shellinaboxwarning);
   });
 
-  shellinaboxuri=(localStorage.getItem('shellinaboxuri') || '/shellinabox');
-  $('#shellinaboxuri').val(shellinaboxuri);
-  $('#shellinaboxuri').keyup(function(){
-    shellinaboxuri = $('#shellinaboxuri').val();
-    localStorage.setItem('shellinaboxuri', shellinaboxuri);
+  shellinaboxuri=(localStorage.getItem('shellinaboxuri'+activePage) || '/shellinabox');
+  $('#shellinaboxuri'+activePage).val(shellinaboxuri);
+  $('#shellinaboxuri'+activePage).keyup(function(){
+    shellinaboxuri = $('#shellinaboxuri'+activePage).val();
+    localStorage.setItem('shellinaboxuri'+activePage, shellinaboxuri);
     $("#shellinaboxframe").attr('src', shellinaboxuri);
   });
   
