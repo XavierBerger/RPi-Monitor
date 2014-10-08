@@ -9,7 +9,7 @@ $(function () {
   resize_frame();
   
   options = '<p>'+
-              '<b>Custom</b><br>'+
+              '<b>Custom addons</b><br>'+
               '<form class="form-inline">'+
                 'Custom url: '+
                 '<div class="input-group">'+
