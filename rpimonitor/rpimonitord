@@ -593,6 +593,10 @@ sub Run
       or warn $!;
       print FILE encode_json(\%{$configuration->{'menu'}});
     close(FILE);
+    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/addons.json")
+      or warn $!;
+      print FILE encode_json(\%{$configuration->{'web'}->{'addons'}});
+    close(FILE);
     open(FILE, "> $configuration->{'daemon'}->{'webroot'}/version.json")
       or warn $!;
       print FILE  "{\"version\":\"$configuration->{'version'}\"}";
