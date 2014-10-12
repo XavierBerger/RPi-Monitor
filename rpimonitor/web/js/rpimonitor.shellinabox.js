@@ -25,7 +25,7 @@ $(function () {
 });
 
 function resize_frame(){
-  var window_height = $(window).height() - 60 - 40;
+  var window_height = $(window).height() - 30 - 40;
   $('#shellinaboxdiv').css('height',window_height+'px');
 }
 

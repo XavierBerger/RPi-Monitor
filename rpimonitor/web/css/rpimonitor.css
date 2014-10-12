@@ -19,7 +19,7 @@
  */
 /* Main marketing message and start button */
 .jumbotron {
-  margin: 40px 180px 180px;
+  /*margin: 40px 180px 180px;*/
   text-align: center;
 }
 .jumbotron h1 {
@@ -82,18 +82,10 @@ body {
 
 #shellinaboxframe,
 #shellinaboxdiv {
-  padding: 0px 0px 0px 0px; 
   min-width: 100%;
   min-height: 100%;
 }
 
 .justgage {
   display: inline-block;
-  /* margin-bottom: -10px; */
 }
-
-/*
-.justgage svg{
-  margin-top: -20px;
-}
-*/
