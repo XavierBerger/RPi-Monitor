@@ -72,6 +72,7 @@ sub Load
   foreach ( @{$this->{'daemon'}->{'confFiles'}} ) {
     $this->LoadFile($_);
   }
+  delete($this->{'daemon'}->{'confFiles'});
 
   # Set version (used by web pagescache mechanism)
   $this->{'version'} = localtime();
@@ -123,10 +124,13 @@ sub Load
 
   # manage menu
   foreach (@{$this->{'web'}->{'status'}}) {
-    $_->{'name'} and push(@{$this->{'menu'}->{'status'}}, $_->{'name'});
+    $_->{'name'} and push(@{$this->{'web'}->{'menu'}->{'status'}}, $_->{'name'});
   }
   foreach (@{$this->{'web'}->{'statistics'}}) {
-    $_->{'name'} and push(@{$this->{'menu'}->{'statistics'}}, $_->{'name'});
+    $_->{'name'} and push(@{$this->{'web'}->{'menu'}->{'statistics'}}, $_->{'name'});
+  }
+  foreach (@{$this->{'web'}->{'addons'}}) {
+    $_->{'name'} and push(@{$this->{'web'}->{'menu'}->{'addons'}}, $_->{'name'});
   }
 
   $this->{'sharedmem'} = IPC::ShareLite->new(
@@ -261,7 +265,7 @@ use POSIX;
 use IO::Handle;
 use HTTP::Daemon;
 use HTTP::Status;
-use JSON;
+use JSON -convert_blessed_universally;
 #use Data::Dumper;
 
 sub new
@@ -272,6 +276,8 @@ sub new
   # List of files to be delivered
   my @paths = (
     "/",
+    "/all.json",
+    "/addons.json",
     "/static.json",
     "/dynamic.json",
     "/status.json",
@@ -283,9 +289,9 @@ sub new
     "/favicon.ico",
 
     "/index.html",
+    "/addons.html",
     "/statistics.html",
     "/status.html",
-    "/shellinabox.html",
     "/cacert.pem",
     "/certificate.p12",
     "/shellinabox",
@@ -305,6 +311,7 @@ sub new
     "/js/rpimonitor.shellinabox.js",
     "/js/rpimonitor.statistics.js",
     "/js/rpimonitor.status.js",
+    "/js/rpimonitor.addons.js",
     "/js/rpimonitor.index.js",
     "/js/rpimonitor.js",
     "/js/jsqrencode.min.js",
@@ -437,12 +444,14 @@ sub DoGET
   #The file need to be known or we return an error
   my $isvalid;
   foreach(@{$this->{'paths'}}) {
-    if ( $path =~ /$_$/) {
+    if ( $path =~ /$_$/ ){
       $isvalid=1;
       $path=$_;
       last;
     }
   }
+  $isvalid ||= ( $path =~ /\/addons\// );
+
   #$isvalid or $connection->send_error(404,"<br><b>$path</b> not in <br>". join ('<br>',@{$this->{'paths'}} )) and return;
   $isvalid or $this->SendError(404);
 
@@ -484,7 +493,12 @@ sub Run
   $this->{'friends'} = encode_json(\@{$configuration->{'web'}->{'friends'}});
   $this->{'page'} = encode_json(\%{$configuration->{'web'}->{'page'}});
   $this->{'static'} = encode_json(\%{$monitor->{'static'}});
-  $this->{'menu'} = encode_json(\%{$configuration->{'menu'}});
+  $this->{'menu'} = encode_json(\%{$configuration->{'web'}->{'menu'}});
+  $this->{'addons'} = encode_json(\@{$configuration->{'web'}->{'addons'}});
+  my $json = JSON->new;
+  $json = $json->allow_blessed([$configuration]);
+  $json = $json->convert_blessed([$configuration]);
+  $this->{'all'} = $json->encode( \%{$configuration} );
   $this->{'version'} = "{\"version\":\"$configuration->{'version'}\"}";
   #print Data::Dumper->Dump([$this->{'paths'}]);
 
@@ -578,6 +592,10 @@ sub Run
     open(FILE, "> $configuration->{'daemon'}->{'webroot'}/menu.json")
       or warn $!;
       print FILE encode_json(\%{$configuration->{'menu'}});
+    close(FILE);
+    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/addons.json")
+      or warn $!;
+      print FILE encode_json(\%{$configuration->{'web'}->{'addons'}});
     close(FILE);
     open(FILE, "> $configuration->{'daemon'}->{'webroot'}/version.json")
       or warn $!;

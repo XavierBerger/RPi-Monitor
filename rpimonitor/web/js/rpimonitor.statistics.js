@@ -1,6 +1,6 @@
 // This file is part of RPi-Monitor project
 //
-// Copyright 2013 - Xavier Berger - http://rpi-experiences.blogspot.fr/
+// Copyright 2013 -2014 - Xavier Berger - http://rpi-experiences.blogspot.fr/
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -35,8 +35,8 @@ function Start() {
     $('<h2><p class="text-info">'+graphconf[activePage].name+'</p></h2><hr>').insertBefore("#insertionPoint");
   }
 
-    localStorage.setItem('activePage', activePage);localStorage.setItem('activePage', activePage);
-    FetchGraph();
+  localStorage.setItem('activePage', activePage);
+  FetchGraph();
 }
 
 function SetGraphlist() {
