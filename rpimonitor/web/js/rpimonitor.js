@@ -37,16 +37,6 @@ function GetURLParameter(sParam)
     }
 }
 
-function SetProgressBarAnimate(){
-  $('#animate').attr('checked', animate );
-  if ( animate ) {
-    $('.progress').addClass('active');
-  }
-  else{
-    $('.progress').removeClass('active');
-  }
-}
-
 function SetShellinaboxMenu(){
   $('#shellinabox').attr('checked', shellinabox );
   $('#shellinaboxwarning').attr('checked', shellinaboxwarning );
@@ -103,10 +93,17 @@ function ShowFriends(){
 
 function AddFooter(){
 $('#footer').html(
-  '<div class="container text-center">'+
-    '<p class="muted credit"><small><a href="http://rpi-experiences.blogspot.fr/">RPi-Experiences</a> | '+
-    '<a href="https://github.com/XavierBerger/RPi-Monitor">GitHub</a> | '+
-    '<a href="http://www.raspberrypi.org/">Raspberry Pi Foundation</a></small></p>'+
+  '<div class="navbar-inverse navbar-fixed-bottom text-center">'+
+  //'<div class="container-fluid text-center">'+
+    //'<p class="muted credit">'+
+      '<small>'+
+        '<a href="http://rpi-experiences.blogspot.fr/">RPi-Experiences</a>'+
+        '<font color="silver"> | </font>'+
+        '<a href="https://github.com/XavierBerger/RPi-Monitor">GitHub</a>'+
+        '<font color="silver"> | </font>'+
+        '<a href="http://www.raspberrypi.org/">Raspberry Pi Foundation</a>'+
+      '</small>'+
+    //'</p>'+
   '</div>'
 );
 }
@@ -116,86 +113,103 @@ function AddDialogs(){
 
   // Add Configuration Dialog
   dialogs+=
-    '<div id="Configuration" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">'+
+    '<div id="Configuration" class="modal fade">'+
+      '<div class="modal-dialog">' +
+        '<div class="modal-content">'+
       '<div class="modal-header">'+
-        '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>'+
-        '<h3 id="myModalLabel">Configuration</h3>'+
+      '<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>' +
+      '<h4 id="myModalLabel">Configuration</h4>'+
       '</div>'+
       '<div class="modal-body">'+
-        '<p><label class="checkbox"><input type="checkbox" id="animate"> Animate progress bar</label></p>'+
-        '<hr>'+
-        '<p><form class="form-inline">'+
+      '<p>'+
+        '<form class="form-inline">'+
           '<label class="checkbox"><input type="checkbox" id="shellinabox"> Show shellinabox menu</label> <br>'+
           '&nbsp;&nbsp;&nbsp;&nbsp;'+
           '<label class="checkbox"><input type="text" placeholder="Address" id="shellinaboxuri" class="input-medium"></label><br>'+
           '&nbsp;&nbsp;&nbsp;&nbsp;'+
           '<label class="checkbox" id="shellinaboxwarninglabel"><input type="checkbox" id="shellinaboxwarning"> Do not show warning on page close or refresh</label>'+
-        '</form></p>'+
-        '<hr>'+
-        '<p><label class="checkbox"><input type="checkbox" id="statusautorefresh"> Auto refresh status page</label></p>'+
-        '<hr>'+
-        '<p><label class="checkbox">Default graph timeline <select class="span3" id="active_rra">'+
-          '<option value="0" '+ ( active_rra == 0 ? 'selected' : '' ) +'>10s (24h total)</option>'+
-          '<option value="1" '+ ( active_rra == 1 ? 'selected' : '' ) +'>60s (2 days total)</option>'+
-          '<option value="2" '+ ( active_rra == 2 ? 'selected' : '' ) +'>10min (14 days total)</option>'+
-          '<option value="3" '+ ( active_rra == 3 ? 'selected' : '' ) +'>30min (31 days total)</option>'+
-          '<option value="4" '+ ( active_rra == 4 ? 'selected' : '' ) +'>60min (12 months total)</option>'+
-          '</select></label></p>'+
+        '</form>'+
+      '</p>'+
+      '<hr>'+
+      '<p>'+
+        '<form class="form-inline">'+
+          '<label class="checkbox">'+
+          '<input type="checkbox" id="statusautorefresh"> Auto refresh status page</label>'+
+        '</form>'+
+      '</p>'+
+      '<hr>'+
+      '<p><label class="checkbox">Default graph timeline <select class="span3" id="active_rra">'+
+        '<option value="0" '+ ( active_rra == 0 ? 'selected' : '' ) +'>10s (24h total)</option>'+
+        '<option value="1" '+ ( active_rra == 1 ? 'selected' : '' ) +'>60s (2 days total)</option>'+
+        '<option value="2" '+ ( active_rra == 2 ? 'selected' : '' ) +'>10min (14 days total)</option>'+
+        '<option value="3" '+ ( active_rra == 3 ? 'selected' : '' ) +'>30min (31 days total)</option>'+
+        '<option value="4" '+ ( active_rra == 4 ? 'selected' : '' ) +'>60min (12 months total)</option>'+
+        '</select></label></p>'+
       '</div>'+
       '<div class="modal-footer">'+
-        '<button class="btn" data-dismiss="modal" aria-hidden="true" id="closeconfiguration">Close</button>'+
+      '<button class="btn" data-dismiss="modal" aria-hidden="true" id="closeconfiguration">Close</button>'+
       '</div>'+
+      '</div>'+
+    '</div>'+
     '</div>';
 
   // Add License Dialog 
   dialogs+=
-    '<div id="License" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">'+
+    '<div id="License" class="modal fade">'+
+      '<div class="modal-dialog">' +
+        '<div class="modal-content">'+
       '<div class="modal-header">'+
-        '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>'+
-        '<h3 id="myModalLabel">License</h3>'+
+      '<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>' +
+      '<h4 id="myModalLabel">License</h4>'+
       '</div>'+
       '<div class="modal-body">'+
-        'This program is free software: you can redistribute it and/or modify<br>'+
-        'it under the terms of the GNU General Public License as published<br>'+ 
-        'by the Free Software Foundation, either version 3 of the License, or<br>'+
-        '(at your option) any later version.<br>'+
-        '<br>'+
-        'This program is distributed in the hope that it will be useful,i but<br>'+
-        'WITHOUT ANY WARRANTY; without even the implied warranty of<br>'+
-        'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.<br>'+
-        'See the GNU General Public License for more details.<br>'+
-        '<br>'+
-        'You should have received a copy of the GNU General Public License<br>'+
-        'along with this program.  If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.'+
-        '</p>'+
-        '<hr>'+
-        '<b>RPi-Monitor</b> is using third party software hava there own license.<br>'+
-        'Ref. <a href="#About" data-dismiss="modal" data-toggle="modal">About</a> to have the list of software used by <b>RPi-Monitor</b>. '+
+      'This program is free software: you can redistribute it and/or modify '+
+      ' of the GNU General Public License as published '+ 
+      'by the Free Software Foundation, either version 3 of the License, or '+
+      '(at your option) any later version.<br>'+
+      '<br>'+
+      'This program is distributed in the hope that it will be useful, but '+
+      'WITHOUT ANY WARRANTY; without even the implied warranty of '+
+      'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. '+
+      'See the GNU General Public License for more details.<br>'+
+      '<br>'+
+      'You should have received a copy of the GNU General Public License '+
+      'along with this program. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.'+
+      '</p>'+
+      '<hr>'+
+      '<b>RPi-Monitor</b> is using third party software hava there own license. '+
+      'Ref. <a href="#About" data-dismiss="modal" data-toggle="modal">About</a> to have the list of software used by <b>RPi-Monitor</b>. '+
       '</div>'+
       '<div class="modal-footer">'+
-        '<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>'+
+      '<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>'+
       '</div>'+
+      '</div>'+
+    '</div>'+
     '</div>';
 
   // Add About Dialog
   dialogs+=
-    '<div id="About" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">'+
+    '<div id="About" class="modal fade">'+
+      '<div class="modal-dialog">' +
+        '<div class="modal-content">'+
       '<div class="modal-header">'+
-        '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>'+
-        '<h3 id="myModalLabel">About</h3>'+
+      '<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>' +
+      '<h4 id="myModalLabel">About</h4>'+
       '</div>'+
       '<div class="modal-body">'+
-        '<p><b>Version</b>: {DEVELOPMENT} '+
-        '<b>by</b> Xavier Berger <a href="http://rpi-experiences.blogspot.fr/">Blog</a> <a href="https://github.com/XavierBerger/RPi-Monitor">GitHub</a></p>'+
-        'With the contribution of users sharing ideas and competences on Github.'+
-        '<hr>'+
-        '<p><b>RPi-Monitor</b> is free software developped on top of other open source '+
-          'tools : <a href="http://twitter.github.io/bootstrap/">bootstrap</a>, <a href="http://jquery.com/">jquery</a>, <a href="https://code.google.com/p/jsqrencode/">jsqrencode</a>, <a href="http://javascriptrrd.sourceforge.net/">javascriptrrd</a> and <a href="http://www.flotcharts.org/">Flot</a>.<br>'+
-        '<p><b>Raspberry Pi</b> and Raspberry Pi logo are properties of <a href="http://www.raspberrypi.org/">Raspberry Pi Fundation</a>.</p>'+
+      '<p><b>Version</b>: 2.9 '+
+      '<b>by</b> Xavier Berger <a href="http://rpi-experiences.blogspot.fr/">Blog</a> <a href="https://github.com/XavierBerger/RPi-Monitor">GitHub</a></p>'+
+      'With the contribution of users sharing ideas and competences on Github.'+
+      '<hr>'+
+      '<p><b>RPi-Monitor</b> is free software developped on top of other open source '+
+        'tools : <a href="http://twitter.github.io/bootstrap/">bootstrap</a>, <a href="http://jquery.com/">jquery</a>, <a href="https://code.google.com/p/jsqrencode/">jsqrencode</a>, <a href="http://javascriptrrd.sourceforge.net/">javascriptrrd</a> and <a href="http://www.flotcharts.org/">Flot</a>.<br>'+
+      '<p><b>Raspberry Pi</b> and Raspberry Pi logo are properties of <a href="http://www.raspberrypi.org/">Raspberry Pi Fundation</a>.</p>'+
       '</div>'+
       '<div class="modal-footer">'+
-        '<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>'+
+      '<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>'+
       '</div>'+
+      '</div>'+
+    '</div>'+  
     '</div>';
 
   $('#dialogs').html(dialogs);
@@ -223,48 +237,50 @@ function AddTopmenu(){
     menutitle=page.menutitle;
   }
   topmenu=
-      '<div class="navbar navbar-inverse navbar-fixed-top">'+
-        '<div class="navbar-inner">'+
-          '<div class="container">'+
-            '<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">'+
-              '<span class="icon-bar"></span>'+
-              '<span class="icon-bar"></span>'+
-              '<span class="icon-bar"></span>'+
-            '</button>'+
-            '<a class="brand" href="index.html"><img src="'+icon+'"> '+menutitle+'</a>'+
-            '<div class="nav-collapse collapse">'+
-              '<ul class="nav">'+
-                '<li id="statusmenu"><a id="statuslink" href="status.html">Status</a></li>'+
-                '<li id="statisticsmenu"><a id="statisticslink" href="statistics.html">Statistics</a></li>'+
-                '<li id="shellinaboxmenu" class="hide"><a href="shellinabox.html">Shellinabox</a></li>'+
-                '<li id="configurationmenu"><a href="#Configuration" data-toggle="modal">Configuration</a></li>'+
-                '<li class="dropdown">'+
-                  '<a href="#" class="dropdown-toggle" data-toggle="dropdown">About <b class="caret"></b></a>'+
-                  '<ul class="dropdown-menu">'+
-                    '<li class="nav-header">RPi-Monitor</li>'+
-                    '<li><a href="http://rpi-experiences.blogspot.fr/p/rpi-monitor.html" data-toggle="modal">Help</a></li>'+
-                    '<li><a href="#License" data-toggle="modal">License</a></li>'+
-                    '<li><a href="#About" data-toggle="modal">About</a></li>'+
-                    '<li class="divider"></li>'+
-                    '<li class="nav-header">Related links</li>'+
-                    '<li><a href="http://rpi-experiences.blogspot.fr/">RPi-Experiences</a></li>'+
-                    '<li><a href="https://github.com/XavierBerger/RPi-Monitor">RPi-Monitor</a></li>'+
-                  '</ul>'+
-                '</li>'+
-              '</ul>'+
-            '</div><!--/.nav-collapse -->'+
-            '<div class="navbar-inner pull-right hide" id="divfriends">'+
-              '<ul class="nav">'+
-                '<li class="dropdown">'+
-                  '<a href="#" class="dropdown-toggle" data-toggle="dropdown">Friends <b class="caret"></b></a>'+
-                  '<ul class="dropdown-menu" id="friends">'+
-                  '</ul>'+
-                '</li>'+
-              '</ul>'+
-            '</div>'+
-          '</div>'+
-        '</div>'+
-      '</div>';
+    '<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">' +
+    '<div class="container-fluid">' +
+    '<div class="navbar-header">' +
+      '<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">' +
+      '<span class="sr-only">Toggle navigation</span>' +
+      '<span class="icon-bar"></span>' +
+      '<span class="icon-bar"></span>' +
+      '<span class="icon-bar"></span>' +
+      '</button>' +
+      '<a class="navbar-brand" href="index.html"><img src="'+icon+'"> &nbsp;'+menutitle+'</a>' +
+    '</div>' +
+    '<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">' +
+      '<ul class="nav navbar-nav">' +
+        '<li id="statusmenu"><a id="statuslink" href="status.html">Status</a></li>'+
+            '<li id="statisticsmenu"><a id="statisticslink" href="statistics.html">Statistics</a></li>'+
+            '<li id="shellinaboxmenu" class="hide"><a href="shellinabox.html">Shellinabox</a></li>'+
+            '<li id="configurationmenu"><a href="#Configuration" data-toggle="modal">Configuration</a></li>'+
+            '<li class="dropdown">' +
+        '<a href="#" class="dropdown-toggle" data-toggle="dropdown">About <span class="caret"></span></a>' +
+        '<ul class="dropdown-menu" role="menu">' +
+        '<li class="dropdown-header"> <b>RPi-Monitor</b></li>'+
+        '<li><a href="#" title="Scan this qrcode to reach this page from your smartphone or tablet"><canvas id="qrcanv"><a></li>'+
+        '<li><a href="http://rpi-experiences.blogspot.fr/p/rpi-monitor.html" data-toggle="modal">Help</a></li>'+
+        '<li><a href="#License" data-toggle="modal">License</a></li>'+
+        '<li><a href="#About" data-toggle="modal">About</a></li>'+
+        '<li class="divider"></li>'+
+        '<li class="dropdown-header"> <b>Related links</b></li>'+
+        '<li><a href="http://rpi-experiences.blogspot.fr/">RPi-Experiences</a></li>'+
+        '<li><a href="https://github.com/XavierBerger/RPi-Monitor">RPi-Monitor</a></li>'+
+        '</ul>' +
+      '</li>' +
+      '</ul>' +
+      '<div class="pull-right hide" id="divfriends">'+
+        '<ul class="nav navbar-nav">'+
+        '<li class="dropdown">'+
+          '<a href="#" class="dropdown-toggle" data-toggle="dropdown">Friends <b class="caret"></b></a>'+
+          '<ul class="dropdown-menu dropdown-menu-right" id="friends">'+
+          '</ul>'+
+        '</li>'+
+        '</ul>'+
+      '</div>'+
+    '</div><!-- /.navbar-collapse -->' +
+    '</div><!-- /.container-fluid -->' +
+  '</nav>'
   $('#topmenu').html(topmenu);
 }
 
@@ -363,8 +379,6 @@ $(function () {
   AddDialogs();
   AddFooter();
   UpdateMenu();
-
-  SetProgressBarAnimate();
  
   //Initialize dialog values
   $('#statusautorefresh').attr('checked', statusautorefresh );

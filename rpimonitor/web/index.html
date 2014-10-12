@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!--
-# Copyright 2013 - Xavier Berger - http://rpi-experiences.blogspot.fr/
+# Copyright 2013-2014 - Xavier Berger - http://rpi-experiences.blogspot.fr/
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,7 +28,6 @@
     <!-- CSS -->
     <link href="./css/bootstrap.min.css" rel="stylesheet">
     <link href="./css/rpimonitor.css" rel="stylesheet">
-    <link href="./css/bootstrap-responsive.min.css" rel="stylesheet">
 
     <!-- Favicon-->
     <link rel="shortcut icon" type="image/png" href="./img/favicon.png">
@@ -36,29 +35,22 @@
 
   <body>
 
-
-    <!-- Part 1: Wrap all page content here -->
-    <div id="wrap">
-
       <!-- Fixed navbar -->
       <div id='topmenu'></div>
 
       <!-- Begin page content -->
-      <div class="container">
-        <div class="jumbotron">
-          <h1>RPi-Monitor</h1>
-          <p>Welcome to RPi-Monitor web interface.</p>
-          <p><small>Scan the qrcode bellow to access to this page from your smartphone.</small></p>
-          <p><canvas id="qrcanv"></p>
+      &nbsp;<br>
+      <div class="container-fluid">
+        <div class="well well-lg text-center">
+		  <h1><b>RPi</b>-<b>Monitor</b></h1>
+          <p>Welcome to <b>RPi-Monitor</b> web interface.</p>
           <p><a href="status.html" class="btn btn-large btn-success">Start</a></p>
         </div>
       </div>
-      <div id="push"></div>
-    </div>
-
-    <div id="dialogs"></div>
 
     <div id="footer"></div>
+
+    <div id="dialogs"></div>
 
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="./js/jquery.min.js"></script>

@@ -16,22 +16,25 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 var strips;
 var postProcessInfo=[];
+var justgageId=0;
+var postProcessCommand=[];
 
 function RowTemplate(id,image,title){
   return ""+
-        "<div class='row'>"+
-          "<div class='Icon'><img src='"+image+"' alt='"+title+"'></div>"+
-          "<div class='Title'>"+title+"</div>"+
-          "<div class='Warning'></div>"+
+        "<div class='row row"+id+"'>"+
+          "<div class='Title'><img src='"+image+"' alt='"+title+"'> &nbsp;"+title+"</div>"+
+          //"<div class='Icon'><img src='"+image+"' alt='"+title+"'></div>"+
+          //"<div class='Title'>"+title+"</div>"+
+          //"<div class='Warning'></div>"+
           "<div class='Text' id='Text"+id+"'><b></b></div>"+
         "</div>"+
-        "<hr>"
+        "<hr class='row"+id+"'>"
 }
 
 function ShowInfo(id,title,text){
   if ( text ) {
     postProcessInfo.push(["#"+id, title, text]);
-    return "<a href='#' id='"+id+"'><i class='icon-search'></i>"
+    return " <a href='#' id='"+id+"'><font color=black><span class='glyphicon glyphicon-search'></font></span>"
   }
   else {
     return "";
@@ -85,8 +88,60 @@ function Percent(value,total){
   return (100*value/total).toFixed(2)+"%";
 }
 
-function ProgressBar(value, max){
-  return "<div class='progress progress-striped'><div class='bar' style='width: "+((100 * value ) / max)+"%;'></div></div>"
+function ProgressBar(value, max, warning, danger){
+  var percent = ((100 * value ) / max).toFixed(2)
+  var warning = warning || 0 
+  var danger = danger || 0
+  var color = ''
+  if (danger > warning) {
+    if (percent > warning) {
+      color = 'progress-bar-warning'
+    }
+    if (percent > danger) {
+      color = 'progress-bar-danger'
+    }
+  }
+  else {
+    if (percent < warning) {
+      color = 'progress-bar-warning'
+    }
+    if (percent < danger) {
+      color = 'progress-bar-danger'
+    }
+  }
+  return "<div class='progress'><div class='progress-bar "+color+"' role='progressbar' aria-valuemin='0' aria-valuemax='100' aria-valuenow='"+percent+"' style='width: "+percent+"%;'>"+percent+"%</div></div>"
+}
+
+function JustGageBar(title, label,min, value, max, width, height, levelColors, warning, critical){
+  width= width || 100
+  height= height || 80
+  levelColors = levelColors || percentColors
+  if (( warning != undefined ) && (critical != undefined)){
+    if ( value > critical ) { 
+      levelColors = [levelColors[2], levelColors[2], levelColors[2]];
+    } else 
+    if ( value > warning ) { 
+      levelColors = [levelColors[1], levelColors[1], levelColors[1]];
+    } else {
+      levelColors = [levelColors[0], levelColors[0], levelColors[0]];
+    }
+  }
+  
+  justgageId++
+
+  div="<div class='justgage' id='gauge"+(justgageId)+"' style='width:"+width+"px; height:"+height+"px;'></div>"
+  postProcessCommand.push('var g = new JustGage({'+
+    'id: "gauge'+(justgageId)+'",'+
+    'value: '+value+','+
+    'min: '+min+','+
+    'max: '+max+','+
+    'label: "'+label+'",'+
+    'title: "'+title+'",'+
+    'startAnimationTime: 1,'+
+    'startAnimationType: "linear",'+
+    'levelColors: ["'+ levelColors[0] +'","'+levelColors[1] +'","'+levelColors[2] +'"]'+
+    '})') 
+  return div
 }
 
 function Label(data,formula, text, level){
@@ -98,11 +153,10 @@ function Label(data,formula, text, level){
 
 function Badge(data,formula, text, level){
   var result="";
-  if ( level.indexOf('badge-') < 0 ) { level = 'badge-'+level };
+  if ( level.indexOf('alert-') < 0 ) { level = 'alert-'+level };
   eval ( "if ("+data+formula+") result=\"<span class='badge "+level+"'>"+text+"</span>\"" );
   return result;
 }
-
 
 var clocksec=0;
 function Clock(localtime){
@@ -118,7 +172,7 @@ function Tick(){
 
 function ActivatePopover(){
   for ( var iloop=0; iloop < postProcessInfo.length; iloop++) {
-    $(postProcessInfo[iloop][0]).popover({trigger:'hover',placement:'left',html:true, title: postProcessInfo[iloop][1], content: postProcessInfo[iloop][2] });
+    $(postProcessInfo[iloop][0]).popover({trigger:'hover',placement:'bottom',html:true, title: postProcessInfo[iloop][1], content: postProcessInfo[iloop][2] });
   }
   $("#packages").popover();
 }
@@ -131,6 +185,13 @@ function UpdateStatus () {
     $('#message').addClass('hide');
 
     for (var iloop=0; iloop < strips.length; iloop++){
+      eval( 'visibility = '+strips[iloop].visibility ) 
+      if ( visibility == 0) {
+        $('.row'+iloop).addClass('hide')
+      }
+      else {
+        $('.row'+iloop).removeClass('hide')
+      }
       text = "";
       for (var jloop=0; jloop < strips[iloop].line.length; jloop++){
         var line = strips[iloop].line[jloop];
@@ -139,21 +200,24 @@ function UpdateStatus () {
             text = text + eval( line );
         }
         catch (e) {
-          text = text + "ERROR: " + line;
+          text = text + "ERROR: " + line + " -> " + e;
         }
         finally {
           text = text + "</p>";
         }
       }
-      $("#Text"+iloop).html(text);
+      $("#Text"+iloop).html(text);    
     }
-
-    SetProgressBarAnimate();
+    
+    while((command=postProcessCommand.pop()) != null) {
+      eval( command )
+    }
+    
     ActivatePopover();
 
   })
   .fail(function() {
-      $('#message').html("<b>Can not get information (dynamic.json) from RPi-Monitor server.</b>");
+      $('#message').html("<span class='glyphicon glyphicon-warning-sign'></span> &nbsp; Can not get information (dynamic.json) from <b>RPi-Monitor</b> server.");
       $('#message').removeClass('hide');
     });
 
@@ -188,6 +252,10 @@ $(function () {
 
   /* Show friends */
   ShowFriends();
+
+  /* Add qrcode shortcut*/
+  setupqr();
+  doqr(document.URL);
 
   /* Get static values once */
   data = getData('static');
