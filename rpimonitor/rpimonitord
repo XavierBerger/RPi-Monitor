@@ -41,10 +41,10 @@ sub new
   $this->Debug(3,"");
   $this->{'rrd'}=();
   $this->{'daemon'}->{'confFiles'} = [];
-  $this->{'counter'}->{'static'}  = 0;
-  $this->{'counter'}->{'dynamic'} = 0;
-  $this->{'counter'}->{'status'} = 0;
-  $this->{'counter'}->{'statistics'} = 0;
+  #$this->{'counter'}->{'static'}  = 0;
+  #$this->{'counter'}->{'dynamic'} = 0;
+  #$this->{'counter'}->{'status'} = 0;
+  #$this->{'counter'}->{'statistics'} = 0;
   return $this;
 }
 
@@ -149,7 +149,7 @@ sub LoadFile
 {
   my $this = shift;
   my $confFile = shift;
-  my $dict;
+  my @dict;
   $this->Debug(2,"Loading file: $confFile");
 
   open ( FILE, $confFile)
@@ -165,6 +165,7 @@ sub LoadFile
     my $current;
     my $next;
     my $root;
+    my $page = 0;                         # page = 0 for static and dynamic
     while (scalar(@leaves) > 0) {         # While @leaves contains data
       $current ||= shift (@leaves);       # If root is empty, shift the first element of @leaves to $current 
       $root ||= $current;
@@ -182,7 +183,12 @@ sub LoadFile
       } else {                            # If $next is not an integer -> We are in a hash
         if ($current =~ /^\d+$/) {        # If $current is an integer -> we are in an array
           my $index = $current; 
-                
+               
+          if ( ($previous eq 'status' )    || 
+               ($previous eq 'statistics' ) )
+          {
+            $page=$current;
+          }
           # Manage per file indexes unicity
           if ( ($root eq "static")            || 
                ($root eq "dynamic")           || 
@@ -191,11 +197,11 @@ sub LoadFile
                  ($previous eq "content") ) ) 
           {
             # If $index is not in $dict, add it with counter++
-            if ( ! $dict->{$root}[$current] ) 
+            if ( ! $dict[$page]->{$root}[$current] ) 
             {
-              $dict->{$root}[$current] = ++$this->{'counter'}->{$root};
+              $dict[$page]->{$root}[$current] = ++$this->{'counter'}[$page]->{$root};
             }
-            $index = $dict->{$root}[$current];
+            $index = $dict[$page]->{$root}[$current];
           }
           
           @{$tree}[$index-1] ||= {};      # If the branch is not an array, create an empty hash
