@@ -319,7 +319,7 @@ function UpdateMenu(){
   if ( data.status.length > 1 ){
     $('#statusmenu').addClass('dropdown');
     var dropDownMenu='<ul class="dropdown-menu">';
-    dropDownMenu+='<li class="nav-header">Status</li>'
+    //dropDownMenu+='<li class="nav-header">Status</li>'
     for ( var iloop=0; iloop < data.status.length; iloop++){
       dropDownMenu+='<li><a href="status.html?activePage='+iloop+'">'+data.status[iloop]+'</a></li>';
     }
@@ -333,7 +333,7 @@ function UpdateMenu(){
   if ( data.statistics.length > 1 ){
     $('#statisticsmenu').addClass('dropdown');
     var dropDownMenu='<ul class="dropdown-menu">';
-    dropDownMenu+='<li class="nav-header">Statistics</li>'
+    //dropDownMenu+='<li class="nav-header">Statistics</li>'
     for ( var iloop=0; iloop < data.statistics.length; iloop++){
       dropDownMenu+='<li><a href="statistics.html?activePage='+iloop+'">'+data.statistics[iloop]+'</a></li>';
     }
