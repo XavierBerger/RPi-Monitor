@@ -177,7 +177,7 @@ function AddDialogs(){
       '<h4 id="myModalLabel">About</h4>'+
       '</div>'+
       '<div class="modal-body">'+
-      '<p><b>Version</b>: 2.9 '+
+      '<p><b>Version</b>: {DEVELOPMENT} '+
       '<b>by</b> Xavier Berger <a href="http://rpi-experiences.blogspot.fr/">Blog</a> <a href="https://github.com/XavierBerger/RPi-Monitor">GitHub</a></p>'+
       'With the contribution of users sharing ideas and competences on Github.'+
       '<hr>'+
