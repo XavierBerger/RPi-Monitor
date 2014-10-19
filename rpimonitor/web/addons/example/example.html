@@ -1,4 +1,30 @@
-<span id="text">
-  Example addons
-</span>
 
+  <div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Example addon</h3>
+  </div>
+  <div class="panel-body">
+    <b>Example addon</b> shows how you can develop you own addon for  
+    <b>RPi-Monitor</b>.<br>
+    <br>
+    An addon (named for this example <code>example</code>) is composed 
+    by a set of 3 files stored in the subdirectory of the same name<br> 
+    <code>/usr/share/rpimonitor/web/addons/<a href="https://github.com/XavierBerger/RPi-Monitor/tree/devel/rpimonitor/web/addons/example">example</a>/</code>:
+    <ul>
+      <li>a html page: <a href="https://raw.githubusercontent.com/XavierBerger/RPi-Monitor/devel/rpimonitor/web/addons/example/example.html">example.html</a></li>
+      <li>a css style sheet: <a href="https://raw.githubusercontent.com/XavierBerger/RPi-Monitor/devel/rpimonitor/web/addons/example/example.css">example.css</a></li>
+      <li>a javascript script : <a href="https://raw.githubusercontent.com/XavierBerger/RPi-Monitor/devel/rpimonitor/web/addons/example/example.js">example.js</a></li>
+    </ul>
+    These 3 files are directly used by <b>RPi-Monitor</b> to render a page.<br>
+    <br>
+    Javascript of the addon have a direct access to <b>RPi-Monitor</b>
+    data using the functions in <code>rpimonitor.utils.js</code> and the 
+    functions <code>getData('json_data')</code>.<br> 
+    <br>
+    This example is showing how to get uptime information and display it
+    using the function <code>Uptime( value )</code>:<br>
+    <br>
+    <div id="addonInsertionPoint">addonInsertionPoint<br></div><br>
+    Refer to <a href="http://rpi-experiences.blogspot.fr/">RPi-Experiences web site</a> to
+    see example of usages.
+  </div>

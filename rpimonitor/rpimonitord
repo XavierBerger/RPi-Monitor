@@ -41,10 +41,6 @@ sub new
   $this->Debug(3,"");
   $this->{'rrd'}=();
   $this->{'daemon'}->{'confFiles'} = [];
-  #$this->{'counter'}->{'static'}  = 0;
-  #$this->{'counter'}->{'dynamic'} = 0;
-  #$this->{'counter'}->{'status'} = 0;
-  #$this->{'counter'}->{'statistics'} = 0;
   return $this;
 }
 
@@ -317,6 +313,7 @@ sub new
     "/js/rpimonitor.shellinabox.js",
     "/js/rpimonitor.statistics.js",
     "/js/rpimonitor.status.js",
+    "/js/rpimonitor.utils.js",
     "/js/rpimonitor.addons.js",
     "/js/rpimonitor.index.js",
     "/js/rpimonitor.js",

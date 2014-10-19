@@ -20,7 +20,7 @@ function ConstructPage()
 
   if ( typeof activePage == 'undefined') {
     activePage=localStorage.getItem('activePage', activePage);
-    if ( activePage ==null ) { activePage = 0 }
+    if ( activePage == null ) { activePage = 0 }
   }
   data = getData('addons');
   if ( activePage >= data.length ){
@@ -55,8 +55,6 @@ $(function () {
   doqr(document.URL);
 
   /* Get static values once */
-  data = getData('static');
-  localStorage.setItem('static', JSON.stringify(data));
   ConstructPage();
 });
 
