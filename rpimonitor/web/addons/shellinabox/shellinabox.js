@@ -12,7 +12,7 @@ $(function () {
               '<b>Shellinabox</b><br>'+
               '<form class="form-inline">'+
                 'Shellinabox url: '+
-                '<div class="input-group">'+
+                '<div class="input-group" style="width:465px">'+
                   '<input type="text" class="form-control" id="shellinaboxuri'+activePage+'">'+
                   '<span class="input-group-btn">'+
                     '<button id="defaulturi" class="btn" type="button">Default</button>'+
@@ -22,7 +22,6 @@ $(function () {
               '</form>'+
             '</p>'
   $(options).insertBefore("#optionsInsertionPoint")
-  
   
   $("#defaulturi").click(function(){
     shellinaboxuri = "/shellinabox";

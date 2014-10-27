@@ -4,25 +4,27 @@ var activePage = GetURLParameter('activePage');
 
 
 $(function () {
-  $('#pagetitle').remove();
-
   resize_frame();
+  
+  data = getData('addons');
   
   options = '<p>'+
               '<b>Custom addons</b><br>'+
               '<form class="form-inline">'+
                 'Custom url: '+
-                '<div class="input-group">'+
+                '<div class="input-group" style="width:465px">'+
                   '<input type="text" class="form-control" id="customuri'+activePage+'">'+
-                  '</div><br>'+
+                  '<span class="input-group-btn">'+
+                    '<button id="defaulturi" class="btn" type="button">Default</button>'+
+                  '</span>'+
+                '</div><br>'+  
                 '<input type="checkbox" id="customwarning'+activePage+'"> Show warning on page close or refresh'+
               '</form>'+
             '</p>'
   $(options).insertBefore("#optionsInsertionPoint")
   
-  
   $("#defaulturi").click(function(){
-    customuri = "/custom";
+    customuri = data[activePage].url;//"/addons/custom/custominfo.html";
     $('#customuri'+activePage).val(customuri);
     localStorage.setItem('customuri'+activePage, customuri);
     $("#customframe").attr('src', customuri);

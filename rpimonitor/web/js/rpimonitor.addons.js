@@ -27,7 +27,7 @@ function ConstructPage()
     activePage=0;
   }
   localStorage.setItem('activePage', activePage);
-  if ( data.length > 1 ) {
+  if ( data[activePage].showTitle != 0 ) {
     $('<h2 id="pagetitle"><p class="text-info">'+data[activePage].name+'</p><hr></h2>').insertBefore("#insertionPoint");
   }
   
