@@ -1,0 +1,61 @@
+#!/usr/bin/perl
+#
+# Copyright 2013-2014 - Xavier Berger - http://rpi-experiences.blogspot.fr/
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# web.status.1.content.1.line.4=$.get("/addons/top3/top3.html", function( data ) {return data })
+#
+
+#Get uptime
+my $uptime;
+open ( FILE, "/proc/uptime") or die "Can't open /proc/uptime \n";
+while (<FILE>){
+    /(\S+) \S+/;
+    $uptime = $_;
+}
+
+my @top=[];
+my $rpimonitor;
+
+my $idx=0;
+open (PS, 'ps -e -o time,comm | sort -r |') or die;
+while (<PS>)
+{
+  #/rpimonitor/ or $idx++ and ( $idx>3 or next) ;
+  /TIME/ and next;
+  $idx++;
+  /rpimonitor/ and $rpimonitor->{'idx'} ||= $idx;
+  /rpimonitor/ or $idx < 4 or next;
+  /(\S+):(\S+):(\S+) (\S+)/;
+  my $percent=100*($1*60*60+$2*60+$3)/$uptime;
+  #$top[$idx] = sprintf("%3d %02d:%02d:%02d %-12s (%.2f%) \n",$idx, $1, $2, $3, $4, $percent);
+  $top[$idx] = sprintf("<tr><td>%3d</td><td>%02d:%02d:%02d</td><td>%-12s</td><td>(%.2f%)</td></tr>\n",$idx, $1, $2, $3, $4, $percent);
+}
+close PS or die;
+my $iloop;
+
+  print "<table class='table'>\n";
+  print "<tr><th>#</th><th>CPU usage</th><th>Process</th><th>Percentage</th></tr>\n";
+  for ($iloop=1; $iloop<4; $iloop++) 
+  {
+    print $top[$iloop];
+  }
+  if ($iloop < $rpimonitor->{'idx'}){
+    print "<tr><td></td><td colspan='3'>...</td></tr>\n";
+  }
+  if ($iloop <= $rpimonitor->{'idx'}){
+    print $top[$rpimonitor->{'idx'}];
+  }
+  print "</table>\n";

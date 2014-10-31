@@ -158,6 +158,16 @@ function Tick(){
   $('#seconds').html(Pad(clocksec));
 }
 
-
+var result=""
+function InsertHTML( url ){
+   $.ajax({
+      url: url,
+      async:false,
+      success: function(data) {
+        result = data
+      }
+    })
+    return result
+}
 
 
