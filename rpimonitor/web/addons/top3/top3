@@ -17,20 +17,11 @@
 #
 # web.status.1.content.1.line.4=$.get("/addons/top3/top3.html", function( data ) {return data })
 #
-
-#Get uptime
-my $uptime;
-open ( FILE, "/proc/uptime") or die "Can't open /proc/uptime \n";
-while (<FILE>){
-    /(\S+) \S+/;
-    $uptime = $_;
-}
-
 my @top=[];
 my $rpimonitor;
 
 my $idx=0;
-open (PS, 'ps -e -o time,comm | sort -r |') or die;
+open (PS, 'ps -e -o etimes,time,comm --sort -time |') or die;
 while (<PS>)
 {
   #/rpimonitor/ or $idx++ and ( $idx>3 or next) ;
@@ -38,10 +29,10 @@ while (<PS>)
   $idx++;
   /rpimonitor/ and $rpimonitor->{'idx'} ||= $idx;
   /rpimonitor/ or $idx < 4 or next;
-  /(\S+):(\S+):(\S+) (\S+)/;
-  my $percent=100*($1*60*60+$2*60+$3)/$uptime;
+  /(\S+) (\S+):(\S+):(\S+) (\S+)/;
+  my $percent=100*($2*60*60+$3*60+$4)/$1;
   #$top[$idx] = sprintf("%3d %02d:%02d:%02d %-12s (%.2f%) \n",$idx, $1, $2, $3, $4, $percent);
-  $top[$idx] = sprintf("<tr><td>%3d</td><td>%02d:%02d:%02d</td><td>%-12s</td><td>(%.2f%)</td></tr>\n",$idx, $1, $2, $3, $4, $percent);
+  $top[$idx] = sprintf("<tr><td>%3d</td><td>%02d:%02d:%02d</td><td>%-12s</td><td>(%.2f%)</td></tr>\n",$idx, $2, $3, $4, $5, $percent);
 }
 close PS or die;
 my $iloop;
