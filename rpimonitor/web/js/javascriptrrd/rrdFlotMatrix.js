@@ -253,15 +253,15 @@ rrdFlotMatrix.prototype.populateRRDcb = function() {
     if (this.rrd_graph_options[name]!=null) {
       var rgo=this.rrd_graph_options[name];
       if (rgo['title']!=null) {
-	// if the user provided the title, use it
-	title=rgo['title'];
+  // if the user provided the title, use it
+  title=rgo['title'];
       } else if (rgo['label']!=null) {
-	// use label as a second choice
-	title=rgo['label'];
+  // use label as a second choice
+  title=rgo['label'];
       } // else leave the ds name
       if (rgo['checked']!=null) {
-	// if the user provided the title, use it
-	checked=rgo['checked'];
+  // if the user provided the title, use it
+  checked=rgo['checked'];
       }
     }
 
@@ -292,9 +292,9 @@ rrdFlotMatrix.prototype.drawFlotGraph = function() {
   var ds_positive_stack=null;
 
   var std_colors=["#00ff00","#00ffff","#0000ff","#ff00ff",
-		  "#808080","#ff0000","#ffff00","#e66266",
-		  "#33cccc","#fff8a9","#ccffff","#a57e81",
-		  "#7bea81","#8d4dff","#ffcc99","#000000"];
+      "#808080","#ff0000","#ffff00","#e66266",
+      "#33cccc","#fff8a9","#ccffff","#a57e81",
+      "#7bea81","#8d4dff","#ffcc99","#000000"];
 
   // now get the list of selected RRDs
   var rrd_list=[];
@@ -304,23 +304,23 @@ rrdFlotMatrix.prototype.drawFlotGraph = function() {
   if (oCB.rrd.length>0) {
     for (var i=0; i<oCB.rrd.length; i++) {
       if (oCB.rrd[i].checked==true) {
-	//var rrd_idx=Number(oCB.rrd[i].value);
-	rrd_list.push(this.rrd_files[i]);
-	color=std_colors[i%std_colors.length];
-	if ((i/std_colors.length)>=1) {
-	  // wraparound, change them a little
-	  idiv=Math.floor(i/std_colors.length);
-	  c1=parseInt(color[1]+color[2],16);
-	  c2=parseInt(color[3]+color[4],16);
-	  c3=parseInt(color[5]+color[6],16);
-	  m1=Math.floor((c1-128)/Math.sqrt(idiv+1))+128;
-	  m2=Math.floor((c2-128)/Math.sqrt(idiv+1))+128;
-	  m3=Math.floor((c3-128)/Math.sqrt(idiv+1))+128;
-	  if (m1>15) s1=(m1).toString(16); else s1="0"+(m1).toString(16);
-	  if (m2>15) s2=(m2).toString(16); else s2="0"+(m2).toString(16);
-	  if (m3>15) s3=(m3).toString(16); else s3="0"+(m3).toString(16);
-	  color="#"+s1+s2+s3;
-	}
+  //var rrd_idx=Number(oCB.rrd[i].value);
+  rrd_list.push(this.rrd_files[i]);
+  color=std_colors[i%std_colors.length];
+  if ((i/std_colors.length)>=1) {
+    // wraparound, change them a little
+    idiv=Math.floor(i/std_colors.length);
+    c1=parseInt(color[1]+color[2],16);
+    c2=parseInt(color[3]+color[4],16);
+    c3=parseInt(color[5]+color[6],16);
+    m1=Math.floor((c1-128)/Math.sqrt(idiv+1))+128;
+    m2=Math.floor((c2-128)/Math.sqrt(idiv+1))+128;
+    m3=Math.floor((c3-128)/Math.sqrt(idiv+1))+128;
+    if (m1>15) s1=(m1).toString(16); else s1="0"+(m1).toString(16);
+    if (m2>15) s2=(m2).toString(16); else s2="0"+(m2).toString(16);
+    if (m3>15) s3=(m3).toString(16); else s3="0"+(m3).toString(16);
+    color="#"+s1+s2+s3;
+  }
         rrd_colors.push(color);
       }
     }
@@ -343,22 +343,22 @@ rrdFlotMatrix.prototype.drawFlotGraph = function() {
     if (this.rrd_graph_options[name]!=null) {
       var dgo=this.rrd_graph_options[name];
       if (dgo['color']!=null) {
-	color=dgo['color'];
+  color=dgo['color'];
       }
       if (dgo['label']!=null) {
-	// if the user provided the label, use it
-	flot_obj.data[i].label=dgo['label'];
+  // if the user provided the label, use it
+  flot_obj.data[i].label=dgo['label'];
       } else  if (dgo['title']!=null) {
-	// use title as a second choice 
-	flot_obj.data[i].label=dgo['title'];
+  // use title as a second choice 
+  flot_obj.data[i].label=dgo['title'];
       } // else use the rrd name
       if (dgo['lines']!=null) {
-	// if the user provided the label, use it
-	flot_obj.data[i].lines=dgo['lines'];
+  // if the user provided the label, use it
+  flot_obj.data[i].lines=dgo['lines'];
       }
     }
     if (lines==null) {
-	flot_obj.data[i].lines= { show:true, fill: true, fillColor:color };
+  flot_obj.data[i].lines= { show:true, fill: true, fillColor:color };
     }
     flot_obj.data[i].color=color;
   }
@@ -425,15 +425,15 @@ rrdFlotMatrix.prototype.bindFlotGraph = function(flot_obj) {
   if (this.graph_options!=null) {
     if (this.graph_options.legend!=null) {
       if (this.graph_options.legend.position!=null) {
-	graph_options.legend.position=this.graph_options.legend.position;
+  graph_options.legend.position=this.graph_options.legend.position;
       }
       if (this.graph_options.legend.noColumns!=null) {
-	graph_options.legend.noColumns=this.graph_options.legend.noColumns;
+  graph_options.legend.noColumns=this.graph_options.legend.noColumns;
       }
     }
     if (this.graph_options.yaxis!=null) {
       if (this.graph_options.yaxis.autoscaleMargin!=null) {
-	graph_options.yaxis.autoscaleMargin=this.graph_options.yaxis.autoscaleMargin;
+  graph_options.yaxis.autoscaleMargin=this.graph_options.yaxis.autoscaleMargin;
       }
     }
     if (this.graph_options.lines!=null) {

@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-  #print encode_json \%{$configuration->{'config'}->{'web'}};
+  #print to_json \%{$configuration->{'config'}->{'web'}};
   #print Data::Dumper->Dump([$configuration]);
 
 #use diagnostics;
@@ -491,13 +491,13 @@ sub Run
     unshift ( @{$this->{'paths'}}, $1);
   }
   @{$this->{'paths'}} = ( @{ $configuration->{'rrdlist'}}, @{$this->{'paths'}} );
-  $this->{'status'} = encode_json(\@{$configuration->{'web'}->{'status'}});
-  $this->{'statistics'} = encode_json(\@{$configuration->{'web'}->{'statistics'}});
-  $this->{'friends'} = encode_json(\@{$configuration->{'web'}->{'friends'}});
-  $this->{'page'} = encode_json(\%{$configuration->{'web'}->{'page'}});
-  $this->{'static'} = encode_json(\%{$monitor->{'static'}});
-  $this->{'menu'} = encode_json(\%{$configuration->{'web'}->{'menu'}});
-  $this->{'addons'} = encode_json(\@{$configuration->{'web'}->{'addons'}});
+  $this->{'status'} = to_json(\@{$configuration->{'web'}->{'status'}});
+  $this->{'statistics'} = to_json(\@{$configuration->{'web'}->{'statistics'}});
+  $this->{'friends'} = to_json(\@{$configuration->{'web'}->{'friends'}});
+  $this->{'page'} = to_json(\%{$configuration->{'web'}->{'page'}});
+  $this->{'static'} = to_json(\%{$monitor->{'static'}});
+  $this->{'menu'} = to_json(\%{$configuration->{'web'}->{'menu'}});
+  $this->{'addons'} = to_json(\@{$configuration->{'web'}->{'addons'}});
   my $json = JSON->new;
   $json = $json->allow_blessed([$configuration]);
   $json = $json->convert_blessed([$configuration]);
@@ -574,31 +574,31 @@ sub Run
     # write json if server is not running
     open(FILE, "> $configuration->{'daemon'}->{'webroot'}/static.json")
       or warn $!;
-      print FILE encode_json \%{$this->{'static'}} ;
+      print FILE to_json \%{$this->{'static'}} ;
     close(FILE);
     open(FILE, "> $configuration->{'daemon'}->{'webroot'}/status.json")
       or warn $!;
-      print FILE encode_json \@{$configuration->{'web'}->{'status'}} ;
+      print FILE to_json \@{$configuration->{'web'}->{'status'}} ;
     close(FILE);
     open(FILE, "> $configuration->{'daemon'}->{'webroot'}/page.json")
       or warn $!;
-      print FILE encode_json \%{$configuration->{'web'}->{'page'}} ;
+      print FILE to_json \%{$configuration->{'web'}->{'page'}} ;
     close(FILE);
     open(FILE, "> $configuration->{'daemon'}->{'webroot'}/statistics.json")
       or warn $!;
-      print FILE encode_json \@{$configuration->{'web'}->{'statistics'}} ;
+      print FILE to_json \@{$configuration->{'web'}->{'statistics'}} ;
     close(FILE);
     open(FILE, "> $configuration->{'daemon'}->{'webroot'}/friends.json")
       or warn $!;
-      print FILE encode_json(\@{$configuration->{'web'}->{'friends'}});
+      print FILE to_json(\@{$configuration->{'web'}->{'friends'}});
     close(FILE);
     open(FILE, "> $configuration->{'daemon'}->{'webroot'}/menu.json")
       or warn $!;
-      print FILE encode_json(\%{$configuration->{'menu'}});
+      print FILE to_json(\%{$configuration->{'menu'}});
     close(FILE);
     open(FILE, "> $configuration->{'daemon'}->{'webroot'}/addons.json")
       or warn $!;
-      print FILE encode_json(\%{$configuration->{'web'}->{'addons'}});
+      print FILE to_json(\%{$configuration->{'web'}->{'addons'}});
     close(FILE);
     open(FILE, "> $configuration->{'daemon'}->{'webroot'}/version.json")
       or warn $!;
@@ -683,7 +683,7 @@ sub Status
   my ($sec,$min,$hour,$mday,$mon,$year) = (localtime)[0,1,2,3,4,5];
   @{$this->{'dynamic'}->{'localtime'}}=($year+1900,$mon+1,$mday,$hour,$min,$sec);
 
-  my $json=encode_json \%{$this->{'dynamic'}};
+  my $json=to_json \%{$this->{'dynamic'}};
   $this->Debug(4,"\n$json");
 
   # if embeded server is not used, we write the json file else the
