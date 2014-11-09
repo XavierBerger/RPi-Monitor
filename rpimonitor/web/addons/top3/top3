@@ -15,38 +15,54 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# web.status.1.content.1.line.4=$.get("/addons/top3/top3.html", function( data ) {return data })
+# web.status.1.content.1.line.4=InsertHTML("/addons/top3/top3.html")
 #
+my $process='rpimonitor';
+my $web=1;
+my $nbtop=3;
 my @top=[];
-my $rpimonitor;
+my $monitored;
+
+#Get uptime
+my $uptime;
+open ( FILE, "/proc/uptime") or die "Can't open /proc/uptime \n";
+while (<FILE>){
+  /(\S+) \S+/;
+  $uptime = $_;
+}
 
 my $idx=0;
 open (PS, 'ps -e -o etimes,time,comm --sort -time |') or die;
 while (<PS>)
 {
-  #/rpimonitor/ or $idx++ and ( $idx>3 or next) ;
   /TIME/ and next;
   $idx++;
-  /rpimonitor/ and $rpimonitor->{'idx'} ||= $idx;
-  /rpimonitor/ or $idx < 4 or next;
+  /$process/ and $monitored->{'idx'} ||= $idx;
+  /$process/ or $idx <= $nbtop or next;
   /(\S+) (\S+):(\S+):(\S+) (\S+)/;
-  my $percent=100*($2*60*60+$3*60+$4)/$1;
-  #$top[$idx] = sprintf("%3d %02d:%02d:%02d %-12s (%.2f%) \n",$idx, $1, $2, $3, $4, $percent);
-  $top[$idx] = sprintf("<tr><td>%3d</td><td>%02d:%02d:%02d</td><td>%-12s</td><td>(%.2f%)</td></tr>\n",$idx, $2, $3, $4, $5, $percent);
+  my $start=100*($2*60*60+$3*60+$4)/$1;
+  my $total=100*($2*60*60+$3*60+$4)/$uptime;
+  $web 
+  and $top[$idx] = sprintf("<tr><td>%3d</td><td>%02d:%02d:%02d</td><td>%-12s</td><td>( %.2f% / %.2f% )</td></tr>\n",$idx, $2, $3, $4, $5, $start, $total)
+  or $top[$idx] = sprintf("%3d %02d:%02d:%02d %-12s ( %.2f% / %.2f% ) \n",$idx, $2, $3, $4, $5, $start, $total);
 }
 close PS or die;
 my $iloop;
 
-  print "<table class='table'>\n";
-  print "<tr><th>#</th><th>CPU usage</th><th>Process</th><th>Percentage</th></tr>\n";
-  for ($iloop=1; $iloop<4; $iloop++) 
+  $web 
+  and print "<table class='table'>\n"
+  and print "<tr><th>#</th><th>CPU usage</th><th>Process</th><th>% start / total</th></tr>\n";
+  for ($iloop=1; $iloop<=$nbtop; $iloop++) 
   {
     print $top[$iloop];
   }
-  if ($iloop < $rpimonitor->{'idx'}){
-    print "<tr><td></td><td colspan='3'>...</td></tr>\n";
+  if ($iloop < $monitored->{'idx'}){
+    $web 
+    and print "<tr><td></td><td colspan='3'>...</td></tr>\n"
+    or print "    ...\n";
   }
-  if ($iloop <= $rpimonitor->{'idx'}){
-    print $top[$rpimonitor->{'idx'}];
+  if ($iloop <= $monitored->{'idx'}){
+    print $top[$monitored->{'idx'}];
   }
-  print "</table>\n";
+  $web 
+  and print "</table>\n";
