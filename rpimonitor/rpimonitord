@@ -61,6 +61,7 @@ sub Load
   $_ = abs_path($0);
   my ($path,$file) = /(.*)\/([^\/]*)$/;
 
+=cut
   if ( scalar(@{$this->{'daemon'}->{'confFiles'}}) == 0 ) {
     @{$this->{'daemon'}->{'confFiles'}} = ( @{$this->{'daemon'}->{'confFiles'}}, glob "/etc/rpimonitor/*.conf" ) ;
   }
@@ -69,6 +70,10 @@ sub Load
     $this->LoadFile($_);
   }
   delete($this->{'daemon'}->{'confFiles'});
+=cut
+
+  $this->LoadFile("/etc/rpimonitor/daemon.conf");
+  $this->LoadFile("/etc/rpimonitor/data.conf");
 
   # Set version (used by web pagescache mechanism)
   $this->{'version'} = localtime();
