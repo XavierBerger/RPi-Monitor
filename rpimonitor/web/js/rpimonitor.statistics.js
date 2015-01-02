@@ -26,7 +26,7 @@ function Start() {
     
   activestat = localStorage.getItem('activestat') || 0;
   activePage = GetURLParameter('activePage');
-  if ( typeof activePage == 'undefined') { 
+  if ( typeof activePage == 'undefined' ) { 
     activePage=localStorage.getItem('activePage', activePage); 
     if ( activePage == null ) { activePage = 0 }
   }
