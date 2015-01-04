@@ -38,7 +38,7 @@ $(function () {
     localStorage.setItem('customwarning'+activePage, customwarning);
   });
 
-  customuri=(localStorage.getItem('customuri'+activePage) || '/addons/custom/custominfo.html');
+  customuri=(localStorage.getItem('customuri'+activePage) || data[activePage].url || '/addons/custom/custominfo.html');
   $('#customuri'+activePage).val(customuri);
   $('#customuri'+activePage).keyup(function(){
     customuri = $('#customuri'+activePage).val();
