@@ -594,11 +594,11 @@ sub Run
     close(FILE);
     open(FILE, "> $configuration->{'daemon'}->{'webroot'}/menu.json")
       or warn $!;
-      print FILE to_json(\%{$configuration->{'menu'}});
+      print FILE to_json(\%{$configuration->{'web'}->{'menu'}});
     close(FILE);
     open(FILE, "> $configuration->{'daemon'}->{'webroot'}/addons.json")
       or warn $!;
-      print FILE to_json(\%{$configuration->{'web'}->{'addons'}});
+      print FILE to_json(\@{$configuration->{'web'}->{'addons'}});
     close(FILE);
     open(FILE, "> $configuration->{'daemon'}->{'webroot'}/version.json")
       or warn $!;
