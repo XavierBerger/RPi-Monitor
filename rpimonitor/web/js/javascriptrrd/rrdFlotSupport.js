@@ -78,7 +78,7 @@ function rrdRRA2FlotObj(rrd_file,rra_idx,ds_list,want_ds_labels,want_rounding) {
     for (var i=0;i<rra_rows;i++) {
       var el=rra.getEl(i,ds_idx);
       if (el!=undefined) {
-	flot_series.push([timestamp*1000.0,el]);
+  flot_series.push([timestamp*1000.0,el]);
       }
       timestamp+=step;
     } // end for
@@ -99,7 +99,7 @@ function rrdRRA2FlotObj(rrd_file,rra_idx,ds_list,want_ds_labels,want_rounding) {
 // If one_undefined_enough==true, a whole stack is invalidated if a single element
 //  of the stack is invalid
 function rrdRRAStackFlotObj(rrd_file,rra_idx,
-			    ds_positive_stack_list,ds_negative_stack_list,ds_single_list,
+          ds_positive_stack_list,ds_negative_stack_list,ds_single_list,
                             timestamp_shift, want_ds_labels,want_rounding,one_undefined_enough) {
   var rra=rrd_file.getRRA(rra_idx);
   var rra_rows=rra.getNrRows();
@@ -137,8 +137,8 @@ function rrdRRAStackFlotObj(rrd_file,rra_idx,
       // initialize
       var flot_el={data:[]}
       if (want_ds_labels!=false) {
-	var ds_name=ds.getName();
-	flot_el.label= ds_name;
+  var ds_name=ds.getName();
+  flot_el.label= ds_name;
       }
       tmp_flot_els.push(flot_el);
     }
@@ -149,27 +149,27 @@ function rrdRRAStackFlotObj(rrd_file,rra_idx,
       var all_undef=true;
       var all_def=true;
       for (var id=0; id<tmp_nr_ids; id++) {
-	var ds_idx=tmp_ds_ids[id];
-	var el=rra.getEl(row,ds_idx);
-	if (el!=undefined) {
-	  all_undef=false;
-	  ds_vals.push(el);
-	} else {
-	  all_def=false;
-	  ds_vals.push(0);
-	}
+  var ds_idx=tmp_ds_ids[id];
+  var el=rra.getEl(row,ds_idx);
+  if (el!=undefined) {
+    all_undef=false;
+    ds_vals.push(el);
+  } else {
+    all_def=false;
+    ds_vals.push(0);
+  }
       } // end for id
       if (!all_undef) { // if all undefined, skip
-	if (all_def || (!one_undefined_enough)) {
-	  // this is a valid column, do the math
-	  for (var id=1; id<tmp_nr_ids; id++) {
-	    ds_vals[id]+=ds_vals[id-1]; // both positive and negative stack use a +, negative stack assumes negative values
-	  }
-	  // fill the flot data
-	  for (var id=0; id<tmp_nr_ids; id++) {
-	    tmp_flot_els[id].data.push([(timestamp+timestamp_shift)*1000.0,ds_vals[id]]);
-	  }
-	}
+  if (all_def || (!one_undefined_enough)) {
+    // this is a valid column, do the math
+    for (var id=1; id<tmp_nr_ids; id++) {
+      ds_vals[id]+=ds_vals[id-1]; // both positive and negative stack use a +, negative stack assumes negative values
+    }
+    // fill the flot data
+    for (var id=0; id<tmp_nr_ids; id++) {
+      tmp_flot_els[id].data.push([(timestamp+timestamp_shift)*1000.0,ds_vals[id]]);
+    }
+  }
       } // end if
 
       timestamp+=step;
@@ -194,7 +194,7 @@ function rrdRRAStackFlotObj(rrd_file,rra_idx,
     for (var i=0;i<rra_rows;i++) {
       var el=rra.getEl(i,ds_idx);
       if (el!=undefined) {
-	flot_series.push([(timestamp+timestamp_shift)*1000.0,el]);
+  flot_series.push([(timestamp+timestamp_shift)*1000.0,el]);
       }
       timestamp+=step;
     } // end for
@@ -213,9 +213,9 @@ function rrdRRAStackFlotObj(rrd_file,rra_idx,
 // return an object with an array containing Flot elements, one per RRD
 // min and max are also returned
 function rrdRRAMultiStackFlotObj(rrd_files, // a list of [rrd_id,rrd_file] pairs, all rrds must have the same step
-				 rra_idx,ds_id,
-				 want_rrd_labels,want_rounding,
-				 one_undefined_enough) { // If true, a whole stack is invalidated if a single element of the stack is invalid
+         rra_idx,ds_id,
+         want_rrd_labels,want_rounding,
+         one_undefined_enough) { // If true, a whole stack is invalidated if a single element of the stack is invalid
 
   var reference_rra=rrd_files[0][1].getRRA(rra_idx); // get the first one, all should be the same
   var rows=reference_rra.getNrRows();
@@ -256,8 +256,8 @@ function rrdRRAMultiStackFlotObj(rrd_files, // a list of [rrd_id,rrd_file] pairs
     // initialize
     var flot_el={data:[]}
     if (want_rrd_labels!=false) {
-	var rrd_name=rrd_files[id][0];
-	flot_el.label= rrd_name;
+  var rrd_name=rrd_files[id][0];
+  flot_el.label= rrd_name;
     }
     tmp_flot_els.push(flot_el);
   }
@@ -271,30 +271,30 @@ function rrdRRAMultiStackFlotObj(rrd_files, // a list of [rrd_id,rrd_file] pairs
       for (var id=0; id<tmp_nr_ids; id++) {
         var rrd_rra=tmp_rras[id];
         var rrd_last_update=tmp_last_updates[id];
-	var row_delta=Math.round((rrd_last_update-ts)/step);
-	var el=undefined; // if out of range
+  var row_delta=Math.round((rrd_last_update-ts)/step);
+  var el=undefined; // if out of range
         if ((row_delta>=0) && (row_delta<rows)) {
           el=rrd_rra.getEl(rows-row_delta-1,ds_idx);
         }
-	if (el!=undefined) {
-	  all_undef=false;
-	  rrd_vals.push(el);
-	} else {
-	  all_def=false;
-	  rrd_vals.push(0);
-	}
+  if (el!=undefined) {
+    all_undef=false;
+    rrd_vals.push(el);
+  } else {
+    all_def=false;
+    rrd_vals.push(0);
+  }
       } // end for id
       if (!all_undef) { // if all undefined, skip
-	if (all_def || (!one_undefined_enough)) {
-	  // this is a valid column, do the math
-	  for (var id=1; id<tmp_nr_ids; id++) {
-	    rrd_vals[id]+=rrd_vals[id-1]; 
-	  }
-	  // fill the flot data
-	  for (var id=0; id<tmp_nr_ids; id++) {
-	    tmp_flot_els[id].data.push([ts*1000.0,rrd_vals[id]]);
-	  }
-	}
+  if (all_def || (!one_undefined_enough)) {
+    // this is a valid column, do the math
+    for (var id=1; id<tmp_nr_ids; id++) {
+      rrd_vals[id]+=rrd_vals[id-1]; 
+    }
+    // fill the flot data
+    for (var id=0; id<tmp_nr_ids; id++) {
+      tmp_flot_els[id].data.push([ts*1000.0,rrd_vals[id]]);
+    }
+  }
       } // end if
   } // end for ts
     
@@ -409,21 +409,21 @@ function rfs_format_time(s) {
       var m60=m%60;
       var h=(m-m60)/60;
       if ((h<12) && (m60>9)) {
-	return h+":"+m60+"h";
+  return h+":"+m60+"h";
       } if (h<48) {
-	return h+"h";
+  return h+"h";
       } else {
-	var h24=h%24;
-	var d=(h-h24)/24;
-	if ((d<7) && (h24>0)) {
-	  return d+" days "+h24+"h";
-	} if (d<60) {
-	  return d+" days";
-	} else {
-	  var d30=d%30;
-	  var mt=(d-d30)/30;
-	  return mt+" months";
-	}
+  var h24=h%24;
+  var d=(h-h24)/24;
+  if ((d<7) && (h24>0)) {
+    return d+" days "+h24+"h";
+  } if (d<60) {
+    return d+" days";
+  } else {
+    var d30=d%30;
+    var mt=(d-d30)/30;
+    return mt+" months";
+  }
       }
     }
     

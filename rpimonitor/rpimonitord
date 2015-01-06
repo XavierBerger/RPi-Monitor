@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-  #print encode_json \%{$configuration->{'config'}->{'web'}};
+  #print to_json \%{$configuration->{'config'}->{'web'}};
   #print Data::Dumper->Dump([$configuration]);
 
 #use diagnostics;
@@ -41,10 +41,6 @@ sub new
   $this->Debug(3,"");
   $this->{'rrd'}=();
   $this->{'daemon'}->{'confFiles'} = [];
-  #$this->{'counter'}->{'static'}  = 0;
-  #$this->{'counter'}->{'dynamic'} = 0;
-  #$this->{'counter'}->{'status'} = 0;
-  #$this->{'counter'}->{'statistics'} = 0;
   return $this;
 }
 
@@ -65,13 +61,14 @@ sub Load
   $_ = abs_path($0);
   my ($path,$file) = /(.*)\/([^\/]*)$/;
 
-  if ( scalar(@{$this->{'daemon'}->{'confFiles'}}) == 0 ) {
-    @{$this->{'daemon'}->{'confFiles'}} = ( @{$this->{'daemon'}->{'confFiles'}}, glob "/etc/rpimonitor/*.conf" ) ;
-  }
+  push(@{$this->{'daemon'}->{'confFiles'}},"/etc/rpimonitor/data.conf");
+  push(@{$this->{'daemon'}->{'confFiles'}},"/etc/rpimonitor/daemon.conf");
 
   foreach ( @{$this->{'daemon'}->{'confFiles'}} ) {
+    #print "$_\n";
     $this->LoadFile($_);
   }
+  delete($this->{'daemon'}->{'confFiles'});
 
   # Set version (used by web pagescache mechanism)
   $this->{'version'} = localtime();
@@ -123,10 +120,13 @@ sub Load
 
   # manage menu
   foreach (@{$this->{'web'}->{'status'}}) {
-    $_->{'name'} and push(@{$this->{'menu'}->{'status'}}, $_->{'name'});
+    $_->{'name'} and push(@{$this->{'web'}->{'menu'}->{'status'}}, $_->{'name'});
   }
   foreach (@{$this->{'web'}->{'statistics'}}) {
-    $_->{'name'} and push(@{$this->{'menu'}->{'statistics'}}, $_->{'name'});
+    $_->{'name'} and push(@{$this->{'web'}->{'menu'}->{'statistics'}}, $_->{'name'});
+  }
+  foreach (@{$this->{'web'}->{'addons'}}) {
+    $_->{'name'} and push(@{$this->{'web'}->{'menu'}->{'addons'}}, $_->{'name'});
   }
 
   $this->{'sharedmem'} = IPC::ShareLite->new(
@@ -267,7 +267,7 @@ use POSIX;
 use IO::Handle;
 use HTTP::Daemon;
 use HTTP::Status;
-use JSON;
+use JSON -convert_blessed_universally;
 #use Data::Dumper;
 
 sub new
@@ -278,6 +278,8 @@ sub new
   # List of files to be delivered
   my @paths = (
     "/",
+    "/all.json",
+    "/addons.json",
     "/static.json",
     "/dynamic.json",
     "/status.json",
@@ -289,9 +291,9 @@ sub new
     "/favicon.ico",
 
     "/index.html",
+    "/addons.html",
     "/statistics.html",
     "/status.html",
-    "/shellinabox.html",
     "/cacert.pem",
     "/certificate.p12",
     "/shellinabox",
@@ -311,6 +313,8 @@ sub new
     "/js/rpimonitor.shellinabox.js",
     "/js/rpimonitor.statistics.js",
     "/js/rpimonitor.status.js",
+    "/js/rpimonitor.utils.js",
+    "/js/rpimonitor.addons.js",
     "/js/rpimonitor.index.js",
     "/js/rpimonitor.js",
     "/js/jsqrencode.min.js",
@@ -443,12 +447,14 @@ sub DoGET
   #The file need to be known or we return an error
   my $isvalid;
   foreach(@{$this->{'paths'}}) {
-    if ( $path =~ /$_$/) {
+    if ( $path =~ /$_$/ ){
       $isvalid=1;
       $path=$_;
       last;
     }
   }
+  $isvalid ||= ( $path =~ /\/addons\// );
+
   #$isvalid or $connection->send_error(404,"<br><b>$path</b> not in <br>". join ('<br>',@{$this->{'paths'}} )) and return;
   $isvalid or $this->SendError(404);
 
@@ -485,12 +491,17 @@ sub Run
     unshift ( @{$this->{'paths'}}, $1);
   }
   @{$this->{'paths'}} = ( @{ $configuration->{'rrdlist'}}, @{$this->{'paths'}} );
-  $this->{'status'} = encode_json(\@{$configuration->{'web'}->{'status'}});
-  $this->{'statistics'} = encode_json(\@{$configuration->{'web'}->{'statistics'}});
-  $this->{'friends'} = encode_json(\@{$configuration->{'web'}->{'friends'}});
-  $this->{'page'} = encode_json(\%{$configuration->{'web'}->{'page'}});
-  $this->{'static'} = encode_json(\%{$monitor->{'static'}});
-  $this->{'menu'} = encode_json(\%{$configuration->{'menu'}});
+  $this->{'status'} = to_json(\@{$configuration->{'web'}->{'status'}});
+  $this->{'statistics'} = to_json(\@{$configuration->{'web'}->{'statistics'}});
+  $this->{'friends'} = to_json(\@{$configuration->{'web'}->{'friends'}});
+  $this->{'page'} = to_json(\%{$configuration->{'web'}->{'page'}});
+  $this->{'static'} = to_json(\%{$monitor->{'static'}});
+  $this->{'menu'} = to_json(\%{$configuration->{'web'}->{'menu'}});
+  $this->{'addons'} = to_json(\@{$configuration->{'web'}->{'addons'}});
+  my $json = JSON->new;
+  $json = $json->allow_blessed([$configuration]);
+  $json = $json->convert_blessed([$configuration]);
+  $this->{'all'} = $json->encode( \%{$configuration} );
   $this->{'version'} = "{\"version\":\"$configuration->{'version'}\"}";
   #print Data::Dumper->Dump([$this->{'paths'}]);
 
@@ -563,27 +574,31 @@ sub Run
     # write json if server is not running
     open(FILE, "> $configuration->{'daemon'}->{'webroot'}/static.json")
       or warn $!;
-      print FILE encode_json \%{$this->{'static'}} ;
+      print FILE to_json \%{$this->{'static'}} ;
     close(FILE);
     open(FILE, "> $configuration->{'daemon'}->{'webroot'}/status.json")
       or warn $!;
-      print FILE encode_json \@{$configuration->{'web'}->{'status'}} ;
+      print FILE to_json \@{$configuration->{'web'}->{'status'}} ;
     close(FILE);
     open(FILE, "> $configuration->{'daemon'}->{'webroot'}/page.json")
       or warn $!;
-      print FILE encode_json \%{$configuration->{'web'}->{'page'}} ;
+      print FILE to_json \%{$configuration->{'web'}->{'page'}} ;
     close(FILE);
     open(FILE, "> $configuration->{'daemon'}->{'webroot'}/statistics.json")
       or warn $!;
-      print FILE encode_json \@{$configuration->{'web'}->{'statistics'}} ;
+      print FILE to_json \@{$configuration->{'web'}->{'statistics'}} ;
     close(FILE);
     open(FILE, "> $configuration->{'daemon'}->{'webroot'}/friends.json")
       or warn $!;
-      print FILE encode_json(\@{$configuration->{'web'}->{'friends'}});
+      print FILE to_json(\@{$configuration->{'web'}->{'friends'}});
     close(FILE);
     open(FILE, "> $configuration->{'daemon'}->{'webroot'}/menu.json")
       or warn $!;
-      print FILE encode_json(\%{$configuration->{'menu'}});
+      print FILE to_json(\%{$configuration->{'web'}->{'menu'}});
+    close(FILE);
+    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/addons.json")
+      or warn $!;
+      print FILE to_json(\@{$configuration->{'web'}->{'addons'}});
     close(FILE);
     open(FILE, "> $configuration->{'daemon'}->{'webroot'}/version.json")
       or warn $!;
@@ -668,7 +683,7 @@ sub Status
   my ($sec,$min,$hour,$mday,$mon,$year) = (localtime)[0,1,2,3,4,5];
   @{$this->{'dynamic'}->{'localtime'}}=($year+1900,$mon+1,$mday,$hour,$min,$sec);
 
-  my $json=encode_json \%{$this->{'dynamic'}};
+  my $json=to_json \%{$this->{'dynamic'}};
   $this->Debug(4,"\n$json");
 
   # if embeded server is not used, we write the json file else the

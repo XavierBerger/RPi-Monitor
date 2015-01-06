@@ -1,6 +1,6 @@
 // This file is part of RPi-Monitor project
 //
-// Copyright 2013 - Xavier Berger - http://rpi-experiences.blogspot.fr/
+// Copyright 2013 - 2015 - Xavier Berger - http://rpi-experiences.blogspot.fr/
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,13 +15,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 var animate;
-var shellinabox;
 var shellinaboxuri;
-var shellinaboxwarning;
 var statusautorefresh;
 var refreshTimerId;
 var clickId;
 var active_rra;
+var current_path = window.location.pathname.split('/').pop();
 
 function GetURLParameter(sParam)
 {
@@ -35,25 +34,6 @@ function GetURLParameter(sParam)
             return sParameterName[1];
         }
     }
-}
-
-function SetShellinaboxMenu(){
-  $('#shellinabox').attr('checked', shellinabox );
-  $('#shellinaboxwarning').attr('checked', shellinaboxwarning );
-  if ( shellinabox ) {
-    $('#shellinaboxmenu').removeClass('hide');
-    $('#shellinaboxuri').val(shellinaboxuri);
-    $('#shellinaboxuri').attr('disabled',false);
-    $('#shellinaboxwarning').attr('disabled',false);
-    $('#shellinaboxwarninglabel').removeClass('muted');
-  }
-  else{
-    $('#shellinaboxmenu').addClass('hide');
-    $('#shellinaboxuri').val('');
-    $('#shellinaboxuri').attr('disabled',true);
-    $('#shellinaboxwarning').attr('disabled',true);
-    $('#shellinaboxwarninglabel').addClass('muted');
-  }
 }
 
 function getData( name ){
@@ -94,16 +74,13 @@ function ShowFriends(){
 function AddFooter(){
 $('#footer').html(
   '<div class="navbar-inverse navbar-fixed-bottom text-center">'+
-  //'<div class="container-fluid text-center">'+
-    //'<p class="muted credit">'+
-      '<small>'+
-        '<a href="http://rpi-experiences.blogspot.fr/">RPi-Experiences</a>'+
-        '<font color="silver"> | </font>'+
-        '<a href="https://github.com/XavierBerger/RPi-Monitor">GitHub</a>'+
-        '<font color="silver"> | </font>'+
-        '<a href="http://www.raspberrypi.org/">Raspberry Pi Foundation</a>'+
-      '</small>'+
-    //'</p>'+
+    '<small>'+
+      '<a href="http://rpi-experiences.blogspot.fr/">RPi-Experiences</a>'+
+      '<font color="silver"> | </font>'+
+      '<a href="https://github.com/XavierBerger/RPi-Monitor">GitHub</a>'+
+      '<font color="silver"> | </font>'+
+      '<a href="http://www.raspberrypi.org/">Raspberry Pi Foundation</a>'+
+    '</small>'+
   '</div>'
 );
 }
@@ -111,43 +88,46 @@ $('#footer').html(
 function AddDialogs(){
   var dialogs="";
 
-  // Add Configuration Dialog
+  // Add Options Dialog
   dialogs+=
-    '<div id="Configuration" class="modal fade">'+
+    '<div id="Options" class="modal fade">'+
       '<div class="modal-dialog">' +
         '<div class="modal-content">'+
       '<div class="modal-header">'+
       '<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>' +
-      '<h4 id="myModalLabel">Configuration</h4>'+
+      '<h4 id="myModalLabel">Options</h4>'+
       '</div>'+
-      '<div class="modal-body">'+
-      '<p>'+
-        '<form class="form-inline">'+
-          '<label class="checkbox"><input type="checkbox" id="shellinabox"> Show shellinabox menu</label> <br>'+
-          '&nbsp;&nbsp;&nbsp;&nbsp;'+
-          '<label class="checkbox"><input type="text" placeholder="Address" id="shellinaboxuri" class="input-medium"></label><br>'+
-          '&nbsp;&nbsp;&nbsp;&nbsp;'+
-          '<label class="checkbox" id="shellinaboxwarninglabel"><input type="checkbox" id="shellinaboxwarning"> Do not show warning on page close or refresh</label>'+
-        '</form>'+
-      '</p>'+
-      '<hr>'+
-      '<p>'+
-        '<form class="form-inline">'+
-          '<label class="checkbox">'+
-          '<input type="checkbox" id="statusautorefresh"> Auto refresh status page</label>'+
-        '</form>'+
-      '</p>'+
-      '<hr>'+
-      '<p><label class="checkbox">Default graph timeline <select class="span3" id="active_rra">'+
-        '<option value="0" '+ ( active_rra == 0 ? 'selected' : '' ) +'>10s (24h total)</option>'+
-        '<option value="1" '+ ( active_rra == 1 ? 'selected' : '' ) +'>60s (2 days total)</option>'+
-        '<option value="2" '+ ( active_rra == 2 ? 'selected' : '' ) +'>10min (14 days total)</option>'+
-        '<option value="3" '+ ( active_rra == 3 ? 'selected' : '' ) +'>30min (31 days total)</option>'+
-        '<option value="4" '+ ( active_rra == 4 ? 'selected' : '' ) +'>60min (12 months total)</option>'+
-        '</select></label></p>'+
+      '<div class="modal-body">';
+    if (current_path == 'status.html') { 
+      dialogs+=
+        '<p>'+
+          '<b>Status</b><br>'+
+          '<form class="form-inline">'+
+            '<input type="checkbox" id="statusautorefresh"> Auto refresh status page'+
+          '</form>'+
+        '</p>';
+    }
+    if (current_path == 'statistics.html') { 
+      dialogs+=
+          '<p>'+
+          '<b>Statistic</b><br>'+
+          '<form class="form-inline">'+
+            '<span>Default graph timeline <select class="span3" id="active_rra">'+
+            '<option value="0" '+ ( active_rra == 0 ? 'selected' : '' ) +'>10s (24h total)</option>'+
+            '<option value="1" '+ ( active_rra == 1 ? 'selected' : '' ) +'>60s (2 days total)</option>'+
+            '<option value="2" '+ ( active_rra == 2 ? 'selected' : '' ) +'>10min (14 days total)</option>'+
+            '<option value="3" '+ ( active_rra == 3 ? 'selected' : '' ) +'>30min (31 days total)</option>'+
+            '<option value="4" '+ ( active_rra == 4 ? 'selected' : '' ) +'>60min (12 months total)</option>'+
+            '</select></span>'+
+          '</form>'+
+        '</p>'; 
+       
+    }
+    dialogs+=
+         '<i id="optionsInsertionPoint"></i>'+
       '</div>'+
       '<div class="modal-footer">'+
-      '<button class="btn" data-dismiss="modal" aria-hidden="true" id="closeconfiguration">Close</button>'+
+      '<button class="btn" data-dismiss="modal" aria-hidden="true" id="closeoptions">Close</button>'+
       '</div>'+
       '</div>'+
     '</div>'+
@@ -197,7 +177,7 @@ function AddDialogs(){
       '<h4 id="myModalLabel">About</h4>'+
       '</div>'+
       '<div class="modal-body">'+
-      '<p><b>Version</b>: 2.9 '+
+      '<p><b>Version</b>: {DEVELOPMENT} '+
       '<b>by</b> Xavier Berger <a href="http://rpi-experiences.blogspot.fr/">Blog</a> <a href="https://github.com/XavierBerger/RPi-Monitor">GitHub</a></p>'+
       'With the contribution of users sharing ideas and competences on Github.'+
       '<hr>'+
@@ -252,8 +232,8 @@ function AddTopmenu(){
       '<ul class="nav navbar-nav">' +
         '<li id="statusmenu"><a id="statuslink" href="status.html">Status</a></li>'+
             '<li id="statisticsmenu"><a id="statisticslink" href="statistics.html">Statistics</a></li>'+
-            '<li id="shellinaboxmenu" class="hide"><a href="shellinabox.html">Shellinabox</a></li>'+
-            '<li id="configurationmenu"><a href="#Configuration" data-toggle="modal">Configuration</a></li>'+
+            '<li id="addonsmenu" class="hide"><a id="addonslink" href="addons.html">Add-ons</a></li>'+
+            '<li id="optionsmenu"><a href="#Options" data-toggle="modal">Options</a></li>'+
             '<li class="dropdown">' +
         '<a href="#" class="dropdown-toggle" data-toggle="dropdown">About <span class="caret"></span></a>' +
         '<ul class="dropdown-menu" role="menu">' +
@@ -287,31 +267,27 @@ function AddTopmenu(){
 function UpdateMenu(){
 
   var index=true;
-  var current_path = window.location.pathname.split('/').pop();
-  
-  // Manage shellinabox menu
-  SetShellinaboxMenu();
   
   // Manage active link
   if (current_path == 'status.html'){
     $('#statusmenu').addClass('active');
     index=false;
   }
-  if (current_path == 'statistics.html'){
+  else if (current_path == 'statistics.html'){
     $('#statisticsmenu').addClass('active');
     index=false;
   }
-  if (current_path == 'shellinabox.html'){
-    $('#shellinaboxmenu').addClass('active');
+  else if (current_path == 'addons.html'){
+    $('#addonsmenu').addClass('active');
     index=false;
   }
-  
+
   // On home page, the menu is not shown
   if ( index==true ) {
     $('#statusmenu').addClass('hide');
     $('#statisticsmenu').addClass('hide');
-    $('#shellinaboxmenu').addClass('hide');
-    $('#configurationmenu').addClass('hide');
+    $('#addonsmenu').addClass('hide');
+    $('#optionsmenu').addClass('hide');
     return;
   }
   
@@ -319,7 +295,6 @@ function UpdateMenu(){
   if ( data.status.length > 1 ){
     $('#statusmenu').addClass('dropdown');
     var dropDownMenu='<ul class="dropdown-menu">';
-    //dropDownMenu+='<li class="nav-header">Status</li>'
     for ( var iloop=0; iloop < data.status.length; iloop++){
       dropDownMenu+='<li><a href="status.html?activePage='+iloop+'">'+data.status[iloop]+'</a></li>';
     }
@@ -333,7 +308,6 @@ function UpdateMenu(){
   if ( data.statistics.length > 1 ){
     $('#statisticsmenu').addClass('dropdown');
     var dropDownMenu='<ul class="dropdown-menu">';
-    //dropDownMenu+='<li class="nav-header">Statistics</li>'
     for ( var iloop=0; iloop < data.statistics.length; iloop++){
       dropDownMenu+='<li><a href="statistics.html?activePage='+iloop+'">'+data.statistics[iloop]+'</a></li>';
     }
@@ -345,6 +319,25 @@ function UpdateMenu(){
     $('#statisticslink').attr('href','#');
   }
   
+  if ( data.addons != undefined ) {
+    if ( data.addons.length > 0 ){
+      $('#addonsmenu').removeClass('hide');
+      $('#addonslink').html(data.addons[0]);
+    }
+    if ( data.addons.length > 1 ){
+      $('#addonsmenu').addClass('dropdown');
+      var dropDownMenu='<ul class="dropdown-menu">';
+      for ( var iloop=0; iloop < data.addons.length; iloop++){
+        dropDownMenu+='<li><a href="addons.html?activePage='+iloop+'">'+data.addons[iloop]+'</a></li>';
+      }
+      dropDownMenu+='</ul>';
+      $('#addonslink').html( 'Add-ons <b class="caret"></b>')
+      $(dropDownMenu).insertAfter('#addonslink');
+      $('#addonslink').addClass('dropdown-toggle');
+      $('#addonslink').attr('data-toggle','dropdown');
+      $('#addonslink').attr('href','#');
+    }
+  }
 }
 
 function getVersion(){
@@ -367,9 +360,6 @@ $(function () {
   }
   // Load data from local storage
   animate=(localStorage.getItem('animate') === 'true');
-  shellinabox=(localStorage.getItem('shellinabox') === 'true');
-  shellinaboxuri=(localStorage.getItem('shellinaboxuri') || '/shellinabox');
-  shellinaboxwarning=(localStorage.getItem('shellinaboxwarning') === 'true' );
   statusautorefresh=(localStorage.getItem('statusautorefresh') === 'true');
   active_rra=(localStorage.getItem('active_rra') || 0);
 
@@ -388,22 +378,6 @@ $(function () {
     animate = $('#animate').is(":checked");
     localStorage.setItem('animate', animate);
     SetProgressBarAnimate();
-  });
-
-  $('#shellinabox').click(function(){
-    shellinabox = $('#shellinabox').is(":checked");
-    localStorage.setItem('shellinabox', shellinabox);
-    SetShellinaboxMenu();
-  });
-
-  $('#shellinaboxuri').keyup(function(){
-    shellinaboxuri = $('#shellinaboxuri').val();
-    localStorage.setItem('shellinaboxuri', shellinaboxuri);
-  });
-
-  $('#shellinaboxwarning').click(function(){
-    shellinaboxwarning = $('#shellinaboxwarning').is(":checked");
-    localStorage.setItem('shellinaboxwarning', shellinaboxwarning);
   });
   
   $('#statusautorefresh').click(function(){

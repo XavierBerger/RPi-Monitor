@@ -89,7 +89,7 @@ RRDDS.prototype.getMax = function() {
 // ============================================================
 // RRD RRA Info class
 function RRDRRAInfo(rrd_data,rra_def_idx,
-		    int_align,row_cnt,pdp_step,my_idx) {
+        int_align,row_cnt,pdp_step,my_idx) {
   this.rrd_data=rrd_data;
   this.rra_def_idx=rra_def_idx;
   this.int_align=int_align;
@@ -130,8 +130,8 @@ RRDRRAInfo.prototype.getCFName = function() {
 // ============================================================
 // RRD RRA handling class
 function RRDRRA(rrd_data,rra_ptr_idx,
-		rra_info,
-		header_size,prev_row_cnts,ds_cnt) {
+    rra_info,
+    header_size,prev_row_cnts,ds_cnt) {
   this.rrd_data=rrd_data;
   this.rra_info=rra_info;
   this.row_cnt=rra_info.row_cnt;
@@ -149,16 +149,16 @@ function RRDRRA(rrd_data,rra_ptr_idx,
   this.calc_idx = function(row_idx,ds_idx) {
     if ((row_idx>=0) && (row_idx<this.row_cnt)) {
       if ((ds_idx>=0) && (ds_idx<ds_cnt)){
-	// it is round robin, starting from cur_row+1
-	var real_row_idx=row_idx+this.cur_row+1;
-	if (real_row_idx>=this.row_cnt) real_row_idx-=this.row_cnt;
-	return row_size*real_row_idx+ds_idx*8;
+  // it is round robin, starting from cur_row+1
+  var real_row_idx=row_idx+this.cur_row+1;
+  if (real_row_idx>=this.row_cnt) real_row_idx-=this.row_cnt;
+  return row_size*real_row_idx+ds_idx*8;
       } else {
-	throw RangeError("DS idx ("+ row_idx +") out of range [0-" + ds_cnt +").");
+  throw RangeError("DS idx ("+ row_idx +") out of range [0-" + ds_cnt +").");
       }
     } else {
       throw RangeError("Row idx ("+ row_idx +") out of range [0-" + this.row_cnt +").");
-    }	
+    } 
   }
 }
 
@@ -220,13 +220,13 @@ RRDHeader.prototype.validate_rrd = function() {
     if (this.rrd_data.getDoubleAt(16)==8.642135e+130) {
       // now, is it all 64bit or only float 64 bit?
       if (this.rrd_data.getLongAt(28)==0) {
-	// true 64 bit align
-	this.int_align=8;
-	this.int_width=8;
+  // true 64 bit align
+  this.int_align=8;
+  this.int_width=8;
       } else {
-	// integers are 32bit aligned
-	this.int_align=4;
-	this.int_width=4;
+  // integers are 32bit aligned
+  this.int_align=4;
+  this.int_width=4;
       }
     } else {
       throw new InvalidRRD("Magic float not found at 16.");
@@ -349,7 +349,7 @@ RRDHeader.prototype.getDSbyIdx = function(idx) {
     return new RRDDS(this.rrd_data,this.ds_def_idx+this.ds_el_size*idx,idx);
   } else {
     throw RangeError("DS idx ("+ idx +") out of range [0-" + this.ds_cnt +").");
-  }	
+  } 
 }
 RRDHeader.prototype.getDSbyName = function(name) {
   for (var idx=0; idx<this.ds_cnt; idx++) {
@@ -367,12 +367,12 @@ RRDHeader.prototype.getNrRRAs = function() {
 RRDHeader.prototype.getRRAInfo = function(idx) {
   if ((idx>=0) && (idx<this.rra_cnt)) {
     return new RRDRRAInfo(this.rrd_data,
-			  this.rra_def_idx+idx*this.rra_def_el_size,
-			  this.int_align,this.rra_def_row_cnts[idx],this.pdp_step,
-			  idx);
+        this.rra_def_idx+idx*this.rra_def_el_size,
+        this.int_align,this.rra_def_row_cnts[idx],this.pdp_step,
+        idx);
   } else {
     throw RangeError("RRA idx ("+ idx +") out of range [0-" + this.rra_cnt +").");
-  }	
+  } 
 }
 
 // ============================================================
@@ -422,11 +422,11 @@ function RRDFile(bf) {
   this.getRRA = function(idx) {
     rra_info=this.rrd_header.getRRAInfo(idx);
     return new RRDRRA(rrd_data,
-		      this.rrd_header.rra_ptr_idx+idx*this.rrd_header.rra_ptr_el_size,
-		      rra_info,
-		      this.rrd_header.header_size,
-		      this.rrd_header.rra_def_row_cnt_sums[idx],
-		      this.rrd_header.ds_cnt);
+          this.rrd_header.rra_ptr_idx+idx*this.rrd_header.rra_ptr_el_size,
+          rra_info,
+          this.rrd_header.header_size,
+          this.rrd_header.rra_def_row_cnt_sums[idx],
+          this.rrd_header.ds_cnt);
   }
 
 }

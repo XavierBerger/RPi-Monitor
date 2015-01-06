@@ -1,6 +1,6 @@
 // This file is part of RPi-Monitor project
 //
-// Copyright 2013 - Xavier Berger - http://rpi-experiences.blogspot.fr/
+// Copyright 2013 -2014 - Xavier Berger - http://rpi-experiences.blogspot.fr/
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ function Start() {
     
   activestat = localStorage.getItem('activestat') || 0;
   activePage = GetURLParameter('activePage');
-  if ( typeof activePage == 'undefined') { 
+  if ( typeof activePage == 'undefined' ) { 
     activePage=localStorage.getItem('activePage', activePage); 
     if ( activePage == null ) { activePage = 0 }
   }
@@ -35,8 +35,8 @@ function Start() {
     $('<h2><p class="text-info">'+graphconf[activePage].name+'</p></h2><hr>').insertBefore("#insertionPoint");
   }
 
-    localStorage.setItem('activePage', activePage);localStorage.setItem('activePage', activePage);
-    FetchGraph();
+  localStorage.setItem('activePage', activePage);
+  FetchGraph();
 }
 
 function SetGraphlist() {

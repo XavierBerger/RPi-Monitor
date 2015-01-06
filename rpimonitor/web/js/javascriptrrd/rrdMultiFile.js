@@ -56,11 +56,11 @@ RRDRRASum.prototype.getEl = function(row_idx,ds_idx) {
     /* treat all undefines as 0 for now */
     if (val==undefined) {
       if (this.treat_undefined_as_zero) {
-	val=0;
+  val=0;
       } else {
-	/* if even one element is undefined, the whole sum is undefined */
-	outSum=undefined;
-	break;
+  /* if even one element is undefined, the whole sum is undefined */
+  outSum=undefined;
+  break;
       }
     }
     outSum+=val;
@@ -84,11 +84,11 @@ RRDRRASum.prototype.getElFast = function(row_idx,ds_idx) {
     /* treat all undefines as 0 for now */
     if (val==undefined) {
       if (this.treat_undefined_as_zero) {
-	val=0;
+  val=0;
       } else {
-	/* if even one element is undefined, the whole sum is undefined */
-	outSum=undefined;
-	break;
+  /* if even one element is undefined, the whole sum is undefined */
+  outSum=undefined;
+  break;
       }
     }
     outSum+=val;
@@ -157,10 +157,10 @@ function RRDFileSum(file_list,treat_undefined_as_zero) {
       file=file_list[i];
       fileLastUpdate=file.getLastUpdate();
       if (realLastUpdate!=undefined) {
-	fileSkrew=Math.floor((realLastUpdate-fileLastUpdate)/rra_step);
+  fileSkrew=Math.floor((realLastUpdate-fileLastUpdate)/rra_step);
       } else {
-	fileSkrew=0;
-	firstLastUpdate=fileLastUpdate;
+  fileSkrew=0;
+  firstLastUpdate=fileLastUpdate;
       }
       offset_list.push(fileSkrew);
       fileRRA=file.getRRA(idx);
