@@ -53,6 +53,8 @@ The template directory is also containing some templates that can be used as exa
 * /usr/share/rpimonitor/web/js: *Directory containing javascripts*
 * /usr/share/rpimonitor/web/css: *Directory containing style*
 * /usr/share/rpimonitor/web/img: *Directory containing images*
+* /usr/share/rpimonitor/web/fonts: *Directory containing fonts*
+* /usr/share/rpimonitor/web/addons: *Directory containing addons*
 
 **Note:**
 
