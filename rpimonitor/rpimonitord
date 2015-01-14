@@ -453,7 +453,14 @@ sub DoGET
       last;
     }
   }
-  $isvalid ||= ( $path =~ /\/addons\// );
+  # Check for valid addon
+  if ( $path =~ /\/addons\/(.*)\/(.*)\.(js|html|css)/ ) {
+    if ($1 == $2) {
+      $path="/addons/$1/$1.$3";
+      $isvalid=1;
+    }
+  }
+  #$isvalid ||= ( $path =~ /\/addons\// );
 
   #$isvalid or $connection->send_error(404,"<br><b>$path</b> not in <br>". join ('<br>',@{$this->{'paths'}} )) and return;
   $isvalid or $this->SendError(404);
@@ -467,7 +474,7 @@ sub DoGET
 
   #The main page (/) is requested
   $path =~ /^\/$/ and $path = "/index.html";
-
+  
   #If the file exists we return it
   -f "$configuration->{'daemon'}->{'webroot'}/$path" and $this->SendFile($connection, "$configuration->{'daemon'}->{'webroot'}/$path") and return;
   -f "$configuration->{'daemon'}->{'datastore'}/$path" and $this->SendFile($connection, "$configuration->{'daemon'}->{'datastore'}/$path") and return;
