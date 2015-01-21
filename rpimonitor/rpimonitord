@@ -460,20 +460,22 @@ sub DoGET
       $isvalid=1;
     }
   }
-  #$isvalid ||= ( $path =~ /\/addons\// );
 
   #$isvalid or $connection->send_error(404,"<br><b>$path</b> not in <br>". join ('<br>',@{$this->{'paths'}} )) and return;
   $isvalid or $this->SendError(404);
 
-  #$path =~ /shellinabox$/ and $this->SendRedirect( $configuration->{'daemon'}->{'shellinabox'} ) and return;
   $path =~ /shellinabox$/ and $this->ShowShellinabox( $configuration, $request->header('Host') ) and return;
   $path =~ /dynamic\.json/ and $this->SendStatus( $configuration ) and return;
   $path =~ /([^\/]+)\.json/ and $this->SendJSON($this->{$1}) and return;
+  
   #Recreate empty rrd on demand
   $path =~ /empty\.rrd/ and $configuration->CreateRRD( "$configuration->{'daemon'}->{'datastore'}/stat/empty.rrd", 'empty', 'GAUGE', 'U', 'U' );
 
   #The main page (/) is requested
   $path =~ /^\/$/ and $path = "/index.html";
+  
+  #Disable index page (until login screen is implemented)
+  $path =~ /index\.html/ and $path =~ s/index/status/ and $this->SendRedirect( $path ) and return;
   
   #If the file exists we return it
   -f "$configuration->{'daemon'}->{'webroot'}/$path" and $this->SendFile($connection, "$configuration->{'daemon'}->{'webroot'}/$path") and return;
