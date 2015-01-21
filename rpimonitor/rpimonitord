@@ -453,12 +453,11 @@ sub DoGET
       last;
     }
   }
+  
   # Check for valid addon
   if ( $path =~ /\/addons\/(.*)\/(.*)\.(js|html|css)/ ) {
-    if ($1 == $2) {
-      $path="/addons/$1/$1.$3";
-      $isvalid=1;
-    }
+    $path = "/addons/$1/$2.$3";
+    $isvalid=1;
   }
 
   #$isvalid or $connection->send_error(404,"<br><b>$path</b> not in <br>". join ('<br>',@{$this->{'paths'}} )) and return;
