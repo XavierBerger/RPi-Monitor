@@ -265,8 +265,9 @@ function AddTopmenu(){
 }
 
 function UpdateMenu(){
-
-  var index=true;
+  // Disable index page 
+  //var index=true;
+  var index=false;
   
   // Manage active link
   if (current_path == 'status.html'){

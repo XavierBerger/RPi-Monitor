@@ -474,7 +474,7 @@ sub DoGET
   $path =~ /^\/$/ and $path = "/index.html";
   
   #Disable index page (until login screen is implemented)
-  $path =~ /index\.html/ and $path =~ s/index/status/ and $this->SendRedirect( $path ) and return;
+  $path =~ /index\.html/ and $path =~ s/index/status/;
   
   #If the file exists we return it
   -f "$configuration->{'daemon'}->{'webroot'}/$path" and $this->SendFile($connection, "$configuration->{'daemon'}->{'webroot'}/$path") and return;
