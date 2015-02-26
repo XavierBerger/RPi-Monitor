@@ -16,27 +16,28 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 function ConstructPage()
 {
-  var activePage = GetURLParameter('activePage');
+  var activeAddonsPage = GetURLParameter('activeAddonsPage');
 
-  if ( typeof activePage == 'undefined') {
-    activePage=localStorage.getItem('activePage', activePage);
-    if ( activePage == null ) { activePage = 0 }
+  if ( typeof activeAddonsPage == 'undefined') {
+    activeAddonsPage=localStorage.getItem('activeAddonsPage', activeAddonsPage);
+    if ( activeAddonsPage == null ) { activeAddonsPage = 0 }
   }
   data = getData('addons');
-  if ( activePage >= data.length ){
-    activePage=0;
+  if ( activeAddonsPage >= data.length ){
+    activeAddonsPage=0;
   }
-  localStorage.setItem('activePage', activePage);
-  if ( data[activePage].showTitle != 0 ) {
-    $('<h2 id="pagetitle"><p class="text-info">'+data[activePage].name+'</p><hr></h2>').insertBefore("#insertionPoint");
+  if ( graphconf.length < activeAddonsPage ) { activeAddonsPage = 0 }
+  localStorage.setItem('activeAddonsPage', activeAddonsPage);
+  if ( data[activeAddonsPage].showTitle != 0 ) {
+    $('<h2 id="pagetitle"><p class="text-info">'+data[activeAddonsPage].name+'</p><hr></h2>').insertBefore("#insertionPoint");
   }
   
-  $("#insertionPoint").load("addons/"+data[activePage].addons+"/"+data[activePage].addons+".html")
+  $("#insertionPoint").load("addons/"+data[activeAddonsPage].addons+"/"+data[activeAddonsPage].addons+".html")
   
-  $("head").append("<link rel='stylesheet' type='text/css' href='addons/"+data[activePage].addons+"/"+data[activePage].addons+".css' />");
+  $("head").append("<link rel='stylesheet' type='text/css' href='addons/"+data[activeAddonsPage].addons+"/"+data[activeAddonsPage].addons+".css' />");
   
   jQuery.ajax({
-      url: "addons/"+data[activePage].addons+"/"+data[activePage].addons+".js",
+      url: "addons/"+data[activeAddonsPage].addons+"/"+data[activeAddonsPage].addons+".js",
       dataType: "script",
     }).done(function() {
   });

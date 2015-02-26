@@ -30,6 +30,7 @@ function Start() {
     activePage=localStorage.getItem('activePage', activePage); 
     if ( activePage == null ) { activePage = 0 }
   }
+  if ( graphconf.length < activePage ) { activePage = 0 }
   localStorage.setItem('activePage', activePage);
   if ( graphconf.length > 1 ) {
     $('<h2><p class="text-info">'+graphconf[activePage].name+'</p></h2><hr>').insertBefore("#insertionPoint");
