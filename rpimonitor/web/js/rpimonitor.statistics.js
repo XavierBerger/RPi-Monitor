@@ -21,22 +21,20 @@ var static;
 
 function Start() {
   static = getData('static')
-  
   graphconf = getData('statistics')
     
   activestat = localStorage.getItem('activestat') || 0;
   activePage = GetURLParameter('activePage');
-  if ( typeof activePage == 'undefined' ) { 
-    activePage=localStorage.getItem('activePage', activePage); 
-    if ( activePage == null ) { activePage = 0 }
+  if ( ( typeof activePage == 'undefined' ) || 
+       ( activePage >= graphconf.length ) 
+     )
+  { 
+    activePage = 0 
   }
-  if ( graphconf.length < activePage ) { activePage = 0 }
-  localStorage.setItem('activePage', activePage);
   if ( graphconf.length > 1 ) {
     $('<h2><p class="text-info">'+graphconf[activePage].name+'</p></h2><hr>').insertBefore("#insertionPoint");
   }
 
-  localStorage.setItem('activePage', activePage);
   FetchGraph();
 }
 
