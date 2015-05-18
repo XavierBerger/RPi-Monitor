@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# Copyright 2013-2014 - Xavier Berger - http://rpi-experiences.blogspot.fr/
+# Copyright 2013-2015 - Xavier Berger - http://rpi-experiences.blogspot.fr/
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -1022,7 +1022,8 @@ NAME
 
 USAGE
   rpimonitord [-a address][ -b pidfile][[-c configuration_file]...]
-     [-d delay][-h][-n][-p port][-s][-t timeout][-v[v[...]]][-V]
+     [-d delay][-h][-k][-l logfile][-n][-p port][-s][-t timeout]
+     [-v[v[...]]][-V]
 
 DESCRIPTION
   rpimonitord is designed to extract data from Raspberry Pi system and
@@ -1041,6 +1042,8 @@ OPTIONS
                       slice.
   -h, --help        Shows this help and exit
   -i, --interactive Interactive configuration helper
+  -k, --keep        Keep log file (Default: logfile is delete at each start)
+  -l, --logfile     Logfile directory and prefix (ex: /var/log/rpimonitor)
   -n, --noserver    Don't start embeded server
   -p, --port        Web server port (Default: 8888)
   -s, --show        Show configuration as loaded and exit
@@ -1074,6 +1077,7 @@ RAW DATA ACCESS
     statistics.json: Description of statistics page
     status.json:    Description of status page
     friends.json:   List of friends
+    addons.json:   List of addons
 
   Statistic information are stored into RRD file available in the
   directory [webroot]/stat/
@@ -1092,10 +1096,11 @@ sub writePID {
 }
 
 sub daemonize {
+  my $configuration = shift;
   chdir '/' or die "Can't chdir to /: $!";
   open STDIN, '/dev/null' or die "Can't read /dev/null: $!";
   open STDOUT, '>>/dev/null' or die "Can't write to /dev/null: $!";
-  open STDERR, '>>/dev/null' or die "Can't write to /dev/null: $!";
+  open STDERR, ">>$configuration->{'daemon'}->{'logfile'}" or die "Can't write to $configuration->{'daemon'}->{'logfile'}: $!";
   defined(my $pid = fork) or die "Can't fork: $!";
   exit if $pid;
   setsid or die "Can't start a new session: $!";
@@ -1141,6 +1146,8 @@ while($_ = shift)
   /-d(elay)?/       and $configuration->{'daemon'}->{'delay'} = shift and next;
   /-h(elp)?/        and help;
   /-i(nteractive)?/ and interactive() and exit;
+  /-k(eep)?/        and $configuration->{'daemon'}->{'keeplogfile'}++ and next;
+  /-l(ogfile)?/     and $configuration->{'daemon'}->{'logfile'} = shift and next;
   /-n(oserver)?/    and $configuration->{'daemon'}->{'noserver'}++ and next;
   /-p(ort)?/        and $configuration->{'daemon'}->{'port'} = shift and next;
   /-s(how)?/        and $configuration->{'show'}++ and next;
@@ -1150,7 +1157,11 @@ while($_ = shift)
 }
 $configuration->Load();
 
-$pidfile and &daemonize;
+$configuration->{'daemon'}->{'keeplogfile'} or -f $configuration->{'daemon'}->{'logfile'} and unlink $configuration->{'daemon'}->{'logfile'};
+$configuration->{'daemon'}->{'logfile'} ||= '/dev/null';
+
+
+$pidfile and &daemonize($configuration);
 
 my $monitor = Monitor->new();
 # Process data that should be extracted once, before the server starts
@@ -1160,6 +1171,14 @@ $monitor->{'static'}->{'hostname'} = hostname();
 $SIG{INT}    = sub { stop(); }; # catch Ctrl+C
 
 my $serverpid;
+
+# Manage loglevel
+$SIG{USR1}   = sub { ($verbose < 5 ) and ++$verbose and print STDERR "[", strftime("%Y/%m/%d-%H:%M:%S", localtime), "] Change loglevel to ", $verbose ,"\n"; };
+$SIG{USR2}   = sub {  $verbose       and $verbose-- and print STDERR "[", strftime("%Y/%m/%d-%H:%M:%S", localtime), "] Change loglevel to ", $verbose ,"\n"; };
+
+print STDERR "[", strftime("%Y/%m/%d-%H:%M:%S", localtime), "] ", "RPi-Monitor has been started\n";
+print STDERR "                      Log level can be increased or decreased during runtime\n";
+print STDERR "                      by sending signal USR1 or USR2 with the command killall -USRx rpimonitord\n";
 
 my $startTime = 0;
 for (;;) {
