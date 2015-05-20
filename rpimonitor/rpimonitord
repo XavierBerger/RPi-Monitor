@@ -104,6 +104,18 @@ sub Load
   foreach (@{$this->{'rrd'}}){
     my @name = split (',',$_->{'name'});
     my $rrdconf = $_;
+    
+    # define default values
+    $rrdconf->{'interval'} ||= 1;
+    $rrdconf->{'rra'}[0]->{'definition'} ||= "AVERAGE:0.5:1:8640";   # 1 day with interval of 10sec
+    $rrdconf->{'rra'}[1]->{'definition'} ||= "AVERAGE:0.5:6:2880";   # 2 days with interval of 1min
+    $rrdconf->{'rra'}[2]->{'definition'} ||= "AVERAGE:0.5:60:2016";  # 14 days with interval of 10 min
+    $rrdconf->{'rra'}[3]->{'definition'} ||= "AVERAGE:0.5:180:1488"; # 1 mounth with interval of 30min
+    $rrdconf->{'rra'}[4]->{'definition'} ||= "AVERAGE:0.5:360:8784"; # 1 year with interval of 1hour
+    $rrdconf->{'min'}       ||= defined($rrdconf->{'min'}) ? $rrdconf->{'min'} : "U";
+    $rrdconf->{'max'}       ||= defined($rrdconf->{'max'}) ? $rrdconf->{'max'} : "U";
+    $rrdconf->{'heartbeat'} ||= 600;
+  
     foreach (@name) {
       my $filename="$this->{'daemon'}->{'datastore'}/stat/$_.rrd";
       -f "$filename" or $this->CreateRRD($filename,$rrdconf);
@@ -231,8 +243,15 @@ sub CreateEmptyRRD
   $this->CreateRRD( "$this->{'daemon'}->{'datastore'}/stat/empty.rrd", 
     { 'name' => 'empty', 
       'rrd' => 'GAUGE', 
-      'min' => 'U', 
-      'max' => 'U' 
+      'interval' => 1,
+      'rra' => [ {'definition' => 'AVERAGE:0.5:1:8640'},
+                 {'definition' => 'AVERAGE:0.5:6:2880'},
+                 {'definition' => 'AVERAGE:0.5:6:2880'},
+                 {'definition' => 'AVERAGE:0.5:180:1488'},
+                 {'definition' => 'AVERAGE:0.5:360:8784'} ],
+      'min' => "U",
+      'max' => "U",
+      'heartbeat' => 600
     } 
   );
 }
@@ -242,45 +261,34 @@ sub CreateRRD
   my $this = shift;
   my $filename = shift;
   my $rrdconf = shift;
-  #my $name = shift;
-  #my $type = shift;
-  #my $min = shift;
-  #my $max = shift;
-  #$this->Debug(2,"$filename - $name - $type - $min < value < $max");
   $this->Debug(2,"$filename");
   
   my $current = time();
   my $start = $current - 60;
 
-  my $name = $rrdconf->{'name'};
-  my $type = $rrdconf->{'rrd'};
-  my $min = defined($rrdconf->{'min'}) ? $rrdconf->{'min'} : "U";
-  my $max = defined($rrdconf->{'max'}) ? $rrdconf->{'max'} : "U";
-  my $heartbeat = 600;
-
   unlink $filename;
 
   $this->Debug(2,"$filename",
                 "--start", $start,
-                "--step", $this->{'daemon'}->{'delay'},
-                "DS:$name:$type:$heartbeat:$min:$max",
-                "RRA:AVERAGE:0.5:1:8640",    # 1 day with interval of 10sec
-                "RRA:AVERAGE:0.5:6:2880",    # 2 day with interval of 1min
-                "RRA:AVERAGE:0.5:60:2016",   # 2 week with interval of 10min
-                "RRA:AVERAGE:0.5:180:1488",  # 1 mounth with interval of 30min
-                "RRA:AVERAGE:0.5:360:8784"   # 1 year with interval of 1hour
+                "--step", $this->{'daemon'}->{'delay'} * $rrdconf->{'interval'},
+                "DS:$rrdconf->{'name'}:$rrdconf->{'rrd'}:$rrdconf->{'heartbeat'}:$rrdconf->{'min'}:$rrdconf->{'max'}",
+                "RRA:$rrdconf->{'rra'}[0]->{'definition'}",
+                "RRA:$rrdconf->{'rra'}[1]->{'definition'}",
+                "RRA:$rrdconf->{'rra'}[2]->{'definition'}",
+                "RRA:$rrdconf->{'rra'}[3]->{'definition'}",
+                "RRA:$rrdconf->{'rra'}[4]->{'definition'}"
                 );
 
   
   RRDs::create( "$filename",
                 "--start", $start,
-                "--step", $this->{'daemon'}->{'delay'},
-                "DS:$name:$type:$heartbeat:$min:$max", 
-                "RRA:AVERAGE:0.5:1:8640",    # 1 day with interval of 10sec
-                "RRA:AVERAGE:0.5:6:2880",    # 2 day with interval of 1min
-                "RRA:AVERAGE:0.5:60:2016",   # 2 week with interval of 10min
-                "RRA:AVERAGE:0.5:180:1488",  # 1 mounth with interval of 30min
-                "RRA:AVERAGE:0.5:360:8784"   # 1 year with interval of 1hour
+                "--step", $this->{'daemon'}->{'delay'} * $rrdconf->{'interval'},
+                "DS:$rrdconf->{'name'}:$rrdconf->{'rrd'}:$rrdconf->{'heartbeat'}:$rrdconf->{'min'}:$rrdconf->{'max'}",
+                "RRA:$rrdconf->{'rra'}[0]->{'definition'}",
+                "RRA:$rrdconf->{'rra'}[1]->{'definition'}",
+                "RRA:$rrdconf->{'rra'}[2]->{'definition'}",
+                "RRA:$rrdconf->{'rra'}[3]->{'definition'}",
+                "RRA:$rrdconf->{'rra'}[4]->{'definition'}"
                 );
 }
 
@@ -535,9 +543,8 @@ sub Run
   $this->{'all'} = $json->encode( \%{$configuration} );
   $this->{'version'} = "{\"version\":\"$configuration->{'version'}\"}";
   #print Data::Dumper->Dump([$this->{'paths'}]);
-
+  
   # Create the server
-  #print Data::Dumper->Dump([$configuration]);
   $this->{'server'} = new HTTP::Daemon     ( ReuseAddr => 1,
                                              LocalAddr => $configuration->{'daemon'}->{'addr'},
                                              LocalPort => $configuration->{'daemon'}->{'port'})
