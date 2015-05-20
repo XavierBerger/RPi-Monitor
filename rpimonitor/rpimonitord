@@ -70,7 +70,7 @@ sub Load
   }
   delete($this->{'daemon'}->{'confFiles'});
 
-  # Set version (used by web pagescache mechanism)
+  # Set version (used by web pages cache mechanism)
   $this->{'version'} = localtime();
 
   # Load default values is not defined yet defined
@@ -93,20 +93,20 @@ sub Load
   # Create storage directory if needed
   -d "$this->{'daemon'}->{'datastore'}/stat" or mkdir "$this->{'daemon'}->{'datastore'}/stat";
   # Create empty file at each start
-  $this->CreateRRD( "$this->{'daemon'}->{'datastore'}/stat/empty.rrd", 'empty', 'GAUGE', 'U', 'U' );
-  chown($this->{'daemon'}->{'uid'},$this->{'daemon'}->{'gid'},"$this->{'daemon'}->{'datastore'}/stat/empty.rrd");
+  $this->CreateEmptyRRD();
+  chown( $this->{'daemon'}->{'uid'},
+         $this->{'daemon'}->{'gid'},
+         "$this->{'daemon'}->{'datastore'}/stat/empty.rrd" );
 
   #print Data::Dumper->Dump([$this->{'daemon'}]);
 
   # manage rrds
   foreach (@{$this->{'rrd'}}){
     my @name = split (',',$_->{'name'});
-    my $type = $_->{'rrd'};
-    my $min = defined($_->{'min'}) ? $_->{'min'} : "U";
-    my $max = defined($_->{'max'}) ? $_->{'max'} : "U";
+    my $rrdconf = $_;
     foreach (@name) {
       my $filename="$this->{'daemon'}->{'datastore'}/stat/$_.rrd";
-      -f "$filename" or $this->CreateRRD($filename,$_,$type,$min,$max);
+      -f "$filename" or $this->CreateRRD($filename,$rrdconf);
       push(@{$this->{'rrdlist'}},"stat/$_.rrd");
     }
   }
@@ -223,25 +223,47 @@ sub LoadFile
   }
 }
 
+sub CreateEmptyRRD
+{    
+  my $this = shift;
+  $this->Debug(2,"$this->{'daemon'}->{'datastore'}/stat/empty.rrd");
+  
+  $this->CreateRRD( "$this->{'daemon'}->{'datastore'}/stat/empty.rrd", 
+    { 'name' => 'empty', 
+      'rrd' => 'GAUGE', 
+      'min' => 'U', 
+      'max' => 'U' 
+    } 
+  );
+}
+
 sub CreateRRD
 {
   my $this = shift;
   my $filename = shift;
-  my $name = shift;
-  my $type = shift;
-  my $min = shift;
-  my $max = shift;
-  $this->Debug(2,"$filename - $name - $type - $min < value < $max");
-
+  my $rrdconf = shift;
+  #my $name = shift;
+  #my $type = shift;
+  #my $min = shift;
+  #my $max = shift;
+  #$this->Debug(2,"$filename - $name - $type - $min < value < $max");
+  $this->Debug(2,"$filename");
+  
   my $current = time();
   my $start = $current - 60;
+
+  my $name = $rrdconf->{'name'};
+  my $type = $rrdconf->{'rrd'};
+  my $min = defined($rrdconf->{'min'}) ? $rrdconf->{'min'} : "U";
+  my $max = defined($rrdconf->{'max'}) ? $rrdconf->{'max'} : "U";
+  my $heartbeat = 600;
 
   unlink $filename;
 
   $this->Debug(2,"$filename",
                 "--start", $start,
                 "--step", $this->{'daemon'}->{'delay'},
-                "DS:$name:$type:600:$min:$max",
+                "DS:$name:$type:$heartbeat:$min:$max",
                 "RRA:AVERAGE:0.5:1:8640",    # 1 day with interval of 10sec
                 "RRA:AVERAGE:0.5:6:2880",    # 2 day with interval of 1min
                 "RRA:AVERAGE:0.5:60:2016",   # 2 week with interval of 10min
@@ -249,10 +271,11 @@ sub CreateRRD
                 "RRA:AVERAGE:0.5:360:8784"   # 1 year with interval of 1hour
                 );
 
+  
   RRDs::create( "$filename",
                 "--start", $start,
                 "--step", $this->{'daemon'}->{'delay'},
-                "DS:$name:$type:600:$min:$max",
+                "DS:$name:$type:$heartbeat:$min:$max", 
                 "RRA:AVERAGE:0.5:1:8640",    # 1 day with interval of 10sec
                 "RRA:AVERAGE:0.5:6:2880",    # 2 day with interval of 1min
                 "RRA:AVERAGE:0.5:60:2016",   # 2 week with interval of 10min
@@ -468,7 +491,7 @@ sub DoGET
   $path =~ /([^\/]+)\.json/ and $this->SendJSON($this->{$1}) and return;
   
   #Recreate empty rrd on demand
-  $path =~ /empty\.rrd/ and $configuration->CreateRRD( "$configuration->{'daemon'}->{'datastore'}/stat/empty.rrd", 'empty', 'GAUGE', 'U', 'U' );
+  $path =~ /empty\.rrd/ and $configuration->CreateEmptyRRD();
 
   #The main page (/) is requested
   $path =~ /^\/$/ and $path = "/index.html";
@@ -480,7 +503,7 @@ sub DoGET
   -f "$configuration->{'daemon'}->{'webroot'}/$path" and $this->SendFile($connection, "$configuration->{'daemon'}->{'webroot'}/$path") and return;
   -f "$configuration->{'daemon'}->{'datastore'}/$path" and $this->SendFile($connection, "$configuration->{'daemon'}->{'datastore'}/$path") and return;
 
-  $this->Debug(2,"Can't find $configuration->{'daemon'}->{'webroot'}/$path");
+  $this->Debug(2,"Can't find $path");
 
   #Finally send error
   $this->SendError();
