@@ -61,11 +61,13 @@ sub Load
   $_ = abs_path($0);
   my ($path,$file) = /(.*)\/([^\/]*)$/;
 
-  push(@{$this->{'daemon'}->{'confFiles'}},"/etc/rpimonitor/data.conf");
-  push(@{$this->{'daemon'}->{'confFiles'}},"/etc/rpimonitor/daemon.conf");
+  # Add default configuration file if not already defined by command line
+  if ( !@{$this->{'daemon'}->{'confFiles'}} ) {
+    push(@{$this->{'daemon'}->{'confFiles'}},"/etc/rpimonitor/data.conf");
+    push(@{$this->{'daemon'}->{'confFiles'}},"/etc/rpimonitor/daemon.conf");
+  }
 
   foreach ( @{$this->{'daemon'}->{'confFiles'}} ) {
-    #print "$_\n";
     $this->LoadFile($_);
   }
   delete($this->{'daemon'}->{'confFiles'});
@@ -106,12 +108,12 @@ sub Load
     my $rrdconf = $_;
     
     # define default values
-    $rrdconf->{'interval'} ||= 1;
-    $rrdconf->{'rra'}[0]->{'definition'} ||= "AVERAGE:0.5:1:8640";   # 1 day with interval of 10sec
-    $rrdconf->{'rra'}[1]->{'definition'} ||= "AVERAGE:0.5:6:2880";   # 2 days with interval of 1min
-    $rrdconf->{'rra'}[2]->{'definition'} ||= "AVERAGE:0.5:60:2016";  # 14 days with interval of 10 min
-    $rrdconf->{'rra'}[3]->{'definition'} ||= "AVERAGE:0.5:180:1488"; # 1 mounth with interval of 30min
-    $rrdconf->{'rra'}[4]->{'definition'} ||= "AVERAGE:0.5:360:8784"; # 1 year with interval of 1hour
+    $rrdconf->{'interval'}  ||= 1;
+    $rrdconf->{'rra'}[0]    ||= "AVERAGE:0.5:1:8640";   # 1 day with interval of 10sec
+    $rrdconf->{'rra'}[1]    ||= "AVERAGE:0.5:6:2880";   # 2 days with interval of 1min
+    $rrdconf->{'rra'}[2]    ||= "AVERAGE:0.5:60:2016";  # 14 days with interval of 10 min
+    $rrdconf->{'rra'}[3]    ||= "AVERAGE:0.5:180:1488"; # 1 mounth with interval of 30min
+    $rrdconf->{'rra'}[4]    ||= "AVERAGE:0.5:360:8784"; # 1 year with interval of 1hour
     $rrdconf->{'min'}       ||= defined($rrdconf->{'min'}) ? $rrdconf->{'min'} : "U";
     $rrdconf->{'max'}       ||= defined($rrdconf->{'max'}) ? $rrdconf->{'max'} : "U";
     $rrdconf->{'heartbeat'} ||= 600;
@@ -141,6 +143,14 @@ sub Load
     $_->{'name'} and push(@{$this->{'web'}->{'menu'}->{'addons'}}, $_->{'name'});
   }
 
+  # manage default value for dynamic data
+  foreach (@{$this->{'dynamic'}}) {
+    $_->{'interval'} ||= 1;
+    if ($_->{'interval'} > $this->{'maxinterval'} ) {
+      $this->{'maxinterval'} = $_->{'interval'};
+    }
+  }
+  
   $this->{'sharedmem'} = IPC::ShareLite->new(
         -key     => $this->{'daemon'}->{'sharedmemkey'},
         -create  => 'yes',
@@ -244,11 +254,11 @@ sub CreateEmptyRRD
     { 'name' => 'empty', 
       'rrd' => 'GAUGE', 
       'interval' => 1,
-      'rra' => [ {'definition' => 'AVERAGE:0.5:1:8640'},
-                 {'definition' => 'AVERAGE:0.5:6:2880'},
-                 {'definition' => 'AVERAGE:0.5:6:2880'},
-                 {'definition' => 'AVERAGE:0.5:180:1488'},
-                 {'definition' => 'AVERAGE:0.5:360:8784'} ],
+      'rra' => [ 'AVERAGE:0.5:1:8640',
+                 'AVERAGE:0.5:6:2880',
+                 'AVERAGE:0.5:6:2880',
+                 'AVERAGE:0.5:180:1488',
+                 'AVERAGE:0.5:360:8784' ],
       'min' => "U",
       'max' => "U",
       'heartbeat' => 600
@@ -272,11 +282,11 @@ sub CreateRRD
                 "--start", $start,
                 "--step", $this->{'daemon'}->{'delay'} * $rrdconf->{'interval'},
                 "DS:$rrdconf->{'name'}:$rrdconf->{'rrd'}:$rrdconf->{'heartbeat'}:$rrdconf->{'min'}:$rrdconf->{'max'}",
-                "RRA:$rrdconf->{'rra'}[0]->{'definition'}",
-                "RRA:$rrdconf->{'rra'}[1]->{'definition'}",
-                "RRA:$rrdconf->{'rra'}[2]->{'definition'}",
-                "RRA:$rrdconf->{'rra'}[3]->{'definition'}",
-                "RRA:$rrdconf->{'rra'}[4]->{'definition'}"
+                "RRA:$rrdconf->{'rra'}[0]",
+                "RRA:$rrdconf->{'rra'}[1]",
+                "RRA:$rrdconf->{'rra'}[2]",
+                "RRA:$rrdconf->{'rra'}[3]",
+                "RRA:$rrdconf->{'rra'}[4]"
                 );
 
   
@@ -284,11 +294,11 @@ sub CreateRRD
                 "--start", $start,
                 "--step", $this->{'daemon'}->{'delay'} * $rrdconf->{'interval'},
                 "DS:$rrdconf->{'name'}:$rrdconf->{'rrd'}:$rrdconf->{'heartbeat'}:$rrdconf->{'min'}:$rrdconf->{'max'}",
-                "RRA:$rrdconf->{'rra'}[0]->{'definition'}",
-                "RRA:$rrdconf->{'rra'}[1]->{'definition'}",
-                "RRA:$rrdconf->{'rra'}[2]->{'definition'}",
-                "RRA:$rrdconf->{'rra'}[3]->{'definition'}",
-                "RRA:$rrdconf->{'rra'}[4]->{'definition'}"
+                "RRA:$rrdconf->{'rra'}[0]",
+                "RRA:$rrdconf->{'rra'}[1]",
+                "RRA:$rrdconf->{'rra'}[2]",
+                "RRA:$rrdconf->{'rra'}[3]",
+                "RRA:$rrdconf->{'rra'}[4]"
                 );
 }
 
@@ -585,6 +595,7 @@ sub new
   my $this = bless { }, shift;
   $this->Debug(3,"");
   @{$this->{'files'}} = ("static.json","status.json","statistics.json");
+  $this->{'counter'} = 0;
   return $this;
 }
 
@@ -648,17 +659,24 @@ sub Run
 
   for(;;)
   {
+    # count loops
+    $this->{'counter'}++;
+      
     # Process data
     $this->Process($configuration,'dynamic');
 
     # Store and show extracted data
     $this->Status($configuration);
 
+    if ($this->{'counter'} >= $configuration->{'maxinterval'}){
+      $this->{'counter'} = 0;
+    }
+      
     # Check if server is up
     if ( !$configuration->{'daemon'}->{'noserver'}) {
       kill(0,$serverpid) or last;
     }
-
+    
     # tempo before next process
     $configuration->{'daemon'}->{'delay'} or last;
     sleep $configuration->{'daemon'}->{'delay'};
@@ -679,6 +697,9 @@ sub Process
   $this->{$list} and delete $this->{$list};
   foreach my $kpi ( @{$configuration->{$list}} ) {
     $kpi or next;
+    if ( $list =~ /dynamic/) {
+      $this->{'counter'} % $kpi->{'interval'} and next;
+    }
     # if file is executable, execute it and process output else, read file content
     $_ = $kpi->{'source'};
     /(.*)/; /(\S+)\s.*/; #Not so clean... Regexp to be reviewed
@@ -1064,7 +1085,8 @@ OPTIONS
   -a, --addr        Web server bind address (Default: 0.0.0.0)
   -b, --background  Define the pid file when run in background
   -c, --conf        Define the configuration file
-                      Default: /etc/rpimonitor/*.conf
+                      Default: /etc/rpimonitor/data.conf
+                               /etc/rpimonitor/daemon.conf
   -d, --delay       Delay between check ins seconds (Default: 10)
                       Note: If you want to change the default delay, the
                       rrd file will have to be deleted rpimonitord will
@@ -1082,10 +1104,10 @@ OPTIONS
   -V, --Version     Show version and exit
 
 CONFIGURATION
-  Configuration can be defined into /etc/rpimonitor/*.conf or in a
-  list of files specified by -c parameter. See the files
-  /etc/rpimonitor/daemon.conf and /etc/rpimonitor/default.conf
-  provided with at installation to see how to customize rpimonitord.
+  Configuration can be defined into etc/rpimonitor/daemon.conf and 
+  /etc/rpimonitor/data.conf or in a list of files specified by -c parameter.
+  In /etc/rpimonitor/template/*.conf provided at installation you can 
+  see how to customize rpimonitord.
   Configuration defined inside a configuration file always overwrite
   default values.
   Configuration given as option of the command line always overwrite
