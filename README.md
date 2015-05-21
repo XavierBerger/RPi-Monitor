@@ -62,8 +62,16 @@ The branch **devel** is the unstable development branch (The branch may have bug
 
 Each release is identified by a tag. 
 
+### **RPi-Monitor** used in other product
+
+**RPi-monitor** is also used as part of other product:
+
+* **[Tor-Info](https://github.com/lzkill/tor-info)** Configuration file, script and documentation to extend **RPi-Monitor** for showing a Tor relay's information.
+
+
 ###Author
 
 **Author**: Xavier Berger
 
 * [RPi-Experience](http://rpi-experiences.blogspot.fr/)
+* [What's up Doc](http://xberger.free.fr)
