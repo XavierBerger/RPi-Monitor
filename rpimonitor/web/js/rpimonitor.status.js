@@ -100,6 +100,18 @@ function ConstructPage()
   UpdateStatus();
 }
 
+function AddOption()
+{
+  options =
+        '<p>'+
+          '<b>Status</b><br>'+
+          '<form class="form-inline">'+
+            '<input type="checkbox" id="statusautorefresh"> Auto refresh status page'+
+          '</form>'+
+        '</p>';
+  $(options).insertBefore("#optionsInsertionPoint")
+}
+
 $(function () {
   /* Set no cache */
   $.ajaxSetup({ cache: false });
@@ -113,6 +125,9 @@ $(function () {
 
   /* Get static values once */
   ConstructPage();
+  
+  /* Populate option dialog*/
+  AddOption();
 
   if ( statusautorefresh ) {
     refreshTimerId = setInterval( UpdateStatus , 10000 )
