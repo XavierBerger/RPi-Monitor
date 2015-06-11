@@ -332,9 +332,6 @@ $(function () {
            "Activate HTML5 localStorage before continuing."
           );
   }
-  // Load data from local storage
-  animate=(localStorage.getItem('animate') === 'true');
-  statusautorefresh=(localStorage.getItem('statusautorefresh') === 'true');
 
   // Construct the page template
   getVersion();
@@ -342,29 +339,5 @@ $(function () {
   AddDialogs();
   AddFooter();
   UpdateMenu();
- 
-  //Initialize dialog values
-  $('#statusautorefresh').attr('checked', statusautorefresh );
- 
-  // Events management
-  $('#animate').click(function(){
-    animate = $('#animate').is(":checked");
-    localStorage.setItem('animate', animate);
-    SetProgressBarAnimate();
-  });
-  
-  $('#statusautorefresh').click(function(){
-    statusautorefresh = $('#statusautorefresh').is(":checked");
-    localStorage.setItem('statusautorefresh', statusautorefresh);
-    if ( statusautorefresh ) {
-      UpdateStatus(); 
-      refreshTimerId = setInterval( UpdateStatus , 10000 ) 
-      clockId=setInterval(Tick,1000);
-    }
-    else {
-      clearInterval(refreshTimerId);
-      clearInterval(clockId);
-    };
-  });
 
 });

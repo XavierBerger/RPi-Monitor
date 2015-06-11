@@ -115,6 +115,10 @@ function AddOption()
 $(function () {
   /* Set no cache */
   $.ajaxSetup({ cache: false });
+  
+  // Load data from local storage
+  animate=(localStorage.getItem('animate') === 'true');
+  statusautorefresh=(localStorage.getItem('statusautorefresh') === 'true');
 
   /* Show friends */
   ShowFriends();
@@ -128,6 +132,30 @@ $(function () {
   
   /* Populate option dialog*/
   AddOption();
+
+  //Initialize dialog values
+  $('#statusautorefresh').attr('checked', statusautorefresh );
+ 
+  // Events management
+  $('#animate').click(function(){
+    animate = $('#animate').is(":checked");
+    localStorage.setItem('animate', animate);
+    SetProgressBarAnimate();
+  });
+  
+  $('#statusautorefresh').click(function(){
+    statusautorefresh = $('#statusautorefresh').is(":checked");
+    localStorage.setItem('statusautorefresh', statusautorefresh);
+    if ( statusautorefresh ) {
+      UpdateStatus(); 
+      refreshTimerId = setInterval( UpdateStatus , 10000 ) 
+      clockId=setInterval(Tick,1000);
+    }
+    else {
+      clearInterval(refreshTimerId);
+      clearInterval(clockId);
+    };
+  });
 
   if ( statusautorefresh ) {
     refreshTimerId = setInterval( UpdateStatus , 10000 )
