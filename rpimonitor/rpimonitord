@@ -595,7 +595,7 @@ sub new
   my $this = bless { }, shift;
   $this->Debug(3,"");
   @{$this->{'files'}} = ("static.json","status.json","statistics.json");
-  $this->{'counter'} = 0;
+  $this->{'counter'} = -1;
   return $this;
 }
 
@@ -694,7 +694,6 @@ sub Process
   my $list = shift;
   $this->Debug(2,"Processing $list");
 
-  $this->{$list} and delete $this->{$list};
   foreach my $kpi ( @{$configuration->{$list}} ) {
     $kpi or next;
     if ( $list =~ /dynamic/) {
