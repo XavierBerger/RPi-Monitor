@@ -703,7 +703,18 @@ sub Process
     # if file is executable, execute it and process output else, read file content
     $_ = $kpi->{'source'};
     /(.*)/; /(\S+)\s.*/; #Not so clean... Regexp to be reviewed
-    my $file = ( -x $1 || -x which($1) ) ? "$kpi->{'source'} 2>/dev/null|" : $kpi->{'source'};
+    my $file = $kpi->{'source'};
+    if ( -x $1 || -x which($1) ) {
+      $file = "$file 2>/dev/null |";
+      $_ = $kpi->{'source'};
+      while ( /data\.(\S+)/ ) {
+	my $data = $this->{'static'}->{$1} || $this->{'dynamic'}->{$1};
+        $file =~ s/data\.$1/$data/;
+	$_ = $file;
+      }
+    }
+    
+    $this->Debug(3,"Opening '$file'");
     my $pid = 0;
     eval {
       local $SIG{ALRM} = sub { die "Timeout\n" };
@@ -1129,7 +1140,7 @@ RAW DATA ACCESS
     statistics.json: Description of statistics page
     status.json:    Description of status page
     friends.json:   List of friends
-    addons.json:   List of addons
+    addons.json:    List of addons
 
   Statistic information are stored into RRD file available in the
   directory [webroot]/stat/
