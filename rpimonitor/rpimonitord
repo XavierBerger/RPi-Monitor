@@ -120,7 +120,7 @@ sub Load
   
     foreach (@name) {
       my $filename="$this->{'daemon'}->{'datastore'}/stat/$_.rrd";
-      -f "$filename" or $this->CreateRRD($filename,$rrdconf);
+      -f "$filename" or $this->CreateRRD($filename,$_,$rrdconf);
       push(@{$this->{'rrdlist'}},"stat/$_.rrd");
     }
   }
@@ -250,7 +250,8 @@ sub CreateEmptyRRD
   my $this = shift;
   $this->Debug(2,"$this->{'daemon'}->{'datastore'}/stat/empty.rrd");
   
-  $this->CreateRRD( "$this->{'daemon'}->{'datastore'}/stat/empty.rrd", 
+  $this->CreateRRD( "$this->{'daemon'}->{'datastore'}/stat/empty.rrd",
+    "empty", 
     { 'name' => 'empty', 
       'rrd' => 'GAUGE', 
       'interval' => 1,
@@ -270,6 +271,7 @@ sub CreateRRD
 {
   my $this = shift;
   my $filename = shift;
+  my $dsname = shift;
   my $rrdconf = shift;
   $this->Debug(2,"$filename");
   
@@ -281,7 +283,7 @@ sub CreateRRD
   $this->Debug(2,"$filename",
                 "--start", $start,
                 "--step", $this->{'daemon'}->{'delay'} * $rrdconf->{'interval'},
-                "DS:$rrdconf->{'name'}:$rrdconf->{'rrd'}:$rrdconf->{'heartbeat'}:$rrdconf->{'min'}:$rrdconf->{'max'}",
+                "DS:$dsname:$rrdconf->{'rrd'}:$rrdconf->{'heartbeat'}:$rrdconf->{'min'}:$rrdconf->{'max'}",
                 "RRA:$rrdconf->{'rra'}[0]",
                 "RRA:$rrdconf->{'rra'}[1]",
                 "RRA:$rrdconf->{'rra'}[2]",
@@ -706,10 +708,11 @@ sub Process
     if ( -x $1 || -x which($1) ) {
       $file = "$file 2>/dev/null |";
       $_ = $kpi->{'source'};
+      # Parse command line and replace 'data.kpi' by kpi value
       while ( /data\.(\S+)/ ) {
-	my $data = $this->{'static'}->{$1} || $this->{'dynamic'}->{$1};
+        my $data = $this->{'static'}->{$1} || $this->{'dynamic'}->{$1};
         $file =~ s/data\.$1/$data/;
-	$_ = $file;
+        $_ = $file;
       }
     }
     
