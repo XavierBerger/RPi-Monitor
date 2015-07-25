@@ -1,0 +1,1 @@
+Update needed...</b></p><p><sup><font color='#AA0000'>&nbsp;&nbsp;&nbsp;&nbsp;Execute <b>sudo pacman -Syu && sudo systemctl start rpimonitord-upgradable</font></sup>
