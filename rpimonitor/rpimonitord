@@ -295,7 +295,7 @@ sub CreateRRD
   RRDs::create( "$filename",
                 "--start", $start,
                 "--step", $this->{'daemon'}->{'delay'} * $rrdconf->{'interval'},
-                "DS:$rrdconf->{'name'}:$rrdconf->{'rrd'}:$rrdconf->{'heartbeat'}:$rrdconf->{'min'}:$rrdconf->{'max'}",
+                "DS:$dsname:$rrdconf->{'rrd'}:$rrdconf->{'heartbeat'}:$rrdconf->{'min'}:$rrdconf->{'max'}",
                 "RRA:$rrdconf->{'rra'}[0]",
                 "RRA:$rrdconf->{'rra'}[1]",
                 "RRA:$rrdconf->{'rra'}[2]",
