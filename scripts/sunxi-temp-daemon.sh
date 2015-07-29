@@ -85,8 +85,8 @@ Main() {
 GetDiskTemp() {
 	# get disk temperate using hddtemp (doesn't wake up sleeping disks). The commented 
 	# smartctl call is for USB disks in external enclosures that are able to answer
-	# S.M.A.R.T. queries:
-	# /usr/sbin/smartctl -d auto -a ${1} | awk -F" " '/Temperature_Celsius/ {printf ("%0.0f",$10*1000); }'
+	# S.M.A.R.T. queries since they're SAT capable:
+	# /usr/sbin/smartctl -d sat -a ${1} | awk -F" " '/Temperature_Cel/ {printf ("%0.0f",$10*1000); }'
 	/usr/sbin/hddtemp -n ${1} 2>/dev/null | awk '{printf ("%0.0f",$1*1000); }'
 } # GetDiskTemp
 
