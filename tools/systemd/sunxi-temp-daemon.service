@@ -1,0 +1,10 @@
+[Unit]
+Description = sunxi Temperature daemon for RPi-Monitor
+After = network.target
+
+[Service]
+Type = simple
+ExecStart = /usr/share/rpimonitor/scripts/sunxi-temp-daemon.sh
+
+[Install]
+WantedBy = multi-user.target
