@@ -1008,7 +1008,7 @@ sub PrintConfiguration
   print " add anew file into /etc/rpimonitor/.\n";
   print " <Note the some text require a manual update>\n";
   print " Once the configuration will be apply, restart RPi-Monitor with the\n";
-  print " command: /etc/init.d/rpimonitor restart\n";
+  print " command: /etc/init.d/rpimonitor restart or systemctl restart rpimonitord\n";
 }
 
 sub Run
