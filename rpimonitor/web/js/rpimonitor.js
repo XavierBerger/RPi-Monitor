@@ -19,7 +19,6 @@ var shellinaboxuri;
 var statusautorefresh;
 var refreshTimerId;
 var clickId;
-var active_rra;
 var current_path = window.location.pathname.split('/').pop();
 
 function GetURLParameter(sParam)
@@ -97,33 +96,7 @@ function AddDialogs(){
       '<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>' +
       '<h4 id="myModalLabel">Options</h4>'+
       '</div>'+
-      '<div class="modal-body">';
-    if (current_path == 'status.html') { 
-      dialogs+=
-        '<p>'+
-          '<b>Status</b><br>'+
-          '<form class="form-inline">'+
-            '<input type="checkbox" id="statusautorefresh"> Auto refresh status page'+
-          '</form>'+
-        '</p>';
-    }
-    if (current_path == 'statistics.html') { 
-      dialogs+=
-          '<p>'+
-          '<b>Statistic</b><br>'+
-          '<form class="form-inline">'+
-            '<span>Default graph timeline <select class="span3" id="active_rra">'+
-            '<option value="0" '+ ( active_rra == 0 ? 'selected' : '' ) +'>10s (24h total)</option>'+
-            '<option value="1" '+ ( active_rra == 1 ? 'selected' : '' ) +'>60s (2 days total)</option>'+
-            '<option value="2" '+ ( active_rra == 2 ? 'selected' : '' ) +'>10min (14 days total)</option>'+
-            '<option value="3" '+ ( active_rra == 3 ? 'selected' : '' ) +'>30min (31 days total)</option>'+
-            '<option value="4" '+ ( active_rra == 4 ? 'selected' : '' ) +'>60min (12 months total)</option>'+
-            '</select></span>'+
-          '</form>'+
-        '</p>'; 
-       
-    }
-    dialogs+=
+      '<div class="modal-body">'+
          '<i id="optionsInsertionPoint"></i>'+
       '</div>'+
       '<div class="modal-footer">'+
@@ -265,8 +238,9 @@ function AddTopmenu(){
 }
 
 function UpdateMenu(){
-
-  var index=true;
+  // Disable index page 
+  //var index=true;
+  var index=false;
   
   // Manage active link
   if (current_path == 'status.html'){
@@ -358,10 +332,6 @@ $(function () {
            "Activate HTML5 localStorage before continuing."
           );
   }
-  // Load data from local storage
-  animate=(localStorage.getItem('animate') === 'true');
-  statusautorefresh=(localStorage.getItem('statusautorefresh') === 'true');
-  active_rra=(localStorage.getItem('active_rra') || 0);
 
   // Construct the page template
   getVersion();
@@ -369,33 +339,5 @@ $(function () {
   AddDialogs();
   AddFooter();
   UpdateMenu();
- 
-  //Initialize dialog values
-  $('#statusautorefresh').attr('checked', statusautorefresh );
- 
-  // Events management
-  $('#animate').click(function(){
-    animate = $('#animate').is(":checked");
-    localStorage.setItem('animate', animate);
-    SetProgressBarAnimate();
-  });
-  
-  $('#statusautorefresh').click(function(){
-    statusautorefresh = $('#statusautorefresh').is(":checked");
-    localStorage.setItem('statusautorefresh', statusautorefresh);
-    if ( statusautorefresh ) {
-      UpdateStatus(); 
-      refreshTimerId = setInterval( UpdateStatus , 10000 ) 
-      clockId=setInterval(Tick,1000);
-    }
-    else {
-      clearInterval(refreshTimerId);
-      clearInterval(clockId);
-    };
-  });
-
-  $('#active_rra').change(function(){
-    localStorage.setItem('active_rra',$('#active_rra').val())
-  });
 
 });

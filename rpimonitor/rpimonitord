@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# Copyright 2013-2014 - Xavier Berger - http://rpi-experiences.blogspot.fr/
+# Copyright 2013-2015 - Xavier Berger - http://rpi-experiences.blogspot.fr/
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -61,16 +61,18 @@ sub Load
   $_ = abs_path($0);
   my ($path,$file) = /(.*)\/([^\/]*)$/;
 
-  push(@{$this->{'daemon'}->{'confFiles'}},"/etc/rpimonitor/data.conf");
-  push(@{$this->{'daemon'}->{'confFiles'}},"/etc/rpimonitor/daemon.conf");
+  # Add default configuration file if not already defined by command line
+  if ( !@{$this->{'daemon'}->{'confFiles'}} ) {
+    push(@{$this->{'daemon'}->{'confFiles'}},"/etc/rpimonitor/data.conf");
+    push(@{$this->{'daemon'}->{'confFiles'}},"/etc/rpimonitor/daemon.conf");
+  }
 
   foreach ( @{$this->{'daemon'}->{'confFiles'}} ) {
-    #print "$_\n";
     $this->LoadFile($_);
   }
   delete($this->{'daemon'}->{'confFiles'});
 
-  # Set version (used by web pagescache mechanism)
+  # Set version (used by web pages cache mechanism)
   $this->{'version'} = localtime();
 
   # Load default values is not defined yet defined
@@ -93,20 +95,32 @@ sub Load
   # Create storage directory if needed
   -d "$this->{'daemon'}->{'datastore'}/stat" or mkdir "$this->{'daemon'}->{'datastore'}/stat";
   # Create empty file at each start
-  $this->CreateRRD( "$this->{'daemon'}->{'datastore'}/stat/empty.rrd", 'empty', 'GAUGE', 'U', 'U' );
-  chown($this->{'daemon'}->{'uid'},$this->{'daemon'}->{'gid'},"$this->{'daemon'}->{'datastore'}/stat/empty.rrd");
+  $this->CreateEmptyRRD();
+  chown( $this->{'daemon'}->{'uid'},
+         $this->{'daemon'}->{'gid'},
+         "$this->{'daemon'}->{'datastore'}/stat/empty.rrd" );
 
   #print Data::Dumper->Dump([$this->{'daemon'}]);
 
   # manage rrds
   foreach (@{$this->{'rrd'}}){
     my @name = split (',',$_->{'name'});
-    my $type = $_->{'rrd'};
-    my $min = defined($_->{'min'}) ? $_->{'min'} : "U";
-    my $max = defined($_->{'max'}) ? $_->{'max'} : "U";
+    my $rrdconf = $_;
+    
+    # define default values
+    $rrdconf->{'interval'}  ||= 1;
+    $rrdconf->{'rra'}[0]    ||= "AVERAGE:0.5:1:8640";   # 1 day with interval of 10sec
+    $rrdconf->{'rra'}[1]    ||= "AVERAGE:0.5:6:2880";   # 2 days with interval of 1min
+    $rrdconf->{'rra'}[2]    ||= "AVERAGE:0.5:60:2016";  # 14 days with interval of 10 min
+    $rrdconf->{'rra'}[3]    ||= "AVERAGE:0.5:180:1488"; # 1 mounth with interval of 30min
+    $rrdconf->{'rra'}[4]    ||= "AVERAGE:0.5:360:8784"; # 1 year with interval of 1hour
+    $rrdconf->{'min'}       ||= defined($rrdconf->{'min'}) ? $rrdconf->{'min'} : "U";
+    $rrdconf->{'max'}       ||= defined($rrdconf->{'max'}) ? $rrdconf->{'max'} : "U";
+    $rrdconf->{'heartbeat'} ||= 600;
+  
     foreach (@name) {
       my $filename="$this->{'daemon'}->{'datastore'}/stat/$_.rrd";
-      -f "$filename" or $this->CreateRRD($filename,$_,$type,$min,$max);
+      -f "$filename" or $this->CreateRRD($filename,$_,$rrdconf);
       push(@{$this->{'rrdlist'}},"stat/$_.rrd");
     }
   }
@@ -129,6 +143,14 @@ sub Load
     $_->{'name'} and push(@{$this->{'web'}->{'menu'}->{'addons'}}, $_->{'name'});
   }
 
+  # manage default value for dynamic data
+  foreach (@{$this->{'dynamic'}}) {
+    $_->{'interval'} ||= 1;
+    if ($_->{'interval'} > $this->{'maxinterval'} ) {
+      $this->{'maxinterval'} = $_->{'interval'};
+    }
+  }
+  
   $this->{'sharedmem'} = IPC::ShareLite->new(
         -key     => $this->{'daemon'}->{'sharedmemkey'},
         -create  => 'yes',
@@ -223,16 +245,36 @@ sub LoadFile
   }
 }
 
+sub CreateEmptyRRD
+{    
+  my $this = shift;
+  $this->Debug(2,"$this->{'daemon'}->{'datastore'}/stat/empty.rrd");
+  
+  $this->CreateRRD( "$this->{'daemon'}->{'datastore'}/stat/empty.rrd",
+    "empty", 
+    { 'name' => 'empty', 
+      'rrd' => 'GAUGE', 
+      'interval' => 1,
+      'rra' => [ 'AVERAGE:0.5:1:8640',
+                 'AVERAGE:0.5:6:2880',
+                 'AVERAGE:0.5:6:2880',
+                 'AVERAGE:0.5:180:1488',
+                 'AVERAGE:0.5:360:8784' ],
+      'min' => "U",
+      'max' => "U",
+      'heartbeat' => 600
+    } 
+  );
+}
+
 sub CreateRRD
 {
   my $this = shift;
   my $filename = shift;
-  my $name = shift;
-  my $type = shift;
-  my $min = shift;
-  my $max = shift;
-  $this->Debug(2,"$filename - $name - $type - $min < value < $max");
-
+  my $dsname = shift;
+  my $rrdconf = shift;
+  $this->Debug(2,"$filename");
+  
   my $current = time();
   my $start = $current - 60;
 
@@ -240,24 +282,25 @@ sub CreateRRD
 
   $this->Debug(2,"$filename",
                 "--start", $start,
-                "--step", $this->{'daemon'}->{'delay'},
-                "DS:$name:$type:600:$min:$max",
-                "RRA:AVERAGE:0.5:1:8640",    # 1 day with interval of 10sec
-                "RRA:AVERAGE:0.5:6:2880",    # 2 day with interval of 1min
-                "RRA:AVERAGE:0.5:60:2016",   # 2 week with interval of 10min
-                "RRA:AVERAGE:0.5:180:1488",  # 1 mounth with interval of 30min
-                "RRA:AVERAGE:0.5:360:8784"   # 1 year with interval of 1hour
+                "--step", $this->{'daemon'}->{'delay'} * $rrdconf->{'interval'},
+                "DS:$dsname:$rrdconf->{'rrd'}:$rrdconf->{'heartbeat'}:$rrdconf->{'min'}:$rrdconf->{'max'}",
+                "RRA:$rrdconf->{'rra'}[0]",
+                "RRA:$rrdconf->{'rra'}[1]",
+                "RRA:$rrdconf->{'rra'}[2]",
+                "RRA:$rrdconf->{'rra'}[3]",
+                "RRA:$rrdconf->{'rra'}[4]"
                 );
 
+  
   RRDs::create( "$filename",
                 "--start", $start,
-                "--step", $this->{'daemon'}->{'delay'},
-                "DS:$name:$type:600:$min:$max",
-                "RRA:AVERAGE:0.5:1:8640",    # 1 day with interval of 10sec
-                "RRA:AVERAGE:0.5:6:2880",    # 2 day with interval of 1min
-                "RRA:AVERAGE:0.5:60:2016",   # 2 week with interval of 10min
-                "RRA:AVERAGE:0.5:180:1488",  # 1 mounth with interval of 30min
-                "RRA:AVERAGE:0.5:360:8784"   # 1 year with interval of 1hour
+                "--step", $this->{'daemon'}->{'delay'} * $rrdconf->{'interval'},
+                "DS:$dsname:$rrdconf->{'rrd'}:$rrdconf->{'heartbeat'}:$rrdconf->{'min'}:$rrdconf->{'max'}",
+                "RRA:$rrdconf->{'rra'}[0]",
+                "RRA:$rrdconf->{'rra'}[1]",
+                "RRA:$rrdconf->{'rra'}[2]",
+                "RRA:$rrdconf->{'rra'}[3]",
+                "RRA:$rrdconf->{'rra'}[4]"
                 );
 }
 
@@ -453,26 +496,34 @@ sub DoGET
       last;
     }
   }
-  $isvalid ||= ( $path =~ /\/addons\// );
+  
+  # Check for valid addon
+  if ( $path =~ /\/addons\/(.*)\/(.*)\.(js|html|css)/ ) {
+    $path = "/addons/$1/$2.$3";
+    $isvalid=1;
+  }
 
   #$isvalid or $connection->send_error(404,"<br><b>$path</b> not in <br>". join ('<br>',@{$this->{'paths'}} )) and return;
   $isvalid or $this->SendError(404);
 
-  #$path =~ /shellinabox$/ and $this->SendRedirect( $configuration->{'daemon'}->{'shellinabox'} ) and return;
   $path =~ /shellinabox$/ and $this->ShowShellinabox( $configuration, $request->header('Host') ) and return;
   $path =~ /dynamic\.json/ and $this->SendStatus( $configuration ) and return;
   $path =~ /([^\/]+)\.json/ and $this->SendJSON($this->{$1}) and return;
+  
   #Recreate empty rrd on demand
-  $path =~ /empty\.rrd/ and $configuration->CreateRRD( "$configuration->{'daemon'}->{'datastore'}/stat/empty.rrd", 'empty', 'GAUGE', 'U', 'U' );
+  $path =~ /empty\.rrd/ and $configuration->CreateEmptyRRD();
 
   #The main page (/) is requested
   $path =~ /^\/$/ and $path = "/index.html";
-
+  
+  #Disable index page (until login screen is implemented)
+  $path =~ /index\.html/ and $path =~ s/index/status/;
+  
   #If the file exists we return it
   -f "$configuration->{'daemon'}->{'webroot'}/$path" and $this->SendFile($connection, "$configuration->{'daemon'}->{'webroot'}/$path") and return;
   -f "$configuration->{'daemon'}->{'datastore'}/$path" and $this->SendFile($connection, "$configuration->{'daemon'}->{'datastore'}/$path") and return;
 
-  $this->Debug(2,"Can't find $configuration->{'daemon'}->{'webroot'}/$path");
+  $this->Debug(2,"Can't find $path");
 
   #Finally send error
   $this->SendError();
@@ -504,9 +555,8 @@ sub Run
   $this->{'all'} = $json->encode( \%{$configuration} );
   $this->{'version'} = "{\"version\":\"$configuration->{'version'}\"}";
   #print Data::Dumper->Dump([$this->{'paths'}]);
-
+  
   # Create the server
-  #print Data::Dumper->Dump([$configuration]);
   $this->{'server'} = new HTTP::Daemon     ( ReuseAddr => 1,
                                              LocalAddr => $configuration->{'daemon'}->{'addr'},
                                              LocalPort => $configuration->{'daemon'}->{'port'})
@@ -547,6 +597,7 @@ sub new
   my $this = bless { }, shift;
   $this->Debug(3,"");
   @{$this->{'files'}} = ("static.json","status.json","statistics.json");
+  $this->{'counter'} = -1;
   return $this;
 }
 
@@ -610,17 +661,24 @@ sub Run
 
   for(;;)
   {
+    # count loops
+    $this->{'counter'}++;
+      
     # Process data
     $this->Process($configuration,'dynamic');
 
     # Store and show extracted data
     $this->Status($configuration);
 
+    if ($this->{'counter'} >= $configuration->{'maxinterval'}){
+      $this->{'counter'} = 0;
+    }
+      
     # Check if server is up
     if ( !$configuration->{'daemon'}->{'noserver'}) {
       kill(0,$serverpid) or last;
     }
-
+    
     # tempo before next process
     $configuration->{'daemon'}->{'delay'} or last;
     sleep $configuration->{'daemon'}->{'delay'};
@@ -638,13 +696,27 @@ sub Process
   my $list = shift;
   $this->Debug(2,"Processing $list");
 
-  $this->{$list} and delete $this->{$list};
   foreach my $kpi ( @{$configuration->{$list}} ) {
     $kpi or next;
+    if ( $list =~ /dynamic/) {
+      $this->{'counter'} % $kpi->{'interval'} and next;
+    }
     # if file is executable, execute it and process output else, read file content
     $_ = $kpi->{'source'};
     /(.*)/; /(\S+)\s.*/; #Not so clean... Regexp to be reviewed
-    my $file = ( -x $1 || -x which($1) ) ? "$kpi->{'source'} 2>/dev/null|" : $kpi->{'source'};
+    my $file = $kpi->{'source'};
+    if ( -x $1 || -x which($1) ) {
+      $file = "$file 2>/dev/null |";
+      $_ = $kpi->{'source'};
+      # Parse command line and replace 'data.kpi' by kpi value
+      while ( /data\.(\S+)/ ) {
+        my $data = $this->{'static'}->{$1} || $this->{'dynamic'}->{$1};
+        $file =~ s/data\.$1/$data/;
+        $_ = $file;
+      }
+    }
+    
+    $this->Debug(3,"Opening '$file'");
     my $pid = 0;
     eval {
       local $SIG{ALRM} = sub { die "Timeout\n" };
@@ -936,7 +1008,7 @@ sub PrintConfiguration
   print " add anew file into /etc/rpimonitor/.\n";
   print " <Note the some text require a manual update>\n";
   print " Once the configuration will be apply, restart RPi-Monitor with the\n";
-  print " command: /etc/init.d/rpimonitor restart\n";
+  print " command: /etc/init.d/rpimonitor restart or systemctl restart rpimonitord\n";
 }
 
 sub Run
@@ -1014,7 +1086,8 @@ NAME
 
 USAGE
   rpimonitord [-a address][ -b pidfile][[-c configuration_file]...]
-     [-d delay][-h][-n][-p port][-s][-t timeout][-v[v[...]]][-V]
+     [-d delay][-h][-k][-l logfile][-n][-p port][-s][-t timeout]
+     [-v[v[...]]][-V]
 
 DESCRIPTION
   rpimonitord is designed to extract data from Raspberry Pi system and
@@ -1025,7 +1098,8 @@ OPTIONS
   -a, --addr        Web server bind address (Default: 0.0.0.0)
   -b, --background  Define the pid file when run in background
   -c, --conf        Define the configuration file
-                      Default: /etc/rpimonitor/*.conf
+                      Default: /etc/rpimonitor/data.conf
+                               /etc/rpimonitor/daemon.conf
   -d, --delay       Delay between check ins seconds (Default: 10)
                       Note: If you want to change the default delay, the
                       rrd file will have to be deleted rpimonitord will
@@ -1033,6 +1107,8 @@ OPTIONS
                       slice.
   -h, --help        Shows this help and exit
   -i, --interactive Interactive configuration helper
+  -k, --keep        Keep log file (Default: logfile is delete at each start)
+  -l, --logfile     Logfile directory and prefix (ex: /var/log/rpimonitor)
   -n, --noserver    Don't start embeded server
   -p, --port        Web server port (Default: 8888)
   -s, --show        Show configuration as loaded and exit
@@ -1041,10 +1117,10 @@ OPTIONS
   -V, --Version     Show version and exit
 
 CONFIGURATION
-  Configuration can be defined into /etc/rpimonitor/*.conf or in a
-  list of files specified by -c parameter. See the files
-  /etc/rpimonitor/daemon.conf and /etc/rpimonitor/default.conf
-  provided with at installation to see how to customize rpimonitord.
+  Configuration can be defined into etc/rpimonitor/daemon.conf and 
+  /etc/rpimonitor/data.conf or in a list of files specified by -c parameter.
+  In /etc/rpimonitor/template/*.conf provided at installation you can 
+  see how to customize rpimonitord.
   Configuration defined inside a configuration file always overwrite
   default values.
   Configuration given as option of the command line always overwrite
@@ -1066,6 +1142,7 @@ RAW DATA ACCESS
     statistics.json: Description of statistics page
     status.json:    Description of status page
     friends.json:   List of friends
+    addons.json:    List of addons
 
   Statistic information are stored into RRD file available in the
   directory [webroot]/stat/
@@ -1084,10 +1161,11 @@ sub writePID {
 }
 
 sub daemonize {
+  my $configuration = shift;
   chdir '/' or die "Can't chdir to /: $!";
   open STDIN, '/dev/null' or die "Can't read /dev/null: $!";
   open STDOUT, '>>/dev/null' or die "Can't write to /dev/null: $!";
-  open STDERR, '>>/dev/null' or die "Can't write to /dev/null: $!";
+  open STDERR, ">>$configuration->{'daemon'}->{'logfile'}" or die "Can't write to $configuration->{'daemon'}->{'logfile'}: $!";
   defined(my $pid = fork) or die "Can't fork: $!";
   exit if $pid;
   setsid or die "Can't start a new session: $!";
@@ -1133,6 +1211,8 @@ while($_ = shift)
   /-d(elay)?/       and $configuration->{'daemon'}->{'delay'} = shift and next;
   /-h(elp)?/        and help;
   /-i(nteractive)?/ and interactive() and exit;
+  /-k(eep)?/        and $configuration->{'daemon'}->{'keeplogfile'}++ and next;
+  /-l(ogfile)?/     and $configuration->{'daemon'}->{'logfile'} = shift and next;
   /-n(oserver)?/    and $configuration->{'daemon'}->{'noserver'}++ and next;
   /-p(ort)?/        and $configuration->{'daemon'}->{'port'} = shift and next;
   /-s(how)?/        and $configuration->{'show'}++ and next;
@@ -1142,7 +1222,11 @@ while($_ = shift)
 }
 $configuration->Load();
 
-$pidfile and &daemonize;
+$configuration->{'daemon'}->{'keeplogfile'} or -f $configuration->{'daemon'}->{'logfile'} and unlink $configuration->{'daemon'}->{'logfile'};
+$configuration->{'daemon'}->{'logfile'} ||= '/dev/null';
+
+
+$pidfile and &daemonize($configuration);
 
 my $monitor = Monitor->new();
 # Process data that should be extracted once, before the server starts
@@ -1152,6 +1236,14 @@ $monitor->{'static'}->{'hostname'} = hostname();
 $SIG{INT}    = sub { stop(); }; # catch Ctrl+C
 
 my $serverpid;
+
+# Manage loglevel
+$SIG{USR1}   = sub { ($verbose < 5 ) and ++$verbose and print STDERR "[", strftime("%Y/%m/%d-%H:%M:%S", localtime), "] Change loglevel to ", $verbose ,"\n"; };
+$SIG{USR2}   = sub {  $verbose       and $verbose-- and print STDERR "[", strftime("%Y/%m/%d-%H:%M:%S", localtime), "] Change loglevel to ", $verbose ,"\n"; };
+
+print STDERR "[", strftime("%Y/%m/%d-%H:%M:%S", localtime), "] ", "RPi-Monitor has been started\n";
+print STDERR "                      Log level can be increased or decreased during runtime\n";
+print STDERR "                      by sending signal USR1 or USR2 with the command killall -USRx rpimonitord\n";
 
 my $startTime = 0;
 for (;;) {
