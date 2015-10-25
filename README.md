@@ -37,7 +37,7 @@ Debian package for **Raspbian** is available in [here](https://github.com/Xavier
 
 **Gentoo** users can find the ebuild created by Stuart Shelton [here](https://github.com/srcshelton/gentoo-ebuilds/tree/master/www-apps/rpi-monitor).
 
-**Arch Linux** users can find the aur package created by ajs124 [here](https://aur.archlinux.org/packages/rpimonitor/).
+**Arch Linux** users can find the aur package created by ajs124 [here](https://aur.archlinux.org/packages/rpimonitor/). Developmental branch package is located [here](https://aur.archlinux.org/packages/rpimonitor-dev-git/)
 
 The dependencies and the detail of installation process are describe into [PACKAGING.md](PACKAGING.md)
 
