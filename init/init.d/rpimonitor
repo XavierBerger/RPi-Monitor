@@ -15,6 +15,7 @@
 
 DAEMON="/usr/bin/rpimonitord"
 PIDFILE="/var/run/rpimonitord.pid"
+LOGFILE="/var/log/rpimonitor.log"
 
 [ -x $DAEMON ] || exit 0
 
@@ -37,7 +38,7 @@ start() {
   done;
 
   log_daemon_msg "Starting RPi-Monitor" "rpimonitord"
-  nice -n 19 $DAEMON -b $PIDFILE $CONFFILE
+  nice -n 19 $DAEMON -b $PIDFILE $CONFFILE -l $LOGFILE
   status=$?
   log_end_msg $status
 }

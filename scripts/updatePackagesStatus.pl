@@ -20,11 +20,10 @@ use strict;
 
 if(which('aptitude')) {
   open ( FILE, 'aptitude -F%p --disable-columns search ~U |') or die "$!\n";
-} elsif (which('pacman')) {
-  system ( 'pacman -Sy > /dev/null' );
-  open ( FILE, 'pacman -Quq |' ) or die "$!\n";
+} elsif (which('checkupdates')) {
+  open ( FILE, 'checkupdates |' ) or die "$!\n";
 } else {
-  die "Error: neither pacman nor aptitude seem to be available\n";
+  die "Error: neither checkupdates nor aptitude seem to be available\n";
 }
 
 my $pkgnbr = 0;

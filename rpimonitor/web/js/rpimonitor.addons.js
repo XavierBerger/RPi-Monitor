@@ -18,15 +18,13 @@ function ConstructPage()
 {
   var activePage = GetURLParameter('activePage');
 
-  if ( typeof activePage == 'undefined') {
-    activePage=localStorage.getItem('activePage', activePage);
-    if ( activePage == null ) { activePage = 0 }
-  }
   data = getData('addons');
-  if ( activePage >= data.length ){
-    activePage=0;
+  if ( ( typeof activePage == 'undefined') ||
+       ( activePage >= data.length ) 
+     )
+  { 
+    activePage = 0
   }
-  localStorage.setItem('activePage', activePage);
   if ( data[activePage].showTitle != 0 ) {
     $('<h2 id="pagetitle"><p class="text-info">'+data[activePage].name+'</p><hr></h2>').insertBefore("#insertionPoint");
   }
