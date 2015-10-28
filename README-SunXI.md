@@ -1,11 +1,5 @@
 # [**RPi-Monitor on sunxi**](http://rpi-experiences.blogspot.fr/) 
 
-### Overview
-
-[**RPi-Monitor**](http://rpi-experiences.blogspot.fr/) is a self monitoring application designed to run on [Raspberry Pi](http://raspberrypi.org).
-
-With a few adjustments it can also be used on numerous [sunxi devices](http://linux-sunxi.org/Main_Page) that are using the [A10](http://linux-sunxi.org/Category:A10_Boards), [A13](http://linux-sunxi.org/Category:A13_Boards) or [A20](http://linux-sunxi.org/Category:A20_Boards) SoC since they all feature the same power management unit [AXP209](http://linux-sunxi.org/AXP209).
-
 ### Installation/Configuration
 
 All you have to do is to relink RPi-Monitor's `data.conf` to `sunxi_axp209.conf`, ensure that `/usr/share/rpimonitor/scripts/sunxi-temp-daemon.sh` is running as root and restart the *rpimonitor* service/daemon afterwards:
