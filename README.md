@@ -62,6 +62,12 @@ The branch **devel** is the unstable development branch (The branch may have bug
 
 Each release is identified by a tag. 
 
+### Pull request
+You want to contribute to RPi-Monitor. I'll be happy to integrate your pull request. 
+
+Please note: Pull request perfomed on **devel** branch will be integrated as soon as possible. Pull request perform on master branche may only be integrated when a new version is published (or not may not be integrated at all...)
+
+
 ### **RPi-Monitor** used in other product
 
 **RPi-monitor** is also used as part of other product:
