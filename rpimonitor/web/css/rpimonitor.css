@@ -89,3 +89,28 @@ body {
 .justgage {
   display: inline-block;
 }
+
+.row {
+   display: inline-block;
+}
+@media screen and (min-width: 1025px) {
+  .column-fluid {
+    -webkit-column-rule: 1px solid #f0f0f0;
+    -moz-column-rule: 1px solid #f0f0f0;
+    column-rule: 1px solid #f0f0f0;
+  }
+}
+@media screen and (min-width: 1025px) and (max-width: 1526px) {
+  .column-fluid {
+    -webkit-column-count: 2;
+    -moz-column-count: 2;
+    column-count: 2;
+  }
+}
+@media screen and (min-width: 1526px) {
+  .column-fluid {
+    -webkit-columns-count: 3;
+    -moz-column-count: 3;
+    column-count: 3;
+  }
+}

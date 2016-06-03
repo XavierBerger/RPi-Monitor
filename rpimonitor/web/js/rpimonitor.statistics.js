@@ -18,24 +18,24 @@ var activestat;
 var graphconf;
 var activePage;
 var static;
+var active_rra;
 
 function Start() {
   static = getData('static')
-  
   graphconf = getData('statistics')
     
   activestat = localStorage.getItem('activestat') || 0;
   activePage = GetURLParameter('activePage');
-  if ( typeof activePage == 'undefined' ) { 
-    activePage=localStorage.getItem('activePage', activePage); 
-    if ( activePage == null ) { activePage = 0 }
+  if ( ( typeof activePage == 'undefined' ) || 
+       ( activePage >= graphconf.length ) 
+     )
+  { 
+    activePage = 0 
   }
-  localStorage.setItem('activePage', activePage);
   if ( graphconf.length > 1 ) {
     $('<h2><p class="text-info">'+graphconf[activePage].name+'</p></h2><hr>').insertBefore("#insertionPoint");
   }
 
-  localStorage.setItem('activePage', activePage);
   FetchGraph();
 }
 
@@ -201,9 +201,29 @@ function UpdateGraph() {
   $('#Legend').addClass('hide');
 }
 
+function AddOption()
+{
+  options =
+          '<p>'+
+          '<b>Statistic</b><br>'+
+          '<form class="form-inline">'+
+            '<span>Default graph timeline <select class="span3" id="active_rra">'+
+            '<option value="0" '+ ( active_rra == 0 ? 'selected' : '' ) +'>Graph n°1</option>'+
+            '<option value="1" '+ ( active_rra == 1 ? 'selected' : '' ) +'>Graph n°2</option>'+
+            '<option value="2" '+ ( active_rra == 2 ? 'selected' : '' ) +'>Graph n°3</option>'+
+            '<option value="3" '+ ( active_rra == 3 ? 'selected' : '' ) +'>Graph n°4</option>'+
+            '<option value="4" '+ ( active_rra == 4 ? 'selected' : '' ) +'>Graph n°5</option>'+
+            '</select></span>'+
+          '</form>'+
+        '</p>'; 
+  $(options).insertBefore("#optionsInsertionPoint")
+}
+
 $(function () {
   // Remove the Javascript warning
   document.getElementById("infotable").deleteRow(0);
+  
+  active_rra=(localStorage.getItem('active_rra') || 0);
 
   rrd_data = [];
 
@@ -217,4 +237,13 @@ $(function () {
   doqr(document.URL);
 
   Start();
+    
+  /* Populate option dialog*/
+  AddOption();
+  
+  $('#active_rra').change(function(){
+    localStorage.setItem('active_rra',$('#active_rra').val())
+    // TODO: Add text of mygraph_res selected option nearby graph selection
+  });
+
 });
