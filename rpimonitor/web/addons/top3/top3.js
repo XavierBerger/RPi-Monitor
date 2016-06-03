@@ -5,4 +5,6 @@ $(function () {
               'No option available for this addon'+
             '</p>'
   $(options).insertBefore("#optionsInsertionPoint")
+  UpdateAddon();
+  
 });
