@@ -95,32 +95,20 @@ sub Load
   # Create storage directory if needed
   -d "$this->{'daemon'}->{'datastore'}/stat" or mkdir "$this->{'daemon'}->{'datastore'}/stat";
   # Create empty file at each start
-  $this->CreateEmptyRRD();
-  chown( $this->{'daemon'}->{'uid'},
-         $this->{'daemon'}->{'gid'},
-         "$this->{'daemon'}->{'datastore'}/stat/empty.rrd" );
+  $this->CreateRRD( "$this->{'daemon'}->{'datastore'}/stat/empty.rrd", 'empty', 'GAUGE', 'U', 'U' );
+  chown($this->{'daemon'}->{'uid'},$this->{'daemon'}->{'gid'},"$this->{'daemon'}->{'datastore'}/stat/empty.rrd");
 
   #print Data::Dumper->Dump([$this->{'daemon'}]);
 
   # manage rrds
   foreach (@{$this->{'rrd'}}){
     my @name = split (',',$_->{'name'});
-    my $rrdconf = $_;
-    
-    # define default values
-    $rrdconf->{'interval'}  ||= 1;
-    $rrdconf->{'rra'}[0]    ||= "AVERAGE:0.5:1:8640";   # 1 day with interval of 10sec
-    $rrdconf->{'rra'}[1]    ||= "AVERAGE:0.5:6:2880";   # 2 days with interval of 1min
-    $rrdconf->{'rra'}[2]    ||= "AVERAGE:0.5:60:2016";  # 14 days with interval of 10 min
-    $rrdconf->{'rra'}[3]    ||= "AVERAGE:0.5:180:1488"; # 1 mounth with interval of 30min
-    $rrdconf->{'rra'}[4]    ||= "AVERAGE:0.5:360:8784"; # 1 year with interval of 1hour
-    $rrdconf->{'min'}       ||= defined($rrdconf->{'min'}) ? $rrdconf->{'min'} : "U";
-    $rrdconf->{'max'}       ||= defined($rrdconf->{'max'}) ? $rrdconf->{'max'} : "U";
-    $rrdconf->{'heartbeat'} ||= 600;
-  
+    my $type = $_->{'rrd'};
+    my $min = defined($_->{'min'}) ? $_->{'min'} : "U";
+    my $max = defined($_->{'max'}) ? $_->{'max'} : "U";
     foreach (@name) {
       my $filename="$this->{'daemon'}->{'datastore'}/stat/$_.rrd";
-      -f "$filename" or $this->CreateRRD($filename,$_,$rrdconf);
+      -f "$filename" or $this->CreateRRD($filename,$_,$type,$min,$max);
       push(@{$this->{'rrdlist'}},"stat/$_.rrd");
     }
   }
@@ -141,14 +129,6 @@ sub Load
   }
   foreach (@{$this->{'web'}->{'addons'}}) {
     $_->{'name'} and push(@{$this->{'web'}->{'menu'}->{'addons'}}, $_->{'name'});
-  }
-
-  # manage default value for dynamic data
-  foreach (@{$this->{'dynamic'}}) {
-    $_->{'interval'} ||= 1;
-    if ($_->{'interval'} > $this->{'maxinterval'} ) {
-      $this->{'maxinterval'} = $_->{'interval'};
-    }
   }
   
   $this->{'sharedmem'} = IPC::ShareLite->new(
@@ -245,35 +225,15 @@ sub LoadFile
   }
 }
 
-sub CreateEmptyRRD
-{    
-  my $this = shift;
-  $this->Debug(2,"$this->{'daemon'}->{'datastore'}/stat/empty.rrd");
-  
-  $this->CreateRRD( "$this->{'daemon'}->{'datastore'}/stat/empty.rrd",
-    "empty", 
-    { 'name' => 'empty', 
-      'rrd' => 'GAUGE', 
-      'interval' => 1,
-      'rra' => [ 'AVERAGE:0.5:1:8640',
-                 'AVERAGE:0.5:6:2880',
-                 'AVERAGE:0.5:6:2880',
-                 'AVERAGE:0.5:180:1488',
-                 'AVERAGE:0.5:360:8784' ],
-      'min' => "U",
-      'max' => "U",
-      'heartbeat' => 600
-    } 
-  );
-}
-
 sub CreateRRD
 {
   my $this = shift;
   my $filename = shift;
-  my $dsname = shift;
-  my $rrdconf = shift;
-  $this->Debug(2,"$filename");
+  my $name = shift;
+  my $type = shift;
+  my $min = shift;
+  my $max = shift;
+  $this->Debug(2,"$filename - $name - $type - $min < value < $max");
   
   my $current = time();
   my $start = $current - 60;
@@ -282,25 +242,24 @@ sub CreateRRD
 
   $this->Debug(2,"$filename",
                 "--start", $start,
-                "--step", $this->{'daemon'}->{'delay'} * $rrdconf->{'interval'},
-                "DS:$dsname:$rrdconf->{'rrd'}:$rrdconf->{'heartbeat'}:$rrdconf->{'min'}:$rrdconf->{'max'}",
-                "RRA:$rrdconf->{'rra'}[0]",
-                "RRA:$rrdconf->{'rra'}[1]",
-                "RRA:$rrdconf->{'rra'}[2]",
-                "RRA:$rrdconf->{'rra'}[3]",
-                "RRA:$rrdconf->{'rra'}[4]"
+                "--step", $this->{'daemon'}->{'delay'},
+                "DS:$name:$type:600:$min:$max",
+                "RRA:AVERAGE:0.5:1:8640",    # 1 day with interval of 10sec
+                "RRA:AVERAGE:0.5:6:2880",    # 2 day with interval of 1min
+                "RRA:AVERAGE:0.5:60:2016",   # 2 week with interval of 10min
+                "RRA:AVERAGE:0.5:180:1488",  # 1 mounth with interval of 30min
+                "RRA:AVERAGE:0.5:360:8784"   # 1 year with interval of 1hour
                 );
-
   
   RRDs::create( "$filename",
                 "--start", $start,
-                "--step", $this->{'daemon'}->{'delay'} * $rrdconf->{'interval'},
-                "DS:$dsname:$rrdconf->{'rrd'}:$rrdconf->{'heartbeat'}:$rrdconf->{'min'}:$rrdconf->{'max'}",
-                "RRA:$rrdconf->{'rra'}[0]",
-                "RRA:$rrdconf->{'rra'}[1]",
-                "RRA:$rrdconf->{'rra'}[2]",
-                "RRA:$rrdconf->{'rra'}[3]",
-                "RRA:$rrdconf->{'rra'}[4]"
+                "--step", $this->{'daemon'}->{'delay'},
+                "DS:$name:$type:600:$min:$max",
+                "RRA:AVERAGE:0.5:1:8640",    # 1 day with interval of 10sec
+                "RRA:AVERAGE:0.5:6:2880",    # 2 day with interval of 1min
+                "RRA:AVERAGE:0.5:60:2016",   # 2 week with interval of 10min
+                "RRA:AVERAGE:0.5:180:1488",  # 1 mounth with interval of 30min
+                "RRA:AVERAGE:0.5:360:8784"   # 1 year with interval of 1hour
                 );
 }
 
@@ -511,7 +470,7 @@ sub DoGET
   $path =~ /([^\/]+)\.json/ and $this->SendJSON($this->{$1}) and return;
   
   #Recreate empty rrd on demand
-  $path =~ /empty\.rrd/ and $configuration->CreateEmptyRRD();
+  $path =~ /empty\.rrd/ and $configuration->CreateRRD( "$configuration->{'daemon'}->{'datastore'}/stat/empty.rrd", 'empty', 'GAUGE', 'U', 'U' );
 
   #The main page (/) is requested
   $path =~ /^\/$/ and $path = "/index.html";
@@ -597,7 +556,6 @@ sub new
   my $this = bless { }, shift;
   $this->Debug(3,"");
   @{$this->{'files'}} = ("static.json","status.json","statistics.json");
-  $this->{'counter'} = -1;
   return $this;
 }
 
@@ -661,18 +619,11 @@ sub Run
 
   for(;;)
   {
-    # count loops
-    $this->{'counter'}++;
-      
     # Process data
     $this->Process($configuration,'dynamic');
 
     # Store and show extracted data
     $this->Status($configuration);
-
-    if ($this->{'counter'} >= $configuration->{'maxinterval'}){
-      $this->{'counter'} = 0;
-    }
       
     # Check if server is up
     if ( !$configuration->{'daemon'}->{'noserver'}) {
@@ -698,9 +649,6 @@ sub Process
 
   foreach my $kpi ( @{$configuration->{$list}} ) {
     $kpi or next;
-    if ( $list =~ /dynamic/) {
-      $this->{'counter'} % $kpi->{'interval'} and next;
-    }
     # if file is executable, execute it and process output else, read file content
     $_ = $kpi->{'source'};
     /(.*)/; /(\S+)\s.*/; #Not so clean... Regexp to be reviewed
