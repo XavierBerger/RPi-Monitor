@@ -19,7 +19,7 @@
   #print to_json \%{$configuration->{'config'}->{'web'}};
   #print Data::Dumper->Dump([$configuration]);
 
-#use diagnostics;
+use diagnostics;
 use strict;
 use IPC::ShareLite;
 $|=1;
@@ -713,9 +713,10 @@ sub Alert
     #print Data::Dumper->Dump( [$_] );
     $this->{'dynamic'}->{'alert'}->{$_->{'name'}} ||= {};
     my $alert = $this->{'dynamic'}->{'alert'}->{$_->{'name'}};
-    $alert->{'currentalertdate'} ||= 0;
-    $alert->{'status'} ||= 0;
+    $alert->{'currentalertdate'}  ||= 0;
+    $alert->{'alertstate'}        ||= 0;
     $alert->{'lastsendalertdate'} ||= 0;
+    $alert->{'currentcanceldate'} ||= 0;
 
     #print Data::Dumper->Dump( [$alert] );
 
@@ -723,31 +724,34 @@ sub Alert
     if ( eval( "$this->{'dynamic'}->{$_->{'kpi'}}$_->{'comparator'}$_->{'limit'}" ) ){
       # Alert is active
       # If the state changed, remember the date of change
-      if ( $alert->{'status'} != 1 ) {                                          # Previous status was OK
+      if ( $alert->{'alertstate'} != 1 ) {                                      # Previous alert state was OK
         $alert->{'currentalertdate'} = time;                                    # Remember when alert occurs
-        $alert->{'status'} = 1;                                                 # Current status is alert
+        $alert->{'alertstate'} = 1;                                             # Current alert state is alert
         $this->Debug(3,"Alert just raised for '$_->{'name'}' : $this->{'dynamic'}->{$_->{'kpi'}}$_->{'comparator'}$_->{'limit'}");
       }
-      # Status exceed max duration: Houston, we have a problem
+      # Alert state exceed max duration: Houston, we have a problem
       if ( time > $alert->{'currentalertdate'} + $_->{'maxalertduration'}){     # Alert duration exceed max duration
         if ( time > $alert->{'lastsendalertdate'} + $_->{'resendperiod'}){      # Shall we send and alert?
           $alert->{'lastsendalertdate'}=time;                                   # When lastsendalertdate is set, an alert is on going
-          $this->Debug(3,"Sending alert for '$_->{'name'}'");
+          $this->Debug(3,"Sending alert command '$_->{'alertcommand'}' for '$_->{'name'}'");
         }
       }
     }
     else {
       # Alert is not active
-      if ( $alert->{'status'} != 0 ) {                                          # Previous status was alert
+      if ( $alert->{'alertstate'} != 0 ) {                                      # Previous alert state was 1:  KO
         $alert->{'currentcanceldate'} = time;                                   # Remerber when cancel occurs
-        $alert->{'status'} = 0;                                                 # Current status is OK
+        $alert->{'alertstate'} = 0;                                             # Current alert state is 0: OK
         $this->Debug(3,"Alert just cancelled for '$_->{'name'}' : $this->{'dynamic'}->{$_->{'kpi'}}$_->{'comparator'}$_->{'limit'}");
       }
-      # If alerte was active and now, inactive duration exceed
+      # If alert was active (lastsendalertdate !=0) and now, inactive duration exceed validation time
       if ( ( $alert->{'lastsendalertdate'} != 0) &&                             # lastsendalertdate is set, an alert is on going
            ( time > $alert->{'currentcanceldate'} + $_->{'cancelvalidation'})){ # Cancel duration is long enough
-        $alert->{'lastsendalertdate'} = 0;                                      # No more ongoing alert, reset lastsendalertdate
-        $this->Debug(3,"Sending cancel for '$_->{'name'}'");
+        $alert->{'lastsendalertdate'} = 0;                                      # No more ongoing alert, reset times
+        $alert->{'currentalertdate'} = 0;
+        $alert->{'currentcanceldate'} = 0;
+        #TODO: execute command
+        $this->Debug(3,"Sending cancel command '$_->{'cancelcommand'}' for '$_->{'name'}'");
       }
     }
   }
