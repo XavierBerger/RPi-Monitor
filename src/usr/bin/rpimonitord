@@ -456,6 +456,15 @@ sub DoGET
     }
   }
 
+  # Check if requested RRD exists, if not, send empty.rrd
+  if ( $path =~ /\.rrd$/) {
+    if ( ! -f "$configuration->{'daemon'}->{'datastore'}/$path" ) {
+      $this->Debug(3, "$configuration->{'daemon'}->{'datastore'}/$path is not existing, sending empty.rrd");
+      $path = '/stat/empty.rrd';
+      $isvalid=1;
+    }
+  }
+
   # Check for valid addon
   if ( $path =~ /\/addons\/(.*)\/(.*)\.(js|html|css)/ ) {
     $path = "/addons/$1/$2.$3";
