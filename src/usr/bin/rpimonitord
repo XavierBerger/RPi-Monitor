@@ -281,7 +281,6 @@ sub new
   my @paths = (
     "/",
     "/all.json",
-    "/alert.json",
     "/addons.json",
     "/static.json",
     "/dynamic.json",
@@ -716,14 +715,19 @@ sub SendAlarm
 }
 
 =cut
-                    send alert
-                       ^
-     th <-----dh ----->|
-     __________________|__________           send cancel
-     |                           |              ^
-     |                           |              |
-   __|                           |______________|_____
-                                tl<-----dl----->
+  Alert/Cancel are sent only when the state is stable to avoid messages flooding
+  when limit is about to be exceeded as shown in schema bellow:
+
+                           send alert
+                              ^
+    th      th <-----dh ----->|     th
+    _____   __________________|______   _______           send cancel
+    |   |   |                       |   |     |              ^
+    |   |   |                       |   |     |              |
+  __|   |___|                       |___|     |______________|_____
+       tl                          tl        tl<-----dl----->
+                              |------------------------------|
+                                      Alert is raised
 =cut
 sub Alert
 {
@@ -734,10 +738,10 @@ sub Alert
     #print Data::Dumper->Dump( [$_] );
     $this->{'dynamic'}->{'alert'}->{$_->{'name'}} ||= {};
     my $alert = $this->{'dynamic'}->{'alert'}->{$_->{'name'}};
-    $alert->{'currentalertdate'}  ||= 0;
-    $alert->{'alertstate'}        ||= 0;
-    $alert->{'lastsendalertdate'} ||= 0;
-    $alert->{'currentcanceldate'} ||= 0;
+    $alert->{'currentalertdate'}      ||= 0;
+    $alert->{'alertstate'}            ||= 0;
+    $alert->{'lastsendalertdate'}     ||= 0;
+    $alert->{'currentcanceldate'}     ||= 0;
     $this->{'dynamic'}->{$_->{'kpi'}} ||= "";
 
     #print Data::Dumper->Dump( [$alert] );
