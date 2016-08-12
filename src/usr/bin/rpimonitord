@@ -19,7 +19,7 @@
   #print to_json \%{$configuration->{'config'}->{'web'}};
   #print Data::Dumper->Dump([$configuration]);
 
-use diagnostics;
+#use diagnostics;
 use strict;
 use IPC::ShareLite;
 $|=1;
@@ -167,6 +167,7 @@ sub LoadFile
     while (scalar(@leaves) > 0) {         # While @leaves contains data
       $current ||= shift (@leaves);       # If root is empty, shift the first element of @leaves to $current
       $root ||= $current;
+      if ( ( $root eq 'alert' ) || ( $root eq 'web' ) ) { $root = $current }
       $next = shift (@leaves);            # Shift the first element of @leaves in $next
       if ( $next =~ /^\d+$/ ) {           # If $next is an integer -> we are in an array
         if ($current =~ /^\d+$/) {        # If $current is an integer -> we are in an array
@@ -280,6 +281,7 @@ sub new
   my @paths = (
     "/",
     "/all.json",
+    "/alert.json",
     "/addons.json",
     "/static.json",
     "/dynamic.json",
@@ -464,8 +466,8 @@ sub DoGET
   #$isvalid or $connection->send_error(404,"<br><b>$path</b> not in <br>". join ('<br>',@{$this->{'paths'}} )) and return;
   $isvalid or $this->SendError(404);
 
-  $path =~ /shellinabox$/ and $this->ShowShellinabox( $configuration, $request->header('Host') ) and return;
-  $path =~ /dynamic\.json/ and $this->SendStatus( $configuration ) and return;
+  $path =~ /shellinabox$/   and $this->ShowShellinabox( $configuration, $request->header('Host') ) and return;
+  $path =~ /dynamic\.json/  and $this->SendStatus( $configuration ) and return;
   $path =~ /([^\/]+)\.json/ and $this->SendJSON($this->{$1}) and return;
 
   #Recreate empty rrd on demand
@@ -652,10 +654,9 @@ sub Process
   foreach my $kpi ( @{$configuration->{$list}} ) {
     $kpi or next;
     # if file is executable, execute it and process output else, read file content
-    $_ = $kpi->{'source'};
-    /(.*)/; /(\S+)\s.*/; #Not so clean... Regexp to be reviewed
     my $file = $kpi->{'source'};
-    if ( -x $1 || -x which($1) ) {
+    $file =~ /^(\S+)/;
+    if ( (-x $1) || ( which($1) ) ) {
       $file = "$file 2>/dev/null |";
       $_ = $kpi->{'source'};
       # Parse command line and replace 'data.kpi' by kpi value
@@ -694,6 +695,26 @@ sub Process
   #print Data::Dumper->Dump([$this->{'dynamic'}]);
 }
 
+sub SendAlarm
+{
+  my $this = shift;
+  my $configuration = shift;
+  my $commandline = shift;
+  $this->Debug(2,"");
+
+  $this->Debug(3,"Executing command: '$commandline'");
+  my $pid = 0;
+  eval {
+    local $SIG{ALRM} = sub { die "Timeout\n" };
+    alarm $configuration->{'daemon'}->{'timeout'};
+    $pid = open(CMD, "$commandline |") or die "Can't execute $commandline because $!\n";
+    close(CMD);
+    alarm 0;
+    $pid = 0;
+  };
+  $pid and kill( 9, $pid);
+}
+
 =cut
                     send alert
                        ^
@@ -717,6 +738,7 @@ sub Alert
     $alert->{'alertstate'}        ||= 0;
     $alert->{'lastsendalertdate'} ||= 0;
     $alert->{'currentcanceldate'} ||= 0;
+    $this->{'dynamic'}->{$_->{'kpi'}} ||= "";
 
     #print Data::Dumper->Dump( [$alert] );
 
@@ -734,6 +756,7 @@ sub Alert
         if ( time > $alert->{'lastsendalertdate'} + $_->{'resendperiod'}){      # Shall we send and alert?
           $alert->{'lastsendalertdate'}=time;                                   # When lastsendalertdate is set, an alert is on going
           $this->Debug(3,"Sending alert command '$_->{'alertcommand'}' for '$_->{'name'}'");
+          $this->SendAlarm($configuration,$_->{'raisecommand'});
         }
       }
     }
@@ -750,8 +773,8 @@ sub Alert
         $alert->{'lastsendalertdate'} = 0;                                      # No more ongoing alert, reset times
         $alert->{'currentalertdate'} = 0;
         $alert->{'currentcanceldate'} = 0;
-        #TODO: execute command
         $this->Debug(3,"Sending cancel command '$_->{'cancelcommand'}' for '$_->{'name'}'");
+        $this->SendAlarm($configuration,$_->{'cancelcommand'});
       }
     }
   }
@@ -903,8 +926,7 @@ sub ApplyRegExp
   my $regexp = shift;
   my $print = shift;
 
-  $_ = $source;
-  /(.*)/; /(\S+)\s.*/; #Not so clean... Regexp to be reviewed
+  $source =~ /^(\S+)/;
   my $file = ( -x $1 || -x which($1) ) ? "$source 2>/dev/null|" : $source;
   open(FEED, $file) or die "Can't open $file because $!\n";
   while (<FEED>){
@@ -1042,8 +1064,7 @@ sub Run
     chomp;
     $source = $_ || $source;
 
-    $_ = $source;
-    /(.*)/; /(\S+)\s.*/; #Not so clean... Regexp to be reviewed
+    $source =~ /^(.*)/;
     ( -x $1 || -x which($1) ) and $this->Executable( $1, $source ) and last;
 
     -f $source and $this->FlatFile($source) and last;
@@ -1215,6 +1236,7 @@ sub interactive
   $interactive->Run();
 }
 
+$configuration->{'daemon'}->{'logfile'} = "";
 # read command lines
 while($_ = shift)
 {
