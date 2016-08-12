@@ -78,7 +78,7 @@ function Percent(value,total){
 
 function ProgressBar(value, max, warning, danger){
   var percent = ((100 * value ) / max).toFixed(2)
-  var warning = warning || 0 
+  var warning = warning || 0
   var danger = danger || 0
   var color = ''
   if (danger > warning) {
@@ -105,16 +105,16 @@ function JustGageBar(title, label,min, value, max, width, height, levelColors, w
   height= height || 80
   levelColors = levelColors || percentColors
   if (( warning != undefined ) && (critical != undefined)){
-    if ( value > critical ) { 
+    if ( value > critical ) {
       levelColors = [levelColors[2], levelColors[2], levelColors[2]];
-    } else 
-    if ( value > warning ) { 
+    } else
+    if ( value > warning ) {
       levelColors = [levelColors[1], levelColors[1], levelColors[1]];
     } else {
       levelColors = [levelColors[0], levelColors[0], levelColors[0]];
     }
   }
-  
+
   justgageId++
 
   div="<div class='justgage' id='gauge"+(justgageId)+"' style='width:"+width+"px; height:"+height+"px;'></div>"
@@ -128,13 +128,14 @@ function JustGageBar(title, label,min, value, max, width, height, levelColors, w
     'startAnimationTime: 1,'+
     'startAnimationType: "linear",'+
     'levelColors: ["'+ levelColors[0] +'","'+levelColors[1] +'","'+levelColors[2] +'"]'+
-    '})') 
+    '})')
   return div
 }
 
 function Label(data,formula, text, level){
   var result="";
   if ( level.indexOf('label-') < 0 ) { level = 'label-'+level };
+  if ( isNaN(data) ) { data = "\""+data+"\"" };
   eval ( "if ("+data+formula+") result=\"<span class='label "+level+"'>"+text+"</span>\"" );
   return result;
 }
@@ -142,6 +143,7 @@ function Label(data,formula, text, level){
 function Badge(data,formula, text, level){
   var result="";
   if ( level.indexOf('alert-') < 0 ) { level = 'alert-'+level };
+  if ( isNaN(data) ) { data = "\""+data+"\"" };
   eval ( "if ("+data+formula+") result=\"<span class='badge "+level+"'>"+text+"</span>\"" );
   return result;
 }

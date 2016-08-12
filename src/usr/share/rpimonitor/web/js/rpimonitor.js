@@ -25,10 +25,10 @@ function GetURLParameter(sParam)
 {
     var sPageURL = window.location.search.substring(1);
     var sURLVariables = sPageURL.split('&');
-    for (var i = 0; i < sURLVariables.length; i++) 
+    for (var i = 0; i < sURLVariables.length; i++)
     {
         var sParameterName = sURLVariables[i].split('=');
-        if (sParameterName[0] == sParam) 
+        if (sParameterName[0] == sParam)
         {
             return sParameterName[1];
         }
@@ -67,7 +67,7 @@ function ShowFriends(){
       $('#friends').append('<li><a href="'+data[i].link+'">'+data[i].name+'</a></li>');
     }
     $('#divfriends').removeClass('hide');
-  } 
+  }
 }
 
 function AddFooter(){
@@ -106,7 +106,7 @@ function AddDialogs(){
     '</div>'+
     '</div>';
 
-  // Add License Dialog 
+  // Add License Dialog
   dialogs+=
     '<div id="License" class="modal fade">'+
       '<div class="modal-dialog">' +
@@ -117,7 +117,7 @@ function AddDialogs(){
       '</div>'+
       '<div class="modal-body">'+
       'This program is free software: you can redistribute it and/or modify '+
-      ' of the GNU General Public License as published '+ 
+      ' of the GNU General Public License as published '+
       'by the Free Software Foundation, either version 3 of the License, or '+
       '(at your option) any later version.<br>'+
       '<br>'+
@@ -154,7 +154,7 @@ function AddDialogs(){
       '<b>by</b> Xavier Berger <a href="http://rpi-experiences.blogspot.fr/">Blog</a> <a href="https://github.com/XavierBerger/RPi-Monitor">GitHub</a></p>'+
       'With the contribution of users sharing ideas and competences on Github.'+
       '<hr>'+
-      '<p><b>RPi-Monitor</b> is free software developped on top of other open source '+
+      '<p><b>RPi-Monitor</b> is free software developed on top of other open source '+
         'tools : <a href="http://twitter.github.io/bootstrap/">bootstrap</a>, <a href="http://jquery.com/">jquery</a>, <a href="https://code.google.com/p/jsqrencode/">jsqrencode</a>, <a href="http://javascriptrrd.sourceforge.net/">javascriptrrd</a> and <a href="http://www.flotcharts.org/">Flot</a>.<br>'+
       '<p><b>Raspberry Pi</b> and Raspberry Pi logo are properties of <a href="http://www.raspberrypi.org/">Raspberry Pi Fundation</a>.</p>'+
       '</div>'+
@@ -162,7 +162,7 @@ function AddDialogs(){
       '<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>'+
       '</div>'+
       '</div>'+
-    '</div>'+  
+    '</div>'+
     '</div>';
 
   $('#dialogs').html(dialogs);
@@ -238,10 +238,10 @@ function AddTopmenu(){
 }
 
 function UpdateMenu(){
-  // Disable index page 
+  // Disable index page
   //var index=true;
   var index=false;
-  
+
   // Manage active link
   if (current_path == 'status.html'){
     $('#statusmenu').addClass('active');
@@ -264,7 +264,7 @@ function UpdateMenu(){
     $('#optionsmenu').addClass('hide');
     return;
   }
-  
+
   var data = getData('menu');
   if ( data.status.length > 1 ){
     $('#statusmenu').addClass('dropdown');
@@ -292,7 +292,7 @@ function UpdateMenu(){
     $('#statisticslink').attr('data-toggle','dropdown');
     $('#statisticslink').attr('href','#');
   }
-  
+
   if ( data.addons != undefined ) {
     if ( data.addons.length > 0 ){
       $('#addonsmenu').removeClass('hide');
