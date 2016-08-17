@@ -100,9 +100,12 @@ function ProgressBar(value, max, warning, danger){
   return "<div class='progress'><div class='progress-bar "+color+"' role='progressbar' aria-valuemin='0' aria-valuemax='100' aria-valuenow='"+percent+"' style='width: "+percent+"%;'>"+percent+"%</div></div>"
 }
 
-function JustGageBar(title, label,min, value, max, width, height, levelColors, warning, critical){
-  width= width || 100
-  height= height || 80
+function JustGageBar(title, label, min, value, max, width, height, levelColors, warning, critical){
+  width  = width  || 100
+  height = height || 80
+  min = min       || 0
+  max = max       || 1
+  value = value   || 0
   levelColors = levelColors || percentColors
   if (( warning != undefined ) && (critical != undefined)){
     if ( value > critical ) {
