@@ -37,20 +37,16 @@ start() {
     fi
   done;
 
-  log_daemon_msg "Starting RPi-Monitor" "rpimonitord"
+  log_daemon_msg "Starting RPi-Monitor"
   nice -n 19 $DAEMON -b $PIDFILE $CONFFILE -l $LOGFILE
-  status=$?
-  log_end_msg $status
+  log_end_msg $?
 }
 
 stop() {
   touch $PIDFILE
-  log_daemon_msg "Stopping RPi-Monitor" "rpimonitord"
-  for pid in $(cat $PIDFILE); do
-    kill -15 $pid > /dev/null 2>&1
-  done
-  status=$?
-  log_end_msg $status
+  log_daemon_msg "Stopping RPi-Monitor"
+  kill -15 $(cat $PIDFILE) > /dev/null 2>&1
+  log_end_msg $?
   rm $PIDFILE
 }
 
@@ -61,15 +57,9 @@ restart() {
 }
 
 status(){
-  echo -n "RPi-Monitor status: "
-  if [ ! -f $PIDFILE ]; then
-    echo "Not running"
-    exit 0
-  fi
-  for pid in $(cat $PIDFILE); do
-    kill -0 $pid > /dev/null 2>&1 && echo -n "[ \033[1;32mok\033[0m ]" || echo -n "[\033[31mFAIL\033[0m]";
-  done;
-  echo
+  log_daemon_msg "RPi-Monitor status"
+  kill -0 $(cat $PIDFILE 2> /dev/null) > /dev/null 2>&1
+  log_end_msg $?
 }
 
 checkroot

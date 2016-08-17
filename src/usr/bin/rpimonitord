@@ -1203,7 +1203,7 @@ EOF
 
 sub writePID {
   open(PID, ">> $pidfile") || die "Could not open '$pidfile' $!";
-  print PID "$$\n";
+  print PID "$$ ";
   close(PID);
 }
 
