@@ -682,9 +682,13 @@ sub Process
       alarm $configuration->{'daemon'}->{'timeout'};
       $pid = open(FEED, $file) or die "Can't open $file because $!\n";
       while (<FEED>){
-        @_ = /$kpi->{'regexp'}/ or next;
-        if ( $kpi->{'postprocess'} ) {
-           @_=eval( $kpi->{'postprocess'} );
+        if ( @_ = /$kpi->{'regexp'}/ ) {
+          if ( $kpi->{'postprocess'} ) {
+             @_=eval( $kpi->{'postprocess'} );
+          }
+        }
+        else {
+          @_ = split(',',$kpi->{'default'} ) or next;
         }
         my $i=0;
         my @names = split(',',$kpi->{'name'});
@@ -723,6 +727,49 @@ sub SendAlarm
   $pid and kill( 9, $pid);
 }
 
+sub Status
+{
+  my $this = shift;
+  my $configuration = shift;
+  $this->Debug(2,"");
+
+  $this->{'dynamic'} or return;
+
+  my ($sec,$min,$hour,$mday,$mon,$year) = (localtime)[0,1,2,3,4,5];
+  @{$this->{'dynamic'}->{'localtime'}}=($year+1900,$mon+1,$mday,$hour,$min,$sec);
+
+  my $json=to_json \%{$this->{'dynamic'}};
+
+  $this->Debug(4,"\n$json");
+
+  # if embeded server is not used, we write the json file else the
+  # data are transmitted with a shared memory
+  if ( $configuration->{'daemon'}->{'noserver'} == 1 ){
+    push (@{$this->{'files'}},"dynamic.json");
+    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/dynamic.json")
+      or warn $!;
+      print FILE $json ;
+    close(FILE);
+  }
+  else{
+    # write current status (JSON) in shared memory
+    $configuration->{'sharedmem'}->store( $json );
+  }
+
+  # add data in round robin database
+  #print Data::Dumper->Dump($configuration->{'rrd'});
+  foreach (@{$configuration->{'rrd'}}){
+    foreach my $name ( split(',',$_->{'name'}) ) {
+      if ( looks_like_number( $this->{'dynamic'}->{$name} ) ) {
+        RRDs::update("$configuration->{'daemon'}->{'datastore'}/stat/$name.rrd", "N:".$this->{'dynamic'}->{$name});
+      }
+      else {
+        RRDs::update("$configuration->{'daemon'}->{'datastore'}/stat/$name.rrd", "N:U");
+      }
+    }
+  }
+}
+
 =cut
   Alert/Cancel are sent only when the state is stable to avoid messages flooding
   when limit is about to be exceeded as shown in schema bellow:
@@ -744,16 +791,14 @@ sub Alert
   my $configuration = shift;
   $this->Debug(2,"");
   foreach (@{$configuration->{'alert'}}){
-    #print Data::Dumper->Dump( [$_] );
+    defined ($this->{'dynamic'}->{$_->{'kpi'}} ) or next;
+
     $this->{'dynamic'}->{'alert'}->{$_->{'name'}} ||= {};
     my $alert = $this->{'dynamic'}->{'alert'}->{$_->{'name'}};
     $alert->{'currentalertdate'}      ||= 0;
     $alert->{'alertstate'}            ||= 0;
     $alert->{'lastsendalertdate'}     ||= 0;
     $alert->{'currentcanceldate'}     ||= 0;
-    $this->{'dynamic'}->{$_->{'kpi'}} ||= "";
-
-    #print Data::Dumper->Dump( [$alert] );
 
     # Check the state of the alert
     if ( eval( "$this->{'dynamic'}->{$_->{'kpi'}}$_->{'comparator'}$_->{'limit'}" ) ){
@@ -793,47 +838,7 @@ sub Alert
   }
 }
 
-sub Status
-{
-  my $this = shift;
-  my $configuration = shift;
-  $this->Debug(2,"");
 
-  $this->{'dynamic'} or return;
-
-  my ($sec,$min,$hour,$mday,$mon,$year) = (localtime)[0,1,2,3,4,5];
-  @{$this->{'dynamic'}->{'localtime'}}=($year+1900,$mon+1,$mday,$hour,$min,$sec);
-
-  my $json=to_json \%{$this->{'dynamic'}};
-  $this->Debug(4,"\n$json");
-
-  # if embeded server is not used, we write the json file else the
-  # data are transmitted with a shared memory
-  if ( $configuration->{'daemon'}->{'noserver'} == 1 ){
-    push (@{$this->{'files'}},"dynamic.json");
-    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/dynamic.json")
-      or warn $!;
-      print FILE $json ;
-    close(FILE);
-  }
-  else{
-    # write current status (JSON) in shared memory
-    $configuration->{'sharedmem'}->store( $json );
-  }
-
-  # add data in round robin database
-  #print Data::Dumper->Dump($configuration->{'rrd'});
-  foreach (@{$configuration->{'rrd'}}){
-    foreach my $name ( split(',',$_->{'name'}) ) {
-      if ( looks_like_number( $this->{'dynamic'}->{$name} ) ) {
-        RRDs::update("$configuration->{'daemon'}->{'datastore'}/stat/$name.rrd", "N:".$this->{'dynamic'}->{$name});
-      }
-      else {
-        RRDs::update("$configuration->{'daemon'}->{'datastore'}/stat/$name.rrd", "N:U");
-      }
-    }
-  }
-}
 
 package Interactive;
 use strict;
