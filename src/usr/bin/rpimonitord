@@ -699,24 +699,25 @@ sub Process
     eval {
       local $SIG{ALRM} = sub { die "Timeout\n" };
       alarm $configuration->{'daemon'}->{'timeout'};
-      $pid = open(FEED, $file) or die "Can't open $file because $!\n";
+      
+      # Extract dynamic data
+      $pid = open(FEED, $file) or (@_ = split(',',$kpi->{'default'} ));
       while (<FEED>){
-        if ( @_ = /$kpi->{'regexp'}/ ) {
-          if ( $kpi->{'postprocess'} ) {
-             @_=eval( $kpi->{'postprocess'} );
-          }
-        }
-        else {
-          @_ = split(',',$kpi->{'default'} ) or next;
-        }
-        my $i=0;
-        my @names = split(',',$kpi->{'name'});
-        foreach ( @_ ) {
-          $this->{$list}->{$names[$i]}=$_[$i];
-          $i++;
+        @_ = /$kpi->{'regexp'}/; 
+        if ( $kpi->{'postprocess'} ) {
+           @_=eval( $kpi->{'postprocess'} );
         }
       }
       close(FEED);
+      
+      # Store dynamic data
+      my $i=0;
+      my @names = split(',',$kpi->{'name'});
+      foreach ( @_ ) {
+        $this->{$list}->{$names[$i]}=$_[$i];
+        $i++;
+      }
+
       alarm 0;
       $pid = 0;
     };

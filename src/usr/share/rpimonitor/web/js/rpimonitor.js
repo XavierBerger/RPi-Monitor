@@ -212,7 +212,7 @@ function AddTopmenu(){
         '<ul class="dropdown-menu" role="menu">' +
         '<li class="dropdown-header"> <b>RPi-Monitor</b></li>'+
         '<li><a href="#" title="Scan this qrcode to reach this page from your smartphone or tablet"><canvas id="qrcanv"><a></li>'+
-        '<li><a href="http://rpi-experiences.blogspot.fr/p/rpi-monitor.html" data-toggle="modal">Help</a></li>'+
+        '<li><a href="http://rpi-experiences.blogspot.fr/p/rpi-monitor-faq.html" data-toggle="modal">Help</a></li>'+
         '<li><a href="#License" data-toggle="modal">License</a></li>'+
         '<li><a href="#About" data-toggle="modal">About</a></li>'+
         '<li class="divider"></li>'+
