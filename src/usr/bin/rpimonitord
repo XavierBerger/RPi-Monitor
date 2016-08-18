@@ -662,7 +662,7 @@ sub ParseCommand
   $_ = $file;
 
   while ( /data\.alert\.(\w+)\.(\w+)/ ) {
-    my $data = $configuration->{'alert'}->{$1}->{$2} || $configuration->{'dynamic'}->{'alert'}->{$1}->{$2} || "undef";
+    my $data = $configuration->{'alert'}->{$1}->{$2} || $this->{'dynamic'}->{'alert'}->{$1}->{$2} || "undef";
     $file =~ s/data\.alert\.$1\.$2/$data/;
     $_ = $file;
   }
