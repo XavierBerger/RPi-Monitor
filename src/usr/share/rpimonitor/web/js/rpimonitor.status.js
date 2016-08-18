@@ -38,12 +38,12 @@ function ActivatePopover(){
 function UpdateStatus () {
   $.getJSON('dynamic.json', function(data) {
     // Concatenate dynamic.json and static.json into data variable
-    $.extend(data, getData('static'));
+    $.extend(true, data, getData('static'));
 
     $('#message').addClass('hide');
 
     for (var iloop=0; iloop < strips.length; iloop++){
-      eval( 'visibility = '+strips[iloop].visibility ) 
+      eval( 'visibility = '+strips[iloop].visibility )
       if ( visibility == 0) {
         $('.row'+iloop).addClass('hide')
       }
@@ -64,13 +64,13 @@ function UpdateStatus () {
           text = text + "</p>";
         }
       }
-      $("#Text"+iloop).html(text);    
+      $("#Text"+iloop).html(text);
     }
-    
+
     while((command=postProcessCommand.pop()) != null) {
       eval( command )
     }
-    
+
     ActivatePopover();
 
   })
@@ -86,7 +86,7 @@ function ConstructPage()
   var activePage = GetURLParameter('activePage');
 
   data = getData('status');
-  if ( ( typeof activePage == 'undefined') ||  
+  if ( ( typeof activePage == 'undefined') ||
        ( activePage >= data.length ) ) {
     activePage=0;
   }
@@ -115,7 +115,7 @@ function AddOption()
 $(function () {
   /* Set no cache */
   $.ajaxSetup({ cache: false });
-  
+
   // Load data from local storage
   animate=(localStorage.getItem('animate') === 'true');
   statusautorefresh=(localStorage.getItem('statusautorefresh') === 'true');
@@ -129,26 +129,26 @@ $(function () {
 
   /* Get static values once */
   ConstructPage();
-  
+
   /* Populate option dialog*/
   AddOption();
 
   //Initialize dialog values
   $('#statusautorefresh').attr('checked', statusautorefresh );
- 
+
   // Events management
   $('#animate').click(function(){
     animate = $('#animate').is(":checked");
     localStorage.setItem('animate', animate);
     SetProgressBarAnimate();
   });
-  
+
   $('#statusautorefresh').click(function(){
     statusautorefresh = $('#statusautorefresh').is(":checked");
     localStorage.setItem('statusautorefresh', statusautorefresh);
     if ( statusautorefresh ) {
-      UpdateStatus(); 
-      refreshTimerId = setInterval( UpdateStatus , 10000 ) 
+      UpdateStatus();
+      refreshTimerId = setInterval( UpdateStatus , 10000 )
       clockId=setInterval(Tick,1000);
     }
     else {

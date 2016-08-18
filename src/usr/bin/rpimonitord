@@ -514,6 +514,7 @@ sub Run
   $this->{'statistics'} = to_json(\@{$configuration->{'web'}->{'statistics'}});
   $this->{'friends'} = to_json(\@{$configuration->{'web'}->{'friends'}});
   $this->{'page'} = to_json(\%{$configuration->{'web'}->{'page'}});
+  $monitor->{'static'}->{'alert'} = $configuration->{'alert'};
   $this->{'static'} = to_json(\%{$monitor->{'static'}});
   $this->{'menu'} = to_json(\%{$configuration->{'web'}->{'menu'}});
   $this->{'addons'} = to_json(\@{$configuration->{'web'}->{'addons'}});
@@ -652,6 +653,29 @@ sub Run
   }
 }
 
+sub ParseCommand
+{
+  my $this = shift;
+  my $configuration = shift;
+  my $file = shift;
+  $this->Debug(2,"Parsing command $file");
+  $_ = $file;
+
+  while ( /data\.alert\.(\w+)\.(\w+)/ ) {
+    my $data = $configuration->{'alert'}->{$1}->{$2} || $configuration->{'dynamic'}->{'alert'}->{$1}->{$2} || "undef";
+    $file =~ s/data\.alert\.$1\.$2/$data/;
+    $_ = $file;
+  }
+  while ( /data\.(\w+)/ ) {
+    my $data = $this->{'static'}->{$1} || $this->{'dynamic'}->{$1} || "undef";
+    $file =~ s/data\.$1/$data/;
+    $_ = $file;
+  }
+
+
+  return $_;
+}
+
 sub Process
 {
   my $this = shift;
@@ -667,12 +691,7 @@ sub Process
     if ( (-x $1) || ( which($1) ) ) {
       $file = "$file 2>/dev/null |";
       $_ = $kpi->{'source'};
-      # Parse command line and replace 'data.kpi' by kpi value
-      while ( /data\.(\S+)/ ) {
-        my $data = $this->{'static'}->{$1} || $this->{'dynamic'}->{$1};
-        $file =~ s/data\.$1/$data/;
-        $_ = $file;
-      }
+      $file = $this->ParseCommand($configuration,$file);
     }
 
     $this->Debug(4,"Opening '$file'");
@@ -714,7 +733,9 @@ sub SendAlarm
   my $commandline = shift;
   $this->Debug(2,"");
 
-  $this->Debug(3,"Executing command: '$commandline'");
+  $commandline = $this->ParseCommand($configuration, $commandline);
+
+  $this->Debug(4,"Executing command: '$commandline'");
   my $pid = 0;
   eval {
     local $SIG{ALRM} = sub { die "Timeout\n" };
@@ -790,51 +811,54 @@ sub Alert
   my $this = shift;
   my $configuration = shift;
   $this->Debug(2,"");
-  foreach (@{$configuration->{'alert'}}){
-    defined ($this->{'dynamic'}->{$_->{'kpi'}} ) or next;
 
-    $this->{'dynamic'}->{'alert'}->{$_->{'name'}} ||= {};
-    my $alert = $this->{'dynamic'}->{'alert'}->{$_->{'name'}};
-    $alert->{'currentalertdate'}      ||= 0;
-    $alert->{'alertstate'}            ||= 0;
-    $alert->{'lastsendalertdate'}     ||= 0;
-    $alert->{'currentcanceldate'}     ||= 0;
+  #print Data::Dumper->Dump([$configuration->{'alert'}]);
 
-    # Check the state of the alert
-    if ( eval( "$this->{'dynamic'}->{$_->{'kpi'}}$_->{'comparator'}$_->{'limit'}" ) ){
-      # Alert is active
-      # If the state changed, remember the date of change
-      if ( $alert->{'alertstate'} != 1 ) {                                      # Previous alert state was OK
-        $alert->{'currentalertdate'} = time;                                    # Remember when alert occurs
-        $alert->{'alertstate'} = 1;                                             # Current alert state is alert
-        $this->Debug(3,"Alert just raised for '$_->{'name'}' : $this->{'dynamic'}->{$_->{'kpi'}}$_->{'comparator'}$_->{'limit'}");
-      }
-      # Alert state exceed max duration: Houston, we have a problem
-      if ( time > $alert->{'currentalertdate'} + $_->{'maxalertduration'}){     # Alert duration exceed max duration
-        if ( time > $alert->{'lastsendalertdate'} + $_->{'resendperiod'}){      # Shall we send and alert?
-          $alert->{'lastsendalertdate'}=time;                                   # When lastsendalertdate is set, an alert is on going
-          $this->Debug(3,"Sending alert command '$_->{'alertcommand'}' for '$_->{'name'}'");
-          $this->SendAlarm($configuration,$_->{'raisecommand'});
+  while( my ( $alertname, $alertconf) = each %{$configuration->{'alert'}} ) {
+      defined ($this->{'dynamic'}->{$alertconf->{'kpi'}} ) or next;
+
+      $this->{'dynamic'}->{'alert'}->{$alertname} ||= {};
+      my $alert = $this->{'dynamic'}->{'alert'}->{$alertname};
+      $alert->{'currentalertdate'}      ||= 0;
+      $alert->{'alertstate'}            ||= 0;
+      $alert->{'lastsendalertdate'}     ||= 0;
+      $alert->{'currentcanceldate'}     ||= 0;
+
+      # Check the state of the alert
+      if ( eval( "$this->{'dynamic'}->{$alertconf->{'kpi'}}$alertconf->{'comparator'}$alertconf->{'limit'}" ) ){
+        # Alert is active
+        # If the state changed, remember the date of change
+        if ( $alert->{'alertstate'} != 1 ) {                                      # Previous alert state was OK
+          $alert->{'currentalertdate'} = time;                                    # Remember when alert occurs
+          $alert->{'alertstate'} = 1;                                             # Current alert state is alert
+          $this->Debug(3,"Alert just raised for '$alertname' : $this->{'dynamic'}->{$alertconf->{'kpi'}}$alertconf->{'comparator'}$alertconf->{'limit'}");
+        }
+        # Alert state exceed max duration: Houston, we have a problem
+        if ( time > $alert->{'currentalertdate'} + $alertconf->{'maxalertduration'}){     # Alert duration exceed max duration
+          if ( time > $alert->{'lastsendalertdate'} + $alertconf->{'resendperiod'}){      # Shall we send and alert?
+            $alert->{'lastsendalertdate'}=time;                                   # When lastsendalertdate is set, an alert is on going
+            $this->Debug(3,"Sending alert command for '$alertname'");
+            $this->SendAlarm($configuration,$alertconf->{'raisecommand'});
+          }
         }
       }
-    }
-    else {
-      # Alert is not active
-      if ( $alert->{'alertstate'} != 0 ) {                                      # Previous alert state was 1:  KO
-        $alert->{'currentcanceldate'} = time;                                   # Remerber when cancel occurs
-        $alert->{'alertstate'} = 0;                                             # Current alert state is 0: OK
-        $this->Debug(3,"Alert just cancelled for '$_->{'name'}' : $this->{'dynamic'}->{$_->{'kpi'}}$_->{'comparator'}$_->{'limit'}");
+      else {
+        # Alert is not active
+        if ( $alert->{'alertstate'} != 0 ) {                                      # Previous alert state was 1:  KO
+          $alert->{'currentcanceldate'} = time;                                   # Remerber when cancel occurs
+          $alert->{'alertstate'} = 0;                                             # Current alert state is 0: OK
+          $this->Debug(3,"Alert just cancelled for '$alertname' : $this->{'dynamic'}->{$alertconf->{'kpi'}}$alertconf->{'comparator'}$alertconf->{'limit'}");
+        }
+        # If alert was active (lastsendalertdate !=0) and now, inactive duration exceed validation time
+        if ( ( $alert->{'lastsendalertdate'} != 0) &&                             # lastsendalertdate is set, an alert is on going
+             ( time > $alert->{'currentcanceldate'} + $alertconf->{'cancelvalidation'})){ # Cancel duration is long enough
+          $alert->{'lastsendalertdate'} = 0;                                      # No more ongoing alert, reset times
+          $alert->{'currentalertdate'} = 0;
+          $alert->{'currentcanceldate'} = 0;
+          $this->Debug(3,"Sending cancel command for '$alertname'");
+          $this->SendAlarm($configuration,$alertconf->{'cancelcommand'});
+        }
       }
-      # If alert was active (lastsendalertdate !=0) and now, inactive duration exceed validation time
-      if ( ( $alert->{'lastsendalertdate'} != 0) &&                             # lastsendalertdate is set, an alert is on going
-           ( time > $alert->{'currentcanceldate'} + $_->{'cancelvalidation'})){ # Cancel duration is long enough
-        $alert->{'lastsendalertdate'} = 0;                                      # No more ongoing alert, reset times
-        $alert->{'currentalertdate'} = 0;
-        $alert->{'currentcanceldate'} = 0;
-        $this->Debug(3,"Sending cancel command '$_->{'cancelcommand'}' for '$_->{'name'}'");
-        $this->SendAlarm($configuration,$_->{'cancelcommand'});
-      }
-    }
   }
 }
 
