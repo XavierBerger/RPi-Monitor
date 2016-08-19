@@ -658,20 +658,23 @@ sub ParseCommand
   my $this = shift;
   my $configuration = shift;
   my $file = shift;
-  $this->Debug(2,"Parsing command $file");
+  $this->Debug(2,"Parsing command '$file'");
   $_ = $file;
 
   while ( /data\.alert\.(\w+)\.(\w+)/ ) {
-    my $data = $configuration->{'alert'}->{$1}->{$2} || $this->{'dynamic'}->{'alert'}->{$1}->{$2} || "undef";
+    my $data = $configuration->{'alert'}->{$1}->{$2};
+    $data = defined $data ? $data :  $this->{'dynamic'}->{'alert'}->{$1}->{$2};
     $file =~ s/data\.alert\.$1\.$2/$data/;
     $_ = $file;
   }
   while ( /data\.(\w+)/ ) {
-    my $data = $this->{'static'}->{$1} || $this->{'dynamic'}->{$1} || "undef";
+    my $data = $this->{'dynamic'}->{$1};
+    $data = defined $data ? $data : $this->{'static'}->{$1};
     $file =~ s/data\.$1/$data/;
     $_ = $file;
   }
 
+  $this->Debug(3,"Parsed command '$_'");
 
   return $_;
 }
@@ -699,17 +702,17 @@ sub Process
     eval {
       local $SIG{ALRM} = sub { die "Timeout\n" };
       alarm $configuration->{'daemon'}->{'timeout'};
-      
+
       # Extract dynamic data
       $pid = open(FEED, $file) or (@_ = split(',',$kpi->{'default'} ));
       while (<FEED>){
-        @_ = /$kpi->{'regexp'}/; 
+        @_ = /$kpi->{'regexp'}/;
         if ( $kpi->{'postprocess'} ) {
            @_=eval( $kpi->{'postprocess'} );
         }
       }
       close(FEED);
-      
+
       # Store dynamic data
       my $i=0;
       my @names = split(',',$kpi->{'name'});
