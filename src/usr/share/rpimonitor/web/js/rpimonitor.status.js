@@ -29,13 +29,16 @@ function RowTemplate(id,image,title){
 }
 
 function ActivatePopover(){
-  for ( var iloop=0; iloop < postProcessInfo.length; iloop++) {
-    $(postProcessInfo[iloop][0]).popover({trigger:'hover',placement:'bottom',html:true, title: postProcessInfo[iloop][1], content: postProcessInfo[iloop][2] });
+  while((info=postProcessInfo.pop()) != null) {
+    $(info[0]).popover({trigger:'hover',placement:'bottom',html:true, title: info[1], content: info[2] });
   }
   $("#packages").popover();
 }
 
 function UpdateStatus () {
+  justgageId=0
+  $("#packages").empty();
+
   $.getJSON('dynamic.json', function(data) {
     // Concatenate dynamic.json and static.json into data variable
     $.extend(true, data, getData('static'));
