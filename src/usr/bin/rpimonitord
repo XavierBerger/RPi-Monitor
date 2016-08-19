@@ -706,12 +706,14 @@ sub Process
       # Extract dynamic data
       $pid = open(FEED, $file) or (@_ = split(',',$kpi->{'default'} ));
       while (<FEED>){
-        @_ = /$kpi->{'regexp'}/;
+        /$kpi->{'regexp'}/ and (@_ = /$kpi->{'regexp'}/) or next;
         if ( $kpi->{'postprocess'} ) {
            @_=eval( $kpi->{'postprocess'} );
         }
       }
       close(FEED);
+      alarm 0;
+      $pid = 0;
 
       # Store dynamic data
       my $i=0;
@@ -720,9 +722,6 @@ sub Process
         $this->{$list}->{$names[$i]}=$_[$i];
         $i++;
       }
-
-      alarm 0;
-      $pid = 0;
     };
     $pid and kill( 9, $pid);
   }
