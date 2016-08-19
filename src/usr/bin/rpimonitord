@@ -739,7 +739,7 @@ sub SendAlarm
 
   $commandline = $this->ParseCommand($configuration, $commandline);
 
-  $this->Debug(4,"Executing command: '$commandline'");
+  $this->Debug(4,"Executing command: $commandline");
   my $pid = 0;
   eval {
     local $SIG{ALRM} = sub { die "Timeout\n" };
@@ -823,44 +823,44 @@ sub Alert
 
       $this->{'dynamic'}->{'alert'}->{$alertname} ||= {};
       my $alert = $this->{'dynamic'}->{'alert'}->{$alertname};
-      $alert->{'currentalertdate'}      ||= 0;
-      $alert->{'alertstate'}            ||= 0;
-      $alert->{'lastsendalertdate'}     ||= 0;
-      $alert->{'currentcanceldate'}     ||= 0;
+      $alert->{'currentalertdate'}  ||= 0;
+      $alert->{'alertstate'}        ||= 0;
+      $alert->{'lastsendalertdate'} ||= 0;
+      $alert->{'currentcanceldate'} ||= 0;
 
       # Check the state of the alert
       if ( eval( "$this->{'dynamic'}->{$alertconf->{'kpi'}}$alertconf->{'comparator'}$alertconf->{'limit'}" ) ){
         # Alert is active
         # If the state changed, remember the date of change
-        if ( $alert->{'alertstate'} != 1 ) {                                      # Previous alert state was OK
-          $alert->{'currentalertdate'} = time;                                    # Remember when alert occurs
-          $alert->{'alertstate'} = 1;                                             # Current alert state is alert
+        if ( $alert->{'alertstate'} != 1 ) {                                              # Previous alert state was OK
+          $alert->{'currentalertdate'} = time;                                            # Remember when alert occurs
+          $alert->{'alertstate'} = 1;                                                     # Current alert state is alert
           $this->Debug(3,"Alert just raised for '$alertname' : $this->{'dynamic'}->{$alertconf->{'kpi'}}$alertconf->{'comparator'}$alertconf->{'limit'}");
         }
         # Alert state exceed max duration: Houston, we have a problem
         if ( time > $alert->{'currentalertdate'} + $alertconf->{'maxalertduration'}){     # Alert duration exceed max duration
           if ( time > $alert->{'lastsendalertdate'} + $alertconf->{'resendperiod'}){      # Shall we send and alert?
-            $alert->{'lastsendalertdate'}=time;                                   # When lastsendalertdate is set, an alert is on going
             $this->Debug(3,"Sending alert command for '$alertname'");
             $this->SendAlarm($configuration,$alertconf->{'raisecommand'});
+            $alert->{'lastsendalertdate'}=time;                                           # When lastsendalertdate is set, an alert is on going
           }
         }
       }
       else {
         # Alert is not active
-        if ( $alert->{'alertstate'} != 0 ) {                                      # Previous alert state was 1:  KO
-          $alert->{'currentcanceldate'} = time;                                   # Remerber when cancel occurs
-          $alert->{'alertstate'} = 0;                                             # Current alert state is 0: OK
+        if ( $alert->{'alertstate'} != 0 ) {                                              # Previous alert state was 1:  KO
+          $alert->{'currentcanceldate'} = time;                                           # Remerber when cancel occurs
+          $alert->{'alertstate'} = 0;                                                     # Current alert state is 0: OK
           $this->Debug(3,"Alert just cancelled for '$alertname' : $this->{'dynamic'}->{$alertconf->{'kpi'}}$alertconf->{'comparator'}$alertconf->{'limit'}");
         }
         # If alert was active (lastsendalertdate !=0) and now, inactive duration exceed validation time
-        if ( ( $alert->{'lastsendalertdate'} != 0) &&                             # lastsendalertdate is set, an alert is on going
+        if ( ( $alert->{'lastsendalertdate'} != 0) &&                                     # lastsendalertdate is set, an alert is on going
              ( time > $alert->{'currentcanceldate'} + $alertconf->{'cancelvalidation'})){ # Cancel duration is long enough
-          $alert->{'lastsendalertdate'} = 0;                                      # No more ongoing alert, reset times
-          $alert->{'currentalertdate'} = 0;
-          $alert->{'currentcanceldate'} = 0;
           $this->Debug(3,"Sending cancel command for '$alertname'");
           $this->SendAlarm($configuration,$alertconf->{'cancelcommand'});
+          $alert->{'lastsendalertdate'} = 0;                                              # No more ongoing alert, reset times
+          $alert->{'currentalertdate'}  = 0;
+          $alert->{'currentcanceldate'} = 0;
         }
       }
   }
