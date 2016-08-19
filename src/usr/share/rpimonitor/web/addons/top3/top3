@@ -40,29 +40,30 @@ while (<PS>)
   /$process/ and $monitored->{'idx'} ||= $idx;
   /$process/ or $idx <= $nbtop or next;
   /(\S+) (\S+):(\S+):(\S+) (\S+)/;
+  $1 or next;
   my $start=100*($2*60*60+$3*60+$4)/$1;
   my $total=100*($2*60*60+$3*60+$4)/$uptime;
-  $web 
+  $web
   and $top[$idx] = sprintf("<tr><td>%3d</td><td>%02d:%02d:%02d</td><td>%-12s</td><td>( %.2f% / %.2f% )</td></tr>\n",$idx, $2, $3, $4, $5, $start, $total)
   or $top[$idx] = sprintf("%3d %02d:%02d:%02d %-12s ( %.2f% / %.2f% ) \n",$idx, $2, $3, $4, $5, $start, $total);
 }
 close PS or die;
 my $iloop;
 
-  $web 
+  $web
   and print "<table class='table'>\n"
   and print "<tr><th>#</th><th>CPU usage</th><th>Process</th><th>% start / total</th></tr>\n";
-  for ($iloop=1; $iloop<=$nbtop; $iloop++) 
+  for ($iloop=1; $iloop<=$nbtop; $iloop++)
   {
     print $top[$iloop];
   }
   if ($iloop < $monitored->{'idx'}){
-    $web 
+    $web
     and print "<tr><td></td><td colspan='3'>...</td></tr>\n"
     or print "    ...\n";
   }
   if ($iloop <= $monitored->{'idx'}){
     print $top[$monitored->{'idx'}];
   }
-  $web 
+  $web
   and print "</table>\n";
