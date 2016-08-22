@@ -1,0 +1,65 @@
+<!--
+# Copyright 2013-2014 - Xavier Berger - http://rpi-experiences.blogspot.fr/
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>RPi-Monitor</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="RPi-Monitor">
+    <meta name="author" content="RPi-Experiences">
+    <meta http-equiv="Cache-control" content="public" />
+
+    <!-- CSS -->
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/rpimonitor.css" rel="stylesheet">
+
+    <!-- Favicon-->
+    <link rel="shortcut icon" type="image/png" href="./img/favicon.png">
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div id='topmenu'></div>
+
+    <!-- Begin page content -->
+    <div class="container-fluid column-fluid">
+    <ul class="list-group">
+        <li class="list-group-item list-group-item-danger hide" id="message"></li>
+      </ul>
+    <i id="insertionPoint"></i>
+    </div>
+
+    <!-- Fixed footer -->
+    <div id="footer"></div>
+ 
+    <!-- Dialog place holder -->
+    <div id="dialogs"></div>
+
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/raphael.2.1.0.min.js"></script>
+    <script src="./js/justgage.1.0.1.min.js"></script>
+    <script src="./js/rpimonitor.js" charset="utf-8"></script>
+    <script src="./js/rpimonitor.utils.js" charset="utf-8"></script>
+    <script src="./js/rpimonitor.status.js" charset="utf-8"></script>
+    <script src="./js/jsqrencode.min.js"></script>
+  </body>
+</html>

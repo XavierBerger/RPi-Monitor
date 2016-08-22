@@ -1,0 +1,121 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          rpimonitor
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# X-Interactive:     true
+# Short-Description: RPi-Monitor daemon
+# Description:       Daemon for RPi serlf monitoring
+### END INIT INFO
+
+# Source function library.
+. /lib/lsb/init-functions
+
+DAEMON="/usr/bin/rpimonitord"
+PIDFILE="/var/run/rpimonitord.pid"
+LOGFILE="/var/log/rpimonitor.log"
+
+[ -x $DAEMON ] || exit 0
+
+checkroot(){
+  if [ "$(id -u)" != "0" ]; then
+    echo "This script must be run as root"
+    exit 1
+  fi
+}
+
+start() {
+  touch $PIDFILE
+
+  for pid in $(cat $PIDFILE); do
+     if ( kill -0 $pid > /dev/null 2>&1 ); then
+      echo "Rpi-Monitor is already running.";
+      status;
+      return 0;
+    fi
+  done;
+
+  log_daemon_msg "Starting RPi-Monitor"
+  LC_ALL=C nice -n 19 $DAEMON -b $PIDFILE $CONFFILE -l $LOGFILE
+  log_end_msg $?
+}
+
+stop() {
+  touch $PIDFILE
+  log_daemon_msg "Stopping RPi-Monitor"
+  kill -15 $(cat $PIDFILE) > /dev/null 2>&1
+  log_end_msg $?
+  rm $PIDFILE
+}
+
+restart() {
+  stop
+  sleep 2
+  start
+}
+
+status(){
+  log_daemon_msg "RPi-Monitor status"
+  kill -0 $(cat $PIDFILE 2> /dev/null) > /dev/null 2>&1
+  log_end_msg $?
+}
+
+update() {
+  log_daemon_msg "RPi-Monitor update packages status"
+  apt-get update >/dev/null 2>&1
+  /usr/share/rpimonitor/scripts/updatePackagesStatus.pl
+  log_end_msg $?
+}
+
+install_auto_package_status_update() {
+  log_daemon_msg "RPi-Monitor installing automatic update for packages status"
+
+  cat > /etc/apt/apt.conf.d/99rpimonitor << EOF
+# Update rpimonitor status
+DPkg {
+  Post-Invoke {
+    "echo 'Update rpimonitor Packages Status' && /usr/share/rpimonitor/scripts/updatePackagesStatus.pl";
+  };
+};
+EOF
+
+  log_end_msg $?
+}
+
+remove_auto_package_status_update() {
+  log_daemon_msg "RPi-Monitor removing automatic update for packages status"
+  rm /etc/apt/apt.conf.d/99rpimonitor > /dev/null 2>&1
+  log_end_msg $?
+}
+
+checkroot
+case "$1" in
+  start)
+    start
+  ;;
+  stop)
+    stop
+  ;;
+  status)
+    status
+  ;;
+  restart)
+    restart
+  ;;
+  install_auto_package_status_update)
+    install_auto_package_status_update
+  ;;
+  remove_auto_package_status_update)
+    remove_auto_package_status_update
+  ;;
+  update)
+    update
+  ;;
+  *)
+    echo "Usage: $0 {start|stop|restart|status|update|install_auto_package_status_update|remove_auto_package_status_update}"
+  ;;
+esac
+
+exit 0

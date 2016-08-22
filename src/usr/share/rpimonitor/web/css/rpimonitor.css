@@ -1,0 +1,116 @@
+/* 
+ * This file is part of RPi-Monitor project
+ * 
+ * Copyright 2013-2014 - Xavier Berger - http://rpi-experiences.blogspot.fr/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ */
+/* Main marketing message and start button */
+.jumbotron {
+  /*margin: 40px 180px 180px;*/
+  text-align: center;
+}
+.jumbotron h1 {
+  font-size: 72px;
+  line-height: 1;
+}
+.jumbotron .btn {
+  font-size: 21px;
+  padding: 14px 24px;
+}
+
+/* Move content away from navbar */
+body { 
+  padding-top: 50px;
+}
+
+/* Move rrd graph away from navbar */
+#mygraph {
+  margin-top: 30px;
+}
+
+/* Draw a progression bar during rrd load */
+#preloader {
+  position:fixed;
+  z-index: 100;  
+  top:50%;  
+  left:50%;  
+  margin:-100px 0 0 -100px;  
+  width:200px;  
+  height:200px;  
+}
+
+.Title {
+  float: left;
+  font-family: Tahoma, Helvetica;
+  font-size: 21px;
+  padding-left: 30px;
+  width: 250px;
+}
+
+.Text {
+  float: left;
+  font-family: Tahoma, Helvetica;
+  font-size: 13px;
+  line-height: 13px;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 15px;
+  width: 518px;
+  white-space: nowrap;
+}
+
+.popover-content {
+    line-height: 16px;
+}
+
+.popover {
+  max-width: 450px;
+}
+
+#shellinaboxframe,
+#shellinaboxdiv {
+  min-width: 100%;
+  min-height: 100%;
+}
+
+.justgage {
+  display: inline-block;
+}
+
+.row {
+   display: inline-block;
+}
+@media screen and (min-width: 1025px) {
+  .column-fluid {
+    -webkit-column-rule: 1px solid #f0f0f0;
+    -moz-column-rule: 1px solid #f0f0f0;
+    column-rule: 1px solid #f0f0f0;
+  }
+}
+@media screen and (min-width: 1025px) and (max-width: 1526px) {
+  .column-fluid {
+    -webkit-column-count: 2;
+    -moz-column-count: 2;
+    column-count: 2;
+  }
+}
+@media screen and (min-width: 1526px) {
+  .column-fluid {
+    -webkit-columns-count: 3;
+    -moz-column-count: 3;
+    column-count: 3;
+  }
+}
