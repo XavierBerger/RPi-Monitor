@@ -53,6 +53,23 @@ sub Debug
   print STDERR "[", strftime("%Y/%m/%d-%H:%M:%S", localtime), "] ", "  " x ($level), (caller 1)[3], " @_\n";
 }
 
+sub ppcm{
+  my $this=shift;
+  my $a = shift;
+  my $b = shift;
+  my $A = $a;
+  my $B = $b;
+  while ( $a != $b ){
+    if ( $a < $b ) {
+      $a += $A;
+    }
+    else {
+     $b += $B;
+    }
+  }
+  return $a;
+}
+
 sub Load
 {
   my $this = shift;
@@ -129,6 +146,15 @@ sub Load
   }
   foreach (@{$this->{'web'}->{'addons'}}) {
     $_->{'name'} and push(@{$this->{'web'}->{'menu'}->{'addons'}}, $_->{'name'});
+  }
+
+  # manage default value for dynamic data
+  $this->{'maxinterval'} = 1;
+  foreach (@{$this->{'dynamic'}}) {
+    $_->{'interval'} ||= 1;
+    if ($_->{'interval'} > $this->{'maxinterval'} ) {
+      $this->{'maxinterval'} = $this->ppcm($this->{'maxinterval'}, $_->{'interval'});
+    }
   }
 
   $this->{'sharedmem'} = IPC::ShareLite->new(
@@ -566,6 +592,7 @@ sub new
   my $this = bless { }, shift;
   $this->Debug(2,"");
   @{$this->{'files'}} = ("static.json","status.json","statistics.json");
+  $this->{'counter'} = 0;
   return $this;
 }
 
@@ -627,8 +654,13 @@ sub Run
 
   #die Data::Dumper->Dump([$this]);
 
+  $this->{'counter'} = $configuration->{'maxinterval'}-1;
+  print "MAX INTERVAL = $configuration->{'maxinterval'}\n";
   for(;;)
   {
+    # count loops
+    $this->{'counter'}++;
+
     # Process data
     $this->Process($configuration,'dynamic');
 
@@ -637,6 +669,10 @@ sub Run
 
     # Store and show extracted data
     $this->Status($configuration);
+
+    if ($this->{'counter'} >= $configuration->{'maxinterval'}){
+      $this->{'counter'} = 0;
+    }
 
     # Check if server is up
     if ( !$configuration->{'daemon'}->{'noserver'}) {
@@ -688,6 +724,9 @@ sub Process
 
   foreach my $kpi ( @{$configuration->{$list}} ) {
     $kpi or next;
+    if ( $list =~ /dynamic/) {
+      $this->{'counter'} % $kpi->{'interval'} and next;
+    }
     # if file is executable, execute it and process output else, read file content
     my $file = $kpi->{'source'};
     $file =~ /^(\S+)/;
