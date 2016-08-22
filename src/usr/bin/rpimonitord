@@ -742,6 +742,7 @@ sub Process
       alarm $configuration->{'daemon'}->{'timeout'};
 
       # Extract dynamic data
+      @_=();
       $pid = open(FEED, $file) or (@_ = split(',',$kpi->{'default'} ));
       while (<FEED>){
         /$kpi->{'regexp'}/ and (@_ = /$kpi->{'regexp'}/) or next;
