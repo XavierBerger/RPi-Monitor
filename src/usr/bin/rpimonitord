@@ -655,7 +655,6 @@ sub Run
   #die Data::Dumper->Dump([$this]);
 
   $this->{'counter'} = $configuration->{'maxinterval'}-1;
-  print "MAX INTERVAL = $configuration->{'maxinterval'}\n";
   for(;;)
   {
     # count loops
