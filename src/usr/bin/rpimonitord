@@ -742,7 +742,7 @@ sub Process
       alarm $configuration->{'daemon'}->{'timeout'};
 
       # Extract dynamic data
-      @_=();
+      undef @_;
       $pid = open(FEED, $file) or (@_ = split(',',$kpi->{'default'} ));
       while (<FEED>){
         /$kpi->{'regexp'}/ and (@_ = /$kpi->{'regexp'}/) or next;
@@ -753,6 +753,9 @@ sub Process
       close(FEED);
       alarm 0;
       $pid = 0;
+
+      # Set default value is no data is present
+      scalar(@_) or defined($kpi->{'default'}) and @_ = split(',',$kpi->{'default'} );
 
       # Store dynamic data
       my $i=0;
