@@ -181,7 +181,7 @@ sub LoadFile
   while (<FILE>){
     chomp;
     /^\s*#|^$/ and next;                 # Ignore comments
-    /^include=(.*)/ and -f $1 and push($this->{'daemon'}->{'confFiles'}, $1) and next;
+    /^include=(.*)/ and -f $1 and push(@{$this->{'daemon'}->{'confFiles'}}, $1) and next;
     my ($key, $value) = /^([^=]*)=(.*)/; # Extract key and value
     my @leaves=split('\.', $key);        # Explode key and construct config hash
     my $tree=$this;
