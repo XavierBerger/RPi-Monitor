@@ -840,9 +840,9 @@ sub Status
   Alert/Cancel are sent only when the state is stable to avoid messages flooding
   when limit is about to be exceeded as shown in schema bellow:
 
-                           send alert
+                          send alert
                               ^
-    th      th <-----dh ----->|     th
+    th      th <-----dh------>|        th
     _____   __________________|______   _______           send cancel
     |   |   |                       |   |     |              ^
     |   |   |                       |   |     |              |
@@ -850,6 +850,23 @@ sub Status
        tl                          tl        tl<-----dl----->
                               |------------------------------|
                                       Alert is raised
+
+  If alert is still active after resend period, alerte is sent again:
+
+                    send alert                                    resend alert
+                        ^                                               ^
+      th <-----dh------>|<--------------------------------------------->|
+      __________________|_______________________________________________|______
+      |
+      |
+  ____|
+       tl
+                        |------------------------------------------------------>
+                                      Alert is raised
+
+
+
+
 =cut
 sub Alert
 {
@@ -860,7 +877,8 @@ sub Alert
   #print Data::Dumper->Dump([$configuration->{'alert'}]);
 
   while( my ( $alertname, $alertconf) = each %{$configuration->{'alert'}} ) {
-      defined ($this->{'dynamic'}->{$alertconf->{'kpi'}} ) or next;
+      defined ($alertconf->{'active'}) or  $alertconf->{'active'}= 1;
+      eval($this->ParseCommand($configuration,$alertconf->{'active'})) or next;
 
       $this->{'dynamic'}->{'alert'}->{$alertname} ||= {};
       my $alert = $this->{'dynamic'}->{'alert'}->{$alertname};
@@ -870,7 +888,7 @@ sub Alert
       $alert->{'currentcanceldate'} ||= 0;
 
       # Check the state of the alert
-      if ( eval( "$this->{'dynamic'}->{$alertconf->{'kpi'}}$alertconf->{'comparator'}$alertconf->{'limit'}" ) ){
+      if ( eval( $this->ParseCommand($configuration,$alertconf->{'trigger'}) ) ){
         # Alert is active
         # If the state changed, remember the date of change
         if ( $alert->{'alertstate'} != 1 ) {                                              # Previous alert state was OK
