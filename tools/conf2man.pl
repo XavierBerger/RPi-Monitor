@@ -29,8 +29,8 @@ print ".TH man 5 \"$datestring\" \"$version\" \"$1 man page\"\n";
 open(FILE, "$conf") 
   or die "Can't open $conf\n";
 while (<FILE>) {
-  /# / or /^$/ or next;
-  s/(# |#$)//g;
+  /#$/ or /# / or /^$/ or next;
+  s/(# |^#*#$)//g;
   /^\S\w/ and print ".SH ";
   print "$_";
 } 
