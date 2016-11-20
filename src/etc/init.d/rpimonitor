@@ -74,10 +74,8 @@ install_auto_package_status_update() {
 
   cat > /etc/apt/apt.conf.d/99rpimonitor << EOF
 # Update rpimonitor status
-DPkg {
-  Post-Invoke {
+APT::Update::Post-Invoke {
     "echo 'Update rpimonitor Packages Status' && /usr/share/rpimonitor/scripts/updatePackagesStatus.pl";
-  };
 };
 EOF
 
