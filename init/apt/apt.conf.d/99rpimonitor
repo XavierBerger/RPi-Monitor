@@ -1,0 +1,6 @@
+# Update rpimonitor status
+DPkg {
+  Post-Invoke {
+    "echo 'Update rpimonitor Packages Status' && /usr/share/rpimonitor/scripts/updatePackagesStatus.pl";
+  };
+};
