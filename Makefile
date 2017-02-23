@@ -42,6 +42,6 @@ ifeq (${STARTUPSYS},upstart)
 endif
 ifeq (${STARTUPSYS},systemd)
 	@mkdir -p ${TARGETDIR}usr/lib/systemd/system
-	@cp -a usr/lib/systemd/system/* ${TARGETDIR}etc/init.d/
+	@cp -a src/usr/lib/systemd/system/* ${TARGETDIR}etc/systemd/system/
 endif
 	@echo "Installation completed"
