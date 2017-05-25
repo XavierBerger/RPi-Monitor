@@ -75,7 +75,7 @@ Please note: Pull request perfomed on **devel** branch will be integrated as soo
 * **[Tor-Info](https://github.com/lzkill/tor-info)** Configuration file, script and documentation to extend **RPi-Monitor** for showing a Tor relay's information.
 
 
-###Author
+### Author
 
 **Author**: Xavier Berger
 
