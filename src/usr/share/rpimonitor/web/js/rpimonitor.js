@@ -130,8 +130,8 @@ function AddDialogs(){
       'along with this program. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.'+
       '</p>'+
       '<hr>'+
-      '<b>RPi-Monitor</b> is using third party software hava there own license. '+
-      'Ref. <a href="#About" data-dismiss="modal" data-toggle="modal">About</a> to have the list of software used by <b>RPi-Monitor</b>. '+
+      '<b>RPi-Monitor</b> is using third party software that have their own licenses. '+
+      'Refer to <a href="#About" data-dismiss="modal" data-toggle="modal">About</a> to view the list of software used by <b>RPi-Monitor</b>. '+
       '</div>'+
       '<div class="modal-footer">'+
       '<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>'+
@@ -155,8 +155,8 @@ function AddDialogs(){
       'With the contribution of users sharing ideas and competences on Github.'+
       '<hr>'+
       '<p><b>RPi-Monitor</b> is free software developed on top of other open source '+
-        'tools : <a href="http://twitter.github.io/bootstrap/">bootstrap</a>, <a href="http://jquery.com/">jquery</a>, <a href="https://code.google.com/p/jsqrencode/">jsqrencode</a>, <a href="http://javascriptrrd.sourceforge.net/">javascriptrrd</a> and <a href="http://www.flotcharts.org/">Flot</a>.<br>'+
-      '<p><b>Raspberry Pi</b> and Raspberry Pi logo are properties of <a href="http://www.raspberrypi.org/">Raspberry Pi Fundation</a>.</p>'+
+        'tools: <a href="http://twitter.github.io/bootstrap/">bootstrap</a>, <a href="http://jquery.com/">jquery</a>, <a href="https://code.google.com/p/jsqrencode/">jsqrencode</a>, <a href="http://javascriptrrd.sourceforge.net/">javascriptrrd</a> and <a href="http://www.flotcharts.org/">Flot</a>.<br>'+
+      '<p><b>Raspberry Pi</b> and the Raspberry Pi logo are properties of <a href="http://www.raspberrypi.org/">Raspberry Pi Foundation</a>.</p>'+
       '</div>'+
       '<div class="modal-footer">'+
       '<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>'+
