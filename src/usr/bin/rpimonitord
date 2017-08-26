@@ -1284,7 +1284,7 @@ RAW DATA ACCESS
     addons.json:    List of addons
 
   Statistic information are stored into RRD file available in the
-  directory [webroot]/stat/
+  directory /var/lib/rpimonitor/stat/
 
 AUTHOR
   Xavier Berger
