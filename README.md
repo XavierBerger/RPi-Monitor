@@ -26,8 +26,7 @@ to not start the embeded web server and use an external web server to deliver th
 
 ### Screenshot
 
-You will find screenshot of [**RPi-Monitor**](http://rpi-experiences.blogspot.fr/) in [RPi-Monitor Overview]
-(http://rpi-experiences.blogspot.fr/p/rpi-monitor.html).
+You can find screenshots of [**RPi-Monitor**](http://rpi-experiences.blogspot.fr/) in [RPi-Monitor Overview](http://rpi-experiences.blogspot.fr/p/rpi-monitor.html).
 
 ### Installation
 
@@ -47,13 +46,13 @@ Note: *"For various reasons"* **OpenElec** don't maintain a package repository. 
 
 ### Other information
 
-All articles realated to RPi-Monitor are gathered into the page [RPi-Monitor Overview](http://rpi-experiences.blogspot.fr/p/rpi-monitor-articles.html).
+All articles related to RPi-Monitor are gathered into the page [RPi-Monitor Overview](http://rpi-experiences.blogspot.fr/p/rpi-monitor-articles.html).
 
 Frequently Asked Question find answer into the [FAQ](http://rpi-experiences.blogspot.fr/p/rpi-monitor-faq.html) page.
 
 ### Development
 
-Github is used to perform versionning of development and also to backup the development progress of future releases.
+GitHub is used to perform versioning of development and also to backup the development progress of future releases.
 
 The branch **master** contains the latest stable version.
 
@@ -67,9 +66,9 @@ You want to contribute to RPi-Monitor. I'll be happy to integrate your pull requ
 Please note: Pull request perfomed on **devel** branch will be integrated as soon as possible. Pull request perform on master branche may only be integrated when a new version is published (or not may not be integrated at all...)
 
 
-### **RPi-Monitor** used in other product
+### **RPi-Monitor** used in other projects
 
-**RPi-monitor** is also used as part of other product:
+**RPi-monitor** is also used as part of other projects:
 
 * **[Tor-Info](https://github.com/lzkill/tor-info)** Configuration file, script and documentation to extend **RPi-Monitor** for showing a Tor relay's information.
 

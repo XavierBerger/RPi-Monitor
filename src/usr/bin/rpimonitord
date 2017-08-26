@@ -1169,7 +1169,7 @@ sub Run
     chomp;
     $source = $_ || $source;
 
-    $source =~ /^(.*)/;
+    $source =~ /^(\S+)/;
     ( -x $1 || -x which($1) ) and $this->Executable( $1, $source ) and last;
 
     -f $source and $this->FlatFile($source) and last;

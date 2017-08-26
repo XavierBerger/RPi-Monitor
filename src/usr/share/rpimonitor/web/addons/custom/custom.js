@@ -1,7 +1,7 @@
 var customwarning = true;
 var customuri;
 var activePage = GetURLParameter('activePage');
-
+if (activePage == null){ activePage = 0; }
 
 $(function () {
   resize_frame();
