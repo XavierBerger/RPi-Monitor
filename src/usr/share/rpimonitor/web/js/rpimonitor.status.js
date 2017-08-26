@@ -87,6 +87,7 @@ function UpdateStatus () {
 function ConstructPage()
 {
   var activePage = GetURLParameter('activePage');
+  if (activePage == null){ activePage = 0; }
 
   data = getData('status');
   if ( ( typeof activePage == 'undefined') ||

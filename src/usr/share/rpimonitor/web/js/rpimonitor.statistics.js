@@ -26,6 +26,7 @@ function Start() {
     
   activestat = localStorage.getItem('activestat') || 0;
   activePage = GetURLParameter('activePage');
+  if (activePage == null){ activePage = 0; }
   if ( ( typeof activePage == 'undefined' ) || 
        ( activePage >= graphconf.length ) 
      )

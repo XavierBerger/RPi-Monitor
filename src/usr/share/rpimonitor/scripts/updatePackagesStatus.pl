@@ -35,5 +35,5 @@ while (<FILE>){
 }
 close (FILE);
 open ( FILE, '> /var/lib/rpimonitor/updatestatus.txt' ) or die "$!\n";
-  print FILE "$pkglist $pkgnbr upgradable(s)\n";
+  print FILE "$pkglist   $pkgnbr upgradable(s)\n";
 close (FILE);

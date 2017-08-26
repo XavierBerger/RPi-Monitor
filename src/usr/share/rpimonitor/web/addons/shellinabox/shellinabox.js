@@ -1,7 +1,7 @@
 var shellinaboxwarning = true;
 var shellinaboxuri;
 var activePage = GetURLParameter('activePage');
-
+if (activePage == null){ activePage = 0; }
 
 $(function () {
   $('#pagetitle').remove();
