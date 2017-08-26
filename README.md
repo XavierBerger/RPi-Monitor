@@ -41,14 +41,13 @@ Debian package for **Raspbian** is available in [here](https://github.com/Xavier
 
 The dependencies and the detail of installation process are describe into [PACKAGING.md](PACKAGING.md)
 
-For installation on other system and for advanced customization read the article [RPi-Monitor: Version 2.0 advance usage and customization] (http://rpi-experiences.blogspot.fr/2013/06/rpi-monitor-version-20-advance-usage.html).
+For installation on other system and for advanced customization read the article [RPi-Monitor: Version 2.0 advance usage and customization](http://rpi-experiences.blogspot.fr/2013/06/rpi-monitor-version-20-advance-usage.html).
 
 Note: *"For various reasons"* **OpenElec** don't maintain a package repository. **RPi-Monitor** will then not be available on this distribution until the development team does the job.
 
 ### Other information
 
-All articles realated to RPi-Monitor are gathered into the page [RPi-Monitor Overview]
-(http://rpi-experiences.blogspot.fr/p/rpi-monitor-articles.html).
+All articles realated to RPi-Monitor are gathered into the page [RPi-Monitor Overview](http://rpi-experiences.blogspot.fr/p/rpi-monitor-articles.html).
 
 Frequently Asked Question find answer into the [FAQ](http://rpi-experiences.blogspot.fr/p/rpi-monitor-faq.html) page.
 
@@ -75,7 +74,7 @@ Please note: Pull request perfomed on **devel** branch will be integrated as soo
 * **[Tor-Info](https://github.com/lzkill/tor-info)** Configuration file, script and documentation to extend **RPi-Monitor** for showing a Tor relay's information.
 
 
-###Author
+### Author
 
 **Author**: Xavier Berger
 
