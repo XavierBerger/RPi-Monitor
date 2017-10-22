@@ -21,7 +21,7 @@ var postProcessCommand=[];
 
 function RowTemplate(id,image,title){
   return ""+
-        "<div class='row row"+id+" list-group-item' style='border: none'>"+
+        "<div data-id='"+id+"' class='row row"+id+" list-group-item' style='border: none'>"+
           "<hr class='row"+id+"' draggable='false'>"+
           "<div class='Title' draggable='false'><img src='"+image+"' alt='"+title+"' class='DragHandle' draggable='false'> &nbsp;"+title+"</div>"+
           "<div class='Text' id='Text"+id+"' draggable='false'><b></b></div>"+
@@ -167,7 +167,29 @@ $(function () {
   }
 
   Sortable.create(sortableListGroup,{ handle: '.DragHandle',
-                                      animation: 150 });
+                                      animation: 150,
+                                      group: "status-row-order",
+                                      store: {
+                                          /**
+                                           * Get the order of elements. Called once during initialization.
+                                           * @param   {Sortable}  sortable
+                                           * @returns {Array}
+                                           */
+                                          get: function (sortable) {
+                                              var order = localStorage.getItem(sortable.options.group.name);
+                                              return order ? order.split('|') : [];
+                                          },
+                                          /**
+                                           * Save the order of elements. Called onEnd (when the item is dropped).
+                                           * @param {Sortable}  sortable
+                                           */
+                                          set: function (sortable) {
+                                              var order = sortable.toArray();
+                                              localStorage.setItem(sortable.options.group.name, order.join('|'));
+                                          }
+                                      } 
+                                    }
+                 );
 
 });
 
