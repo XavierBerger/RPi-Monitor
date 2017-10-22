@@ -21,11 +21,11 @@ var postProcessCommand=[];
 
 function RowTemplate(id,image,title){
   return ""+
-        "<div class='row row"+id+"'>"+
-          "<div class='Title'><img src='"+image+"' alt='"+title+"'> &nbsp;"+title+"</div>"+
-          "<div class='Text' id='Text"+id+"'><b></b></div>"+
-        "</div>"+
-        "<hr class='row"+id+"'>"
+        "<div class='row row"+id+" list-group-item' style='border: none'>"+
+          "<hr class='row"+id+"' draggable='false'>"+
+          "<div class='Title' draggable='false'><img src='"+image+"' alt='"+title+"' class='DragHandle' draggable='false'> &nbsp;"+title+"</div>"+
+          "<div class='Text' id='Text"+id+"' draggable='false'><b></b></div>"+
+        "</div>"
 }
 
 function ActivatePopover(){
@@ -165,6 +165,9 @@ $(function () {
     refreshTimerId = setInterval( UpdateStatus , 10000 )
     clockId=setInterval(Tick,1000);
   }
+
+  Sortable.create(sortableListGroup,{ handle: '.DragHandle',
+                                      animation: 150 });
 
 });
 

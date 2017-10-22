@@ -359,7 +359,8 @@ sub new
     "/js/javascriptrrd/rrdFilter.js",
     "/js/javascriptrrd/rrdMultiFile.js",
     "/js/javascriptrrd/rrdFile.js",
-    "/js/javascriptrrd/rrdFlotSupport.js"
+    "/js/javascriptrrd/rrdFlotSupport.js",
+    "/js/Sortable.1.6.1.min.js"
   );
 
   $this->{'paths'} = \@paths;
