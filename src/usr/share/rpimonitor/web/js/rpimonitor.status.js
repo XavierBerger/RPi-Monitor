@@ -78,7 +78,7 @@ function UpdateStatus () {
 
   })
   .fail(function() {
-      $('#message').html("<span class='glyphicon glyphicon-warning-sign'></span> &nbsp; Can not get information (dynamic.json) from <b>RPi-Monitor</b> server.");
+      $('#message').html("<b>ERROR</b>: Can not get information (dynamic.json) from <b>RPi-Monitor</b> server.");
       $('#message').removeClass('hide');
     });
 
