@@ -53,7 +53,8 @@ sub Debug
   print STDERR "[", strftime("%Y/%m/%d-%H:%M:%S", localtime), "] ", "  " x ($level), (caller 1)[3], " @_\n";
 }
 
-sub ppcm{
+sub GreatestCommonDivisor
+{
   my $this=shift;
   my $a = shift;
   my $b = shift;
@@ -117,6 +118,18 @@ sub Load
 
   #print Data::Dumper->Dump([$this->{'daemon'}]);
 
+  # Load default values is not defined yet defined
+  $this->{'snmpagent'}->{'rootoid'}        ||= ".1.3.6.1.4.1";
+  $this->{'snmpagent'}->{'enterpriseoid'}  ||= 54321;
+  $this->{'snmpagent'}->{'rpimonitoroid'}  ||= 42;
+  $this->{'snmpagent'}->{'mibname'}        ||= "RPIMONITOR-MIB";
+  $this->{'snmpagent'}->{'lastupdate'}     ||= "201802030000Z";
+  $this->{'snmpagent'}->{'moduleidentity'} ||= "rpi-experiences";
+  $this->{'snmpagent'}->{'organisation'}   ||= "RPi-Monitor";
+  $this->{'snmpagent'}->{'contactionfo'}   ||= "http://rpi-experiences.blogspot.fr/";
+  $this->{'snmpagent'}->{'description'}    ||= "description";
+  $this->{'snmpagent'}->{'revision'}       ||= "201802030000Z";
+
   # manage rrds
   foreach (@{$this->{'rrd'}}){
     my @name = split (',',$_->{'name'});
@@ -153,8 +166,13 @@ sub Load
   foreach (@{$this->{'dynamic'}}) {
     $_->{'interval'} ||= 1;
     if ($_->{'interval'} > $this->{'maxinterval'} ) {
-      $this->{'maxinterval'} = $this->ppcm($this->{'maxinterval'}, $_->{'interval'});
+      $this->{'maxinterval'} = $this->GreatestCommonDivisor($this->{'maxinterval'}, $_->{'interval'});
     }
+  }
+
+  if ( $this->{'show'} ) {
+    $Data::Dumper::Indent = 1;
+    die Data::Dumper->Dump([$this]);
   }
 
   $this->{'sharedmem'} = IPC::ShareLite->new(
@@ -162,11 +180,6 @@ sub Load
         -create  => 'yes',
         -destroy => 'no'
     ) or die $!;
-
-  if ( $this->{'show'} ) {
-    $Data::Dumper::Indent = 1;
-    die Data::Dumper->Dump([$this]);
-  }
 }
 
 sub LoadFile
@@ -837,38 +850,6 @@ sub Status
   }
 }
 
-=cut
-  Alert/Cancel are sent only when the state is stable to avoid messages flooding
-  when limit is about to be exceeded as shown in schema bellow:
-
-                          send alert
-                              ^
-    th      th <-----dh------>|        th
-    _____   __________________|______   _______           send cancel
-    |   |   |                       |   |     |              ^
-    |   |   |                       |   |     |              |
-  __|   |___|                       |___|     |______________|_____
-       tl                          tl        tl<-----dl----->
-                              |------------------------------|
-                                      Alert is raised
-
-  If alert is still active after resend period, alerte is sent again:
-
-                    send alert                                    resend alert
-                        ^                                               ^
-      th <-----dh------>|<--------------------------------------------->|
-      __________________|_______________________________________________|______
-      |
-      |
-  ____|
-       tl
-                        |------------------------------------------------------>
-                                      Alert is raised
-
-
-
-
-=cut
 sub Alert
 {
   my $this = shift;
@@ -1212,11 +1193,136 @@ sub Run
 }
 
 
+package SnmpModule;
+use strict;
+use IPC::ShareLite;
+use SNMP::Extension::PassPersist;
+use Scalar::Util qw(looks_like_number);
+use POSIX;
+use JSON;
+use Data::Dumper;
+
+sub new
+{
+  my $this = bless { }, shift;
+  $this->Debug(2,"");
+  return $this;
+}
+
+sub Debug
+{
+  my $this = shift;
+  my $level = shift;
+
+  $level <= $verbose or return;
+  print STDERR "[", strftime("%Y/%m/%d-%H:%M:%S", localtime), "] ", "  " x ($level), (caller 1)[3], " @_\n";
+}
+
+sub GetMib()
+{
+    my $this = shift;
+    my $configuration = shift;
+
+    my $snmpagent = $configuration->{'snmpagent'};
+    my $mib = 
+      "$snmpagent->{'mibname'} DEFINITIONS ::= BEGIN\n".
+      "\n".
+      "IMPORTS\n".
+      "OBJECT-TYPE, MODULE-IDENTITY, enterprises, Integer32 ,TimeTicks\n".
+      "FROM SNMPv2-SMI\n".
+      "MODULE-COMPLIANCE,OBJECT-GROUP FROM SNMPv2-CONF;\n".
+      "\n".
+      "rpiexperiences MODULE-IDENTITY\n".
+      "LAST-UPDATED \"$snmpagent->{'lastupdate'}\"\n".
+      "ORGANIZATION \"$snmpagent->{'organisation'}\"\n".
+      "CONTACT-INFO \"$snmpagent->{'contactionfo'}\"\n".
+      "DESCRIPTION \"$snmpagent->{'description'}\"\n".
+      "REVISION \"$snmpagent->{'revision'}\"\n".
+      "DESCRIPTION \"$snmpagent->{'description'}\"\n".
+      "::={ enterprises $snmpagent->{'enterpriseoid'} }\n".
+      "\n".
+      "rpimonitor OBJECT IDENTIFIER ::= { rpiexperiences $snmpagent->{'rpimonitoroid'}}\n".
+      "";
+
+    my $snmp = $configuration->{'snmp'};
+    foreach my $key (keys %{$snmp}) {
+      ( my $name = $key ) =~ s/_//;
+      $mib .=
+        "$name OBJECT-TYPE\n".
+        "SYNTAX ".$snmp->{"$key"}->{'type'}."\n".
+        "MAX-ACCESS read-only \n".
+        "STATUS current\n".
+        "DESCRIPTION\n".
+        "\"".$snmp->{"$key"}->{'description'}."\"\n".
+        "::= { rpimonitor ".$snmp->{"$key"}->{'id'}." }\n".
+        "\n";
+    }
+ 
+    $mib .= "END\n";
+
+    print $mib;
+}
+
+
+
+sub UpdateTree 
+{
+    my ($self) = @_;
+ 
+    sub AddOid
+    {
+        my $configuration = shift;
+        my $var = shift;
+        my $key = shift;
+        
+        my $snmpagent = $configuration->{'snmpagent'};
+        my $snmp = $configuration->{'snmp'};
+        if ( $snmp->{"$key"} ){
+            my $value = $var->{$key};
+            if ( $snmp->{$key}->{'postprocess'} ) {
+                $value =~ /(.*)/;
+                $value=eval( $snmp->{$key}->{'postprocess'} );
+            }
+            $self->add_oid_entry("$snmpagent->{'rootoid'}.".
+                                  "$snmpagent->{'enterpriseoid'}.".
+                                  "$snmpagent->{'rpimonitoroid'}.".
+                                  $snmp->{$key}->{'id'}, 
+                                  $snmp->{$key}->{'type'}, 
+                                  $value);
+        }
+    }
+ 
+    my $configuration = $self->{'configuration'};
+    my $var = $self->{'static'};
+    foreach my $key (keys %{$var}) {
+        AddOid($configuration, $var, $key);
+    }
+    $var = decode_json($self->{'configuration'}->{'sharedmem'}->fetch());
+    foreach my $key (keys %{$var}) {
+        AddOid($configuration, $var, $key);
+    }
+}
+
+sub Run 
+{
+    my $this = shift;
+    my $configuration = shift;
+    my $static = shift;
+
+    my $extsnmp = SNMP::Extension::PassPersist->new(
+        backend_collect => \&UpdateTree,
+        refresh         => 10,      # refresh every 10 sec
+    );
+    $extsnmp->{'configuration'} = $configuration;
+    $extsnmp->{'static'} = $static;
+    $extsnmp->run;
+}
 
 package main;
 use strict;
 use POSIX;
 use Sys::Hostname;
+use File::Basename;
 
 sub help
 {
@@ -1226,11 +1332,11 @@ NAME
 
 USAGE
   rpimonitord [-a address][ -b pidfile][[-c configuration_file]...]
-     [-d delay][-h][-k][-l logfile][-n][-p port][-s][-t timeout]
+     [-d delay][-h][-k][-l logfile][-m][-n][-p port][-s][-t timeout]
      [-v[v[...]]][-V]
 
 DESCRIPTION
-  rpimonitord is designed to extract data from Raspberry Pi system and
+  rpimonitord is designed to extract data from GNU/Linux system and
   store statistic into RRD. rpimonitord embed a web server allowing
   to display current status and statistics.
 
@@ -1243,13 +1349,13 @@ OPTIONS
   -d, --delay       Delay between check ins seconds (Default: 10)
                       Note: If you want to change the default delay, the
                       rrd file will have to be deleted rpimonitord will
-                      recreate them at next startup with the new time
-                      slice.
+                      recreate them at next startup with the new time slice.
   -h, --help        Shows this help and exit
   -i, --interactive Interactive configuration helper
   -k, --keep        Keep log file (Default: logfile is delete at each start)
   -l, --logfile     Logfile directory and prefix (ex: /var/log/rpimonitor)
-  -n, --noserver    Don't start embeded server
+  -m, --mib         Get MIB for current configuration
+  -n, --noserver    Don't start embeded web server
   -p, --port        Web server port (Default: 8888)
   -s, --show        Show configuration as loaded and exit
   -t, --timeout     KPI read timeout in seconds (Default: 5)
@@ -1268,6 +1374,9 @@ CONFIGURATION
   ** Warning: Be sure to use Linux filefeed format with line ending
   with LF (and not CR/LF like in Windows) **
 
+SNMP
+  To be completed
+
 RAW DATA ACCESS
   Once RPi-Monitor is started the data representing the current status
   are available in json format and can be downloaded from the root of
@@ -1280,9 +1389,9 @@ RAW DATA ACCESS
 
   The web interface configuration can also be downloaded in json format:
     statistics.json: Description of statistics page
-    status.json:    Description of status page
-    friends.json:   List of friends
-    addons.json:    List of addons
+    status.json:     Description of status page
+    friends.json:    List of friends
+    addons.json:     List of addons
 
   Statistic information are stored into RRD file available in the
   directory /var/lib/rpimonitor/stat/
@@ -1354,6 +1463,7 @@ while($_ = shift)
   /-i(nteractive)?/ and interactive() and exit;
   /-k(eep)?/        and $configuration->{'daemon'}->{'keeplogfile'}++ and next;
   /-l(ogfile)?/     and $configuration->{'daemon'}->{'logfile'} = shift and next;
+  /-m(ib)?/         and $configuration->{'getmib'}++ and next;
   /-n(oserver)?/    and $configuration->{'daemon'}->{'noserver'}++ and next;
   /-p(ort)?/        and $configuration->{'daemon'}->{'port'} = shift and next;
   /-s(how)?/        and $configuration->{'show'}++ and next;
@@ -1363,16 +1473,30 @@ while($_ = shift)
 }
 $configuration->Load();
 
+if ($configuration->{'getmib'}) {
+  my $snmpmodule = SnmpModule->new();
+  $snmpmodule->GetMib($configuration);
+  exit;
+}
+
 $configuration->{'daemon'}->{'keeplogfile'} or -f $configuration->{'daemon'}->{'logfile'} and unlink $configuration->{'daemon'}->{'logfile'};
 $configuration->{'daemon'}->{'logfile'} ||= '/dev/null';
-
-
-$pidfile and &daemonize($configuration);
 
 my $monitor = Monitor->new();
 # Process data that should be extracted once, before the server starts
 $monitor->Process($configuration,'static');
 $monitor->{'static'}->{'hostname'} = hostname();
+
+# snmp agent 
+if ( basename($0) =~ /rpimonitord-snmp/ ) {
+  #  $Data::Dumper::Indent = 1;
+  #  print Data::Dumper->Dump([$monitor->{'static'}]);
+  my $snmpmodule = SnmpModule->new();
+  $snmpmodule->Run($configuration,$monitor->{'static'});
+  exit;
+}
+
+$pidfile and &daemonize($configuration);
 
 $SIG{INT}    = sub { stop(); }; # catch Ctrl+C
 
