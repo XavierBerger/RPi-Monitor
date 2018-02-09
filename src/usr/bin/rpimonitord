@@ -102,6 +102,7 @@ sub Load
   $this->{'daemon'}->{'webroot'}     ||= "/usr/share/rpimonitor/web";
   $this->{'daemon'}->{'datastore'}   ||= "/var/lib/rpimonitor";
   $this->{'daemon'}->{'delay'}       ||= 10;
+  $this->{'daemon'}->{'readonly'}    ||= 0;
   $this->{'daemon'}->{'timeout'}     ||= 5;
   $this->{'daemon'}->{'sharedmemkey'}||= 20130906;
 
@@ -109,12 +110,14 @@ sub Load
   $this->{'daemon'}->{'gid'} = getgrnam($this->{'daemon'}->{'group'})  || 1000;
   $this->{'daemon'}->{'uid'} = getpwnam($this->{'daemon'}->{'user'}) || 1000;
 
-  # Check rrd directory and files and create them if they are missing
-  # Create storage directory if needed
-  -d "$this->{'daemon'}->{'datastore'}/stat" or mkdir "$this->{'daemon'}->{'datastore'}/stat";
-  # Create empty file at each start
-  $this->CreateRRD( "$this->{'daemon'}->{'datastore'}/stat/empty.rrd", 'empty', 'GAUGE', 'U', 'U' );
-  chown($this->{'daemon'}->{'uid'},$this->{'daemon'}->{'gid'},"$this->{'daemon'}->{'datastore'}/stat/empty.rrd");
+  if ( ! $this->{'daemon'}->{'readonly'} ){
+    # Check rrd directory and files and create them if they are missing
+    # Create storage directory if needed
+    -d "$this->{'daemon'}->{'datastore'}/stat" or mkdir "$this->{'daemon'}->{'datastore'}/stat";
+    # Create empty file at each start
+    $this->CreateRRD( "$this->{'daemon'}->{'datastore'}/stat/empty.rrd", 'empty', 'GAUGE', 'U', 'U' );
+    chown($this->{'daemon'}->{'uid'},$this->{'daemon'}->{'gid'},"$this->{'daemon'}->{'datastore'}/stat/empty.rrd");
+  }
 
   #print Data::Dumper->Dump([$this->{'daemon'}]);
 
@@ -130,20 +133,21 @@ sub Load
   $this->{'snmpagent'}->{'description'}    ||= "description";
   $this->{'snmpagent'}->{'revision'}       ||= "201802030000Z";
 
-  # manage rrds
-  foreach (@{$this->{'rrd'}}){
-    my @name = split (',',$_->{'name'});
-    my $type = $_->{'rrd'};
-    my $min = defined($_->{'min'}) ? $_->{'min'} : "U";
-    my $max = defined($_->{'max'}) ? $_->{'max'} : "U";
-    foreach (@name) {
-      my $filename="$this->{'daemon'}->{'datastore'}/stat/$_.rrd";
-      -f "$filename" or $this->CreateRRD($filename,$_,$type,$min,$max);
-      push(@{$this->{'rrdlist'}},"stat/$_.rrd");
+  if ( ! $this->{'daemon'}->{'readonly'} ){
+    # manage rrds
+    foreach (@{$this->{'rrd'}}){
+      my @name = split (',',$_->{'name'});
+      my $type = $_->{'rrd'};
+      my $min = defined($_->{'min'}) ? $_->{'min'} : "U";
+      my $max = defined($_->{'max'}) ? $_->{'max'} : "U";
+      foreach (@name) {
+        my $filename="$this->{'daemon'}->{'datastore'}/stat/$_.rrd";
+        -f "$filename" or $this->CreateRRD($filename,$_,$type,$min,$max);
+        push(@{$this->{'rrdlist'}},"stat/$_.rrd");
+      }
     }
+    #print Data::Dumper->Dump([$this->{'rrdlist'}]);
   }
-
-  #print Data::Dumper->Dump([$this->{'rrdlist'}]);
 
   # manage page common parameters
   $this->{'web'}->{'page'}->{'icon'}      ||= 'img/logo.png';
@@ -189,7 +193,7 @@ sub LoadFile
   my @dict;
   $this->Debug(3,"Loading file: $confFile");
 
-  open ( FILE, $confFile)
+  open (FILE, $confFile)
     or die "Error while openning configuration file \"$confFile\" because $!\n";
   while (<FILE>){
     chomp;
@@ -630,40 +634,42 @@ sub Run
   my $serverpid = shift;
   $this->Debug(2,"");
 
-  if ( $configuration->{'daemon'}->{'noserver'}) {
-    # write json if server is not running
-    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/static.json")
-      or warn $!;
-      print FILE to_json \%{$this->{'static'}} ;
-    close(FILE);
-    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/status.json")
-      or warn $!;
-      print FILE to_json \@{$configuration->{'web'}->{'status'}} ;
-    close(FILE);
-    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/page.json")
-      or warn $!;
-      print FILE to_json \%{$configuration->{'web'}->{'page'}} ;
-    close(FILE);
-    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/statistics.json")
-      or warn $!;
-      print FILE to_json \@{$configuration->{'web'}->{'statistics'}} ;
-    close(FILE);
-    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/friends.json")
-      or warn $!;
-      print FILE to_json(\@{$configuration->{'web'}->{'friends'}});
-    close(FILE);
-    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/menu.json")
-      or warn $!;
-      print FILE to_json(\%{$configuration->{'web'}->{'menu'}});
-    close(FILE);
-    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/addons.json")
-      or warn $!;
-      print FILE to_json(\@{$configuration->{'web'}->{'addons'}});
-    close(FILE);
-    open(FILE, "> $configuration->{'daemon'}->{'webroot'}/version.json")
-      or warn $!;
-      print FILE  "{\"version\":\"$configuration->{'version'}\"}";
-    close(FILE);
+  if ($configuration->{'daemon'}->{'noserver'}) {
+    if (! $configuration->{'daemon'}->{'readonly'}) {
+      # write json if server is not running
+      open(FILE, "> $configuration->{'daemon'}->{'webroot'}/static.json")
+        or warn $!;
+        print FILE to_json \%{$this->{'static'}} ;
+      close(FILE);
+      open(FILE, "> $configuration->{'daemon'}->{'webroot'}/status.json")
+        or warn $!;
+        print FILE to_json \@{$configuration->{'web'}->{'status'}} ;
+      close(FILE);
+      open(FILE, "> $configuration->{'daemon'}->{'webroot'}/page.json")
+        or warn $!;
+        print FILE to_json \%{$configuration->{'web'}->{'page'}} ;
+      close(FILE);
+      open(FILE, "> $configuration->{'daemon'}->{'webroot'}/statistics.json")
+        or warn $!;
+        print FILE to_json \@{$configuration->{'web'}->{'statistics'}} ;
+      close(FILE);
+      open(FILE, "> $configuration->{'daemon'}->{'webroot'}/friends.json")
+        or warn $!;
+        print FILE to_json(\@{$configuration->{'web'}->{'friends'}});
+      close(FILE);
+      open(FILE, "> $configuration->{'daemon'}->{'webroot'}/menu.json")
+        or warn $!;
+        print FILE to_json(\%{$configuration->{'web'}->{'menu'}});
+      close(FILE);
+      open(FILE, "> $configuration->{'daemon'}->{'webroot'}/addons.json")
+        or warn $!;
+        print FILE to_json(\@{$configuration->{'web'}->{'addons'}});
+      close(FILE);
+      open(FILE, "> $configuration->{'daemon'}->{'webroot'}/version.json")
+        or warn $!;
+        print FILE  "{\"version\":\"$configuration->{'version'}\"}";
+      close(FILE);
+    }
   }
 
   #die Data::Dumper->Dump([$this]);
@@ -822,29 +828,31 @@ sub Status
 
   $this->Debug(4,"\n$json");
 
-  # if embeded server is not used, we write the json file else the
-  # data are transmitted with a shared memory
-  if ( $configuration->{'daemon'}->{'noserver'} == 1 ){
+  if ( ( ! $configuration->{'daemon'}->{'noserver'} ) 
+    || (   $configuration->{'daemon'}->{'readonly'} ) ){
+    # write current status (JSON) in shared memory
+    $configuration->{'sharedmem'}->store( $json );
+  }
+  else {
+    # If embeded server is not used, we write the json file on disk
     push (@{$this->{'files'}},"dynamic.json");
     open(FILE, "> $configuration->{'daemon'}->{'webroot'}/dynamic.json")
       or warn $!;
       print FILE $json ;
     close(FILE);
   }
-  else{
-    # write current status (JSON) in shared memory
-    $configuration->{'sharedmem'}->store( $json );
-  }
 
-  # add data in round robin database
-  #print Data::Dumper->Dump($configuration->{'rrd'});
-  foreach (@{$configuration->{'rrd'}}){
-    foreach my $name ( split(',',$_->{'name'}) ) {
-      if ( looks_like_number( $this->{'dynamic'}->{$name} ) ) {
-        RRDs::update("$configuration->{'daemon'}->{'datastore'}/stat/$name.rrd", "N:".$this->{'dynamic'}->{$name});
-      }
-      else {
-        RRDs::update("$configuration->{'daemon'}->{'datastore'}/stat/$name.rrd", "N:U");
+  if ( ! $configuration->{'daemon'}->{'readonly'} ){
+    # add data in round robin database
+    #print Data::Dumper->Dump($configuration->{'rrd'});
+    foreach (@{$configuration->{'rrd'}}){
+      foreach my $name ( split(',',$_->{'name'}) ) {
+        if ( looks_like_number( $this->{'dynamic'}->{$name} ) ) {
+          RRDs::update("$configuration->{'daemon'}->{'datastore'}/stat/$name.rrd", "N:".$this->{'dynamic'}->{$name});
+        }
+        else {
+          RRDs::update("$configuration->{'daemon'}->{'datastore'}/stat/$name.rrd", "N:U");
+        }
       }
     }
   }
@@ -1357,6 +1365,8 @@ OPTIONS
   -m, --mib         Get MIB for current configuration
   -n, --noserver    Don't start embeded web server
   -p, --port        Web server port (Default: 8888)
+  -r, --readonly    Read only mode. Do not generate json nor RRD. This feature 
+                    can be used to collect KPI and get them through snmp.
   -s, --show        Show configuration as loaded and exit
   -t, --timeout     KPI read timeout in seconds (Default: 5)
   -v, --verbose     Write debug info on screen
@@ -1463,9 +1473,11 @@ while($_ = shift)
   /-i(nteractive)?/ and interactive() and exit;
   /-k(eep)?/        and $configuration->{'daemon'}->{'keeplogfile'}++ and next;
   /-l(ogfile)?/     and $configuration->{'daemon'}->{'logfile'} = shift and next;
-  /-m(ib)?/         and $configuration->{'getmib'}++ and next;
+  /-m(ib)?/         and $configuration->{'getmib'}++ and last;
   /-n(oserver)?/    and $configuration->{'daemon'}->{'noserver'}++ and next;
   /-p(ort)?/        and $configuration->{'daemon'}->{'port'} = shift and next;
+  /-r(eadonly)?/    and $configuration->{'daemon'}->{'readonly'}++ 
+                    and $configuration->{'daemon'}->{'noserver'}++ and next;
   /-s(how)?/        and $configuration->{'show'}++ and next;
   /-t(imeout)?/     and $configuration->{'daemon'}->{'timeout'} = shift and next;
   /^-([v]+)$/       and $verbose = length $1 and next;
