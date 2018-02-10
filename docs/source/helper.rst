@@ -1,6 +1,6 @@
-RPi-Monitor Interactive Configuration Helper
-============================================
-RPi-Monitor Interactive Configuration Helper is a tool embedded into 
+Interactive Configuration Helper
+================================
+**RPi-Monitor** Interactive Configuration Helper is a tool embedded into 
 ``rpimonitord`` helping to create configuration files
 . 
 This article is detailling how to use it to monitor a ntfs volume.

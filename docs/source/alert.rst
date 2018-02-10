@@ -1,13 +1,14 @@
-Alert management
-================
+Alert configuration
+===================
 **RPi-Monitor** is able to detect if value exceed a defined value or come back
 to the normal.
 
 Alert/Cancel are sent only when the state is stable to avoid messages
 flooding when limit is about to be exceeded as shown in schema bellow:
 
-::
+.. code-block:: html
 
+  <pre>
                           send alert
                               ^
    th      th <------dh------>|        th
@@ -18,11 +19,13 @@ flooding when limit is about to be exceeded as shown in schema bellow:
         tl                          tl        tl<-----dl----->
                               |------------------------------|
                                       Alert is raised
+  </pre>
 
 If alert is still active after resend period, alerte is sent again:
 
-::
+.. code-block:: html
 
+  <pre>
                     send alert                                    resend alert
                         ^                                               ^
       th <-----dh------>|<---------------------dr---------------------->|
@@ -32,6 +35,7 @@ If alert is still active after resend period, alerte is sent again:
   ____|
       tl                |----------------------------------------------------->
                                       Alert is raised
+  </pre>
 
 Each alert is identified by its <alert name>. Alert configuration is
 performed as follow:

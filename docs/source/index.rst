@@ -28,16 +28,25 @@ explains how to install, configure and use it.
    daemon
    extraction
    web
+   addons
    alert
+   multipages
+   friends
    snmp
 
 .. toctree::
    :maxdepth: 1
    :caption: Integration example
 
+   examples
+   logo
+   external
    autentication
    dht11
    wifi
+   labels
+   hdd
+   lcd
    
 .. toctree::
    :maxdepth: 1
