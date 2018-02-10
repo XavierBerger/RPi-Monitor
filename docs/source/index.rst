@@ -6,9 +6,12 @@
 RPi-Monitor
 ===========
 
-**RPi-Monitor** is a software designed to monitor the metrics of a computer or 
-its peripherals. This documentation is presenting the features provided 
-by this tool. It explains how to install, configure and use it.
+**RPi-Monitor** is a software designed to monitor the metrics from GNU/Linux 
+system and connected peripherals. 
+It store statistic into local Round Robin Database and embed a web server
+allowing to display current status and statistics.
+This documentation is presenting the features provided by **RPi-Monitor** and
+explains how to install, configure and use it.
 
 .. toctree::
    :maxdepth: 2
@@ -18,26 +21,26 @@ by this tool. It explains how to install, configure and use it.
    gettingstarted
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Configuration
 
-   startup
    extraction
    presentation
    snmp
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Integration example
 
    autentication
-   wifi
    dht11
-
+   wifi
+   
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: To got further
 
    faq
    contributing
    packaging
+   license

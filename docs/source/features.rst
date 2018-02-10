@@ -1,9 +1,6 @@
 Keys features of RPi-Monitor
 ============================
 
-.. toctree::
-   :maxdepth: 2
-
 **RPi** in **RPi-Monitor** stands for `Raspberry Pi`. This program was initially
 designed to run on the small form factor computer. But it can, in reality run on
 every computers running Perl.

@@ -1,6 +1,5 @@
-
-Configuration
-=============
+Extraction
+==========
 
 Startup mode
 ------------
@@ -8,8 +7,8 @@ Startup mode
 Default
 ^^^^^^^
 
-Data extraction
----------------
+Customisation
+^^^^^^^^^^^^^
 
-Status and Statistics
----------------------
+
+
