@@ -19,6 +19,7 @@ explains how to install, configure and use it.
    
    features
    gettingstarted
+   helper
 
 .. toctree::
    :maxdepth: 1

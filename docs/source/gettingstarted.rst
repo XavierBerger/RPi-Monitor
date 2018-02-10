@@ -3,14 +3,95 @@ Getting started
 
 Installation
 ------------
-From repository
-^^^^^^^^^^^^^^^
 
-From github
-^^^^^^^^^^^
+Installation using the repository
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Manual Installation
-^^^^^^^^^^^^^^^^^^^
+**RPi-Monitor** is providing a debian repository. This repository will make 
+installation and update accessible with the command ``apt-get`` or ``aptitude``.
+
+To use this repository follow the instruction bellow:
+
+Execute the following command to add RPi-Monitor into your list of repository: 
+
+::
+
+  sudo wget http://goo.gl/vewCLL -O /etc/apt/sources.list.d/rpimonitor.list
+
+Install my public key to trust RPi-Monitor repository:
+
+::
+
+  sudo apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 2C0D3C0F
+
+To install **RPi-Monitor**, execute the following command:
+
+::
+
+  sudo apt-get update
+  sudo apt-get install rpimonitor
+
+.. note:: **RPi-Monitor** is designed to start automatically and collect metrics.
+          The web interface is available on address http://IPaddress:8888.
+
+Upgrade from the repository
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+To upgrade **RPi-Monitor**, execute the following command:
+
+::
+
+  sudo apt-get update
+  sudo apt-get upgrade
+
+
+After installation you should excute the following command to update information 
+about upgradable packages:
+
+::
+
+  sudo /etc/init.d/rpimonitor update
+
+Manual installation from Debian package
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Download the latest package from the official repository in Github with the 
+following command (replace latest_package_url by the real url fond on github):
+
+::
+
+    wget latest_package_url -O rpimonitor_latest_all.deb
+
+If you have issue with GnuTLS: A TLS warning alert coming from Github you 
+can download it with the following command:
+
+::
+
+    curl -L latest_package_url -o rpimonitor_latest_all.deb
+
+Install the dependencies by executing the following command (use command 
+``apt-get`` if ``aptitude`` is not available on your target system):
+
+::
+
+  sudo aptitude install librrds-perl libhttp-daemon-perl libjson-perl \
+  libipc-sharelite-perl libfile-which-perl libsnmp-extension-passpersist-perl
+
+Installation or upgrade can be done with the command:
+
+::
+
+  sudo dpkg -i rpimonitor_latest_all.deb
+
+Complete the installation with the command:
+
+::
+
+  sudo /usr/share/rpimonitor/scripts/updatePackagesStatus.pl
+
+Manual installation from sources
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. note: TO BE COMPLETED (add link to package.rst)
 
 Startup
 -------
@@ -96,7 +177,7 @@ See next chapter for datail about configuration.
 
 SNMP
 ^^^^
-.. warning:: To be completed
+.. note: TO BE COMPLETED (add link to snmp.rst)
 
 Raw data access
 ^^^^^^^^^^^^^^^
@@ -114,3 +195,17 @@ The web interface configuration can also be downloaded in json format:
 * ``addons.json`` : List of addons
 
 Statistic information are stored into RRD file available in the directory ``/var/lib/rpimonitor/stat/``
+
+Uninstallation
+--------------
+To uninstall **RPi-Monitor**, you can execute the following command:
+
+::
+
+    sudo apt-get remove rpimonitor
+
+or:
+
+::
+
+    sudo apt-get purge rpimontor
