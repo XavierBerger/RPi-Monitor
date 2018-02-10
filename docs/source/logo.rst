@@ -1,5 +1,5 @@
-Customise menu logo, title and page title
-=========================================
+Customise WEB page header
+=========================
 
 This new function allow to define a custom logo, custome title and add the hostname of the machine int the title of the browser.
 

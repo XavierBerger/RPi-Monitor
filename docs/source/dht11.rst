@@ -1,5 +1,5 @@
-Use a DHT11 or DHT22 humidity and temperature sensor
-====================================================
+Temperature and humidity sensor
+===============================
 
 Overview
 --------

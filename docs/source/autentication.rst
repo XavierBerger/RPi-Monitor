@@ -1,5 +1,5 @@
-Authentication and secure access to RPi-Monitor
-===============================================
+Authentication and secure access
+================================
 
 The purpose of **RPi-Monitor** is to... monitor. For different reason (security, 
 time, scope of project...) it do not add any authentication. 
