@@ -25,8 +25,10 @@ explains how to install, configure and use it.
    :maxdepth: 1
    :caption: Configuration
 
+   daemon
    extraction
-   presentation
+   web
+   alert
    snmp
 
 .. toctree::

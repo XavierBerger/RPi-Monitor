@@ -1,8 +1,0 @@
-Web Interface
-=============
-
-Status
-------
-
-Statistics
-----------
