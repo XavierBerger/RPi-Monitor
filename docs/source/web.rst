@@ -1,12 +1,16 @@
 Web interface configuration
 ===========================
+
+Friends
+-------
 Friends are defining a displayed name and a link reachable from a
 top left menu visible if at least one friends is configured. Each
-friend is identified by its <id> and is described by the 2 following
+friend is identified by its ``<id>`` and is described by the 2 following
 parameters
 
-web.friends.<id>.name=<display name>
-web.friends.<id>.link=<link to RPi-Monitor>
+**web.friends.<id>.name=<display name>**
+
+**web.friends.<id>.link=<link to RPi-Monitor>**
 
 web.friends.<id>.name=<display name>
   <display name> is the name printed into the drop down menu
@@ -15,6 +19,8 @@ web.friends.<id>.link=<link to RPi-Monitor>
   <link to RPi-Monitor> is the link to another RPi-Monitor running
   into the friend machine.
 
+Pages
+-----
 web.page.icon=<icon location relative to webroot>
   <icon location relative to webroot> is the path and filename of
   the icon to be displayed into RPi-Monitor title bar
@@ -33,6 +39,8 @@ The status page is fully configurable.
 It is possible to define multiple pages. Each page is identified by
 its <page id>.
 
+Status
+------
 web.status.<page id>.name=<page name>
   <page name> name of the page displayed into the drop down menu in
   case of multiple pages.
@@ -47,8 +55,10 @@ web.status.<page id>.visibility=<visibility formula>
   0: to hide the row
   anything else but 0: show the row
 
-web.status.<page id>.content.<status id>.name=<display name>
-web.status.<page id>.content.<status id>.icon=<display icon>
+**web.status.<page id>.content.<status id>.name=<display name>**
+
+**web.status.<page id>.content.<status id>.icon=<display icon>**
+
 web.status.<page id>.content.<status id>.line.<line number>=<parameter>
 
 web.status.<page id>.content.<status id>.name=<display name>
@@ -105,7 +115,7 @@ web.status.<page id>.content.<status id>.line.<line number>=<parameter>
         width, height : size of the gauge
         levelColors : Array defining colors of each level [normal,warning,critical]
                       (in Hex format), default: green, orange and red.
-                      Default colors are available into the array 'percentColors'.
+                      Default colors are available into the array ``percentColors``.
         warning     : Warning level (in %) used to define color (default: 33)
         critical    : Critical  level (in %) used to define color (default: 66)
 
@@ -142,6 +152,8 @@ web.status.<page id>.name=<page name>
   <page name> name of the page displayed into the drop down menu in
   case of multiple pages.
 
+Statistics
+----------
 The statistic page displays statistics graphs. The graphs are
 identified an unique <statistic id> and by the following parameters.
 

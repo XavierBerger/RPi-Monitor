@@ -106,4 +106,4 @@ url parameter point to hawkeye web interface. If you are doing such a
 configuration, keep in mind about the security of your images. You should 
 use the capacity of hawkeye to restrict the access to the image using a 
 login and a password. You can also have a look to my article showing how
- to secure the access to **RPi-monitor**. 
+to secure the access to **RPi-monitor**. 

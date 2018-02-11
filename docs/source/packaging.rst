@@ -17,7 +17,7 @@ Dependencies
  * aptitude (required by script checking upgradable packages)
 
 Programs
-------------
+--------
 
 * ``/usr/bin/rpimonitord`` : *Daemon extracting data from the system and embedding the web application server - The help page is used to generate manpage*
 * ``/etc/cron.d/rpimonitor`` : *daily extraction the status of package update updating the file* ``updatestatus.txt``
@@ -26,7 +26,7 @@ Programs
 .. note:: **upstart** and **systemd** script are also avialable in the repository
 
 Configuration
-------------
+-------------
 
 * ``/etc/rpimonitor/daemon.conf`` : *configuration of rpimonitord daemon*
 * ``/etc/rpimonitor/data.conf`` : *symlink to* ``template/<distribution>.conf`` *configuration of default data to be extracted and presented*
@@ -40,13 +40,13 @@ For supported distribution, the post installation script of package creates a li
 .. note:: The template directory is also containing some templates that can be used as example to customize configuration.
 
 Manpages
-------------
+--------
 
 * ``/usr/share/man/man5/rpimonitord.conf.5.gz`` : *Manpage for rpimonitor and data extraction configuration*
 * ``/usr/share/man/man1/rpimonitord.1.gz`` : *Manpage for rpimonitord command line usage*
 
 Web Interface
-------------
+-------------
 
 * ``/usr/share/rpimonitor/web`` : *Directory containing html*
 * ``/usr/share/rpimonitor/web/js`` : *Directory containing javascripts*
@@ -58,12 +58,12 @@ Web Interface
 .. note:: When **RPi-Monitor** is configured to not use the internal server, the json are written on the disk into the web root directory ``/usr/share/rpimonitor/web``
 
 Scripts
-------------
+-------
 
 * ``/usr/share/rpimonitor/scripts/updatePackagesStatus.pl`` : *Script periodically executed to update* ``/var/lib/rpimonitor/updatestatus.txt``
 
 Data
-------------
+----
 
 * ``/var/lib/rpimonitor/web/stat`` : *Directory containing* ``*.rrd``
 * ``/var/lib/rpimonitor/updatestatus.txt`` : *Current status of packages update*

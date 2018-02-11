@@ -17,7 +17,7 @@ RPi-Monitor showing multiple graph pages
 
 The file custo.conf available in github shows how to configure additional pages 
 from information gathered from external sensors. This is the configuration file
- used for the examples shows in upper screenshots.
+used for the examples shows in upper screenshots.
 
 
 Labels

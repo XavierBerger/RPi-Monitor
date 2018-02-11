@@ -52,17 +52,20 @@ with the keyword dynamic and an identifier <dynamic data id>
 
 Each dynamic KPI is defined by an id and with 5 parameters
 
-dynamic.<dynamic data id>.name=<data name>
-dynamic.<dynamic data id>.source=<data source>
-dynamic.<dynamic data id>.regexp=<data regexp>
+**dynamic.<dynamic data id>.name=<data name>**
+
+**dynamic.<dynamic data id>.source=<data source>**
+
+**dynamic.<dynamic data id>.regexp=<data regexp>**
+
 dynamic.<dynamic data id>.postprocess=<data postprocess>
   <data name>, <data source>, <data regexp>, <data postprocess>
   This 4 first parameters have the same signification as for static
   parameters.
 
-Note: Static values are accessible for the post processing using the
-variable $this->{'static'}->{'static_data_name'} and can be used.
-You can refer to swap data extraction to see an example (cf. swap.conf).
+.. note:: Static values are accessible for the post processing using the
+          variable $this->{'static'}->{'static_data_name'} and can be used.
+          You can refer to swap data extraction to see an example (cf. swap.conf).
 
 dynamic.<dynamic data id>.interval=<interval>
   rpimonitors extracts data every "daemon.delay" seconds. <interval>
@@ -75,13 +78,15 @@ dynamic.<dynamic data id>.default=<default>
 
 dynamic.<dynamic data id>.rrd=<GAUGE|COUNTER|DERIVE|ABSOLUTE|COMPUTE>
   The 5th parameter is defining if the KPI has to be stored into a RRD
-  database and how <|GAUGE|COUNTER|DERIVE|ABSOLUTE|COMPUTE>. If the
+  database and how <GAUGE|COUNTER|DERIVE|ABSOLUTE|COMPUTE>. If the
   parameter is defined as empty, no RRD database will be created. If
   this parameter is defined, a RRD database will be created and data
   will be stored at every extraction.
   Ref http://oss.oetiker.ch/rrdtool/doc/rrdcreate.en.html for RRD
   parameter description.
-dynamic.<dynamic data id>.min=<minimal value acceptable in RRD>
+
+**dynamic.<dynamic data id>.min=<minimal value acceptable in RRD>**
+
 dynamic.<dynamic data id>.max=<maximal value acceptable in RRD>
   If a value extracted by is less than minimal of greater than maximal
   value, it will be stored int RRD database as unknown.

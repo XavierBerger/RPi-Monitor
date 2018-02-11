@@ -51,38 +51,51 @@ To use the PCD8544 display we need to install few software and load a kernel mod
 
 First, let's install wiringpi2 from drogon.net
 
+::
+
     git clone git://git.drogon.net/wiringPi
-
     cd wiringPi
-
     ./build
 
 Once wiringpi is installed, it is possible to test it with the following command:
 
     gpio readall
 
-     +-----+-------+------+----+-Rev2-----+----+------+-------+-----+
-     | wPi |  Name | Mode | Val| Physical |Val | Mode | Name  | wPi |
-     +-----+-------+------+----+----++----+----+------+-------+-----+
-     |     |  3.3v |      |    |  1 || 2  |    |      | 5v    |     |
-     |   8 |   SDA |   IN | Lo |  3 || 4  |    |      | 5V    |     |
-     |   9 |   SCL |   IN | Lo |  5 || 6  |    |      | 0v    |     |
-     |   7 | GPIO7 |   IN | Lo |  7 || 8  | Lo | ALT0 | TxD   | 15  |
-     |     |    0v |      |    |  9 || 10 | Lo | ALT0 | RxD   | 16  |
-     |   0 | GPIO0 |   IN | Hi | 11 || 12 | Hi | OUT  | GPIO1 | 1   |
-     |   2 | GPIO2 |   IN | Lo | 13 || 14 |    |      | 0v    |     |
-     |   3 | GPIO3 |   IN | Hi | 15 || 16 | Lo | OUT  | GPIO4 | 4   |
-     |     |  3.3v |      |    | 17 || 18 | Lo | OUT  | GPIO5 | 5   |
-     |  12 |  MOSI | ALT0 | Hi | 19 || 20 |    |      | 0v    |     |
-     |  13 |  MISO | ALT0 | Hi | 21 || 22 | Hi | IN   | GPIO6 | 6   |
-     |  14 |  SCLK | ALT0 | Hi | 23 || 24 | Lo | ALT0 | CE1   | 10  |
-     |     |    0v |      |    | 25 || 26 | Lo | ALT0 | CE1   | 11  |
-     +-----+-------+------+----+----++----+----+------+-------+-----+
++-----+-------+------+----+----------+----+------+-------+-----+
+| wPi |  Name | Mode | Val| Physical |Val | Mode | Name  | wPi |
++=====+=======+======+====+====++====+====+======+=======+=====+
+|     |  3.3v |      |    |  1 || 2  |    |      | 5v    |     |
++-----+-------+------+----+----++----+----+------+-------+-----+
+|   8 |   SDA |   IN | Lo |  3 || 4  |    |      | 5V    |     |
++-----+-------+------+----+----++----+----+------+-------+-----+
+|   9 |   SCL |   IN | Lo |  5 || 6  |    |      | 0v    |     |
++-----+-------+------+----+----++----+----+------+-------+-----+
+|   7 | GPIO7 |   IN | Lo |  7 || 8  | Lo | ALT0 | TxD   | 15  |
++-----+-------+------+----+----++----+----+------+-------+-----+
+|     |    0v |      |    |  9 || 10 | Lo | ALT0 | RxD   | 16  |
++-----+-------+------+----+----++----+----+------+-------+-----+
+|   0 | GPIO0 |   IN | Hi | 11 || 12 | Hi | OUT  | GPIO1 | 1   |
++-----+-------+------+----+----++----+----+------+-------+-----+
+|   2 | GPIO2 |   IN | Lo | 13 || 14 |    |      | 0v    |     |
++-----+-------+------+----+----++----+----+------+-------+-----+
+|   3 | GPIO3 |   IN | Hi | 15 || 16 | Lo | OUT  | GPIO4 | 4   |
++-----+-------+------+----+----++----+----+------+-------+-----+
+|     |  3.3v |      |    | 17 || 18 | Lo | OUT  | GPIO5 | 5   |
++-----+-------+------+----+----++----+----+------+-------+-----+
+|  12 |  MOSI | ALT0 | Hi | 19 || 20 |    |      | 0v    |     |
++-----+-------+------+----+----++----+----+------+-------+-----+
+|  13 |  MISO | ALT0 | Hi | 21 || 22 | Hi | IN   | GPIO6 | 6   |
++-----+-------+------+----+----++----+----+------+-------+-----+
+|  14 |  SCLK | ALT0 | Hi | 23 || 24 | Lo | ALT0 | CE1   | 10  |
++-----+-------+------+----+----++----+----+------+-------+-----+
+|     |    0v |      |    | 25 || 26 | Lo | ALT0 | CE1   | 11  |
++-----+-------+------+----+----++----+----+------+-------+-----+
 
 Now, install the python binding of wiringpi:
 
-    sudo apt-get install python-dev python-imaging python-imaging-tk python-pip
+::
 
+    sudo apt-get install python-dev python-imaging python-imaging-tk python-pip
     sudo pip install wiringpi2
 
 The program we will use require spidev to be activated. The kernel module should then be activated.
@@ -91,6 +104,8 @@ To do so, comment the line blacklist spi-bcm2708 by adding a heading # in the fi
 
 
 Finally install spidev python library:
+
+::
 
     sudo pip install spidev
 
@@ -108,18 +123,18 @@ This pcd8544 library resulting is available into its own dedicated repository in
 
 To install it, execute the following commands:
 
+::
+
     git clone https://github.com/XavierBerger/pcd8544.git 
-
     cd pcd8544
-
     ./setup.py clean build 
-
     sudo ./setup.py install
 
  You can now test the installation with the proposed examples:
 
-    cd examples
+::
 
+    cd examples
     ./pi_logo.py
 
  If installation works properly, you should see the following screen:
@@ -137,96 +152,98 @@ As I said in introduction, RPi-Monitor is gathering a lot of information and som
 
 For people interesting about learning development I did comment my code:
 
-#!/usr/bin/env python
-import httplib, time, os, sys, json
-import pcd8544.lcd as lcd
+.. code-block:: python
 
-# class Process dedicated to process data get from Client
-# and send information to LCD and console
-class Process:
-  # Process constructor
-  def __init__(self):
-    # Initialize LCD
-    lcd.init()
-    # Turn the backlight on
-    lcd.backlight(1)
+  #!/usr/bin/env python
+  import httplib, time, os, sys, json
+  import pcd8544.lcd as lcd
 
-  def run(self, jsonString):
-    # Parse data as json
-    data = json.loads( jsonString )
-    # Try to get data from json or return default value 
+  # class Process dedicated to process data get from Client
+  # and send information to LCD and console
+  class Process:
+    # Process constructor
+    def __init__(self):
+      # Initialize LCD
+      lcd.init()
+      # Turn the backlight on
+      lcd.backlight(1)
+
+    def run(self, jsonString):
+      # Parse data as json
+      data = json.loads( jsonString )
+      # Try to get data from json or return default value 
+      try:
+        rpi_temperature = data['living_room_temp']
+      except:
+        rpi_temperature="--.---"
+      try:
+        rpi_humidity = data['humidity']
+      except:
+        rpi_humidity = "--"
+      # Construct string to be displayed on screens
+      temperature = "Temp: %s C" % rpi_temperature
+      humidity = "Humidity: %s %%" % rpi_humidity
+      lcd.gotorc(0,1)
+      lcd.text("RPi-Monitor")
+      lcd.gotorc(2,0)
+      lcd.text(temperature)
+      lcd.gotorc(3,0)
+      lcd.text(humidity)
+      # Also print string in console
+      os.system("clear")
+      print " RPi-Monitor "
+      print
+      print temperature
+      print humidity
+      print
+      time.sleep(1)
+
+  # Class client design to work as web client and get information 
+  # from RPi-Monitor embedded web server
+  class Client:
+    # Client constructor
+    def __init__(self):
+      # Create a Process object
+      self.process = Process()
+
+    def run(self):
+      # Infinite loop
+      while True:
+      try:
+        # Initiate a connection to RPi-Monitor embedded server
+        connection = httplib.HTTPConnection("localhost", 8888)
+        # Get the file dynamic.json
+        connection.request("GET","/dynamic.json")
+        # Get the server response
+        response = connection.getresponse()
+        if ( response.status == 200 ):
+          # If response is OK, read data
+          data = response.read()
+          # Run process object on extracted data
+          self.process.run(data)
+        # Close the connection to RPi-Monitor embedded server
+        connection.close()
+      finally:
+        # Wait 5 secondes before restarting the loop
+        time.sleep(5)
+
+  # Main function
+  def main():
     try:
-      rpi_temperature = data['living_room_temp']
-    except:
-      rpi_temperature="--.---"
-    try:
-      rpi_humidity = data['humidity']
-    except:
-      rpi_humidity = "--"
-    # Construct string to be displayed on screens
-    temperature = "Temp: %s C" % rpi_temperature
-    humidity = "Humidity: %s %%" % rpi_humidity
-    lcd.gotorc(0,1)
-    lcd.text("RPi-Monitor")
-    lcd.gotorc(2,0)
-    lcd.text(temperature)
-    lcd.gotorc(3,0)
-    lcd.text(humidity)
-    # Also print string in console
-    os.system("clear")
-    print " RPi-Monitor "
-    print
-    print temperature
-    print humidity
-    print
-    time.sleep(1)
+      # Create a Client object
+      client = Client()
+      # Run it
+      client.run()
+    except KeyboardInterrupt:
+      # if Ctrl+C has been pressed
+      # turn off the lcd backlight
+      lcd.backlight(0); 
+      # exit from the program 
+      sys.exit(0)
 
-# Class client design to work as web client and get information 
-# from RPi-Monitor embedded web server
-class Client:
-  # Client constructor
-  def __init__(self):
-    # Create a Process object
-    self.process = Process()
-
-  def run(self):
-    # Infinite loop
-    while True:
-     try:
-       # Initiate a connection to RPi-Monitor embedded server
-       connection = httplib.HTTPConnection("localhost", 8888)
-       # Get the file dynamic.json
-       connection.request("GET","/dynamic.json")
-       # Get the server response
-       response = connection.getresponse()
-       if ( response.status == 200 ):
-         # If response is OK, read data
-         data = response.read()
-         # Run process object on extracted data
-         self.process.run(data)
-       # Close the connection to RPi-Monitor embedded server
-       connection.close()
-     finally:
-       # Wait 5 secondes before restarting the loop
-       time.sleep(5)
-
-# Main function
-def main():
-  try:
-    # Create a Client object
-    client = Client()
-    # Run it
-    client.run()
-  except KeyboardInterrupt:
-    # if Ctrl+C has been pressed
-    # turn off the lcd backlight
-    lcd.backlight(0); 
-    # exit from the program 
-    sys.exit(0)
-
-# Execute main if the script is directly called
-if __name__ == "__main__":
-    main()
+  # Execute main if the script is directly called
+  if __name__ == "__main__":
+      main()
 
 This code is dedicated to extract the living room temperature and humidity from RPi-Monitor information.
 
