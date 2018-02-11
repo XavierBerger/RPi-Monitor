@@ -56,14 +56,14 @@ GitHub is used to perform versioning of development and also to backup the devel
 
 The branch **master** contains the latest stable version.
 
-The branch **devel** is the unstable development branch (The branch may have bugs and partially released code that could avoid **RPi-Monitor** to run as expected). 
+The branch **develop** is the unstable development branch (The branch may have bugs and partially released code that could avoid **RPi-Monitor** to run as expected). 
 
 Each release is identified by a tag. 
 
 ### Pull request
 You want to contribute to RPi-Monitor. I'll be happy to integrate your pull request. 
 
-Please note: Pull request perfomed on **devel** branch will be integrated as soon as possible. Pull request perform on master branche may only be integrated when a new version is published (or not may not be integrated at all...)
+Please note: Pull request perfomed on **develop** branch will be integrated as soon as possible. Pull request perform on master branche may only be integrated when a new version is published (or not may not be integrated at all...)
 
 
 ### **RPi-Monitor** used in other projects
