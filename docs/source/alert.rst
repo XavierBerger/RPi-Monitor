@@ -37,8 +37,9 @@ If alert is still active after resend period, alerte is sent again:
                                       Alert is raised
   </pre>
 
-Each alert is identified by its <alert name>. Alert configuration is
-performed as follow:
+Each alert is identified by its <alert name>. 
+
+Alert configuration is performed as follow:
 
 alert.<alert name>.active=<activation condition>
   <activation condition> defines the alert pre-condition. If this formula

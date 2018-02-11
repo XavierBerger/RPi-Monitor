@@ -19,7 +19,6 @@ explains how to install, configure and use it.
    
    features
    gettingstarted
-   helper
 
 .. toctree::
    :maxdepth: 1
@@ -30,23 +29,18 @@ explains how to install, configure and use it.
    web
    addons
    alert
-   multipages
-   friends
    snmp
 
 .. toctree::
    :maxdepth: 1
-   :caption: Integration example
+   :caption: Integration examples
 
+   customisation
    examples
-   logo
-   external
    autentication
-   dht11
-   wifi
-   labels
-   hdd
+   sensors
    lcd
+   external
    
 .. toctree::
    :maxdepth: 1
