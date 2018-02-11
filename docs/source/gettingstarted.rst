@@ -177,20 +177,22 @@ how to customize ``rpimonitord``.
 
 See next chapter for datail about configuration.
 
-SNMP
-^^^^
-.. note: TO BE COMPLETED (add link to snmp.rst)
+snmp-agent
+^^^^^^^^^^
+.. note:: TO BE COMPLETED (add link to snmp.rst)
 
 Raw data access
 ^^^^^^^^^^^^^^^
 Once ``rpimonitord`` is started the data representing the current status are 
 available in json format and can be downloaded from the root of the web interface 
 (ex: http://RpiAddress:8888/static.json)
+
 * ``static.json`` : Static information extracted at startup
 * ``dynamic.json`` : Current values of dynamic information extracted periodically
 * ``menu.json`` : Description of menus when multiple pages are configured
 
 The web interface configuration can also be downloaded in json format:
+
 * ``statistics.json`` : Description of statistics page
 * ``status.json`` : Description of status page
 * ``friends.json`` : List of friends

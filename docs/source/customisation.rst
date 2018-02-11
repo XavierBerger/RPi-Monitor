@@ -203,33 +203,3 @@ A new parameter can be used in configuration file defining a visibility of a row
 <visibility formula> should be a valid javascript formula returning
           0: to hide the row
           anything else but 0: show the row
-
-Example files
--------------
-
-RPi-Monitor comes with example files showing the capabilities of some features 
-and functions available in status page. To see how a specific file is behaving,
-you can include this file into your configuration file using the 'include' 
-directive. Files are included  and commented out into raspbian.conf. To 
-activate them, you can simply uncomment them.  
-
-The following files are available:
-
-    example.badge_and_label.conf : Show colors of labels and badg
-    
-    
-    example.progressbar.conf : Show warning and critical and colors 
-    
-    
-    example.justgage.conf : Show justgage and customisation
-    
-    
-    example.visibility.conf : Show visibility feature
-
- 
-Remember to restart RPi-Monitor to apply the configuration change:
-
-  sudo /etc/init.d/rpimonitor restart
-
-
-

@@ -103,7 +103,7 @@ pygments_style = 'sphinx'
 #keep_warnings = False
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
-todo_include_todos = False
+todo_include_todos = True
 
 
 # -- Options for HTML output ----------------------------------------------
@@ -123,7 +123,7 @@ html_theme_options = {
     'prev_next_buttons_location': 'bottom',
     'collapse_navigation': False,
     'sticky_navigation': True,
-    'navigation_depth': 4
+    'navigation_depth': 2
 }
 
 # Add any paths that contain custom themes here, relative to this directory.

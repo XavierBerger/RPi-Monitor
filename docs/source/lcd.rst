@@ -1,53 +1,37 @@
-lcd
-===
+RPi-Monitor-LCD
+===============
 
-I saw on the internet that it is possible to use a LCD to display information from the Raspberry Pi. RPi-Monitor is gathering a lot of information and it could be interesting to have such an information available without a computer. So I decided to purchase a PCD8544 from dx.com.
+PCD8544 is a small and cheap LCD screen. We will see in this chapter how to use
+it and connect it to **RPi-Monitor**.
 
+.. figure:: _static/lcd001.png
+  :width: 200px 
+  :align: center
 
-Photo from Flickr Attribution cc-by by arduinolabs
+LCD connection
+--------------
+PCD8544 comes in two parts (the lcd screen and the pins) that need to be 
+soldered together. Once done, it can be installed in the breadboard as shown 
+in the drawing bellow:
 
+.. figure:: _static/lcd002.png
+  :width: 400px 
+  :align: center
 
-This post is describing how to acquire, connect and use such a component with he Raspberry Pi and gives an example showing how to connect it with RPi-Monitor.
+  Schema made with Fritzing (fritzing.org)
 
-
-
-
-Step 1: The acquisition
-
-
-I found on the Internet a site reselling the PCD8544 for few euros (dx.com). After a moment of hesitation, I decided to give a try and I purchased it. It was the 16th of may.
-
-
-The 27th of may, I received a e-mail saying that my purchase was partially shipped, one element is no more available (I've been reimbursed) and a last element will be sent later...
-
-
-I finally received all my good 4 weeks after the initial purchase order. This site doesn't contradict its reputation: It delivers the good but you have to be patient... very patient ;-).
-
-
-PCD8544 LCD screen
+.. note:: If you want to reproduce this assembly, check carefully the pin order, 
+it may be different.
 
 
+Preparation
+-----------
+My first goal is to test this new display. I look on the internet and find 
+different solution using Python or C. After few tries, I decided to use 
+Python based on the information shared into this post.
 
-Step 2: The connection
-
-
-The PCD8544 comes in two parts (the lcd screen and the pins) that need to be soldered together. Once done, it can be installed in the breadboard as shown in the drawing bellow:
-
-
-Schema made with Fritzing (fritzing.org)
-
-Note: If you want to reproduce this assembly, check carefully the pin order, it may be different.
-
-
-
-Step 3: The preparation
-
-
-My first goal is to test this new display. I look on the internet and find different solution using Python or C. After few tries, I decided to use Python based on the information shared into this post.
-
-
-To use the PCD8544 display we need to install few software and load a kernel module.
-
+To use the PCD8544 display we need to install few software and load a
+ kernel module.
 
 First, let's install wiringpi2 from drogon.net
 
@@ -58,6 +42,8 @@ First, let's install wiringpi2 from drogon.net
     ./build
 
 Once wiringpi is installed, it is possible to test it with the following command:
+
+::
 
     gpio readall
 
@@ -98,28 +84,33 @@ Now, install the python binding of wiringpi:
     sudo apt-get install python-dev python-imaging python-imaging-tk python-pip
     sudo pip install wiringpi2
 
-The program we will use require spidev to be activated. The kernel module should then be activated.
+The program we will use require ``spidev`` to be activated. The kernel module 
+should then be activated.
 
-To do so, comment the line blacklist spi-bcm2708 by adding a heading # in the file /etc/modprobe.d/raspi-blacklist.conf then reboot the Raspberry Pi to activate this module.
+To do so, comment the line blacklist ``spi-bcm2708`` by adding a heading ``#``
+in the file ``/etc/modprobe.d/raspi-blacklist.conf`` then reboot the 
+Raspberry Pi to activate this module.
 
-
-Finally install spidev python library:
+Finally install ``spidev`` python library:
 
 ::
 
     sudo pip install spidev
 
-The prerequisite are now installed. In next chapter we will see how to install the python library in charge of driving the PCD8544 LCD and how to use it.
+The prerequisite are now installed. In next chapter we will see how to install 
+the python library in charge of driving the PCD8544 LCD and how to use it.
 
 
-Step 4: The installation
+Installation
+------------
+Into Raspberry Pi forum, an interesting post catch my attention. I used it as 
+the base to control the LCD.
 
+The library written Richard Hull's is also interesting I then took this as a 
+example to create module that can be directly installed on the Raspberry Pi.
 
-Into Raspberry Pi forum, an interesting post catch my attention. I used it as the base to control the LCD.
-
-The library written Richard Hull's is also interesting I then took this as a example to create module that can be directly installed on the Raspberry Pi.
-
-This pcd8544 library resulting is available into its own dedicated repository in github.
+This pcd8544 library resulting is available into its own dedicated repository 
+in github.
 
 To install it, execute the following commands:
 
@@ -137,17 +128,21 @@ To install it, execute the following commands:
     cd examples
     ./pi_logo.py
 
- If installation works properly, you should see the following screen:
+If installation works properly, you should see the following screen:
 
+.. figure:: _static/lcd003.png
+  :width: 250px 
+  :align: center
 
 You can try to execute other examples to see what the library is capable to do with this LCD.
 
-
-
-Step 5: The utilization
-
-
-As I said in introduction, RPi-Monitor is gathering a lot of information and some of them may be interesting to have without having to start a PC. Information are made available from the embedded web server. To get and display the information we then just have to create a web client and use the library to display.
+Usage
+-----
+As I said in introduction, RPi-Monitor is gathering a lot of information and 
+some of them may be interesting to have without having to start a PC. 
+Information are made available from the embedded web server. To get and 
+display the information we then just have to create a web client and use 
+the library to display.
 
 
 For people interesting about learning development I did comment my code:
@@ -245,10 +240,15 @@ For people interesting about learning development I did comment my code:
   if __name__ == "__main__":
       main()
 
-This code is dedicated to extract the living room temperature and humidity from RPi-Monitor information.
+This code is dedicated to extract the living room temperature and humidity 
+from RPi-Monitor information.
 
-Copy this code into a file (rpimonitor-testlcd.py) the make this file executable (chmod +x rpimonitor-testlcd.py) then execute (./rpimonitor-testlcd.py) it to see:
+Copy this code into a file ``rpimonitor-testlcd.py`` the make this file 
+executable ``chmod +x rpimonitor-testlcd.py`` then execute ``./rpimonitor-testlcd.py`` it to see:
 
+.. figure:: _static/lcd004.png
+  :width: 250px 
+  :align: center
 
 
 
