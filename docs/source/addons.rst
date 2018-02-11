@@ -62,6 +62,20 @@ Example addon can activate by adding the following lines into the configuration 
   web.addons.3.addons=example
   web.addons.3.parameter=parameter_example
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Shellinabox Addon
 -----------------
 

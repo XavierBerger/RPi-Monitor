@@ -3,6 +3,8 @@ Alert configuration
 **RPi-Monitor** is able to detect if value exceed a defined value or come back
 to the normal.
 
+Overview
+--------
 Alert/Cancel are sent only when the state is stable to avoid messages
 flooding when limit is about to be exceeded as shown in schema bellow:
 
@@ -37,9 +39,11 @@ If alert is still active after resend period, alerte is sent again:
                                       Alert is raised
   </pre>
 
-Each alert is identified by its <alert name>. 
-
+Condifuration
+-------------
 Alert configuration is performed as follow:
+
+Each alert is identified by its <alert name>. 
 
 alert.<alert name>.active=<activation condition>
   <activation condition> defines the alert pre-condition. If this formula

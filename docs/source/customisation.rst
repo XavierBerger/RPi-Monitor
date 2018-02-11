@@ -193,7 +193,7 @@ The detail of function usage is available into the manpage:
 
   man rpimonitord.conf
 
-visibility
+Visibility
 ----------
 
 A new parameter can be used in configuration file defining a visibility of a row:

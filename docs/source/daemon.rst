@@ -1,7 +1,9 @@
 Daemon configuration
 ====================
-Section ``daemon`` is defining the behavior of ``rpimonitord``. It defines
-if embedded server should be started and its configuration.
+
+Global configuration
+--------------------
+Section ``daemon`` is defining the behavior of ``rpimonitord``. 
 
 daemon.sharedmemkey=20130906
   Define the share memory key (Default:20130906)
@@ -52,3 +54,38 @@ daemon.logfile=/var/log/rpimonitor
 
 daemon.shellinabox=https://0.0.0.0:4200/
   Define shellinabox address (Default: calculated automatically based on http request)
+
+SNMP configuration
+------------------
+  Section ``snmpagent`` is defining SNMP behavior of ``rpimonitord``.
+
+  snmpagent.rootoid=.1.3.6.1.4.1
+    Define root OID for snmp-agent (Default:.1.3.6.1.4.1)
+
+  snmpagent.enterpriseoid=54321
+    Define enterprise OID for snmp agent (Default:54321)
+
+  snmpagent.rpimonitoroid=42
+    Define rpimonitor OID for snmp agent (Default:42)
+
+  snmpagent.mibname=RPIMONITOR-MIB
+    Define MIB name (Default:RPIMONITOR-MIB)
+
+  snmpagent.lastupdate=201802030000Z
+    Define MIB last update field (Default:201802030000Z)
+
+  snmpagent.moduleidentity=rpi-experiences
+    Define MIB module identity (Default:rpi-experiences)
+
+  snmpagent.organisation=RPi-Monitor
+    Define MIB organisation (Default:RPi-Monitor)
+
+  snmpagent.contactionfo=http://rpi-experiences.blogspot.fr/
+    Define MIB contact info (Default:http://rpi-experiences.blogspot.fr/)
+
+  snmpagent.description=description
+    Define MIB description (Default:description)
+
+  snmpagent.revision=201802030000Z
+    Define MIB revision (Default:201802030000Z)
+

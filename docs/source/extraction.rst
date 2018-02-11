@@ -3,17 +3,21 @@ Metrics extraction
 This part of the configuration file is defining which data to
 extract how to extract them and when.
 
-Specific 'include' keyword is available to add a file at the end of
-the list of configuration files to be loaded.
+Include
+-------
+Specific ``include`` keyword is available to add a file to the list of 
+configuration files to be loaded.
 
 include=<full path to configuration file>
   <full path to configuration file> is the full path to the
   configuration file to add at the end of the list of configuration
   files to be loaded.
 
+Static
+------
 Static KPI are extracted once at rpimonitord startup. Each statistic
 is identified into the conf file by a line stating with the keyword
-static and an identifier <static data id>
+static and an identifier ``<static data id>``
 
 Each static KPI is defined by an id and with 4 parameters
 
@@ -46,9 +50,11 @@ static.<static data id>.postprocess=<data postprocess>
   other KPI are identified by $2, $3 .graph..
   This parameter will be evaluate by the command eval of perl.
 
+Dynamic
+-------
 Dynamic KPI are extracted periodically (defined by daemon.delay)
 Each statistic is identified into the conf file by a line stating
-with the keyword dynamic and an identifier <dynamic data id>
+with the keyword dynamic and an identifier ``<dynamic data id>``
 
 Each dynamic KPI is defined by an id and with 5 parameters
 
@@ -93,6 +99,36 @@ dynamic.<dynamic data id>.max=<maximal value acceptable in RRD>
   These limits are usefull to handle counter that fall down to 0 when
   they reach their limit (Ex: network graphs)
 
-Note: Static values are accessible for the post processing using the
-variable $this->{'static'}->{'static_data_name'} and can be used.
+.. note:: Static values are accessible for the post processing using the
+variable ``$this->{'static'}->{'static_data_name'}`` and can be used.
 You can refer to swap data extraction to see an example.
+
+SNMP OID
+--------
+
+  RPi-Monitor is able to act as an snmp agent. Snmp configuration is based
+  on KPI name. KPI could be static or dynamic.
+
+  snmp.<kpi name>.id=<id>
+    <id> is the last number of OID appended at the end of OID configuration
+    defined for snmp agent. (ref. SNMP agent configuration section)
+
+  snmp.<kpi name>.type=<type>
+    Type of data can be : counter, counter64, gauge, integer, ipaddr,
+      ipaddress, netaddr, objectid, octetstr, string, timeticks
+
+  snmp.<kpi name>.description=<text description>
+    Description of KPI to be added in MIB
+
+  snmp.<kpi name>.postprocess=<formula>
+    Post process formula to apply to KPI before sending over SNMP.
+    Ex: Convert float to interger by mutiplying by 100: $1*100
+
+  Commands to use to get MIB information:
+    Snmp Configuration
+      See configuration file example in /etc/snmp/snmpd.conf.rpimonitor
+      and activate pass_persist extension
+    Extract MIB from RPi-Monitor
+      rpimonitord -m > ~/mib.txt
+    Get data from SNMP
+      snmpwalk -v 2c -m ~/mib.txt -c public 127.0.0.1 1.3.6.1.4.1.54321.42

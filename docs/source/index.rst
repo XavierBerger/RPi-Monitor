@@ -9,7 +9,7 @@ This documentation is presenting the features provided by **RPi-Monitor** and
 explains how to install, configure and use it.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Overview
    
    features
@@ -24,7 +24,6 @@ explains how to install, configure and use it.
    web
    addons
    alert
-   snmp
 
 .. toctree::
    :maxdepth: 1
@@ -43,5 +42,4 @@ explains how to install, configure and use it.
 
    faq
    contributing
-   packaging
    license
