@@ -92,7 +92,10 @@ Complete the installation with the command:
 Manual installation from sources
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. note: TO BE COMPLETED (add link to package.rst)
+For manual installation, refer to `Packaging <32_contributing.html#Package>`_ 
+instruction which describe how and where install files. 
+
+----------
 
 Startup
 -------
@@ -202,6 +205,8 @@ The web interface configuration can also be downloaded in json format:
 
 Statistic information are stored into RRD file available in the directory ``/var/lib/rpimonitor/stat/``
 
+--------------
+
 Interactive Configuration Helper
 --------------------------------
 **RPi-Monitor** Interactive Configuration Helper is a tool embedded into 
@@ -293,6 +298,8 @@ Once the configuration will be apply, restart **RPi-Monitor** with the command:
 
 I hope this post is detailled enough to help you to configure **RPi-Monitor** to 
 define the correct sources and regular expression.
+
+----------------
 
 Uninstallation
 --------------

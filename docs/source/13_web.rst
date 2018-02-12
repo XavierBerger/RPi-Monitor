@@ -13,67 +13,59 @@ parameters
 **web.friends.<id>.link=<link to RPi-Monitor>**
 
 web.friends.<id>.name=<display name>
-  <display name> is the name printed into the drop down menu
+  ``<display name>`` is the name printed into the drop down menu
 
 web.friends.<id>.link=<link to RPi-Monitor>
-  <link to RPi-Monitor> is the link to another RPi-Monitor running
+  ``<link to RPi-Monitor>`` is the link to another RPi-Monitor running
   into the friend machine.
 
 Pages
 -----
 web.page.icon=<icon location relative to webroot>
-  <icon location relative to webroot> is the path and filename of
+  ``<icon location relative to webroot>`` is the path and filename of
   the icon to be displayed into RPi-Monitor title bar
 
 web.page.menutitle=<menu title>
-  <menu title> javascript code defining the text displayed into
+  ``<menu title>`` javascript code defining the text displayed into
   RPi-Monotor title bar. This code can use status information with
-  the keyword 'data' including the 'data.hostname' available natively
+  the keyword ``data`` including the ``data.hostname`` available natively
 
 web.page.pagetitle=<page title>
-  <page title> javascript code defining the text displayed into
+  ``<page title>`` javascript code defining the text displayed into
   tab and window title bar. This code can use status information with
-  the keyword 'data' including the 'data.hostname' available natively
+  the keyword ``data`` including the ``data.hostname`` available natively
 
 The status page is fully configurable.
 It is possible to define multiple pages. Each page is identified by
-its <page id>.
+its ``<page id>``.
 
 Status
 ------
 web.status.<page id>.name=<page name>
-  <page name> name of the page displayed into the drop down menu in
+  ``<page name> ``name of the page displayed into the drop down menu in
   case of multiple pages.
 
 Status page is split in strips displaying information. Each status
-strip is identified by a unique <status id>. Each status strip is
+strip is identified by a unique ``<status id>``. Each status strip is
 defined by a name, an icon and a serie of lines described as follow:
 
 web.status.<page id>.visibility=<visibility formula>
-
-<visibility formula> should be a valid javascript formula returning
-  0: to hide the row
-  anything else but 0: show the row
-
-**web.status.<page id>.content.<status id>.name=<display name>**
-
-**web.status.<page id>.content.<status id>.icon=<display icon>**
-
-web.status.<page id>.content.<status id>.line.<line number>=<parameter>
+  ``<visibility formula>`` should be a valid javascript formula returning
+  ``0``: to hide the row anything else but ``0``: show the row
 
 web.status.<page id>.content.<status id>.name=<display name>
-  <display name> Name displayed as title of the strip
+  ``<display name>`` Name displayed as title of the strip
 
 web.status.<page id>.content.<status id>.icon=<display icon>
-  <display icon> Icon of the strip
+  ``<display icon>`` Icon of the strip
 
 web.status.<page id>.content.<status id>.line.<line number>=<parameter>
-  <line number> represent the position of the line within the strip.
+  ``<line number>`` represent the position of the line within the strip.
   This number has to be unique within the strip.
-  <parameter> is describing the content of the line. This parameter
+  ``<parameter>`` is describing the content of the line. This parameter
   will be evaluated by the javascript command with the function
-  eval() theirfore parameter should be valid javacript.
-  To have  clean rendering, RPi-Monitor web interface provides some
+  ``eval()`` theirfore parameter should be valid javacript.
+  To have  clean rendering, **RPi-Monitor** web interface provides some
   functions that could be used inside the parameter. The object data
   is also available and contains the result of dynamic and static
   extracted as described in the KPI extraction section.
@@ -146,10 +138,10 @@ web.status.<page id>.content.<status id>.line.<line number>=<parameter>
 
 The statistic page is fully configurable.
 It is possible to define multiple pages. Each page is identified by
-its <page id>.
+its ``<page id>``.
 
 web.status.<page id>.name=<page name>
-  <page name> name of the page displayed into the drop down menu in
+  ``<page name>`` name of the page displayed into the drop down menu in
   case of multiple pages.
 
 Statistics
@@ -158,28 +150,28 @@ The statistic page displays statistics graphs. The graphs are
 identified an unique <statistic id> and by the following parameters.
 
 web.statistics.<page id>.content.<statistic id>.name=<statistic name>
-  <statistic name> is the name of the statistics displayed in the
+  ``<statistic name>`` is the name of the statistics displayed in the
   top left drop down list.
 
 web.statistics.<page id>.content.<statistic id>.graph.<rrd id>=<data name>
-  <rrd id> is identifying the graph and is unique per <statistic id>
-  <data name> is the name of the dynamic and static extracted as
+  ``<rrd id>`` is identifying the graph and is unique per ``<statistic id>``
+  ``<data name>`` is the name of the dynamic and static extracted as
   described in the KPI extraction section.
 
 web.statistics.<page id>.content.<statistic id>.ds_graph_options.<data name>.label=<label>
-  <data name> same as the previous <data name>
-  <label> Label to display in legends. It is possible to setup other parameters
+  ``<data name>`` same as the previous ``<data name>``
+  ``<label>`` Label to display in legends. It is possible to setup other parameters
   of ds_graph_options. Refer to the following web page for details:
   http://javascriptrrd.sourceforge.net/docs/javascriptrrd_v0.5.0/doc/lib/rrdFlot_js.html
 
 web.statistics.<page id>.content.<statistic id>.graph_options.<parameter>=<value>
-  <parameter> and <value> can be find into the same web page as previous
+  ``<parameter>`` and ``<value>`` can be find into the same web page as previous
   parameter. This allow to customize the graph and axis.
 
-Example file are available in the template directory (prefixed by 'example').
+Example file are available in the template directory (prefixed by ``example``).
 To understand how a feature is behaving, you can include this example file
-using the 'include' directive.
+using the ``include`` directive.
 These include directive are already written (commented) into the default
-configuration file: raspbian.conf
-When configuration files change, it is required to restart rpimonitor.
+configuration file: ``data.conf``
+When configuration files change, it is required to restart ``rpimonitord``.
 
