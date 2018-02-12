@@ -12,34 +12,34 @@ explains how to install, configure and use it.
    :maxdepth: 1
    :caption: Overview
    
-   features
-   gettingstarted
+   01_features
+   02_gettingstarted
 
 .. toctree::
    :maxdepth: 1
    :caption: Configuration
 
-   daemon
-   extraction
-   web
-   addons
-   alert
+   11_daemon
+   12_extraction
+   13_web
+   14_addons
+   15_alert
 
 .. toctree::
    :maxdepth: 1
    :caption: Integration examples
 
-   customisation
-   examples
-   autentication
-   sensors
-   lcd
-   external
+   21_customisation
+   22_examples
+   23_autentication
+   24_sensors
+   25_lcd
+   26_external
    
 .. toctree::
    :maxdepth: 1
    :caption: To got further
 
-   faq
-   contributing
-   license
+   31_faq
+   32_contributing
+   33_license

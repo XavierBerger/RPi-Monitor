@@ -13,12 +13,12 @@ Collecting metrics
   **rpimonitord** is a daemon wich periodically gather, process and store metrics
 
 Storing metrics
-  metrics are stored into a Round Robin Database (RRD). This ensure a fixed size for 
+  Metrics are stored into a Round Robin Database (RRD). This ensure a fixed size for 
   the data storage and keep by default data over 1 year.
 
 Presenting collected metrics
   **RPi-Monitor** embed a web server designed to present collected metrics.
-  Instantaneous data are presented as a status page. Metrics stored into the RRD
+  Instantaneous data are presented in the status page. Metrics stored into the RRD
   are presented as statistics pages. The web interface allow user to reoganise
   statistics by drag'n drop. Statistics page allow to zoom over graph to see 
   details of the mertics.
@@ -30,13 +30,13 @@ Configuration
 Processing metrics and raising alerts
   **RPi-Monitor** embed an alert engine fully configurable and able to determine
   if metrics are out of expected range and raise alerts.
-  definition of critera of alert detection as well as action to perform when alert
+  Definition of critera of alert detection as well as action to perform when alert
   is detected are fully configurable.
 
 Read only mode
   If writing data on disk/eMMC/SSD/SDCard/... is not possible, **RPi-Monitor** 
-  can be executed in read only mode. Metrics can be retrived either by web interface
-  in json format or through SNMP. 
+  can be executed in read only mode. Metrics can be retrived either by web 
+  interface in json format or through SNMP. 
 
 Sharing metrics with external monitoring system
   Metrics collected can be downloaded in json format (using the embedded web 

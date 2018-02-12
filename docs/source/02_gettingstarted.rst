@@ -7,18 +7,18 @@ Installation
 Installation using the repository
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-**RPi-Monitor** is providing a debian repository. This repository will make 
+**RPi-Monitor** is providing a debian repository. This repository makes 
 installation and update accessible with the command ``apt-get`` or ``aptitude``.
 
 To use this repository follow the instruction bellow:
 
-Execute the following command to add RPi-Monitor into your list of repository: 
+Execute the following command to add **RPi-Monitor** into your list of repository: 
 
 ::
 
   sudo wget http://goo.gl/vewCLL -O /etc/apt/sources.list.d/rpimonitor.list
 
-Install my public key to trust RPi-Monitor repository:
+Install **RPi-Monitor**'s public key to trust **RPi-Monitor** repository:
 
 ::
 
@@ -54,8 +54,9 @@ about upgradable packages:
 
 Manual installation from Debian package
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Download the latest package from the official repository in Github with the 
-following command (replace latest_package_url by the real url fond on github):
+Download the latest package from the official repository in Github
+(https://github.com/XavierBerger/RPi-Monitor-deb/tree/master/packages)
+with the following command (replace ``latest_package_url`` by the real url fond on github):
 
 ::
 
@@ -179,13 +180,14 @@ See next chapter for datail about configuration.
 
 snmp-agent
 ^^^^^^^^^^
-.. note:: TO BE COMPLETED (add link to snmp.rst)
+``rpimonotord-snmp`` is the snmp agent provided by **RPi-Monitor**. This agent
+allow ``snmpd`` to access to data exctracted by ``rpimonitord``.
 
 Raw data access
 ^^^^^^^^^^^^^^^
 Once ``rpimonitord`` is started the data representing the current status are 
 available in json format and can be downloaded from the root of the web interface 
-(ex: http://RpiAddress:8888/static.json)
+(ex: http://IPaddress:8888/static.json)
 
 * ``static.json`` : Static information extracted at startup
 * ``dynamic.json`` : Current values of dynamic information extracted periodically
