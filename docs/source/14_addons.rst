@@ -1,5 +1,5 @@
-Addons
-======
+Addons configuration
+====================
 
 **RPi-Monitor** is providing addons. Addons are custom pages designed to give 
 you the possibility to free your imagination and cutomise **RPi-Monitor** to your needs.

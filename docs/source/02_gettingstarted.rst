@@ -92,8 +92,8 @@ Complete the installation with the command:
 Manual installation from sources
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-For manual installation, refer to `Packaging <32_contributing.html#Package>`_ 
-instruction which describe how and where install files. 
+For manual installation, refer to `Packaging <32_contributing.html#packaging>`_ 
+instruction which describes how and where install files. 
 
 ----------
 

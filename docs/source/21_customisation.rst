@@ -1,23 +1,60 @@
 Customisation
 =============
 
+Friends
+-------
+
+Add "friends" links **RPi-Monitor** running on different platform together.
+
+A friend is simply another computer running **RPi-Monitor**. Configuring friends 
+will add a drop down list on the right of the top menu with a links to 
+**RPi-Monitor** sitting on the other computer.
+
+.. figure:: _static/friends001.png
+   :align: center
+   :width: 500px
+
+In ``/etc/rpimonitord/data.conf``, each friend is identified by an ``id`` and is 
+described by 2 parameters: ``<name>`` and ``<link>``.
+
+.. seealso:: Detaiiled `Friends definition  <13_web.html#friends>`_
+
+Here is an example of configuration for 3 friends:
+
+::
+
+  web.friends.1.name=Raspberry Pi 
+  web.friends.1.link=http://192.168.0.123/ 
+  web.friends.2.name=Shuttle 
+  web.friends.2.link=http://192.168.0.2/ 
+  web.friends.3.name=Laptop 
+  web.friends.3.link=http://192.168.0.38/
+
+.. figure:: _static/friends002.png
+   :align: center
+
+
+
 Multiple pages
 --------------
 
 This version of RPi-Monitor introduce the notion of pages. Adding a new page 
-can be done in configuration file by setting the parameter named <page id>.
+can be done in configuration file by setting the parameter named ``<page id>``.
 RPi-Monitor will automatically interpret this new id and create the associated 
 page. The new page will be accessible by a drop down menu as shown in the 
 screenshot bellow.
 
+.. figure:: _static/multipages001.png
+   :align: center
+   :width: 500px
 
-RPi-Monitor showing multiple status pages
+   RPi-Monitor showing multiple status pages
 
-RPi-Monitor showing multiple graph pages
+.. figure:: _static/multipages002.png
+   :align: center
+   :width: 500px
 
-The file custo.conf available in github shows how to configure additional pages 
-from information gathered from external sensors. This is the configuration file
-used for the examples shows in upper screenshots.
+   RPi-Monitor showing multiple graph pages
 
 
 Labels
@@ -105,52 +142,6 @@ As you see, the usage of this new function is quite easy. You can now
 imagine how to use it for your own needs.
 
 
-Friends
--------
-
-Add "friends" linking RPi-Monitor running on different platform together
-
-
-Friends is a notion that comes in version 1.2. A friend is simply another computer running RPi-Monitor. Configuring friends will add a drop down list on the right of the top menu with a links to RPi-Monitor sitting on the other computer.
-
-
-Friends menu is visible on the top right
-
-
-In /etc/rpimonitord.conf.d/default.conf, each friend is identified by its and is described by the 2 following parameters:
-
-
-Here is an example of configuration for 3 friends:
-
-::
-
-  web.friends.1.name=Raspberry Pi web.friends.1.link=http://192.168.0.123/ 
-  web.friends.2.name=Shuttle web.friends.2.link=http://192.168.0.2/ 
-  web.friends.3.name=Laptop web.friends.3.link=http://192.168.0.38/
-
-
-Add "friends" linking RPi-Monitor running on different platform together
-
-
-Friends is a notion that comes in version 1.2. A friend is simply another computer running RPi-Monitor. Configuring friends will add a drop down list on the right of the top menu with a links to RPi-Monitor sitting on the other computer.
-
-
-Friends menu is visible on the top right
-
-
-In /etc/rpimonitord.conf.d/default.conf, each friend is identified by its and is described by the 2 following parameters:
-
-
-Here is an example of configuration for 3 friends:
-
-:: 
-
-  web.friends.1.name=Raspberry Pi 
-  web.friends.1.link=http://192.168.0.123/ 
-  web.friends.2.name=Shuttle 
-  web.friends.2.link=http://192.168.0.2/ 
-  web.friends.3.name=Laptop 
-  web.friends.3.link=http://192.168.0.38/
 
 
 Customise WEB page header

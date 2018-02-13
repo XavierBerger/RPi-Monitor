@@ -1,7 +1,10 @@
-Metrics extraction
-==================
-This part of the configuration file is defining which data to
-extract how to extract them and when.
+Metrics extraction configuration
+================================
+This part of the configuration file is defining which data to extract how to 
+extract them and when.
+
+.. note:: You will notice that metrics in **RPi-Monitor** are named **KPI**. 
+          **KPI** means Key Performance Indicator.
 
 Include
 -------
@@ -57,7 +60,7 @@ Dynamic KPI are extracted periodically (defined by daemon.delay)
 Each statistic is identified into the conf file by a line stating
 with the keyword dynamic and an identifier ``<dynamic data id>``
 
-Each dynamic KPI is defined by an id and with 5 parameters
+Each dynamic KPI is defined by an id and with 9 parameters
 
 dynamic.<dynamic data id>.name=<data name>
   ``<data name>`` is a string representing the KPI or the list of KPI
@@ -113,8 +116,8 @@ dynamic.<dynamic data id>.max=<maximal value acceptable in RRD>
   they reach their limit (Ex: network graphs)
 
 .. note:: Static values are accessible for the post processing using the
-variable ``$this->{'static'}->{'static_data_name'}`` and can be used.
-You can refer to swap data extraction to see an example.
+          variable ``$this->{'static'}->{'static_data_name'}`` and can be used.
+          You can refer to swap data extraction to see an example.
 
 SNMP OID
 --------
