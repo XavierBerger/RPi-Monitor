@@ -34,7 +34,8 @@ function Start() {
     activePage = 0 
   }
   if ( graphconf.length > 1 ) {
-    $('<h2><p class="text-info">'+graphconf[activePage].name+'</p></h2><hr>').insertBefore("#insertionPoint");
+    $('#pageTitle').html("<h2>" + graphconf[activePage].name + "</h2><hr>" );
+    $('#pageTitle').removeClass('hide');
   }
 
   FetchGraph();
