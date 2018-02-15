@@ -16,13 +16,16 @@ two main part:
 .. figure:: _static/features001.png
 
 Collecting metrics
+------------------
   **rpimonitord** is a daemon wich periodically gather, process and store metrics
 
 Storing metrics
+---------------
   Metrics are stored into a Round Robin Database (RRD). This ensure a fixed size for 
   the data storage and keep by default data over 1 year.
 
 Presenting collected metrics
+----------------------------
   **RPi-Monitor** embed a web server designed to present collected metrics.
   Instantaneous data are presented in the status page. Metrics stored into the RRD
   are presented as statistics pages. The web interface allow user to reoganise
@@ -30,25 +33,37 @@ Presenting collected metrics
   details of the mertics.
   Embedded web server can be disable and page can be served by an external web server.
 
-Configuration
-  In **RPi-Monitor** everything is configurable
+Configurable
+------------
+  In **RPi-Monitor** everything is configurable:
+  * Define what metrics to extract and how to extract them
+  * Define how to store metrics
+  * Define how to present and share metrics and statistics
+  * Define how to detect an alert and what to do when alert appears or disappears
+  * Define ... what you want to do with **RPi-Monitor**
+
+.. note:: See next chapters for configuration details and examples.
   
 Processing metrics and raising alerts
+-------------------------------------
   **RPi-Monitor** embed an alert engine fully configurable and able to determine
   if metrics are out of expected range and raise alerts.
   Definition of critera of alert detection as well as action to perform when alert
   is detected are fully configurable.
 
 Read only mode
+--------------
   If writing data on disk/eMMC/SSD/SDCard/... is not possible, **RPi-Monitor** 
   can be executed in read only mode. Metrics can be retrived either by web 
   interface in json format or through SNMP. 
 
 Sharing metrics with external monitoring system
+-----------------------------------------------
   Metrics collected can be downloaded in json format (using the embedded web 
   server), read on disk or remotely accessed through snmp.
 
-Extensible
+Extending the capabilities of **RPi-Monitor**
+---------------------------------------------
   **RPi-Monitor** is extensible. It provides addons allowing customisation of
   the interface Shellinabox, Hawkeye, top3...
 

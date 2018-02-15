@@ -36,6 +36,9 @@ To install **RPi-Monitor**, execute the following command:
 .. note:: **RPi-Monitor** is designed to start automatically and collect metrics.
           The web interface is available on address http://IPaddress:8888.
 
+.. note:: You may notice that **RPiMonitor** repository is hosted on 
+          `http://giteduberger.fr/ <http://giteduberger.fr/en>`_
+
 Upgrade from the repository
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -56,9 +59,9 @@ about upgradable packages:
 
 Manual installation from Debian package
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Download the latest package from the official repository in Github
-(https://github.com/XavierBerger/RPi-Monitor-deb/tree/master/packages)
-with the following command (replace ``latest_package_url`` by the real url fond on github):
+Download the latest package from the official repository in `Github
+<https://github.com/XavierBerger/RPi-Monitor-deb/tree/master/packages>`_
+with the following command (replace ``latest_package_url`` by the real url found on github):
 
 ::
 
@@ -99,11 +102,35 @@ instruction which describes how and where install files.
 
 ----------
 
-Startup
--------
+Execution
+---------
+
+Startup script
+^^^^^^^^^^^^^^
+
+**RPi-Monitor** is configured to start automatically. ``/etc/init.d/rpimonitor``
+and link in runlevel startup directory do the job. This script can be executed
+with the folllowing commands:
+
+start
+  Start ``rpimonitord`` daemon
+stop
+  Stop ``rpimonitord`` daemon
+restart
+  Stop and start ``rpimonitord`` daemon
+status
+  Show ``rpimonitord`` status
+update
+  Update packages to be installed list. This information is displayed in default 
+  configuration of Web interface
+install_auto_package_status_update
+  Add a script to automatically call package update script when ``apt```commands are executes
+remove_auto_package_status_update
+  Remove script automatically call for package update 
 
 Command line
 ^^^^^^^^^^^^
+``rpimonitord`` can be directly executed with the following parameters:
 
 ::
 
@@ -214,7 +241,7 @@ Interactive Configuration Helper
 **RPi-Monitor** Interactive Configuration Helper is a tool embedded into 
 ``rpimonitord`` helping to create configuration files
 . 
-This article is detailling how to use it to monitor a ntfs volume.
+This chapter is detailling how to use it to monitor a ntfs volume.
 
 First execute the following command:
 

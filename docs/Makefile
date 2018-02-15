@@ -51,7 +51,7 @@ help:
 
 .PHONY: clean
 clean:
-	rm -rf $(BUILDDIR)/*
+	@echo rm -rf $(BUILDDIR)/html/*
 
 .PHONY: html
 html:
