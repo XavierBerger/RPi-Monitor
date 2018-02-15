@@ -103,7 +103,7 @@ pygments_style = 'sphinx'
 #keep_warnings = False
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
-todo_include_todos = True
+#todo_include_todos = False
 
 
 # -- Options for HTML output ----------------------------------------------
@@ -120,7 +120,7 @@ html_theme_options = {
     'analytics_id': '',
     'logo_only': False,
     'display_version': True,
-    'prev_next_buttons_location': 'bottom',
+    'prev_next_buttons_location': 'both',
     'collapse_navigation': False,
     'sticky_navigation': True,
     'navigation_depth': 2
@@ -158,7 +158,7 @@ html_static_path = ['_static']
 # If not None, a 'Last updated on:' timestamp is inserted at every page
 # bottom, using the given strftime format.
 # The empty string is equivalent to '%b %d, %Y'.
-#html_last_updated_fmt = None
+html_last_updated_fmt = ""
 
 # If true, SmartyPants will be used to convert quotes and dashes to
 # typographically correct entities.

@@ -1,3 +1,5 @@
+:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/12_extraction.rst
+
 Metrics extraction configuration
 ================================
 This part of the configuration file is defining which data to extract how to 

@@ -1,11 +1,17 @@
+:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/01_features.rst
+
 Keys features of RPi-Monitor
 ============================
 
-**RPi** in **RPi-Monitor** stands for `Raspberry Pi`. This program was initially
-designed to run on such small form factor computer. But it can, in reality run 
-on every computers running Perl.
+At the beginning **RPi-Monitor** was designed to run on **Raspberry Pi**. This
+is explaining the name of this software. In reality **RPi-Monitor** can run 
+on every computers running `perl`.
+
 Since the beginning **Rpi-Monitor** as been designed for embedded devices and
-performances is the core of development strategy.
+performances is the core of development strategy. The software is divided into 
+two main part:
+ * A daemon running on the device and gathering data
+ * A WEB application running in browser in charge of data rendering
 
 .. figure:: _static/features001.png
 

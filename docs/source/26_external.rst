@@ -1,3 +1,5 @@
+:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/26_external.rst
+
 Non standard configuration
 ==========================
 

@@ -1,3 +1,5 @@
+:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/15_alert.rst
+
 Alert configuration
 ===================
 **RPi-Monitor** is able to detect if value exceed a defined value or come back
