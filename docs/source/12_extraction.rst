@@ -36,14 +36,16 @@ static.<static data id>.source=<data source>
   If the file exists, rpimonitord will read its content. If the file
   is not existing, rpimonirotd will try to execute it and will parse
   the output.
-  Warning: specifying an executable by its absolute name will tell
-  rpimonitord to read the content of the executable.1.graph.
+..  warning:: Specifying an executable by its absolute name will tell
+              ``rpimonitord`` to read the content of the executable.
 
-.. note: In ``<data source>`` it is possible to refer to another ``<data name>``
-  with the prefix 'data.' followed by ``<data name>``: ``data.<data name>``
-  Example: ``data.kernel_version``
-  This data could refer to dynamic or static KPI. The order of KPI
-  extraction is important. Data used should already been extracted.
+.. note:: In ``<data source>`` it is possible to refer to another ``<data name>``
+          with the prefix ``data.`` followed by ``<data name>``: ``data.<data name>``
+
+          **Example**: ``data.kernel_version``
+
+          This data could refer to ``dynamic`` or ``static`` KPI. The order of KPI
+          extraction is important. Data used should already been extracted.
 
 static.<static data id>.regexp=<data regexp>
   ``<data regexp>`` is the regular expression extracting information from
@@ -58,7 +60,7 @@ static.<static data id>.postprocess=<data postprocess>
 
 Dynamic
 -------
-Dynamic KPI are extracted periodically (defined by daemon.delay)
+Dynamic KPI are extracted periodically (defined by ``daemon.delay``)
 Each statistic is identified into the conf file by a line stating
 with the keyword dynamic and an identifier ``<dynamic data id>``
 
@@ -106,7 +108,7 @@ dynamic.<dynamic data id>.rrd=<GAUGE|COUNTER|DERIVE|ABSOLUTE|COMPUTE>
   parameter is defined as empty, no RRD database will be created. If
   this parameter is defined, a RRD database will be created and data
   will be stored at every extraction.
-  Ref http://oss.oetiker.ch/rrdtool/doc/rrdcreate.en.html for RRD
+  Ref `RRDTool documentation <http://oss.oetiker.ch/rrdtool/doc/rrdcreate.en.html>`_ for RRD
   parameter description.
 
 **dynamic.<dynamic data id>.min=<minimal value acceptable in RRD>**
