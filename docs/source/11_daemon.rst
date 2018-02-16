@@ -13,8 +13,8 @@ daemon.sharedmemkey=20130906
 daemon.delay=10
   Define the delay between 2 kpi pooling (Default:``10``)
 
-.. note:: If you want to change the default delay, the rrd file will
-          have to be deleted ``rpimonitord`` will recreate them at next startup
+.. important:: If you want to change the default delay, the rrd file will
+               have to be deleted ``rpimonitord`` will recreate them at next startup
 
 daemon.timeout=5
   Define the maximul duration of KPI extraction (Default:``5``)

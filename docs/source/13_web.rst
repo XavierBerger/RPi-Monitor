@@ -44,7 +44,7 @@ its ``<page id>``.
 Status
 ------
 web.status.<page id>.name=<page name>
-  ``<page name> ``name of the page displayed into the drop down menu in
+  ``<page name>`` name of the page displayed into the drop down menu in
   case of multiple pages.
 
 Status page is split in strips displaying information. Each status

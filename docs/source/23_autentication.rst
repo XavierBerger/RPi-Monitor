@@ -89,66 +89,66 @@ content (also downloadable from Github):
 
     # HTTP 80
     server {
-    listen         80;
-    #Force the usage of https
-    rewrite - https://$host$request_uri? permanent;
+        listen         80;
+        #Force the usage of https
+        rewrite - https://$host$request_uri? permanent;
     }
 
     # HTTPS 443
     server  {
-    listen 443 ssl;
-    keepalive_timeout 70;
+        listen 443 ssl;
+        keepalive_timeout 70;
 
-    # SSL config
-    ssl on;
-    ssl_certificate /etc/ssl/localcerts/RPi-Experiences-cert.pem;
-    ssl_certificate_key /etc/ssl/localcerts/RPi-Experiences-key.pem;
+        # SSL config
+        ssl on;
+        ssl_certificate /etc/ssl/localcerts/RPi-Experiences-cert.pem;
+        ssl_certificate_key /etc/ssl/localcerts/RPi-Experiences-key.pem;
 
-    ssl_session_timeout 5m;
-    ssl_protocols SSLv3 TLSv1.2;
-    ssl_ciphers RC4:HIGH:!aNULL:!MD5;
-    ssl_prefer_server_ciphers on;
-    ssl_session_cache shared:SSL:10m;
+        ssl_session_timeout 5m;
+        ssl_protocols SSLv3 TLSv1.2;
+        ssl_ciphers RC4:HIGH:!aNULL:!MD5;
+        ssl_prefer_server_ciphers on;
+        ssl_session_cache shared:SSL:10m;
 
-    # Allow to use frame from same origin
-    add_header X-Frame-Options SAMEORIGIN;
+        # Allow to use frame from same origin
+        add_header X-Frame-Options SAMEORIGIN;
 
-    # DDOS protection - Tune Values or deactivate in case of issue
-    # limit_conn conn_limit_per_ip 20;
-    # limit_req zone=req_limit_per_ip burst=20 nodelay;
+        # DDOS protection - Tune Values or deactivate in case of issue
+        # limit_conn conn_limit_per_ip 20;
+        # limit_req zone=req_limit_per_ip burst=20 nodelay;
 
-    # Proxy Config
-    proxy_redirect          off;
-    proxy_set_header        Host            $host;
-    proxy_set_header        X-Real-IP       $remote_addr;
-    proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
-    client_max_body_size    10m;
-    client_body_buffer_size 128k;
-    proxy_connect_timeout   90;
-    proxy_send_timeout      90;
-    proxy_read_timeout      90;
-    proxy_buffers           32 4k;
+        # Proxy Config
+        proxy_redirect          off;
+        proxy_set_header        Host            $host;
+        proxy_set_header        X-Real-IP       $remote_addr;
+        proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+        client_max_body_size    10m;
+        client_body_buffer_size 128k;
+        proxy_connect_timeout   90;
+        proxy_send_timeout      90;
+        proxy_read_timeout      90;
+        proxy_buffers           32 4k;
 
-    # Define the default site
-    location / {
-        rewrite - /rpimonitor/ permanent;
-    }
+        # Define the default site
+        location / {
+            rewrite - /rpimonitor/ permanent;
+        }
 
-    location /rpimonitor/ {
-    proxy_pass http://localhost:8888;
-        auth_basic            "Access Restricted";
-        auth_basic_user_file  "/etc/nginx/.htpasswd";
-        access_log /var/log/nginx/rpimonitor.access.log;
-        error_log /var/log/nginx/rpimonitor.error.log;
-    }
+        location /rpimonitor/ {
+            proxy_pass http://localhost:8888;
+            auth_basic            "Access Restricted";
+            auth_basic_user_file  "/etc/nginx/.htpasswd";
+            access_log /var/log/nginx/rpimonitor.access.log;
+            error_log /var/log/nginx/rpimonitor.error.log;
+        }
 
-    location /shellinabox/ {
-    proxy_pass http://localhost:4200;
-        auth_basic            "Access Restricted";
-        auth_basic_user_file  "/etc/nginx/.htpasswd";
-        access_log /var/log/nginx/shellinabox.access.log;
-        error_log /var/log/nginx/shellinabox.error.log;
-    }
+        location /shellinabox/ {
+            proxy_pass http://localhost:4200;
+            auth_basic            "Access Restricted";
+            auth_basic_user_file  "/etc/nginx/.htpasswd";
+            access_log /var/log/nginx/shellinabox.access.log;
+            error_log /var/log/nginx/shellinabox.error.log;
+        }
     }
 
 Activate the reverse proxy site and retart nginx with the following commands:
@@ -159,7 +159,7 @@ Activate the reverse proxy site and retart nginx with the following commands:
     sudo service nginx restart
 
 You can now start to test to access your configuration by browsing 
-http://RPiIpAddresss/. You will be automatically redirected to https://RPiIpAddress/rpimonitor/.
+http://IpAddresss/. You will be automatically redirected to https://IpAddress/rpimonitor/.
 
 Configure the firewall
 ----------------------
@@ -207,8 +207,8 @@ Conclusion
 ----------
 
 Now your host is protected. You can try to access to **RPi-Monitor** directly 
-http://RPiIpAddress:8888/ and you will have an error. If you try to access to 
-it through the revers proxy http://RPiIpAddress/ you will have to authenticate 
+http://IpAddress:8888/ and you will have an error. If you try to access to 
+it through the revers proxy http://IpAddress/ you will have to authenticate 
 before accessing to the server and once authenticated, you will be connected 
 through a secured https connection. 
 

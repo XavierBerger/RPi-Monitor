@@ -124,7 +124,7 @@ dynamic.<dynamic data id>.max=<maximal value acceptable in RRD>
 SNMP OID
 --------
 
-  RPi-Monitor is able to act as an snmp agent. Snmp configuration is based
+  **RPi-Monitor** is able to act as an snmp agent. Snmp configuration is based
   on KPI name. KPI could be ``static`` or ``dynamic``.
 
   snmp.<kpi name>.id=<id>
@@ -143,11 +143,12 @@ SNMP OID
     Post process formula to apply to KPI before sending over SNMP.
     Ex: Convert float to interger by mutiplying by 100: ``$1*100``
 
-  Commands to use to get MIB information:
-    Snmp Configuration
-      See configuration file example in ``/etc/snmp/snmpd.conf.rpimonitor``
-      and activate pass_persist extension
-    Extract MIB from RPi-Monitor
-      ``rpimonitord -m > ~/mib.txt``
-    Get data from SNMP
-      ``snmpwalk -v 2c -m ~/mib.txt -c public 127.0.0.1 1.3.6.1.4.1.54321.42``
+Commands to use to get MIB information:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  Snmp Configuration
+    See configuration file example in ``/etc/snmp/snmpd.conf.rpimonitor``
+    and activate pass_persist extension
+  Extract MIB from RPi-Monitor
+    ``rpimonitord -m > ~/mib.txt``
+  Get data from SNMP
+    ``snmpwalk -v 2c -m ~/mib.txt -c public 127.0.0.1 1.3.6.1.4.1.54321.42``

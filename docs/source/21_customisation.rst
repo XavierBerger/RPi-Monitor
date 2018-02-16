@@ -130,7 +130,7 @@ The results are accessible into javascript from the variable data. This
 variable is passed to the Label function as value.
 
 For ssh, the condition is ``"==22"`` to check if the value is equal to 
-``22`` or ``"!=22"`` to check if the value is different form 22. As only one of 
+``22`` or ``"!=22"`` to check if the value is different form ``22``. As only one of 
 the condition will be ``true``, only one label will be displayed.
 
 Other ports checking are using the same technic.
@@ -154,22 +154,24 @@ hostname of the machine int the title of the browser.
 
 Here are the configuration lines used by default:
 
+::
+
   web.page.icon='img/avatar.png'
   web.page.menutitle='XB-Monitor  <sub>('+data.hostname+')</sub>'
   web.page.pagetitle='XB-Monitor ('+data.hostname+')'
 
-data.hostname is a value automatically extracted by RPi-Monitor. It is not 
+``data.hostname`` is a value automatically extracted by **RPi-Monitor**. It is not 
 needed to add a configuration to do such a thing.
 
-The file avatar.png has been added into /usr/share/rpimonitor/web/img/.
+The file avatar.png has been added into ``/usr/share/rpimonitor/web/img/``.
 
 Here is the result:
 
-
+ADD IMAGE IMAGE HERE
 
 Inside Firefox title bar and tab, the title has been changed and hostmane 
 has been added between parentheses.
-Inside RPi-Monitor menu bar, le logo and the title have been changed and 
+Inside **RPi-Monitor** menu bar, the logo and the title have been changed and 
 hostmane has been added between parentheses. 
 
 JustGageBar
@@ -177,22 +179,22 @@ JustGageBar
 
 A new widget is now available to display information in status page. Justgage is a handy JavaScript plugin for generating and animating nice & clean gauges. It is based on Raphaël library for vector drawing, so it’s completely resolution independent and self-adjusting.
 
+::
+
   JustGageBar(title, label,min, value, max, width, height, levelColors, warning, critical)
  
-To see how justgage behave, you can activate the configuration file example.justgage.conf (Ref example explaination and screenshot upper).
+To see how justgage behave, you can activate the configuration file ``example.justgage.conf``
+ (Ref example explaination and screenshot upper).
 
-The detail of function usage is available into the manpage:
-
-
-  man rpimonitord.conf
 
 Visibility
 ----------
 
 A new parameter can be used in configuration file defining a visibility of a row:
 
+::
+
   web.status.<page id>.content.<row id>.visibility=<visibility formula>
 
-<visibility formula> should be a valid javascript formula returning
-          0: to hide the row
-          anything else but 0: show the row
+``<visibility formula>`` should be a valid javascript formula returning ``0`` to 
+hide the row anything else but ``0`` show the row

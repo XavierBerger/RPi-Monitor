@@ -12,7 +12,6 @@ flooding when limit is about to be exceeded as shown in schema bellow:
 
 .. code-block:: html
 
-  <pre>
                           send alert
                               ^
    th      th <------dh------>|        th
@@ -23,13 +22,11 @@ flooding when limit is about to be exceeded as shown in schema bellow:
         tl                          tl        tl<-----dl----->
                               |------------------------------|
                                       Alert is raised
-  </pre>
 
 If alert is still active after resend period, alerte is sent again:
 
 .. code-block:: html
 
-  <pre>
                     send alert                                    resend alert
                         ^                                               ^
       th <-----dh------>|<---------------------dr---------------------->|
@@ -39,41 +36,39 @@ If alert is still active after resend period, alerte is sent again:
   ____|
       tl                |----------------------------------------------------->
                                       Alert is raised
-  </pre>
 
-Condifuration
+Configuration
 -------------
-Alert configuration is performed as follow:
 
 Each alert is identified by its <alert name>. 
 
 alert.<alert name>.active=<activation condition>
   <activation condition> defines the alert pre-condition. If this formula
   returns false, the trigger will not be checked. Default value is 1.
-  This command could refer to KPI using keyword 'data.<kpi>'
+  This command could refer to KPI using keyword ``data.<kpi>``
 
 alert.<alert name>.kpi=<trigger>
   <trigger> is defining the formula to evaluate. If formula returns true, the
-  alert is detected. This command should refer to KPI using keyword 'data.<kpi>'
+  alert is detected. This command should refer to KPI using keyword ``data.<kpi>``
 
 alert.<alert name>.maxalertduration=<duration before raise>
   The alert will be dectected immediatly but alert raised commande will
-  be executed only afer a defined <duration before raise> in seconds
-  ('dh' in the upper schema)
+  be executed only afer a defined ``<duration before raise>`` in seconds
+  (``dh`` in the upper schema)
 
 alert.<alert name>.cancelvalidation=<duration before cancel>
   As for alert raising, cancellation command will be executed only after
-  <duration before cancel> seconds ('dl' in the upper schema)
+  ``<duration before cancel>`` seconds (``dl`` in the upper schema)
 
 alert.<alert name>.resendperiod=<period>
-  If alert is still active after <period> seconds, the raise command
-  will be executed again ('dr' in the upper schema).
+  If alert is still active after ``<period>`` seconds, the raise command
+  will be executed again (``dr`` in the upper schema).
 
 alert.<alert name>.raisecommand=<Raise Command>
-  <Raise Command>> is the command to executed when an alert is raised.
-  This command could refer to KPI using keyword 'data.<kpi>'
+  ``<Raise Command>`` is the command to executed when an alert is raised.
+  This command could refer to KPI using keyword ``data.<kpi>``
 
 alert.<alert name>.cancelcommand=<Cancel Command>
-  <Cancel Command> is the command to executed when an alert is canceled
-  This command could refer to KPI using keyword 'data.<kpi>'
+  ``<Cancel Command>`` is the command to executed when an alert is canceled
+  This command could refer to KPI using keyword ``data.<kpi>``
 

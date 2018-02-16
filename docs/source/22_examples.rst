@@ -1,6 +1,6 @@
 :github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/22_examples.rst
 
-Condifuration examples
+Configuration examples
 ======================
 
 Example files

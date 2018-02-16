@@ -11,7 +11,7 @@ Overview
 In this chapter we will see how to connect a DHT11 or DHT22 Temperature and
 Humidity sensor and configure **RPi-Monitor** to present and draw the outputs.
 
-This article will also explain another capability of **RPi-Monitor** 2.x: the dual-axis.
+This article will also explain dual-axis feature.
 
 Adafruit created a very good tutorial explaining how to use DHT11 or DHT22 . 
 This tutorial is available at this `here <http://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/wiring>`_.
