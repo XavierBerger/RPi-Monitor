@@ -6,8 +6,10 @@ Getting started
 Installation
 ------------
 
-Installation using the repository
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Installation and upgrade from repository
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Install from repository
+"""""""""""""""""""""""
 
 **RPi-Monitor** is providing a debian repository. This repository makes 
 installation and update accessible with the command ``apt-get`` or ``aptitude``.
@@ -33,14 +35,14 @@ To install **RPi-Monitor**, execute the following command:
   sudo apt-get update
   sudo apt-get install rpimonitor
 
-.. note:: **RPi-Monitor** is designed to start automatically and collect metrics.
+.. hint:: **RPi-Monitor** is designed to start automatically and collect metrics.
           The web interface is available on address http://IPaddress:8888.
 
 .. note:: You may notice that **RPiMonitor** repository is hosted on 
           `http://giteduberger.fr/ <http://giteduberger.fr/en>`_
 
 Upgrade from the repository
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""""""""
 
 To upgrade **RPi-Monitor**, execute the following command:
 
@@ -110,7 +112,7 @@ Startup script
 
 **RPi-Monitor** is configured to start automatically. ``/etc/init.d/rpimonitor``
 and link in runlevel startup directory do the job. This script can be executed
-with the folllowing commands:
+with the following parameters:
 
 start
   Start ``rpimonitord`` daemon
@@ -159,7 +161,7 @@ Options
 |                 |              +------------------------------------------------------------------------+
 |                 |              | Default : 10                                                           |
 +-----------------+--------------+------------------------------------------------------------------------+
-|-l, --logfile    | log file     | Logfile directory and prefix (ex: /var/log/rpimonitor)                 |
+|-l, --logfile    | log file     | Logfile directory and prefix (ex: ``/var/log/rpimonitor``)             |
 |                 |              +------------------------------------------------------------------------+
 |                 |              | Default:                                                               |
 +-----------------+--------------+------------------------------------------------------------------------+
@@ -208,7 +210,7 @@ how to customize ``rpimonitord``.
 
 .. warning:: Be sure to use Linux filefeed format with line ending with LF (and not CR/LF like in Windows)
 
-See next chapter for datail about configuration.
+See `configuration <10_index.html>`_ chapter for details and examples.
 
 snmp-agent
 ^^^^^^^^^^
@@ -238,10 +240,10 @@ Statistic information are stored into RRD file available in the directory ``/var
 
 Interactive Configuration Helper
 --------------------------------
-**RPi-Monitor** Interactive Configuration Helper is a tool embedded into 
-``rpimonitord`` helping to create configuration files
-. 
-This chapter is detailling how to use it to monitor a ntfs volume.
+**RPi-Monitor** `Interactive Configuration Helper` is a tool embedded into 
+``rpimonitord`` helping to create configuration files.
+ 
+This example is detailling how to use it to monitor a ntfs volume.
 
 First execute the following command:
 

@@ -7,11 +7,11 @@ At the beginning **RPi-Monitor** was designed to run on **Raspberry Pi**. This
 is explaining the name of this software. In reality **RPi-Monitor** can run 
 on every computers running `perl`.
 
-Since the beginning **Rpi-Monitor** as been designed for embedded devices and
+Since the beginning **RPi-Monitor** as been designed for embedded devices and
 performances is the core of development strategy. The software is divided into 
 two main part:
- * A daemon running on the device and gathering data
- * A WEB application running in browser in charge of data rendering
+ * A lightweight daemon running on the device and gathering data
+ * A powerfull WEB application running in browser in charge of data rendering
 
 .. figure:: _static/features001.png
 
@@ -21,8 +21,8 @@ Collecting metrics
 
 Storing metrics
 ---------------
-  Metrics are stored into a Round Robin Database (RRD). This ensure a fixed size for 
-  the data storage and keep by default data over 1 year.
+  Metrics are stored into a `Round Robin Database <https://oss.oetiker.ch/rrdtool/>`_ (RRD). 
+  This ensure a fixed size for the data storage and keep by default data over 1 year.
 
 Presenting collected metrics
 ----------------------------
@@ -31,18 +31,20 @@ Presenting collected metrics
   are presented as statistics pages. The web interface allow user to reoganise
   statistics by drag'n drop. Statistics page allow to zoom over graph to see 
   details of the mertics.
+
   Embedded web server can be disable and page can be served by an external web server.
 
 Configurable
 ------------
   In **RPi-Monitor** everything is configurable:
-  * Define what metrics to extract and how to extract them
-  * Define how to store metrics
-  * Define how to present and share metrics and statistics
-  * Define how to detect an alert and what to do when alert appears or disappears
-  * Define ... what you want to do with **RPi-Monitor**
 
-.. note:: See next chapters for configuration details and examples.
+  - Define what metrics to extract and how to extract them
+  - Define how to store metrics
+  - Define how to present and share metrics and statistics
+  - Define how to detect an alert and what to do when alert appears or disappears
+  - Define ... what you want to do with **RPi-Monitor**
+
+.. note:: See `configuration <10_index.html>`_ chapter for details and examples.
   
 Processing metrics and raising alerts
 -------------------------------------
@@ -65,9 +67,9 @@ Sharing metrics with external monitoring system
 Extending the capabilities of **RPi-Monitor**
 ---------------------------------------------
   **RPi-Monitor** is extensible. It provides addons allowing customisation of
-  the interface Shellinabox, Hawkeye, top3...
+  the interface `Shellinabox <https://github.com/shellinabox/shellinabox>`_, `Hawkeye <https://github.com/ipartola/hawkeye>`_, top3...
 
-  **RPi-Monitor-Peeble** allows to see monitoring status on Peeble smart watch.
+  **RPi-Monitor-Peeble** allows to see monitoring status on `Peeble <https://www.pebble.com/>`_ smart watch.
   
-  **RPi-Monitor** is also available for **Docker** and for embedded devices created
-  with **Yocto Project**
+  **RPi-Monitor** is also available for `Docker <https://www.docker.com/>`_ and for embedded devices created
+  with `Yocto Project <https://www.yoctoproject.org/>`_
