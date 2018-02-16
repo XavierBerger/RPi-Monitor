@@ -124,7 +124,7 @@ update
   Update packages to be installed list. This information is displayed in default 
   configuration of Web interface
 install_auto_package_status_update
-  Add a script to automatically call package update script when ``apt```commands are executes
+  Add a script to automatically call package update script when ``apt`` commands are executes
 remove_auto_package_status_update
   Remove script automatically call for package update 
 

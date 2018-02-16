@@ -1,7 +1,10 @@
 :github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/index.rst
 
-RPi-Monitor
-===========
+Welcome to RPi-Monitor documentation !
+======================================
+
+.. figure:: _static/logo.png
+   :align: center
 
 **RPi-Monitor** is a software designed to monitor the metrics from GNU/Linux 
 system and connected peripherals. 
@@ -11,37 +14,9 @@ This documentation is presenting the features provided by **RPi-Monitor** and
 explains how to install, configure and use it.
 
 .. toctree::
-   :maxdepth: 1
-   :caption: Overview
-   
-   01_features
-   02_gettingstarted
+   :maxdepth: 2
 
-.. toctree::
-   :maxdepth: 1
-   :caption: Configuration
-
-   11_daemon
-   12_extraction
-   13_web
-   14_addons
-   15_alert
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Integration examples
-
-   21_customisation
-   22_examples
-   23_autentication
-   24_sensors
-   25_lcd
-   26_external
-   
-.. toctree::
-   :maxdepth: 1
-   :caption: To got further
-
-   31_faq
-   32_contributing
-   33_license
+   00_index
+   10_index
+   20_index
+   30_index

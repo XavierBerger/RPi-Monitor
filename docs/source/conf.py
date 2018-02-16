@@ -120,12 +120,16 @@ html_theme_options = {
     'analytics_id': '',
     'logo_only': False,
     'display_version': True,
-    'prev_next_buttons_location': 'both',
-    'collapse_navigation': False,
+    'prev_next_buttons_location': 'bottom',
+    'collapse_navigation': True,
     'sticky_navigation': True,
     'navigation_depth': 2
 }
 
+html_context = {
+    "google_adsense": "ca-pub-6853682829194266",
+    "google_adsense_slot": "2876944524",
+}
 # Add any paths that contain custom themes here, relative to this directory.
 #html_theme_path = []
 
