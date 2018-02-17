@@ -8,13 +8,11 @@ You will notice that metrics in **RPi-Monitor** are named **KPI** for Key Perfor
 
 Include
 -------
-Specific ``include`` keyword is available to add a file to the list of 
-configuration files to be loaded.
+``include`` keyword is available to add a file to the list of configuration files to be loaded.
 
 include=<full path to configuration file>
-  ``<full path to configuration file>`` is the full path to the
-  configuration file to add at the end of the list of configuration
-  files to be loaded.
+  ``<full path to configuration file>`` is the full path to the configuration 
+  file to add at the end of the list of configuration files to be loaded.
 
 .. hint:: The initial order of information displayed in status page depends on the
           order of file inclusion.
@@ -61,16 +59,16 @@ static.<static data id>.regexp=<data regexp>
 static.<static data id>.postprocess=<data postprocess>
   ``<data postprocess>`` is an expression defining the postprocessing to
   be applied on result. KPI are idendified by ``$1``. In case of list,
-  other KPI are identified by ``$2``, ``$3`` ``.graph.``.
-  This parameter will be evaluate by the command eval of perl.
+  other KPI are identified by ``$2``, ``$3``, ...
+  This parameter will be evaluate by the command eval of ``perl``.
 
 Dynamic
 -------
-Dynamic KPI are extracted periodically (defined by ``daemon.delay``)
-Each statistic is identified into the conf file by a line stating
-with the keyword dynamic and an identifier ``<dynamic data id>``
+Dynamic KPI are extracted periodically (defined by ``daemon.delay``).
+Each KPI is identified into the conf file by a line stating with the keyword 
+dynamic and an identifier ``<dynamic data id>``
 
-Each dynamic KPI is defined by an id and with 9 parameters
+Each dynamic KPI is defined by a ``dynamic data id`` and with 9 parameters
 
 dynamic.<dynamic data id>.name=<data name>
   ``<data name>`` is a string representing the KPI or the list of KPI
@@ -80,12 +78,10 @@ dynamic.<dynamic data id>.name=<data name>
   .. danger:: Do not use ``-`` in ``data name``: This is a limitation of javascript.
 
 dynamic.<dynamic data id>.source=<data source>
-  ``<data source>`` is a file or an executable file within the path.
+  ``<data source>`` is a file or an executable program within the path.
   If the file exists, rpimonitord will read its content. If the file
   is not existing, rpimonirotd will try to execute it and will parse
   the output.
-  Warning: specifying an executable by its absolute name will tell
-  rpimonitord to read the content of the executable.1.graph.
 
 dynamic.<dynamic data id>.regexp=<data regexp>
   ``<data regexp>`` is the regular expression extracting information from
@@ -111,19 +107,19 @@ dynamic.<dynamic data id>.default=<default>
   a ``<default>`` value which will be set for the KPI.
 
 dynamic.<dynamic data id>.rrd=<GAUGE|COUNTER|DERIVE|ABSOLUTE|COMPUTE>
-  The 5th parameter is defining if the KPI has to be stored into a RRD
+  rrd parameter is defining if the KPI has to be stored into a RRD
   database and how ``<GAUGE|COUNTER|DERIVE|ABSOLUTE|COMPUTE>``. If the
   parameter is defined as empty, no RRD database will be created. If
   this parameter is defined, a RRD database will be created and data
   will be stored at every extraction.
-  Ref `RRDTool documentation <http://oss.oetiker.ch/rrdtool/doc/rrdcreate.en.html>`_ for RRD
-  parameter description.
+  Ref `RRDTool documentation <http://oss.oetiker.ch/rrdtool/doc/rrdcreate.en.html>`_ 
+  for RRD parameter description.
 
 **dynamic.<dynamic data id>.min=<minimal value acceptable in RRD>**
 
 dynamic.<dynamic data id>.max=<maximal value acceptable in RRD>
   If a value extracted by is less than minimal of greater than maximal
-  value, it will be stored int RRD database as unknown.
+  value, it will not be stored into RRD database as unknown.
   These limits are usefull to handle counter that fall down to 0 when
   they reach their limit (Ex: network graphs)
 
@@ -134,7 +130,7 @@ dynamic.<dynamic data id>.max=<maximal value acceptable in RRD>
 SNMP OID
 --------
 
-  **RPi-Monitor** is able to act as an snmp agent. Snmp configuration is based
+  **RPi-Monitor** is able to act as an snmp-agent. Snmp configuration is based
   on KPI name. KPI could be ``static`` or ``dynamic``.
 
   snmp.<kpi name>.id=<id>
@@ -155,10 +151,12 @@ SNMP OID
 
 Commands to use to get MIB information:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  Snmp Configuration
-    See configuration file example in ``/etc/snmp/snmpd.conf.rpimonitor``
-    and activate pass_persist extension
-  Extract MIB from RPi-Monitor
-    ``rpimonitord -m > ~/mib.txt``
-  Get data from SNMP
-    ``snmpwalk -v 2c -m ~/mib.txt -c public 127.0.0.1 1.3.6.1.4.1.54321.42``
+Snmp Configuration
+  See configuration file example in ``/etc/snmp/snmpd.conf.rpimonitor``
+  and activate pass_persist extension
+  
+Extract MIB from RPi-Monitor
+  ``rpimonitord -m > ~/mib.txt``
+  
+Get data from SNMP
+  ``snmpwalk -v 2c -m ~/mib.txt -c public 127.0.0.1 1.3.6.1.4.1.54321.42``

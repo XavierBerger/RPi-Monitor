@@ -17,10 +17,11 @@ web.friends.<id>.link=<link to RPi-Monitor>
   ``<link to RPi-Monitor>`` is the link to another RPi-Monitor running
   into the friend machine.
 
-.. seealso:: Example of implementation in `Friends customisation example  <21_customisation.html#friends>`_
+.. seealso:: Example of implementation in `Friends customisation example  <31_customisation.html#friends>`_
 
-Multi-pages
------------
+Top bar customisation
+-----------------------
+Top is displaying on top of web page can be customized with the following parameters: 
 
 web.page.icon=<icon location relative to webroot>
   ``<icon location relative to webroot>`` is the path and filename of
@@ -36,24 +37,25 @@ web.page.pagetitle=<page title>
   tab and window title bar. This code can use status information with
   the keyword ``data`` including the ``data.hostname`` available natively
 
-The status page is fully configurable.
-It is possible to define multiple pages. Each page is identified by
-its ``<page id>``.
-
-
 Status
 ------
+The status page is fully configurable. It is possible to define multiple pages.
+Each page is identified by its ``<page id>``.
+
+.. seealso:: Example of implementation in `Multi-pages customisation example  <31_customisation.html#multiple-pages>`_
+
 web.status.<page id>.name=<page name>
-  ``<page name>`` name of the page displayed into the drop down menu in
-  case of multiple pages.
+  ``<page name>`` name of the page displayed into the drop down menu in case of multiple pages.
 
-Status page is split in strips displaying information. Each status
-strip is identified by a unique ``<status id>``. Each status strip is
-defined by a name, an icon and a serie of lines described as follow:
+Status page is split in strips displaying information. Each status strip is 
+identified by a unique ``<status id>``. Each status strip is defined by a name, 
+an icon and a serie of parameters described as follow:
 
-web.status.<page id>.visibility=<visibility formula>
+web.status.<page id>.content.<status id>.visibility=<visibility formula>
   ``<visibility formula>`` should be a valid javascript formula returning
   ``0``: to hide the row anything else but ``0``: show the row
+
+  .. seealso:: Example of implementation in `TO BE COMPLETED  <#>`_
 
 web.status.<page id>.content.<status id>.name=<display name>
   ``<display name>`` Name displayed as title of the strip
@@ -68,11 +70,11 @@ web.status.<page id>.content.<status id>.line.<line number>=<parameter>
   will be evaluated by the javascript command with the function
   ``eval()`` theirfore parameter should be valid javacript.
   To have  clean rendering, **RPi-Monitor** web interface provides some
-  functions that could be used inside the parameter. The object data
-  is also available and contains the result of dynamic and static
-  extracted as described in the KPI extraction section.
+  functions that could be used inside the parameter. The object ``data``
+  is also available and contains the result of ``dynamic`` and ``static``
+  extracted as described in the KPI extraction section (Ex: ``data.version``).
 
-  Functions provided by RPi-Monitor are the following:
+  Functions provided by **RPi-Monitor** are the following:
 
       Uptime(uptime in sec)
         Print the uptime from seconds to the following format:
@@ -111,7 +113,7 @@ web.status.<page id>.content.<status id>.line.<line number>=<parameter>
         * warning     : Warning level (in %) used to define color (default: 33)
         * critical    : Critical  level (in %) used to define color (default: 66)
 
-      Plural (value)
+      Plural(value)
         Print 's ' if value > 1 or ' ' if not.
 
       Clock(data.localtime)
@@ -136,18 +138,18 @@ web.status.<page id>.content.<status id>.line.<line number>=<parameter>
         This function is used to insert an HTML information inside
         a page. (Ref Top3 example showing top most process cpu usage)
 
+Statistics
+----------
 The statistic page is fully configurable.
 It is possible to define multiple pages. Each page is identified by
 its ``<page id>``.
 
-web.status.<page id>.name=<page name>
+web.statistic.<page id>.name=<page name>
   ``<page name>`` name of the page displayed into the drop down menu in
-  case of multiple pages.
+  case of multiple pages. 
 
-Statistics
-----------
 The statistic page displays statistics graphs. The graphs are
-identified an unique <statistic id> and by the following parameters.
+identified an unique ``<statistic id>`` and by the following parameters.
 
 web.statistics.<page id>.content.<statistic id>.name=<statistic name>
   ``<statistic name>`` is the name of the statistics displayed in the

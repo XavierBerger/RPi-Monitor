@@ -44,7 +44,7 @@ Configurable
   - Define how to detect an alert and what to do when alert appears or disappears
   - Define ... what you want to do with **RPi-Monitor**
 
-.. note:: See `configuration <10_index.html>`_ chapter for details and examples.
+  .. note:: See `configuration <10_index.html>`_ chapter for details and examples.
   
 Processing metrics and raising alerts
 -------------------------------------
