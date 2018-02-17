@@ -1,4 +1,4 @@
-:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/14_addons.rst
+:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/24_addons.rst
 
 Addons configuration
 ====================

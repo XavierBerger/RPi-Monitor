@@ -1,4 +1,4 @@
-:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/32_contributing.rst
+:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/42_contributing.rst
 
 Contributing
 =============

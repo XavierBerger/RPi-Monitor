@@ -1,18 +1,18 @@
-:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/31_faq.rst
+:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/41_faq.rst
 
 Frequently Asked Questions
 ==========================
 
-RPi-Monitor is displaying NaN instead of value in my distro ``lambda``. Can you
-fixe this issue?
+RPi-Monitor is displaying ``NaN`` instead of value in my "unsupported" distro. Can you fixe this issue?
   There are a lot of GNU/Linux distribution available, I can't support all of them.
-  I dicided since the beginning to Raspbian as target OS. The version v2.13 has been
+  I decided since the beginning use to Raspbian as target OS. The version v2.13 has been
   tested on ``2017-11-29-raspbian-stretch-lite.img``. 
   Remember, in **RPi-Monitor**, everything is configurable. It should then be possible
   to update configuration files to match the specificities of your distro.
+|
+|
 
-RPi-Monitor's graphs are not clean and frequently drop down to zero as in 
-screenshot bellow. How can I have a clean curve?
+RPi-Monitor's graphs are not clean and frequently drop down to zero as in screenshot bellow. How can I have a clean curve?
   .. image:: _static/faq001.png
     :width: 400px
     :align: center
@@ -23,24 +23,30 @@ screenshot bellow. How can I have a clean curve?
   advised to create a script writing the temperature result into a file and to 
   configure **RPi-Monitor** to read this file. In this case, if the file is not 
   updated, the previous value will be read and drawn in graphs.
+|
+|
 
 RPi-Monitor's web interface is not working, I've only white pages?
   **RPi-Monitor** requires HTML5 local storage and cookies to work properly. 
   You should check that these both functionalities are activated into your browser and check that no plug-ins is blocking them.
+|
+|
 
-Is RPi-Monitor supporting distribution XXX?
-  Can you make **RPi-Monitor** compatible with distribution XXX?
-
-RPi-Monitor was developed on Raspbian. This distribution is then fully supported.
+Is RPi-Monitor supporting distribution XXX? Can you make **RPi-Monitor** compatible with distribution XXX?
+  RPi-Monitor was developed on Raspbian. This distribution is then fully supported.
   I will not officially support any other distribution but you will find in 
   github repository some configuration files that may help you to configure 
   **RPi-Monitor** on your system.
   Remember, **RPi-Monitor** is highly configurable and should be able to run on 
   every system able to run perl. Have a look to **RPi-Monitor** articles for examples.
+|
+|
 
 I have a problems running rpimonitord:  failed "Can't locate _______.pm  in @INC ...
   The installation is not done properly. You should read again the installation 
   procedure and pay attention to the dependencies.
+|
+|
 
 I would like to use my favorite web server instead of the one embedded into RPi-Monitor. Is it possible?
   Yes, this is possible but not recommended. **RPi-Monitor** embedded web server is 
@@ -48,16 +54,22 @@ I would like to use my favorite web server instead of the one embedded into RPi-
   the system. The Web interface is requiring some specific feature that can only 
   be delivered by **RPi-Monitor** embedded web server (like empty.rrd file generation 
   ensuring a clean display of graphs).
+|
+|
 
 Can you add login/password and authentication to RPI-Monitor web interface?
   No. I'll never add such a feature to **RPi-Monitor**. Why? Just because it is 
   something complex to do in a clean and fully secured way. Some software are 
   already design to do the job and they do it well. Refer to this article if 
   you need such a feature.
+|
+|
 
 How can I do customize RPi-Monitor, change data extracted, add images, change texts...
   In **RPi-Monitor** almost everything is configurable. This can be done by 
   configuration file. Have a look to **RPi-Monitor** articles for examples.
+|
+|
 
 I tried to install RPi-Monitor into an OS not officially supported and some data are missing. How can I fix it?
   As I said previously, in **RPi-Monitor** almost everything is configurable. You 
@@ -65,6 +77,8 @@ I tried to install RPi-Monitor into an OS not officially supported and some data
   value directly in the shell. Once the command is found you will need to 
   update the configuration file. Have a look to **RPi-Monitor** articles for 
   examples (have a look to the command rpimonitord -i).
+|
+|
 
 I would like to monitor a cluster of raspberries with your tool. Is there a way to gather the whole data in one node? 
   It could have any answer to such a question. One possibility would be to use 
@@ -76,16 +90,24 @@ I would like to monitor a cluster of raspberries with your tool. Is there a way 
   page per cluster.
   This question is interresting and I'll think about writing one article about 
   this subjet.
+|
+|
 
 I found a bug into RPi-Monitor. How can I share my discovery?
   You should open an issue in github and describe you problem and how to reproduce it.
+|
+|
 
 Download bandwidth is shown as negative values. It's bug or feature?
   This is a feature :-). But, remember, everything is customizable in **RPI-Monitor**...
+|
+|
 
 I want to create a package for my favorite distribution which is not supported by defalut. How can I contribute to this project?
   **RPi-Monitor** source code is hosted in github. The file PACKAGING.md should 
   catch your interest.
+|
+|
 
 I've some issue with my installation or customization of RPi-Monitor and I want to reinstall it from scratch. How can I do it?
   Here is the instruction to reinstall **RPi-Monitor** from scratch:
@@ -97,7 +119,8 @@ I've some issue with my installation or customization of RPi-Monitor and I want 
     rm -fr /usr/share/rpimonitor
 
   Then reinstall by following the instruction gathered in this page.
-
+|
+|
 
 Some data are not extracting correctly at boot but when I restart rpimonotird everything becomes OK until I reboot. How can I fix thi issue?
   If you reach such situation, you certainly configure your source using a 
@@ -107,11 +130,15 @@ Some data are not extracting correctly at boot but when I restart rpimonotird ev
   you restart rpimonitord).
   When you start your computer, the $PATH variable is not set so ``gettemp.sh`` 
   will not work. The solution is to use the full path command ``/usr/bin/gettemp.sh`` 
+|
+|
 
 I just update my distribution and RPi-Monitor is still saying that packages required to be updated. Why?
   Every night at 3h10, a script is executed to update the package update 
   information displayed in **RPi-Monitor**. If you want to update this information 
   immediately, you can execute this script manually:  ``/usr/share/rpimonitor/scripts/updatePackagesStatus.pl``
+|
+|
 
 I required better resolutions of the reading provided by the RPI monitor. Can we increase the frequency with which the RPI monitor collects the data?
   Yes, since version 2.11, it is possible to define the RRD structure per data 

@@ -1,4 +1,4 @@
-:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/23_autentication.rst
+:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/33_autentication.rst
 
 Authentication and secure access
 ================================
@@ -159,7 +159,7 @@ Activate the reverse proxy site and retart nginx with the following commands:
     sudo service nginx restart
 
 You can now start to test to access your configuration by browsing 
-http://IpAddresss/. You will be automatically redirected to https://IpAddress/rpimonitor/.
+http://raspberrypi.local/. You will be automatically redirected to https://raspberrypi.local/rpimonitor/.
 
 Configure the firewall
 ----------------------
@@ -207,8 +207,8 @@ Conclusion
 ----------
 
 Now your host is protected. You can try to access to **RPi-Monitor** directly 
-http://IpAddress:8888/ and you will have an error. If you try to access to 
-it through the revers proxy http://IpAddress/ you will have to authenticate 
+http://raspberrypi.local:8888/ and you will have an error. If you try to access to 
+it through the revers proxy http://raspberrypi.local/ you will have to authenticate 
 before accessing to the server and once authenticated, you will be connected 
 through a secured https connection. 
 

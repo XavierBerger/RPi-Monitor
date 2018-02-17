@@ -1,4 +1,4 @@
-:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/04_upgrade_uninstall.rst
+:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/13_upgrade_uninstall.rst
 
 Upgrade or uninstall
 ====================
@@ -6,7 +6,8 @@ Upgrade or uninstall
 Upgrade from the repository
 ---------------------------
 
-To upgrade **RPi-Monitor**, execute the following command:
+If you have performed an `installation from repository <11_first_installation.html#installation-from-repository>`_
+you can upgrade **RPi-Monitor** with the following command:
 
 ::
 

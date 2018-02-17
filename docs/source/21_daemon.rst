@@ -1,4 +1,4 @@
-:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/11_daemon.rst
+:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/21_daemon.rst
 
 Daemon configuration
 ====================
@@ -17,32 +17,32 @@ daemon.delay=10
                have to be deleted ``rpimonitord`` will recreate them at next startup
 
 daemon.timeout=5
-  Define the maximul duration of KPI extraction (Default: 5)
+  Define the maximum duration of KPI extraction. If this timeout is triggered, KPI
+  value will depends on default value configured for this KPI. (Default: 5)
 
 daemon.noserver=0
   Define that rpimonitord shouldn't start web server (Default: 0)
-
-.. note:: A symbolic link from ``/var/lib/rpimonitor/stat`` to 
-          ``/usr/share/rpimonitor/web/stat`` may be required
 
 daemon.readonly=1
   Tell ``rpimonitord`` to not write data on disk. (Default: 0)
 
 daemon.addr=0.0.0.0
-  Define the address used by the web server (Default: 0.0.0.0)
+  Define the address used by the embedded web server (Default: 0.0.0.0)
 
 daemon.port=8888
-  Define port of the web server (Default: 8888)
+  Define port of the embedded web server (Default: 8888)
 
 daemon.user=pi
-  Define user used to run the server process (Default: pi)
+  Define user used to run embedded web server process (Default: pi)
   
 .. note:: If user is not existing, process will run with ``uid=1000``
 
 daemon.group=pi
-  Define group used to run the server process (Default: pi)
+  Define group used to run embedded web server process (Default: pi)
   
 .. note:: If group is not existing, process will run with ``gid=1000``
+
+.. important:: Extraction daemon of **RPi-Monitor** running as root.
 
 daemon.webroot=/usr/share/rpimonitor/web
   Define the root directory of the web server (Default: ``/usr/share/rpimonitor/web``)

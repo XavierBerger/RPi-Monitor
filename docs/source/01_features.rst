@@ -62,7 +62,7 @@ Read only mode
 Sharing metrics
 ---------------
   Metrics collected can be downloaded in json format (using the embedded web 
-  server), read on disk or remotely accessed through snmp.
+  server), read on disk or remotely accessed through SNMP.
 
 Extending the capabilities
 --------------------------

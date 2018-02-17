@@ -1,14 +1,16 @@
+:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/44_changelog.rst
+
 Changelog
 =========
 
-v2.13-beta1 
+v2.13-beta3 
 -----------
-  .. important :: Version not yet published yet
+  .. important :: Target version v2.13-r0 not yet published yet
 
   * Implement sortable status items written by iaa (#166 #197)
+  * Create documentation and add link to documentation https://xavierberger.github.io/RPi-Monitor-docs/index.html
   * Add snmp agent ``pass_persist`` extension
   * Add readonly option disabling disk write
-  * Create documentation
   * Fix service status template (#172)
 
 v2.12-r1
