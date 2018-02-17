@@ -1,13 +1,29 @@
-:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/10_index.rst
+:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/00_index.rst
 
-Configuration
-=============
+Getting startep
+===============
+
+.. toctree::
+   :maxdepth: 2
+   
+   11_first_installation
 
 .. toctree::
    :maxdepth: 2
 
-   11_daemon
-   12_extraction
-   13_web
-   14_addons
-   15_alert
+   12_custom_installation
+
+.. toctree::
+   :maxdepth: 2
+
+   13_upgrade_uninstall
+
+.. toctree::
+   :maxdepth: 2
+
+   14_execution
+
+.. toctree::
+   :maxdepth: 2
+
+   15_configuration_helper

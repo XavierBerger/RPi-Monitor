@@ -2,11 +2,9 @@
 
 Metrics extraction configuration
 ================================
-This part of the configuration file is defining which data to extract how to 
-extract them and when.
+This chapter is defining which data to extract how to extract them and when.
 
-.. note:: You will notice that metrics in **RPi-Monitor** are named **KPI**. 
-          **KPI** means Key Performance Indicator.
+You will notice that metrics in **RPi-Monitor** are named **KPI** for Key Performance Indicator.
 
 Include
 -------
@@ -18,11 +16,17 @@ include=<full path to configuration file>
   configuration file to add at the end of the list of configuration
   files to be loaded.
 
+.. hint:: The initial order of information displayed in status page depends on the
+          order of file inclusion.
+
 Static
 ------
-Static KPI are extracted once at rpimonitord startup. Each statistic
-is identified into the conf file by a line stating with the keyword
-static and an identifier ``<static data id>``
+KPI representing a metric limit or anything else which do not change over the time 
+is extracted once at ``rpimonitord`` startup (example: memory size, disk size, ...). 
+Each KPI is identified into the configuration file by a line starting with the 
+keyword ``static`` and an identifier ``<static data id>``.
+
+.. important:: Inside a configuration file ``<static data id>`` should be unique per KPI. 
 
 Each static KPI is defined by an id and with 4 parameters
 
@@ -31,21 +35,23 @@ static.<static data id>.name=<data name>
   separated by comma. Each name has to be unique.
   Only alpha numerical charter and underscore are accepted.
 
+  .. danger:: Do not use ``-`` in ``data name``: This is a limitation of javascript.
+
 static.<static data id>.source=<data source>
   ``<data source>`` is a file or an executable file within the path.
-  If the file exists, rpimonitord will read its content. If the file
-  is not existing, rpimonirotd will try to execute it and will parse
+  If the file exists, ``rpimonitord`` will read its content. If the file
+  is not existing, ``rpimonitord`` will try to execute it and will parse
   the output.
-..  warning:: Specifying an executable by its absolute name will tell
-              ``rpimonitord`` to read the content of the executable.
 
-.. note:: In ``<data source>`` it is possible to refer to another ``<data name>``
-          with the prefix ``data.`` followed by ``<data name>``: ``data.<data name>``
+  .. note:: In ``<data source>`` it is possible to refer to another ``<data name>``
+            with the prefix ``data.`` followed by ``<data name>``: ``data.<data name>``
 
-          **Example**: ``data.kernel_version``
+            **Example**: ``data.kernel_version``
 
-          This data could refer to ``dynamic`` or ``static`` KPI. The order of KPI
-          extraction is important. Data used should already been extracted.
+            This data could refer to ``dynamic`` or ``static`` KPI. 
+          
+            .. important:: The order of KPI extraction is important. 
+                           Data used should already been extracted to be accessible.
 
 static.<static data id>.regexp=<data regexp>
   ``<data regexp>`` is the regular expression extracting information from
@@ -70,6 +76,8 @@ dynamic.<dynamic data id>.name=<data name>
   ``<data name>`` is a string representing the KPI or the list of KPI
   separated by comma. Each name has to be unique.
   Only alpha numerical charter and underscore are accepted.
+
+  .. danger:: Do not use ``-`` in ``data name``: This is a limitation of javascript.
 
 dynamic.<dynamic data id>.source=<data source>
   ``<data source>`` is a file or an executable file within the path.

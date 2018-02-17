@@ -16,7 +16,25 @@ explains how to install, configure and use it.
 .. toctree::
    :maxdepth: 2
 
-   00_index
+   01_features 
+
+.. toctree::
+   :maxdepth: 2
+
    10_index
+
+.. toctree::
+   :maxdepth: 2
+
    20_index
+
+.. toctree::
+   :maxdepth: 2
+
    30_index
+
+.. toctree::
+   :maxdepth: 2
+
+   40_index
+   

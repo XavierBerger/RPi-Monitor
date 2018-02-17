@@ -3,6 +3,14 @@
 Frequently Asked Questions
 ==========================
 
+RPi-Monitor is displaying NaN instead of value in my distro ``lambda``. Can you
+fixe this issue?
+  There are a lot of GNU/Linux distribution available, I can't support all of them.
+  I dicided since the beginning to Raspbian as target OS. The version v2.13 has been
+  tested on ``2017-11-29-raspbian-stretch-lite.img``. 
+  Remember, in **RPi-Monitor**, everything is configurable. It should then be possible
+  to update configuration files to match the specificities of your distro.
+
 RPi-Monitor's graphs are not clean and frequently drop down to zero as in 
 screenshot bellow. How can I have a clean curve?
   .. image:: _static/faq001.png
