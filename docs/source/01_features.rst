@@ -59,13 +59,13 @@ Read only mode
   can be executed in read only mode. Metrics can be retrived either by web 
   interface in json format or through SNMP. 
 
-Sharing metrics with external monitoring system
------------------------------------------------
+Sharing metrics
+---------------
   Metrics collected can be downloaded in json format (using the embedded web 
   server), read on disk or remotely accessed through snmp.
 
-Extending the capabilities of **RPi-Monitor**
----------------------------------------------
+Extending the capabilities
+--------------------------
   **RPi-Monitor** is extensible. It provides addons allowing customisation of
   the interface `Shellinabox <https://github.com/shellinabox/shellinabox>`_, `Hawkeye <https://github.com/ipartola/hawkeye>`_, top3...
 
