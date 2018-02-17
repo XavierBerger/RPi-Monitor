@@ -27,3 +27,8 @@ Configuration
    :maxdepth: 2
 
    25_alert
+
+.. toctree::
+   :maxdepth: 2
+
+   26_configuration_helper

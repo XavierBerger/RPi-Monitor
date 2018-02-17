@@ -1,7 +1,7 @@
 :github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/05_execution.rst
 
-Understanding program
-=====================
+Understanding program execution
+===============================
 
 Startup script
 --------------

@@ -23,7 +23,3 @@ Getting startep
 
    14_execution
 
-.. toctree::
-   :maxdepth: 2
-
-   15_configuration_helper
