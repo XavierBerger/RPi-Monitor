@@ -95,7 +95,8 @@ function ConstructPage()
     activePage=0;
   }
   if ( data.length > 1 ) {
-    $('<h2><p class="text-info">'+data[activePage].name+'</p></h2><hr>').insertBefore("#insertionPoint");
+    $('#pageTitle').html("<h2>" + data[activePage].name + "</h2>" );
+    $('#pageTitle').removeClass('hide');
   }
   for ( var iloop=0; iloop < data[activePage].content.length; iloop++) {
     $(RowTemplate(iloop,"img/"+data[activePage].content[iloop].icon,data[activePage].content[iloop].name)).insertBefore("#insertionPoint");

@@ -52,6 +52,12 @@ body {
   height:200px;  
 }
 
+.page-title {
+  text-align: center;
+  font-family: Tahoma, Helvetica;
+  font-size: 21px;
+}
+
 .Title {
   float: left;
   font-family: Tahoma, Helvetica;
