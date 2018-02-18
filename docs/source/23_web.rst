@@ -19,9 +19,9 @@ web.friends.<id>.link=<link to RPi-Monitor>
 
 .. seealso:: Example of implementation in `Friends customisation example  <31_customisation.html#friends>`_
 
-Top bar customisation
+Header customisation
 -----------------------
-Top is displaying on top of web page can be customized with the following parameters: 
+Header of web page can be customized with the following parameters: 
 
 web.page.icon=<icon location relative to webroot>
   ``<icon location relative to webroot>`` is the path and filename of
@@ -122,17 +122,16 @@ web.status.<page id>.content.<status id>.line.<line number>=<parameter>
         display on screen the current time and will simulate the
         seconds by incrementing them periodically.
 
-      Label(data,formula, text, level)
-      Badge(data,formula, text, level)
-        This function will write a label/badge with a defined
-        background color if the formula return TRUE.
-        data    : data to use with the formula
-        formula : formula evaluated in regards to data to determine
-                  if label/badge has to be printed
-        text    : text to be displayed
-        level   : 'default' (grey), 'primary' (blue label/grey badge),
-                  'success' (green), 'info' (cyan), 'warning' (orange)
-                  or 'danger' (red)
+      Label(data,formula, text, level) Badge(data,formula, text, level)
+          This function will write a label/badge with a defined
+        * background color if the formula return TRUE.
+        * data    : data to use with the formula
+        * formula : formula evaluated in regards to data to determine if label/badge has to be printed
+        * text    : text to be displayed
+        * level   : 'default' (grey), 'primary' (blue label/grey badge), 'success' (green), 'info' (cyan), 'warning' (orange) or 'danger' (red)
+        
+        .. image:: _static/example002.png
+           :align: center
 
       InsertHTML(url)
         This function is used to insert an HTML information inside

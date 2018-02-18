@@ -91,19 +91,3 @@ Once the configuration will be apply, restart **RPi-Monitor** with the command:
 
 I hope this post is detailled enough to help you to configure **RPi-Monitor** to 
 define the correct sources and regular expression.
-
-----------------
-
-Uninstallation
---------------
-To uninstall **RPi-Monitor**, you can execute the following command:
-
-::
-
-    sudo apt-get remove rpimonitor
-
-or:
-
-::
-
-    sudo apt-get purge rpimontor

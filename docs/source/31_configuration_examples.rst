@@ -1,62 +1,7 @@
 :github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/32_examples.rst
 
-Configuration examples
-======================
-
-Example files
--------------
-
-**RPi-Monitor** comes with example files showing the capabilities of some features 
-and functions available in status page. 
-These files are installed into ``/etc/rpimonotor/templates/``
-To see how a specific file is behaving, you can include this file into your 
-configuration file using the ``include``. By default, files are included and 
-commented out into ``data.conf``. To activate them, you can simply uncomment 
-them and restart ``rpimonitord``.  
-
-The following files are available
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-example.badge_and_label.conf
-""""""""""""""""""""""""""""
-.. figure:: _static/examples002.png
-    :width: 400px 
-    :align: center
-
-    Show colors of labels and badges
-
-example.progressbar.conf 
-""""""""""""""""""""""""
-.. figure:: _static/examples003.png
-    :width: 400px 
-    :align: center
-
-    Show warning and critical and colors 
-
-example.justgage.conf
-"""""""""""""""""""""
-.. figure:: _static/examples004.png
-    :width: 400px 
-    :align: center
-
-    Show justgage and customisation
-
-example.visibility.conf
-"""""""""""""""""""""""
-.. figure:: _static/examples005.png
-    :width: 400px 
-    :align: center
-
-    Show visibility feature
-
- 
-Remember to restart RPi-Monitor to apply the configuration change:
-
-::
-
-  sudo /etc/init.d/rpimonitor restart
-
-
+**RPi-Monitor** in real world
+=============================
 
 Monitoring a WiFi network
 -------------------------

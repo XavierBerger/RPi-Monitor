@@ -32,3 +32,8 @@ Configuration
    :maxdepth: 2
 
    26_configuration_helper
+
+.. toctree::
+   :maxdepth: 2
+
+   27_configuration_templates

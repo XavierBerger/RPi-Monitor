@@ -1,34 +1,29 @@
 :github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/30_index.rst
 
-Integration examples
-====================
+Usages
+======
 
 .. toctree::
    :maxdepth: 2
 
-   31_customisation
+   31_configuration_examples
 
 .. toctree::
    :maxdepth: 2
 
-   32_examples
+   32_sensors
 
 .. toctree::
    :maxdepth: 2
 
-   33_autentication
+   33_lcd
 
 .. toctree::
    :maxdepth: 2
 
-   34_sensors
+   34_autentication
 
 .. toctree::
    :maxdepth: 2
 
-   35_lcd
-
-.. toctree::
-   :maxdepth: 2
-
-   36_external
+   35_external
