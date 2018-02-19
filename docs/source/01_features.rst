@@ -17,7 +17,8 @@ two main part:
 
 Collecting metrics
 ------------------
-  **rpimonitord** is a daemon wich periodically gather, process and store metrics
+  **rpimonitord** is a daemon wich periodically gather, process and store metrics.
+  In **RPi-Monitor** metrics are named **KPI** for Key Performance Indicator.
 
 Storing metrics
 ---------------

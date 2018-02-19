@@ -5,23 +5,23 @@ Daemon configuration
 
 Global configuration
 --------------------
-Section ``daemon`` is defining the behavior of ``rpimonitord``. 
+``daemon`` is defining the behavior of ``rpimonitord``. 
 
 daemon.sharedmemkey=20130906
   Define the share memory key (Default: 20130906)
 
 daemon.delay=10
-  Define the delay between 2 KPIs pooling (Default: 10)
+  Define the delay in seconds between 2 KPIs extraction (Default: 10)
 
 .. important:: If you want to change the default delay, the rrd file will
                have to be deleted ``rpimonitord`` will recreate them at next startup
 
 daemon.timeout=5
-  Define the maximum duration of KPI extraction. If this timeout is triggered, KPI
+  Define the maximum duration in seconds of KPI extraction. If this timeout is triggered, KPI
   value will depends on default value configured for this KPI. (Default: 5)
 
 daemon.noserver=0
-  Define that rpimonitord shouldn't start web server (Default: 0)
+  Tell ``rpimonitord`` to not start web server (Default: 0)
 
 daemon.readonly=1
   Tell ``rpimonitord`` to not write data on disk. (Default: 0)
@@ -48,17 +48,19 @@ daemon.webroot=/usr/share/rpimonitor/web
   Define the root directory of the web server (Default: ``/usr/share/rpimonitor/web``)
 
 daemon.datastore=/var/lib/rpimonitor
-  Define the data storage directory (Default: ``/var/lib/rpimonitor``)
+  Define the data storage directory (Default: ``/var/lib/rpimonitor``).
 
-daemon.logfile=/var/log/rpimonitor
-  Define directory where logs are stored (Default: ``/var/log/rpimonitor``)
+daemon.logfile=/var/log/rpimonitor.log
+  Define directory where logs are stored when ``rpimonitor`` starts un background (Default: ``/dev/null``)
+
+  .. note:: when ``rpimonitord`` is started in foreground, information a written in ``/dev/stderr``
 
 daemon.shellinabox=https://0.0.0.0:4200/
   Define shellinabox address (Default: calculated automatically based on http request)
 
 SNMP configuration
 ------------------
-  Section ``snmpagent`` is defining SNMP behavior of ``rpimonitord``.
+  ``snmpagent`` is defining SNMP behavior of ``rpimonitord``.
 
   snmpagent.rootoid=.1.3.6.1.4.1
     Define root OID for snmp-agent (Default: .1.3.6.1.4.1)

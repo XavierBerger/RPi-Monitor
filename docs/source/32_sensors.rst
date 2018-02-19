@@ -1,7 +1,7 @@
 :github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/34_sensors.rst
 
-**RPi-Monitor** with sensors
-============================
+Configuration using sensors
+===========================
 
 DHT11 temperature and humidity sensor
 -------------------------------------

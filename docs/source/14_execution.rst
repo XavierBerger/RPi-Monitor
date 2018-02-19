@@ -7,8 +7,8 @@ Startup script
 --------------
 
 **RPi-Monitor** is configured to start automatically. ``/etc/init.d/rpimonitor``
-and link in runlevel startup directory do the job. This script can be executed
-with the following parameters:
+and link in runlevel startup directory (``/etc/rc?.d/``) do the job. 
+This script can be executed with the following parameters:
 
 start
   Start ``rpimonitord`` daemon
@@ -19,7 +19,7 @@ restart
 status
   Show ``rpimonitord`` status
 update
-  Update packages to be installed list. This information is displayed in default 
+  Update 'packages to be installed' list. This information is displayed in default 
   configuration of Web interface
 install_auto_package_status_update
   Add a script to automatically call package update script when ``apt`` commands are executed
@@ -47,7 +47,7 @@ Options
 +-----------------+--------------+------------------------------------------------------------------------+
 |-b, --background |   pid file   | Define the pid file when run in background                             |
 |                 |              +------------------------------------------------------------------------+
-|                 |              | Default: not set                                                       |
+|                 |              | Default: not set, application run in foreground                        |
 +-----------------+--------------+------------------------------------------------------------------------+
 |-c, --conf       | conf file    | Define the configuration file                                          |
 |                 |              +------------------------------------------------------------------------+
@@ -59,7 +59,7 @@ Options
 +-----------------+--------------+------------------------------------------------------------------------+
 |-l, --logfile    | log file     | Logfile directory and prefix (ex: ``/var/log/rpimonitor``)             |
 |                 |              +------------------------------------------------------------------------+
-|                 |              | Default:                                                               |
+|                 |              | Default: ``/dev/null``                                                 |
 +-----------------+--------------+------------------------------------------------------------------------+
 |-p, --port       | port         | Web server port                                                        |
 |                 |              +------------------------------------------------------------------------+
@@ -100,18 +100,19 @@ Configuration can be defined into ``/etc/rpimonitor/daemon.conf`` and
 In ``/etc/rpimonitor/template/*.conf``, provided at installation, you can see 
 how to customize ``rpimonitord``.
 
-.. note:: Configuration defined inside a configuration file always overwrite default values.
-
-.. note:: Configuration given as option of the command line always overwrite the one defined into a file.
+.. note:: * Configuration defined inside a configuration file always overwrite default values.
+          * Configuration given as command line option always overwrite values defined in files.
 
 .. warning:: Be sure to use Linux filefeed format with line ending with LF (and not CR/LF like in Windows)
 
-See `configuration <10_index.html>`_ chapter for details and examples.
+.. seealso:: See `configuration <20_index.html>`_ chapter for details or `usage <30_index.html>`_ chapter for examples.
 
 snmp-agent
 ----------
 ``rpimonotord-snmp`` is the snmp agent provided by **RPi-Monitor**. This agent
 allow ``snmpd`` to access to data exctracted by ``rpimonitord``.
+
+.. seealso:: See `configuration <20_index.html>`_ chapter for details or `usage <30_index.html>`_ chapter for examples.
 
 Raw data access
 ---------------

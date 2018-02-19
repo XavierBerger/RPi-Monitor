@@ -1370,7 +1370,7 @@ OPTIONS
   -h, --help        Shows this help and exit
   -i, --interactive Interactive configuration helper
   -k, --keep        Keep log file (Default: logfile is delete at each start)
-  -l, --logfile     Logfile directory and prefix (ex: /var/log/rpimonitor)
+  -l, --logfile     Logfile (ex: /var/log/rpimonitor.log)
   -m, --mib         Get MIB for current configuration
   -n, --noserver    Don't start embeded web server
   -p, --port        Web server port (Default: 8888)
@@ -1378,7 +1378,7 @@ OPTIONS
                     can be used to collect KPI and get them through snmp.
   -s, --show        Show configuration as loaded and exit
   -t, --timeout     KPI read timeout in seconds (Default: 5)
-  -v, --verbose     Write debug info on screen
+  -v, --verbose     Defines the log level
   -V, --Version     Show version and exit
 
 CONFIGURATION

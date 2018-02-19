@@ -5,18 +5,30 @@ Contributing
 
 Contribute to documentation
 ---------------------------
+**RPi-Monitor** documentation is written in reStructured Text using 
+`sphinx <http://www.sphinx-doc.org/en/master/>`_ document generator and
+`Read the docs theme <https://sphinx-rtd-theme.readthedocs.io/en/latest/index.html>`_
 
 Install sphinx
 ^^^^^^^^^^^^^^
+The following command install sphinx and rtd theme:
+
+::
+
+  pip install sphinx sphinx-autobuild sphinx_rtd_theme
+
 
 Propose a merge request
 ^^^^^^^^^^^^^^^^^^^^^^^
-  
+
+
+
 Generate documentation
 ^^^^^^^^^^^^^^^^^^^^^^
 
 ::
 
+    cd docs
     make clean && make html && firefox build/html/index.html
 
 Contribute to software

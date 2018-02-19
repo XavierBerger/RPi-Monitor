@@ -1,7 +1,7 @@
 :github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/32_examples.rst
 
-**RPi-Monitor** in real world
-=============================
+Configuration examples
+======================
 
 Monitoring a WiFi network
 -------------------------

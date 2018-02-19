@@ -2,9 +2,6 @@
 
 Metrics extraction configuration
 ================================
-This chapter is defining which data to extract how to extract them and when.
-
-You will notice that metrics in **RPi-Monitor** are named **KPI** for Key Performance Indicator.
 
 Include
 -------
@@ -14,19 +11,18 @@ include=<full path to configuration file>
   ``<full path to configuration file>`` is the full path to the configuration 
   file to add at the end of the list of configuration files to be loaded.
 
-.. hint:: The initial order of information displayed in status page depends on the
-          order of file inclusion.
+  .. hint:: The initial order of information displayed in status page depends on the
+            order of file inclusion.
 
 Static
 ------
-KPI representing a metric limit or anything else which do not change over the time 
-is extracted once at ``rpimonitord`` startup (example: memory size, disk size, ...). 
-Each KPI is identified into the configuration file by a line starting with the 
-keyword ``static`` and an identifier ``<static data id>``.
+``static`` is definign KPI which is not changing over the time. KPI are extracted 
+once at ``rpimonitord`` startup (example: memory size, disk size, network bandwidth limit...). 
+
+Each static KPI is identified into the configuration file by a line starting with the 
+keyword ``static``, an identifier ``<static data id>`` and the following parameters.
 
 .. important:: Inside a configuration file ``<static data id>`` should be unique per KPI. 
-
-Each static KPI is defined by an id and with 4 parameters
 
 static.<static data id>.name=<data name>
   ``<data name>`` is a string representing the KPI or the list of KPI
@@ -66,9 +62,7 @@ Dynamic
 -------
 Dynamic KPI are extracted periodically (defined by ``daemon.delay``).
 Each KPI is identified into the conf file by a line stating with the keyword 
-dynamic and an identifier ``<dynamic data id>``
-
-Each dynamic KPI is defined by a ``dynamic data id`` and with 9 parameters
+``dynamic``, an identifier ``<dynamic data id>`` and the following parameters:
 
 dynamic.<dynamic data id>.name=<data name>
   ``<data name>`` is a string representing the KPI or the list of KPI
@@ -79,8 +73,8 @@ dynamic.<dynamic data id>.name=<data name>
 
 dynamic.<dynamic data id>.source=<data source>
   ``<data source>`` is a file or an executable program within the path.
-  If the file exists, rpimonitord will read its content. If the file
-  is not existing, rpimonirotd will try to execute it and will parse
+  If the file exists, ``rpimonitord`` will read its content. If the file
+  is not existing, ``rpimonirotd`` will try to execute it and will parse
   the output.
 
 dynamic.<dynamic data id>.regexp=<data regexp>
@@ -93,9 +87,9 @@ dynamic.<dynamic data id>.postprocess=<data postprocess>
   This 4 first parameters have the same signification as for static
   parameters.
 
-.. note:: Static values are accessible for the post processing using the
-          variable ``$this->{'static'}->{'static_data_name'}`` and can be used.
-          You can refer to swap data extraction to see an example (cf. ``swap.conf``).
+  .. note:: Static values are accessible for the post processing using the
+            variable ``$this->{'static'}->{'static_data_name'}`` and can be used.
+            You can refer to swap data extraction to see an example (cf. ``swap.conf``).
 
 dynamic.<dynamic data id>.interval=<interval>
   ``rpimonitord`` extracts data every ``daemon.delay`` seconds. ``<interval>``
@@ -123,9 +117,9 @@ dynamic.<dynamic data id>.max=<maximal value acceptable in RRD>
   These limits are usefull to handle counter that fall down to 0 when
   they reach their limit (Ex: network graphs)
 
-.. note:: Static values are accessible for the post processing using the
-          variable ``$this->{'static'}->{'static_data_name'}`` and can be used.
-          You can refer to swap data extraction to see an example.
+  .. note:: Static values are accessible for the post processing using the
+            variable ``$this->{'static'}->{'static_data_name'}`` and can be used.
+            You can refer to swap data extraction to see an example.
 
 SNMP OID
 --------
