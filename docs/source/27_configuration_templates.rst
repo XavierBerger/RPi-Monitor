@@ -59,7 +59,7 @@ Each friend is identified by an ``id`` and is described by 2 parameters: ``<name
 Here is an example of configuration : ``/etc/rpimonitor/template/example.friends.conf``
 
 .. include:: ../../src/etc/rpimonitor/template/example.friends.conf
-  :literal:
+   :literal:
 
 .. figure:: _static/friends002.png
    :align: center
@@ -74,7 +74,7 @@ The functions ``Label`` and ``Badge`` are designed to write a text highligted by
 Here is an example of configuration : ``/etc/rpimonitor/template/example.badge_and_label.conf``
 
 .. include:: ../../src/etc/rpimonitor/template/example.badge_and_label.conf
-  :literal:
+   :literal:
 
 In this example, we monitor if the service ``ssh`` is listening on port ``22`` and display a 
 label ``OK`` if yes or a label ``KO`` if not.
@@ -145,7 +145,7 @@ screenshot bellow.
    :align: center
    :width: 500px
 
-   RPi-Monitor showing multiple graph pages
+   **RPi-Monitor** showing multiple graph pages
 
 
 

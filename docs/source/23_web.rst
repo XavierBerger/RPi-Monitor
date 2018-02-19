@@ -65,77 +65,78 @@ web.status.<page id>.content.<status id>.icon=<display icon>
 
 web.status.<page id>.content.<status id>.line.<line number>=<parameter>
   ``<line number>`` represent the position of the line within the strip.
+
   This number has to be unique within the strip.
-  ``<parameter>`` is describing the content of the line. This parameter
-  will be evaluated by the javascript command with the function
-  ``eval()`` theirfore parameter should be valid javacript.
-  To have  clean rendering, **RPi-Monitor** web interface provides some
-  functions that could be used inside the parameter. The object ``data``
-  is also available and contains the result of ``dynamic`` and ``static``
-  extracted as described in the KPI extraction section (Ex: ``data.version``).
+
+  ``<parameter>`` is describing the content of the line. This parameter will be evaluated by the 
+  javascript command with the function ``eval()`` theirfore parameter should be valid javacript.
+  
+  To have  clean rendering, **RPi-Monitor** web interface provides some functions 
+  that could be used inside the parameter. The object ``data`` is also available 
+  and contains the result of ``dynamic`` and ``static`` extracted as described in 
+  the KPI extraction section (Ex: ``data.version``).
 
   Functions provided by **RPi-Monitor** are the following:
 
-      Uptime(uptime in sec)
-        Print the uptime from seconds to the following format:
-        XX year XX days XX hours XX minutes XX seconds
+    - **Uptime(uptime in sec)**
+        Print the uptime from seconds to the following format: XX year XX days XX hours XX minutes XX seconds
 
-      Pad(value)
+    - **Pad(value)**
         Add a prefixed 0 for number smaller than 10
 
-      KMG(value, pre)
+    - **KMG(value, prefix)**
         Print value in kilo, Mega, Giga, Peta.
-        pre can be 'k', 'M', 'G' or 'P' depending on the value.
+        prefix can be 'k', 'M', 'G' or 'P' depending on the value.
 
-      Percent(value,total)
+    - **Percent(value,total)**
         Print percentage of value compared to total
 
-      ProgressBar(value,total,warning, danger)
-        Draw a progressbar representing the value compared to total.
-        [=========------------]
+    - **ProgressBar(value,total,warning, danger)**
+        Draw a progressbar representing the value compared to total. 
+        
         The default color of pregressbar is blue.
-        If warning value is lower than critical, progressbar color will
-        be orange if percentage is higher than warning value and red
-        if the percentage is higher than danger value
-        If warning value is higher than critical, progressbar color will
-        be orange if percentage is lower than warning value and red
-        if the percentage is lower than danger value
 
-      JustGageBar(title, label,min, value, max, width, height, levelColors, warning, critical)
-          Draw a half-circular gauge
-        * title       : Title of the gauge (located on to of the gauge)
-        * label       : Label of the gauge (located under the value)
-        * min         : min value of the gauge
-        * value       : value to be drawn
-        * max         : max value of the gauge
-        * width, height : size of the gauge
-        * levelColors : Array defining colors of each level [normal,warning,critical] (in Hex format), default: green, orange and red. Default colors are available into the array ``percentColors``.
-        * warning     : Warning level (in %) used to define color (default: 33)
-        * critical    : Critical  level (in %) used to define color (default: 66)
+        If warning value is lower than critical, progressbar color will be orange if percentage is higher than warning value and red
+        if the percentage is higher than danger value.
 
-      Plural(value)
+        If warning value is higher than critical, progressbar color will be orange if percentage is lower than warning value and red if the percentage is lower than danger value.
+
+    - **JustGageBar(title, label,min, value, max, width, height, levelColors, warning, critical)**
+        Draw a half-circular gauge
+        
+        + **title**       : Title of the gauge (located on to of the gauge)
+        + **label**       : Label of the gauge (located under the value)
+        + **min**         : min value of the gauge
+        + **value**       : value to be drawn
+        + **max**         : max value of the gauge
+        + **width**, **height** : size of the gauge
+        + **levelColors** : Array defining colors of each level [normal,warning,critical] (in Hex format), default: green, orange and red. Default colors are available into the array ``percentColors``.
+        + **warning**     : Warning level (in %) used to define color (default: 33)
+        + **critical**    : Critical level (in %) used to define color (default: 66)
+
+    - **Plural(value)**
         Print 's ' if value > 1 or ' ' if not.
 
-      Clock(data.localtime)
-        This function is a little bit particular and should be written
-        and should be written exactly as in the upper line. It will
-        display on screen the current time and will simulate the
-        seconds by incrementing them periodically.
+    - **Clock(data.localtime)**
+        This function is a little bit particular and should be written  and should be 
+        written exactly as in the upper line. It will display on screen the current time and 
+        will simulate the seconds by incrementing them periodically.
 
-      Label(data,formula, text, level) Badge(data,formula, text, level)
-          This function will write a label/badge with a defined
-        * background color if the formula return TRUE.
-        * data    : data to use with the formula
-        * formula : formula evaluated in regards to data to determine if label/badge has to be printed
-        * text    : text to be displayed
-        * level   : 'default' (grey), 'primary' (blue label/grey badge), 'success' (green), 'info' (cyan), 'warning' (orange) or 'danger' (red)
+    - **Label(data,formula, text, level)**
+    - **Badge(data,formula, text, level)**
+        This function write a label/badge with a defined background color if the formula return TRUE.
         
-        .. image:: _static/example002.png
+        * **data**    : data to use with the formula
+        * **formula** : formula evaluated in regards to data to determine if label/badge has to be printed
+        * **text**    : text to be displayed
+        * **level**   : 'default' (grey), 'primary' (blue label/grey badge), 'success' (green), 'info' (cyan), 'warning' (orange), 'danger' (red)
+       
+        .. image:: _static/examples002.png
            :align: center
 
-      InsertHTML(url)
-        This function is used to insert an HTML information inside
-        a page. (Ref Top3 example showing top most process cpu usage)
+    - **InsertHTML(url)**
+        This function is used to insert an HTML information inside a page. (Ref Top3 example showing top most process cpu usage)
+
 
 Statistics
 ----------
@@ -168,11 +169,3 @@ web.statistics.<page id>.content.<statistic id>.ds_graph_options.<data name>.lab
 web.statistics.<page id>.content.<statistic id>.graph_options.<parameter>=<value>
   ``<parameter>`` and ``<value>`` can be find into the same web page as previous
   parameter. This allow to customize the graph and axis.
-
-Example file are available in the template directory (prefixed by ``example``).
-To understand how a feature is behaving, you can include this example file
-using the ``include`` directive.
-These include directive are already written (commented) into the default
-configuration file: ``data.conf``
-When configuration files change, it is required to restart ``rpimonitord``.
-

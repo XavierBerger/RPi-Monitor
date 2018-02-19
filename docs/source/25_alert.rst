@@ -2,8 +2,7 @@
 
 Alert configuration
 ===================
-**RPi-Monitor** is able to detect if value exceed a defined value or come back
-to the normal.
+**RPi-Monitor** is able to detect if value exceed a defined value or come back to the normal.
 
 Overview
 --------
@@ -40,7 +39,7 @@ If alert is still active after resend period, alerte is sent again:
 Configuration
 -------------
 
-Each alert is identified by its <alert name>. 
+Each alert is identified by its ``<alert name>``. 
 
 alert.<alert name>.active=<activation condition>
   <activation condition> defines the alert pre-condition. If this formula
@@ -48,7 +47,7 @@ alert.<alert name>.active=<activation condition>
   This command could refer to KPI using keyword ``data.<kpi>``
 
 alert.<alert name>.kpi=<trigger>
-  <trigger> is defining the formula to evaluate. If formula returns true, the
+  ``<trigger>`` is defining the formula to evaluate. If formula returns true, the
   alert is detected. This command should refer to KPI using keyword ``data.<kpi>``
 
 alert.<alert name>.maxalertduration=<duration before raise>

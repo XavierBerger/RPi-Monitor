@@ -29,7 +29,7 @@ Top3 is showing how to use addons to add additionnal information into status
 page. This addons is designed to periodically generate HTML content. This 
 content can be accessible from the addons menu (if addon is configured in 
 ``rpimonotord`` configuration file) and/or can be inserted into status page 
-using the function InsertHTML().
+using the function ``InsertHTML()``.
 
 
 To activate this addon, add the following lines to your configuration file
@@ -64,20 +64,6 @@ Example addon can activate by adding the following lines into the configuration 
   web.addons.3.addons=example
   web.addons.3.parameter=parameter_example
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 Shellinabox Addon
 -----------------
 
@@ -109,7 +95,7 @@ reachable from **RPi-Monitor** internal server or a site available into the Inte
 Webcam Addon
 ------------
 If you want to see the image of your webcam in your brower, you can use hawkeye. 
-Once hawkeye installed, it is very easy to add it into RPi-Monitor interface 
+Once hawkeye installed, it is very easy to add it into **RPi-Monitor** interface 
 using the custom addon. The configuration will then be the following:
 
 ::
@@ -122,4 +108,4 @@ url parameter point to hawkeye web interface. If you are doing such a
 configuration, keep in mind about the security of your images. You should 
 use the capacity of hawkeye to restrict the access to the image using a 
 login and a password. You can also have a look to my article showing how
-to secure the access to **RPi-monitor**. 
+to secure the access to **RPi-monitor**.
