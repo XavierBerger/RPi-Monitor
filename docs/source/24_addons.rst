@@ -69,20 +69,6 @@ Example addon can activate by adding the following lines into the configuration 
 
 .. important:: ``id`` has to start by 1 and incrementing. This is defining the order of addons with the menu.
 
-Shellinabox Addon
------------------
-
-Activating Shellinabox addon allow to have and access to shell inside browser.
-
-::
-
-  web.addons.1.name=ShelleInABox
-  web.addons.1.addons=shellinabox
-
-The behavior of this addon remain the same as previously embedded feature.
-
-.. important:: ``id`` has to start by 1 and incrementing. This is defining the order of addons with the menu.
-
 Custom Addon
 ------------
 
@@ -101,6 +87,31 @@ reachable from **RPi-Monitor** internal server or a site available into the Inte
 
 .. important:: ``id`` has to start by 1 and incrementing. This is defining the order of addons with the menu.
 
+Shellinabox Addon
+-----------------
+
+Shellinabox allow you to access to the shell of your Raspberry Pi through a web interface. 
+
+::
+
+    apt-get install shellinabox
+
+By default shellinabox listening on http://raspberrypi.local:4200/. 
+You can modify this address to point to your shellinabox address. 
+
+This addons is simply perform shellinabox integration in **RPI-Monitor** Interface using ``iframe``.
+
+::
+
+  web.addons.1.name=ShelleInABox
+  web.addons.1.addons=shellinabox
+
+The behavior of this addon remain the same as previously embedded feature.
+
+.. important:: ``id`` has to start by 1 and incrementing. This is defining the order of addons with the menu.
+
+
+
 Webcam Addon
 ------------
 If you want to see the image of your webcam in your brower, you can use hawkeye. 
@@ -111,7 +122,7 @@ using the custom addon. The configuration will then be the following:
 
   web.addons.1.name=Webcam - Hawkeye
   web.addons.1.addons=custom
-  web.addons.1.url=http://raspberry_adress:8000/
+  web.addons.1.url=http://raspberrypi.local:8000/
 
 url parameter point to hawkeye web interface. If you are doing such a 
 configuration, keep in mind about the security of your images. You should 

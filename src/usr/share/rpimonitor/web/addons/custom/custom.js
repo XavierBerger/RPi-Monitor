@@ -10,15 +10,17 @@ $(function () {
   
   options = '<p>'+
               '<b>Custom addons</b><br>'+
-              '<form class="form-inline">'+
-                'Custom url: '+
+              '<form class="form-inline">'
+  if (data[activePage].allowupdate || true ) {
+    options =   'Custom url: '+
                 '<div class="input-group" style="width:465px">'+
                   '<input type="text" class="form-control" id="customuri'+activePage+'">'+
                   '<span class="input-group-btn">'+
                     '<button id="defaulturi" class="btn" type="button">Default</button>'+
                   '</span>'+
-                '</div><br>'+  
-                '<input type="checkbox" id="customwarning'+activePage+'"> Show warning on page close or refresh'+
+                '</div><br>'
+  } 
+  options =     '<input type="checkbox" id="customwarning'+activePage+'"> Show warning on page close or refresh'+
               '</form>'+
             '</p>'
   $(options).insertBefore("#optionsInsertionPoint")
@@ -38,15 +40,17 @@ $(function () {
     localStorage.setItem('customwarning'+activePage, customwarning);
   });
 
-  customuri=(localStorage.getItem('customuri'+activePage) || data[activePage].url || '/addons/custom/custominfo.html');
-  $('#customuri'+activePage).val(customuri);
-  $('#customuri'+activePage).keyup(function(){
-    customuri = $('#customuri'+activePage).val();
-    localStorage.setItem('customuri'+activePage, customuri);
+  if (data[activePage].allowupdate || true ) {
+    customuri=(localStorage.getItem('customuri'+activePage) || data[activePage].url || '/addons/custom/custominfo.html');
+    $('#customuri'+activePage).val(customuri);
+    $('#customuri'+activePage).keyup(function(){
+      customuri = $('#customuri'+activePage).val();
+      localStorage.setItem('customuri'+activePage, customuri);
+      $("#customframe").attr('src', customuri);
+    });
+    
     $("#customframe").attr('src', customuri);
-  });
-  
-  $("#customframe").attr('src', customuri);
+  }
 });
 
 function resize_frame(){
