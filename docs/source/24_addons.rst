@@ -9,18 +9,22 @@ you the possibility to free your imagination and cutomise **RPi-Monitor** to you
 Addons are ``html`` pages, ``javascript`` and ``css`` directly integrated into **RPi-Monitor**.
 The activation of an addon is done into **RPi-Monitor** configuration file. 
 
-The following line is showing how to activate the default addons explaing addons feature: 
+The following line is showing how to activate the default addons explaining addons feature: 
 
 ::
 
   web.addons.1.name=Addons
   web.addons.1.addons=about
 
+To remove this addons, simply comment out or delete these lines.
+
 It is possible to use an addon many time into a same configuration file 
 (using different parameters if the addon support them).
 
 The next part of this chapter shows some examples of addons and highlight
 the possibilities of this feature.
+
+.. important:: ``id`` has to start by 1 and incrementing. This is defining the order of addons with the menu.
 
 Top3 Addon 
 ----------
@@ -31,13 +35,12 @@ content can be accessible from the addons menu (if addon is configured in
 ``rpimonotord`` configuration file) and/or can be inserted into status page 
 using the function ``InsertHTML()``.
 
-
 To activate this addon, add the following lines to your configuration file
  
 ::
 
-  web.addons.2.name=Top3
-  web.addons.2.addons=top3
+  web.addons.1.name=Top3
+  web.addons.1.addons=top3
 
 and configure the ``cron`` of your Raspberry Pi to update the HTML content 
 periodically. This can be done with the following lines:
@@ -46,7 +49,7 @@ periodically. This can be done with the following lines:
 
   * * * * * root cd /usr/share/rpimonitor/web/addons/top3; ./top3 > top3.html
 
-For deeper details, refer to rpimonitor manpage and to comments available into the script top3.
+.. important:: ``id`` has to start by 1 and incrementing. This is defining the order of addons with the menu.
 
 Example Addon
 -------------
@@ -60,9 +63,11 @@ Example addon can activate by adding the following lines into the configuration 
 
 ::
 
-  web.addons.3.name=Addon example
-  web.addons.3.addons=example
-  web.addons.3.parameter=parameter_example
+  web.addons.1.name=Addon example
+  web.addons.1.addons=example
+  web.addons.1.parameter=parameter_example
+
+.. important:: ``id`` has to start by 1 and incrementing. This is defining the order of addons with the menu.
 
 Shellinabox Addon
 -----------------
@@ -71,10 +76,12 @@ Activating Shellinabox addon allow to have and access to shell inside browser.
 
 ::
 
-  web.addons.4.name=ShelleInABox
-  web.addons.4.addons=shellinabox
+  web.addons.1.name=ShelleInABox
+  web.addons.1.addons=shellinabox
 
 The behavior of this addon remain the same as previously embedded feature.
+
+.. important:: ``id`` has to start by 1 and incrementing. This is defining the order of addons with the menu.
 
 Custom Addon
 ------------
@@ -85,12 +92,14 @@ iframe that can display any other web pages.
 
 ::
 
-  web.addons.5.name=Custom addons
-  web.addons.5.addons=custom
-  web.addons.5.url=/addons/custom/custominfo.html
+  web.addons.1.name=Custom addons
+  web.addons.1.addons=custom
+  web.addons.1.url=/addons/custom/custominfo.html
 
 url is defining the page to be displayed into the iframe. It can be a file 
 reachable from **RPi-Monitor** internal server or a site available into the Internet.
+
+.. important:: ``id`` has to start by 1 and incrementing. This is defining the order of addons with the menu.
 
 Webcam Addon
 ------------
@@ -100,12 +109,14 @@ using the custom addon. The configuration will then be the following:
 
 ::
 
-  web.addons.3.name=Webcam - Hawkeye
-  web.addons.3.addons=custom
-  web.addons.3.url=http://raspberry_adress:8000/
+  web.addons.1.name=Webcam - Hawkeye
+  web.addons.1.addons=custom
+  web.addons.1.url=http://raspberry_adress:8000/
 
 url parameter point to hawkeye web interface. If you are doing such a 
 configuration, keep in mind about the security of your images. You should 
 use the capacity of hawkeye to restrict the access to the image using a 
 login and a password. You can also have a look to my article showing how
 to secure the access to **RPi-monitor**.
+
+.. important:: ``id`` has to start by 1 and incrementing. This is defining the order of addons with the menu.

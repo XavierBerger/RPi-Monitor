@@ -101,6 +101,10 @@ web.status.<page id>.content.<status id>.line.<line number>=<parameter>
 
         If warning value is higher than critical, progressbar color will be orange if percentage is lower than warning value and red if the percentage is lower than danger value.
 
+        .. figure:: _static/web001.png
+           :align: center
+           :width: 500px
+
     - **JustGageBar(title, label,min, value, max, width, height, levelColors, warning, critical)**
         Draw a half-circular gauge
         
@@ -113,6 +117,10 @@ web.status.<page id>.content.<status id>.line.<line number>=<parameter>
         + **levelColors** : Array defining colors of each level [normal,warning,critical] (in Hex format), default: green, orange and red. Default colors are available into the array ``percentColors``.
         + **warning**     : Warning level (in %) used to define color (default: 33)
         + **critical**    : Critical level (in %) used to define color (default: 66)
+
+        .. figure:: _static/web002.png
+           :align: center
+           :width: 500px
 
     - **Plural(value)**
         Print 's ' if value > 1 or ' ' if not.
@@ -131,7 +139,7 @@ web.status.<page id>.content.<status id>.line.<line number>=<parameter>
         * **text**    : text to be displayed
         * **level**   : 'default' (grey), 'primary' (blue label/grey badge), 'success' (green), 'info' (cyan), 'warning' (orange), 'danger' (red)
        
-        .. image:: _static/examples002.png
+        .. image:: _static/web003.png
            :align: center
 
     - **InsertHTML(url)**
@@ -169,3 +177,27 @@ web.statistics.<page id>.content.<statistic id>.ds_graph_options.<data name>.lab
 web.statistics.<page id>.content.<statistic id>.graph_options.<parameter>=<value>
   ``<parameter>`` and ``<value>`` can be find into the same web page as previous
   parameter. This allow to customize the graph and axis.
+
+Addons
+------
+  **RPi-Monitor** features can be extended by addons. Addons are html, javascript
+  and css code installed in ``/usr/share/rpimonitor/web/addons/``.
+
+  Each addons is idendifier by an ``id`` and the following parameters:
+
+  .. important:: ``id`` has to start by 1 and incrementing. This is defining the order of addons with the menu.
+
+  web.addons.<id>.name=<name to be display>
+    ``<name to be display>`` defines the text display in RPi-Monitor web interface
+ 
+  web.addons.<id>.addons=<addon name>
+    ``<addon name>`` defines the addon to activate
+ 
+  web.addons.<id>.showTitle=<0|1>
+    ``<0|1>`` defines it the title of addon has to be shown in addon page
+ 
+  web.addons.<id>.<parameter>=<value>
+    ``<parameter>=<value>`` are optional parameter to configure addon
+
+  .. seealso:: Example of addons in `addons configuration <24_addons.html>`_
+ 

@@ -1,7 +1,7 @@
 :github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/44_changelog.rst
 
-Changelog
-=========
+Release note
+============
 
 v2.13-beta3 
 -----------

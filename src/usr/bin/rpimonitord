@@ -149,10 +149,12 @@ sub Load
     #print Data::Dumper->Dump([$this->{'rrdlist'}]);
   }
 
-  # manage top page common parameters
-  $this->{'web'}->{'page'}->{'icon'}      ||= "img/logo.png";
-  $this->{'web'}->{'page'}->{'menutitle'} ||= "'RPi-Monitor  <sub>('+data.hostname+')</sub>''";
-  $this->{'web'}->{'page'}->{'pagetitle'} ||= "'RPi-Monitor ('+data.hostname+')'";
+  # manage top page default parameters
+  $this->{'web'}->{'page'}->{'icon'}       ||= "img/logo.png";
+  $this->{'web'}->{'page'}->{'menutitle'}  ||= "'RPi-Monitor  <sub>('+data.hostname+')</sub>''";
+  $this->{'web'}->{'page'}->{'pagetitle'}  ||= "'RPi-Monitor ('+data.hostname+')'";
+  $this->{'web'}->{'menu'}->{'status'}->{'name'}     ||= "Raspberry Pi";
+  $this->{'web'}->{'menu'}->{'statistics'}->{'name'} ||= "Raspberry Pi";
 
   # manage menu
   foreach (@{$this->{'web'}->{'status'}}) {
