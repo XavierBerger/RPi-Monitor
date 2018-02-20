@@ -10,7 +10,7 @@ Addons are ``html`` pages, ``javascript`` and ``css`` directly integrated into *
 The activation of an addon is done into **RPi-Monitor** configuration file.
 
 It is possible to use an addon many time into a same configuration file using 
-different parameters if the addon support them as show with `custom addon<24_addons#custom-addon>`_.
+different parameters if the addon support them as show with `custom addon <24_addons.html#id3>`_.
 
 The next part of this chapter shows some examples of addons and highlight the possibilities of this feature.
 
@@ -19,7 +19,7 @@ About Addon
 
 About addons is activated by default and present addons feature. 
 
-To remove this addons, simply comment out or delete the fillowing lines from ``/etc/rpimonitor/data.conf``.
+To remove this addons, simply comment out or delete the following lines from ``/etc/rpimonitor/data.conf``.
 
 ::
 
@@ -77,7 +77,7 @@ iframe that can display any other web pages.
 Shellinabox
 ^^^^^^^^^^^
 
-`Shellinabox<https://github.com/shellinabox/shellinabox>`_ allow you to access to the shell of your 
+`Shellinabox <https://github.com/shellinabox/shellinabox>`_ allow you to access to the shell of your 
 Raspberry Pi through a web interface. 
 
 Installing shellinabox can be done with the following command:
@@ -100,7 +100,7 @@ Shellinabox can be integrated to **RPi-Monitor** with custom addon as follow:
 Webcam 
 ^^^^^^
 
-If you want to see the image of your webcam in your brower, you can use `hawkeye<https://github.com/ipartola/hawkeye>`_. 
+If you want to see the image of your webcam in your brower, you can use `hawkeye <https://github.com/ipartola/hawkeye>`_. 
 Once hawkeye installed, it is very easy to add it into **RPi-Monitor** interface 
 using the custom addon. The configuration will then be the following:
 
@@ -117,7 +117,7 @@ using the custom addon. The configuration will then be the following:
             security of your images. You should use the capacity of hawkeye to 
             restrict the access to the image using a login and a password. 
             
-            .. seealso:: You can also have a look to `Authentication and secure access to RPi-Monitor<34_authentication.html>`_.
+            .. seealso:: You can also have a look to `Authentication and secure access to RPi-Monitor <34_autentication.html>`_.
 
 Example Addon
 -------------

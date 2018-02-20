@@ -16,22 +16,22 @@ Configuration
 .. toctree::
    :maxdepth: 2
 
-   23_web
+   23_configuration_helper
+
+.. toctree::
+   :maxdepth: 2
+
+   24_web
 
 .. toctree::
    :maxdepth: 3
 
-   24_addons
+   25_addons
 
 .. toctree::
    :maxdepth: 2
 
-   25_alert
-
-.. toctree::
-   :maxdepth: 2
-
-   26_configuration_helper
+   26_alert
 
 .. toctree::
    :maxdepth: 2
