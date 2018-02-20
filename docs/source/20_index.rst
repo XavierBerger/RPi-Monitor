@@ -19,7 +19,7 @@ Configuration
    23_web
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    24_addons
 

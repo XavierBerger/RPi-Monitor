@@ -9,6 +9,9 @@ you the possibility to free your imagination and cutomise **RPi-Monitor** to you
 Addons are ``html`` pages, ``javascript`` and ``css`` directly integrated into **RPi-Monitor**.
 The activation of an addon is done into **RPi-Monitor** configuration file. 
 
+About Addon 
+-----------
+
 The following line is showing how to activate the default addons explaining addons feature: 
 
 ::
@@ -76,19 +79,20 @@ If you are not confortable with html, javascript and css, the addon custom may
 help you to customise RPi-Monitor to your wishes. This addons implement an 
 iframe that can display any other web pages.
 
-::
-
-  web.addons.1.name=Custom addons
-  web.addons.1.addons=custom
-  web.addons.1.url=/addons/custom/custominfo.html
-
-url is defining the page to be displayed into the iframe. It can be a file 
-reachable from **RPi-Monitor** internal server or a site available into the Internet.
+  web.addons.<id>.name=<name>
+    ``<name>``
+  web.addons.<id>.addons=custom
+    ``custom``
+  web.addons.<id>.url=<url>
+    ``url`` is defining the page to be displayed into the iframe. It can be a file 
+    reachable from **RPi-Monitor** internal server or a site available into the Internet.
+  web.addons.<id>.allowupdate=<allow update>
+    ``<allow update>``
 
 .. important:: ``id`` has to start by 1 and incrementing. This is defining the order of addons with the menu.
 
-Shellinabox Addon
------------------
+Shellinabox
+^^^^^^^^^^^
 
 Shellinabox allow you to access to the shell of your Raspberry Pi through a web interface. 
 
@@ -104,16 +108,17 @@ This addons is simply perform shellinabox integration in **RPI-Monitor** Interfa
 ::
 
   web.addons.1.name=ShelleInABox
-  web.addons.1.addons=shellinabox
+  web.addons.1.addons=custom
+  web.addons.1.url=https://raspberrypi.local:4200/
+  web.addons.1.allowupdate=false
 
 The behavior of this addon remain the same as previously embedded feature.
 
 .. important:: ``id`` has to start by 1 and incrementing. This is defining the order of addons with the menu.
 
+Webcam 
+^^^^^^
 
-
-Webcam Addon
-------------
 If you want to see the image of your webcam in your brower, you can use hawkeye. 
 Once hawkeye installed, it is very easy to add it into **RPi-Monitor** interface 
 using the custom addon. The configuration will then be the following:
