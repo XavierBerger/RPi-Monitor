@@ -157,3 +157,5 @@ I want to uninstall **RPi-Monitor**, How can I do it?
   ::
 
       sudo apt-get purge rpimontor
+
+  Finally delete the directory ``/var/lib/rpimonitor``
