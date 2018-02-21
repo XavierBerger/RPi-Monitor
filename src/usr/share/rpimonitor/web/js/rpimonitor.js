@@ -270,7 +270,10 @@ function UpdateMenu(){
   }
 
   var data = getData('menu');
-  if ( data.status != undefined ) {
+  if ( data.status == undefined ) {
+    $('#statusmenu').addClass('hide');
+  }
+  else{
     if ( data.status.length > 1 ){
       $('#statusmenu').addClass('dropdown');
       var dropDownMenu='<ul class="dropdown-menu">';
@@ -285,7 +288,11 @@ function UpdateMenu(){
       $('#statuslink').attr('href','#');
     }
   }
-  if ( data.statistics != undefined ) {
+
+  if ( data.statistics == undefined ) {
+    $('#statisticsmenu').addClass('hide');
+  }
+  else {
     if ( data.statistics.length > 1 ){
       $('#statisticsmenu').addClass('dropdown');
       var dropDownMenu='<ul class="dropdown-menu">';

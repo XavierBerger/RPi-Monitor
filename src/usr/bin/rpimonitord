@@ -156,10 +156,12 @@ sub Load
 
   # manage menu
   foreach (@{$this->{'web'}->{'status'}}) {
-    $_->{'name'} and push(@{$this->{'web'}->{'menu'}->{'status'}}, $_->{'name'});
+    $_->{'name'} and push(@{$this->{'web'}->{'menu'}->{'status'}}, $_->{'name'})
+                 or  push(@{$this->{'web'}->{'menu'}->{'status'}}, "Status");
   }
   foreach (@{$this->{'web'}->{'statistics'}}) {
-    $_->{'name'} and push(@{$this->{'web'}->{'menu'}->{'statistics'}}, $_->{'name'});
+    $_->{'name'} and push(@{$this->{'web'}->{'menu'}->{'statistics'}}, $_->{'name'})
+                 or  push(@{$this->{'web'}->{'menu'}->{'statistics'}}, "Statistics");
   }
   foreach (@{$this->{'web'}->{'addons'}}) {
     $_->{'name'} and push(@{$this->{'web'}->{'menu'}->{'addons'}}, $_->{'name'});
@@ -542,8 +544,8 @@ sub Run
     /(img\/.*\.png)$/;
     unshift ( @{$this->{'paths'}}, $1);
   }
-  if ( ! $configuration->{'daemon'}->{'readonly'} ) {
-    @{$this->{'paths'}} = ( @{ $configuration->{'rrdlist'}}, @{$this->{'paths'}} );
+  if ( ! $configuration->{'daemon'}->{'readonly'} ) { 
+    $configuration->{'rrdlist'} and @{$this->{'paths'}} = ( @{ $configuration->{'rrdlist'}}, @{$this->{'paths'}} );
   }
   $this->{'status'} = to_json(\@{$configuration->{'web'}->{'status'}});
   $this->{'statistics'} = to_json(\@{$configuration->{'web'}->{'statistics'}});
