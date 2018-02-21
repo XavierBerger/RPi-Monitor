@@ -38,13 +38,13 @@ static.<static data id>.source=<data source>
   the output.
 
   .. note:: In ``<data source>`` it is possible to refer to another ``<data name>``
-            with the prefix ``data.`` followed by ``<data name>``: ``data.<data name>``
-
+            with the prefix ``data.`` followed by ``<data name>``. This data could 
+            refer to ``dynamic`` or ``static`` KPI. 
+            
             **Example**: ``data.kernel_version``
 
-            This data could refer to ``dynamic`` or ``static`` KPI. 
-          
-            .. important:: The order of KPI extraction is important. 
+            .. important:: The order of KPI extraction is important.
+
                            Data used should already been extracted to be accessible.
 
 static.<static data id>.regexp=<data regexp>
@@ -97,11 +97,11 @@ dynamic.<dynamic data id>.interval=<interval>
   Default value is ``1``. This means that data is extracted at every loop.
 
 dynamic.<dynamic data id>.default=<default>
-  If rpimonitor can't extract information, it is now possible to define
+  If ``rpimonitord`` can't extract information, it is now possible to define
   a ``<default>`` value which will be set for the KPI.
 
 dynamic.<dynamic data id>.rrd=<GAUGE|COUNTER|DERIVE|ABSOLUTE|COMPUTE>
-  rrd parameter is defining if the KPI has to be stored into a RRD
+  ``rrd`` parameter is defining if the KPI has to be stored into a RRD
   database and how ``<GAUGE|COUNTER|DERIVE|ABSOLUTE|COMPUTE>``. If the
   parameter is defined as empty, no RRD database will be created. If
   this parameter is defined, a RRD database will be created and data

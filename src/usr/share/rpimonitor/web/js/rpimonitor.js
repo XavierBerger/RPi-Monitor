@@ -270,31 +270,35 @@ function UpdateMenu(){
   }
 
   var data = getData('menu');
-  if ( data.status.length > 1 ){
-    $('#statusmenu').addClass('dropdown');
-    var dropDownMenu='<ul class="dropdown-menu">';
-    for ( var iloop=0; iloop < data.status.length; iloop++){
-      dropDownMenu+='<li><a href="status.html?activePage='+iloop+'">'+data.status[iloop]+'</a></li>';
+  if ( data.status != undefined ) {
+    if ( data.status.length > 1 ){
+      $('#statusmenu').addClass('dropdown');
+      var dropDownMenu='<ul class="dropdown-menu">';
+      for ( var iloop=0; iloop < data.status.length; iloop++){
+        dropDownMenu+='<li><a href="status.html?activePage='+iloop+'">'+data.status[iloop]+'</a></li>';
+      }
+      dropDownMenu+='</ul>';
+      $('#statuslink').html( 'Status <b class="caret"></b>')
+      $(dropDownMenu).insertAfter('#statuslink');
+      $('#statuslink').addClass('dropdown-toggle');
+      $('#statuslink').attr('data-toggle','dropdown');
+      $('#statuslink').attr('href','#');
     }
-    dropDownMenu+='</ul>';
-    $('#statuslink').html( 'Status <b class="caret"></b>')
-    $(dropDownMenu).insertAfter('#statuslink');
-    $('#statuslink').addClass('dropdown-toggle');
-    $('#statuslink').attr('data-toggle','dropdown');
-    $('#statuslink').attr('href','#');
   }
-  if ( data.statistics.length > 1 ){
-    $('#statisticsmenu').addClass('dropdown');
-    var dropDownMenu='<ul class="dropdown-menu">';
-    for ( var iloop=0; iloop < data.statistics.length; iloop++){
-      dropDownMenu+='<li><a href="statistics.html?activePage='+iloop+'">'+data.statistics[iloop]+'</a></li>';
+  if ( data.statistics != undefined ) {
+    if ( data.statistics.length > 1 ){
+      $('#statisticsmenu').addClass('dropdown');
+      var dropDownMenu='<ul class="dropdown-menu">';
+      for ( var iloop=0; iloop < data.statistics.length; iloop++){
+        dropDownMenu+='<li><a href="statistics.html?activePage='+iloop+'">'+data.statistics[iloop]+'</a></li>';
+      }
+      dropDownMenu+='</ul>';
+      $('#statisticslink').html( 'Statistics <b class="caret"></b>')
+      $(dropDownMenu).insertAfter('#statisticslink');
+      $('#statisticslink').addClass('dropdown-toggle');
+      $('#statisticslink').attr('data-toggle','dropdown');
+      $('#statisticslink').attr('href','#');
     }
-    dropDownMenu+='</ul>';
-    $('#statisticslink').html( 'Statistics <b class="caret"></b>')
-    $(dropDownMenu).insertAfter('#statisticslink');
-    $('#statisticslink').addClass('dropdown-toggle');
-    $('#statisticslink').attr('data-toggle','dropdown');
-    $('#statisticslink').attr('href','#');
   }
 
   if ( data.addons != undefined ) {
