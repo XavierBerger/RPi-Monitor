@@ -6,7 +6,7 @@ Getting started
 .. toctree::
    :maxdepth: 2
    
-   11_first_installation
+   11_installation
 
 .. toctree::
    :maxdepth: 2
@@ -16,10 +16,5 @@ Getting started
 .. toctree::
    :maxdepth: 2
 
-   13_upgrade_uninstall
-
-.. toctree::
-   :maxdepth: 2
-
-   14_execution
+   13_execution
 

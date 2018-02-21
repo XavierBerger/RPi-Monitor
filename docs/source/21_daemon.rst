@@ -13,8 +13,8 @@ daemon.sharedmemkey=20130906
 daemon.delay=10
   Define the delay in seconds between 2 KPIs extraction (Default: 10)
 
-.. important:: If you want to change the default delay, the rrd file will
-               have to be deleted ``rpimonitord`` will recreate them at next startup
+.. important:: If you want to change the default delay, the rrd files in ``/var/lib/rpimonitor/stat``
+               have to be deleted. ``rpimonitord`` will recreate these files at next startup.
 
 daemon.timeout=5
   Define the maximum duration in seconds of KPI extraction. If this timeout is triggered, KPI
@@ -35,14 +35,14 @@ daemon.port=8888
 daemon.user=pi
   Define user used to run embedded web server process (Default: pi)
   
-.. note:: If user is not existing, process will run with ``uid=1000``
+  .. note:: If user is not existing, process will run with ``uid=1000``
 
 daemon.group=pi
   Define group used to run embedded web server process (Default: pi)
   
-.. note:: If group is not existing, process will run with ``gid=1000``
+  .. note:: If group is not existing, process will run with ``gid=1000``
 
-.. important:: Extraction daemon of **RPi-Monitor** running as root.
+  .. important:: Extraction daemon of **RPi-Monitor** running as root.
 
 daemon.webroot=/usr/share/rpimonitor/web
   Define the root directory of the web server (Default: ``/usr/share/rpimonitor/web``)
@@ -54,9 +54,6 @@ daemon.logfile=/var/log/rpimonitor.log
   Define directory where logs are stored when ``rpimonitor`` starts un background (Default: ``/dev/null``)
 
   .. note:: when ``rpimonitord`` is started in foreground, information a written in ``/dev/stderr``
-
-daemon.shellinabox=https://0.0.0.0:4200/
-  Define shellinabox address (Default: calculated automatically based on http request)
 
 SNMP configuration
 ------------------

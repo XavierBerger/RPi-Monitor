@@ -28,12 +28,14 @@ Storing metrics
 Presenting collected metrics
 ----------------------------
   **RPi-Monitor** embed a web server designed to present collected metrics.
-  Instantaneous data are presented in the status page. Metrics stored into the RRD
-  are presented as statistics pages. The web interface allow user to reoganise
-  statistics by drag'n drop. Statistics page allow to zoom over graph to see 
-  details of the mertics.
+  Instantaneous data are presented in the status page. Metrics stored in RRD
+  are presented in statistics pages. 
+  
+  The web interface allow user to reorganise status information by drag'n drop. 
+  
+  Statistics page allow to zoom over graph to see details of the mertics.
 
-  Embedded web server can be disable and page can be served by an external web server.
+  Embedded web server can be disable and pages can be served by an external web server.
 
 Configurable
 ------------
@@ -51,14 +53,18 @@ Processing metrics and raising alerts
 -------------------------------------
   **RPi-Monitor** embed an alert engine fully configurable and able to determine
   if metrics are out of expected range and raise alerts.
+  
+  When an alert is detected, **RPi-Monitor** can execute an action. For example, sending email or SMS.
+
   Definition of critera of alert detection as well as action to perform when alert
   is detected are fully configurable.
 
 Read only mode
 --------------
   If writing data on disk/eMMC/SSD/SDCard/... is not possible, **RPi-Monitor** 
-  can be executed in read only mode. Metrics can be retrived either by web 
-  interface in json format or through SNMP. 
+  can be executed in **read-only** mode. 
+  
+  Metrics can be retrived either by web interface in json format or through SNMP. 
 
 Sharing metrics
 ---------------

@@ -1,7 +1,7 @@
 :github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/11_first_installation.rst
 
-First installation
-==================
+Installation and ugrade
+=======================
 
 Installation from repository
 ----------------------------
@@ -55,3 +55,21 @@ Execute the following command to update packages information
   sudo /etc/init.d/rpimonitor update
 
 
+Upgrade
+-------
+
+If you have performed an `installation from repository <11_first_installation.html#installation-from-repository>`_
+you can upgrade **RPi-Monitor** with the following command:
+
+::
+
+  sudo apt-get update
+  sudo apt-get upgrade
+
+
+After installation you should excute the following command to update information 
+about upgradable packages:
+
+::
+
+  sudo /etc/init.d/rpimonitor update

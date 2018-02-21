@@ -144,4 +144,16 @@ I required better resolutions of the reading provided by the RPI monitor. Can we
   Yes, since version 2.11, it is possible to define the RRD structure per data 
   extracted. Refer to documentation and man page to know how use this 
   advanced feature.
-  
+
+I want to uninstall **RPi-Monitor**, How can I do it?
+  To uninstall **RPi-Monitor**, you can execute the following command:
+
+  ::
+
+      sudo apt-get remove rpimonitor
+
+  or:
+
+  ::
+
+      sudo apt-get purge rpimontor
