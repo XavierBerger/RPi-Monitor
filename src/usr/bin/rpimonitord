@@ -151,7 +151,7 @@ sub Load
 
   # manage top page default parameters
   $this->{'web'}->{'page'}->{'icon'}       ||= "img/logo.png";
-  $this->{'web'}->{'page'}->{'menutitle'}  ||= "'RPi-Monitor  <sub>('+data.hostname+')</sub>''";
+  $this->{'web'}->{'page'}->{'menutitle'}  ||= "'RPi-Monitor  <sub>('+data.hostname+')</sub>'";
   $this->{'web'}->{'page'}->{'pagetitle'}  ||= "'RPi-Monitor ('+data.hostname+')'";
 
   # manage menu
