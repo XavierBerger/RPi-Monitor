@@ -176,3 +176,11 @@ ds_graph_options. Details of this parameter can be found in javascriptrrd help p
 Restart rpimonitor to activate the new graph.
 
 After waiting a little time to let the system extract data you will see this kind of graph.
+
+
+Monitor rclone
+--------------
+
+
+Use MRTG with RPi-Monitor in read-only mode
+--------------------------------------------

@@ -14,6 +14,10 @@ different parameters if the addon support them as show with `custom addon <24_ad
 
 The next part of this chapter shows some examples of addons and highlight the possibilities of this feature.
 
+.. figure:: _static/addons001.png
+   :align: center
+   :width: 500px
+
 About Addon 
 -----------
 
@@ -30,6 +34,10 @@ Top3 Addon
 ----------
 
 Top3 is showing how to use addons to add additionnal information into status page. 
+
+.. figure:: _static/addons002.png
+   :align: center
+   :width: 400px
 
 This addons is designed to periodically generate HTML content. This content can be 
 accessible from the addons menu and/or can be inserted into status page 
@@ -53,12 +61,18 @@ To add top3 information into status page, add the following line to configuratio
   
   web.status.1.content.1.line.1=InsertHTML("/addons/top3/top3.html")
 
+
+
 Custom Addon
 ------------
 
 If you are not confortable with html, javascript and css, the addon custom may 
 help you to customise **RPi-Monitor** to your wishes. This addons implement an 
 iframe that can display any other web pages.
+
+.. figure:: _static/addons003.png
+   :align: center
+   :width: 500px
 
   web.addons.<id>.name=<name>
     ``<name>`` represent the name displayed in addon menu or addon title
@@ -73,6 +87,7 @@ iframe that can display any other web pages.
     ``<allow update>`` define is ``url`` can be updated in option
 
   .. important:: ``id`` has to start by 1 and incrementing. This is defining the order of addons with the menu.
+
 
 Shellinabox
 ^^^^^^^^^^^
@@ -124,6 +139,10 @@ Example Addon
 
 If you want to develop your own addon, you can refer to the example addons to 
 see how to implement such a feature.
+
+.. figure:: _static/addons006.png
+   :align: center
+   :width: 500px
 
 Example addon is providing a ``html`` page, a ``javacript`` and a ``css`` showing 
 how an addon page can interact with **RPi-Monitor**.  
