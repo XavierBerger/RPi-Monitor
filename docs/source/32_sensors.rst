@@ -11,10 +11,11 @@ Overview
 In this chapter we will see how to connect a DHT11 or DHT22 Temperature and
 Humidity sensor and configure **RPi-Monitor** to present and draw the outputs.
 
-This article will also explain dual-axis feature.
+We will also see how to steup dual-axis.
 
-Adafruit created a very good tutorial explaining how to use DHT11 or DHT22 . 
-This tutorial is available at this `here <http://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/wiring>`_.
+.. seealso:: Adafruit created a very good tutorial explaining how to use DHT11 or DHT22.
+
+             This tutorial is available at this `here <http://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/wiring>`_.
 
 Electronic assembly
 ^^^^^^^^^^^^^^^^^^^
@@ -61,31 +62,27 @@ You should see the information about temperature and humidity displayed as shown
 
 RPi-Monitor configuration
 ^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. warning:: Be sure to use Linux linefeed format with line ending with LF 
-             (and not CR/LF like in Windows).
-
 Let's now use this information and add humidity graphs on existing temperature graph.
 
 We first have to extract the data. This is done like this:
 
 ::
 
-    dynamic.17.name=humidity 
-    dynamic.17.source=Adafruit_DHT 11 27 
-    dynamic.17.regexp=Hum = (\S+) 
-    dynamic.17.postprocess= 
-    dynamic.17.rrd=GAUGE
+    dynamic.1.name=humidity 
+    dynamic.1.source=Adafruit_DHT 11 27 
+    dynamic.1.regexp=Hum = (\S+) 
+    dynamic.1.postprocess= 
+    dynamic.1.rrd=GAUGE
 
 We will now add the humidity curve into the graph of temperature. 
 This can be done with the configuration bellow:
 
 ::
 
-    web.statistics.1.content.8.name=humidity 
-    web.statistics.1.content.8.ds_graph_options.humidity.label=Humidity (%) 
-    web.statistics.1.content.8.ds_graph_options.humidity.yaxis=2 
-    web.statistics.1.content.8.graph_options.y2axis={ position: "right", min: 0, max: 100 }
+    web.statistics.1.content.1.name=humidity 
+    web.statistics.1.content.1.ds_graph_options.humidity.label=Humidity (%) 
+    web.statistics.1.content.1.ds_graph_options.humidity.yaxis=2 
+    web.statistics.1.content.1.graph_options.y2axis={ position: "right", min: 0, max: 100 }
 
 As the unit are different than the one existing on the initial axis, 
 we will add a second axis for the percentage of humidity. This is the purpose 
@@ -107,7 +104,7 @@ After restarting RPi-Monotor with the command:
 
 You will see a new curve in Temperature graph as shown in the screenshot bellow:
 
-.. figure:: _static/sensor001.png
+.. figure:: _static/sensor002.png
   :width: 400px 
   :align: center
   

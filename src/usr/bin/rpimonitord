@@ -449,6 +449,9 @@ sub DoGET
   if( ! $configuration->{'daemon'}->{'readonly'}) {
     $path =~ /([^\/]+)\.json/ and $this->SendJSON($this->{$1}) and return;
     
+    #If requested rrd doesn't exist, return empty.rrd
+    $path =~ /rrd$/ and ! -f "$configuration->{'daemon'}->{'datastore'}/$path" and $path="empty.rrd";
+
     #Recreate empty rrd on demand
     $path =~ /empty\.rrd/ and $configuration->CreateRRD( "$configuration->{'daemon'}->{'datastore'}/stat/empty.rrd", 'empty', 'GAUGE', 'U', 'U' );
 
