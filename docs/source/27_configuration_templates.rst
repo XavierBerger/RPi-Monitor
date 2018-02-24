@@ -102,6 +102,44 @@ Here is the result:
 
 
 
+
+
+
+Multiple pages
+--------------
+
+Status and statistics can be sorted in pages. The parameter ``<page id>`` of
+``web`` configuration is defining in which page data is displayed.
+
+
+Here is an example of configuration : ``/etc/rpimonitor/template/example.multipage.conf``
+
+.. include:: ../../src/etc/rpimonitor/template/example.multipage.conf
+   :literal:
+
+The new page will be accessible by a drop down menu as shown in the screenshot bellow.
+
+.. figure:: _static/multipages001.png
+   :align: center
+   :width: 500px
+
+   **RPi-Monitor** showing multiple status pages
+
+.. figure:: _static/multipages002.png
+   :align: center
+   :width: 500px
+
+   **RPi-Monitor** showing multiple graph pages
+
+
+
+
+
+
+
+
+
+
 |
 | 
 |
@@ -120,39 +158,6 @@ Here is the result:
 |
 |
 |
-
-
-
-
-
-
-Multiple pages
---------------
-
-This version of RPi-Monitor introduce the notion of pages. Adding a new page 
-can be done in configuration file by setting the parameter named ``<page id>``.
-RPi-Monitor will automatically interpret this new id and create the associated 
-page. The new page will be accessible by a drop down menu as shown in the 
-screenshot bellow.
-
-.. figure:: _static/multipages001.png
-   :align: center
-   :width: 500px
-
-   RPi-Monitor showing multiple status pages
-
-.. figure:: _static/multipages002.png
-   :align: center
-   :width: 500px
-
-   **RPi-Monitor** showing multiple graph pages
-
-
-
-
-
-
-
 
 
 

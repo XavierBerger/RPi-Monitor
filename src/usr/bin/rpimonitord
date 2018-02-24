@@ -233,7 +233,8 @@ sub LoadFile
             $page=$current;
           }
           # Manage per file indexes unicity
-          if ( ($root eq "static")            ||
+          if ( ($root eq "addons")            ||
+               ($root eq "static")            ||
                ($root eq "dynamic")           ||
                ( ( ($root eq 'status' )       ||
                    ($root eq 'statistics' ) ) &&
