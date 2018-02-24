@@ -126,125 +126,62 @@ The new page will be accessible by a drop down menu as shown in the screenshot b
 
    **RPi-Monitor** showing multiple graph pages
 
+Progress bar
+------------
 
+The functions ``ProgressBar`` are designed to draw a progress bar. Default color is bleu.
+Color can change base on **warning** and **danger** thresholds.
 
+Here is an example of configuration : ``/etc/rpimonitor/template/example.progressbar.conf``
 
+.. include:: ../../src/etc/rpimonitor/template/example.progressbar.conf
+   :literal:
 
+Here is the result:
 
-
-
-
-
-|
-| 
-|
-|
-|
-|
-|
-|
-| WORK IN PROGRESS
-|
-|
-|
-|
-|
-|
-|
-|
-|
-
-
-
-
-
-
-
-
-example.progressbar.conf 
-------------------------
-
-.. figure:: _static/examples003.png
+.. figure:: _static/web001.png
     :width: 400px 
     :align: center
 
     Show warning and critical and colors 
 
-
-
-
-
-|
-| 
-|
-|
-|
-|
-|
-|
-| WORK IN PROGRESS
-|
-|
-|
-|
-|
-|
-|
-|
-|
-
-example.justgage.conf
----------------------
-
-.. figure:: _static/examples004.png
-    :width: 400px 
-    :align: center
-
-    Show justgage and customisation
-
-example.visibility.conf
------------------------
-
-.. figure:: _static/examples005.png
-    :width: 400px 
-    :align: center
-
-    Show visibility feature
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
 JustGageBar
 -----------
 
-A new widget is now available to display information in status page. Justgage is a handy JavaScript plugin for generating and animating nice & clean gauges. It is based on Raphaël library for vector drawing, so it’s completely resolution independent and self-adjusting.
+Justgage is a handy JavaScript plugin for generating and animating nice & clean gauges. 
+It is based on Raphaël library for vector drawing, so it’s completely resolution independent and self-adjusting.
 
-::
+Here is an example of configuration : ``/etc/rpimonitor/template/example.justgage.conf``
 
-  JustGageBar(title, label,min, value, max, width, height, levelColors, warning, critical)
- 
-To see how justgage behave, you can activate the configuration file ``example.justgage.conf``
- (Ref example explaination and screenshot upper).
+.. include:: ../../src/etc/rpimonitor/template/example.justgage.conf
+   :literal:
 
+Here is the result:
+
+.. figure:: _static/web002.png
+    :width: 400px 
+    :align: center
+
+    Show warning and critical and colors 
 
 Visibility
 ----------
 
-A new parameter can be used in configuration file defining a visibility of a row:
+Visibility parameter define if a row should be displayed or not. It could be usefull 
+for monitoring of an external disk which could be disconnected.
 
-::
+Here is an example of configuration : ``/etc/rpimonitor/template/example.visibility.conf``
 
-  web.status.<page id>.content.<row id>.visibility=<visibility formula>
+In this example, the row is alternativelly dosplayed and hide depending on minute parity.
 
-``<visibility formula>`` should be a valid javascript formula returning ``0`` to 
-hide the row anything else but ``0`` show the row
+.. include:: ../../src/etc/rpimonitor/template/example.visibility.conf
+   :literal:
+
+Here is the result:
+
+.. figure:: _static/visibility001.png
+    :width: 400px 
+    :align: center
+
+    Show visibility feature
+    

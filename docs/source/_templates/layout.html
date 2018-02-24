@@ -24,7 +24,6 @@
 {% endif %}
 {% endblock %}
 
-
 {% block menu %}
 {{ super() }}
 {% if google_adsense is defined and google_adsense_slot is defined %}
@@ -42,3 +41,6 @@
 {% endif %}
 {% endblock %}
 
+{% block extrabody %}
+<img style="position: fixed; top: 0; right: 0; z-index: 100; height:300px; border: 0;" src="_static/wip.png">
+{% endblock %}
