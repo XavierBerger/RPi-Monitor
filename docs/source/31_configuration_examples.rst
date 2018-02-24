@@ -6,15 +6,15 @@ Configuration examples
 Monitoring a WiFi network
 -------------------------
 
-The following configuration is showing how to configure the monitoring of e WiFi
-interface visible in ``wlan0``
+The following configuration is showing how to configure the monitoring WiFi
+interface ``wlan0``
 
 To extract metrics representing the trafic on the interface we need to create 
 a ``dynamic`` configuration to collect data in pseudo file system 
 ``/sys/class/net/wlan0/statistics/``. 
 
-Collect metrics
-^^^^^^^^^^^^^^^
+Collecting metrics
+^^^^^^^^^^^^^^^^^^
 
 ::
 
@@ -31,7 +31,7 @@ Collect metrics
     dynamic.2.rrd=DERIVE
 
 .. note:: We dicided to represent downstream data with negative values. This is
-        performed by the postprocess command: ``$1*-1``
+          performed by the postprocess command: ``$1*-1``
 
 
 Add status
@@ -42,9 +42,9 @@ configuration bellow:
 
 ::
 
-    web.status.1.content.9.name=WiFi
-    web.status.1.content.9.icon=wifi.png
-    web.status.1.content.9.line.1="WiFi Sent: <b>"+KMG(data.wifi_send)+"<i class='icon-arrow-up'></i></b> Received: <b>"+KMG(Math.abs(data.wifi_received)) + "<i class='icon-arrow-down'></i></b>"
+    web.status.1.content.1.name=WiFi
+    web.status.1.content.1.icon=wifi.png
+    web.status.1.content.1.line.1="WiFi Sent: <b>"+KMG(data.wifi_send)+"<i class='icon-arrow-up'></i></b> Received: <b>"+KMG(Math.abs(data.wifi_received)) + "<i class='icon-arrow-down'></i></b>"
 
 Add statistics
 ^^^^^^^^^^^^^^
@@ -67,7 +67,6 @@ representing upstream and downstream metrics:
 In this configuration, we set color to green for downstream and red for upstream. 
 The curves are filled.
 
-.. warning:: Be sure to use Linux filefeed format with line ending with LF (and not CR/LF like in Windows).
 
 
 Monitor external disk

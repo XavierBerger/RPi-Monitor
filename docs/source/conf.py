@@ -129,7 +129,8 @@ html_theme_options = {
 html_context = {
     "google_adsense": "ca-pub-6853682829194266",
     "google_adsense_slot": "2876944524",
-    "google_analytics":"UA-114314379-1"
+    "google_analytics":"UA-114314379-1",
+    "work_in_progress": True
 }
 # Add any paths that contain custom themes here, relative to this directory.
 #html_theme_path = []
