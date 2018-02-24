@@ -100,11 +100,6 @@ Here is the result:
 .. image:: _static/label001.png
   :align: center
 
-
-
-
-
-
 Multiple pages
 --------------
 
