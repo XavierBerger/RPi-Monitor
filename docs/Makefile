@@ -59,6 +59,7 @@ html:
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 	cp README.md $(BUILDDIR)/html
+	cp source/_static/wip.png $(BUILDDIR)/html/_images/wip.png
 
 .PHONY: dirhtml
 dirhtml:
