@@ -334,24 +334,6 @@ sub Debug
   print STDERR "[", strftime("%Y/%m/%d-%H:%M:%S", localtime), "] ", "  " x ($level), (caller 1)[3], " @_\n";
 }
 
-sub ShowShellinabox
-{
-  my $this = shift;
-  my $configuration = shift;
-  my $host = shift;
-
-  if ( $configuration->{'daemon'}->{'shellinabox'} )
-  {
-    $this->SendRedirect( $configuration->{'daemon'}->{'shellinabox'} );
-  }
-  else
-  {
-    $host =~ s/:\d+//;
-    $this->SendRedirect( "https://$host:4200/" );
-  }
-  return 1;
-}
-
 sub SendFile
 {
   my $this = shift;
@@ -465,7 +447,6 @@ sub DoGET
   
   if( ! $configuration->{'daemon'}->{'readonly'}) {
     $path =~ /([^\/]+)\.json/ and $this->SendJSON($this->{$1}) and return;
-    $path =~ /shellinabox$/   and $this->ShowShellinabox( $configuration, $request->header('Host') ) and return;
     
     #Recreate empty rrd on demand
     $path =~ /empty\.rrd/ and $configuration->CreateRRD( "$configuration->{'daemon'}->{'datastore'}/stat/empty.rrd", 'empty', 'GAUGE', 'U', 'U' );
@@ -519,7 +500,6 @@ sub Run
       "/status.html",
       "/cacert.pem",
       "/certificate.p12",
-      "/shellinabox",
 
       "/css/rpimonitor.css",
       "/css/bootstrap.min.css",
@@ -533,7 +513,6 @@ sub Run
 
       "/img/preloader.gif",
 
-      "/js/rpimonitor.shellinabox.js",
       "/js/rpimonitor.statistics.js",
       "/js/rpimonitor.status.js",
       "/js/rpimonitor.utils.js",
@@ -1372,7 +1351,7 @@ OPTIONS
   -h, --help        Shows this help and exit
   -i, --interactive Interactive configuration helper
   -k, --keep        Keep log file (Default: logfile is delete at each start)
-  -l, --logfile     Logfile directory and prefix (ex: /var/log/rpimonitor)
+  -l, --logfile     Logfile (ex: /var/log/rpimonitor.log)
   -m, --mib         Get MIB for current configuration
   -n, --noserver    Don't start embeded web server
   -p, --port        Web server port (Default: 8888)
@@ -1380,7 +1359,7 @@ OPTIONS
                     can be used to collect KPI and get them through snmp.
   -s, --show        Show configuration as loaded and exit
   -t, --timeout     KPI read timeout in seconds (Default: 5)
-  -v, --verbose     Write debug info on screen
+  -v, --verbose     Defines log level
   -V, --Version     Show version and exit
 
 CONFIGURATION
