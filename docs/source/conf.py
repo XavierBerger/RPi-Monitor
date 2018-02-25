@@ -133,6 +133,7 @@ html_context = {
     "work_in_progress": True
 }
 # Add any paths that contain custom themes here, relative to this directory.
+# git submodule add git@github.com:snide/sphinx_rtd_theme.git source/_themes/sphinx_rtd_theme
 html_theme_path = ["_themes/sphinx_rtd_theme"]
 
 # The name for this set of Sphinx documents.

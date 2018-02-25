@@ -3,41 +3,82 @@
 Contributing
 =============
 
+If you want to contribute to **RPi-Monitor** and propose a pull request, first 
+create a fork from `github <https://github.com/XavierBerger/RPi-Monitor>`_
+
 Contribute to documentation
 ---------------------------
 **RPi-Monitor** documentation is written in reStructured Text using 
 `sphinx <http://www.sphinx-doc.org/en/master/>`_ document generator and
-`Read the docs theme <https://sphinx-rtd-theme.readthedocs.io/en/latest/index.html>`_
+`Read the docs theme <https://sphinx-rtd-theme.readthedocs.io/en/latest/index.html>`_ 
+(included in project as `git submodule`)
 
-Install sphinx
-^^^^^^^^^^^^^^
-The following command install sphinx and rtd theme:
+Prepare development environment
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Clone your fork and update theme with the following commands:
 
 ::
 
-  pip install sphinx sphinx-autobuild sphinx_rtd_theme
-
-  git submodule add  git@github.com:snide/sphinx_rtd_theme.git source/_themes/sphinx_rtd_theme
-
-
-Propose a merge request
-^^^^^^^^^^^^^^^^^^^^^^^
-
-
+  git clone git@github.com:<MyGitHubAccount>/RPi-Monitor.git
+  cd RPi-Monitor
+  git submodule update --init --recursive
+  pip install sphinx sphinx-autobuild
 
 Generate documentation
 ^^^^^^^^^^^^^^^^^^^^^^
+The following command update the documentation and start firefox on generated documentation:
 
 ::
 
     cd docs
     make clean && make html && firefox build/html/index.html
 
+Propose a merge request
+^^^^^^^^^^^^^^^^^^^^^^^
+Once your modifications are done, you can propose a pull request on github.
+
+.. important:: Propose pull requests on **develop** branch only.
+
+
 Contribute to software
 ----------------------
 
 Report issue
 ^^^^^^^^^^^^
+Whether you've found an issue with **RPI-Monitor**, here's how to report the problem...
+
+First, check the documentation for solutions to common problems.
+
+To file a bug
+"""""""""""""
+    * Go to `issue tracker on GitHub <https://github.com/XavierBerger/RPi-Monitor/issues>`_
+    * Search for existing issues using the search field at the top of the page
+    * File a new issue with all details explaining how to reproduce the bug
+
+Requesting a feature
+""""""""""""""""""""
+Feel free to file new feature requests as an `issue on GitHub <https://github.com/XavierBerger/RPi-Monitor/issues>`_, just like a bug.
+
+|
+|
+|
+|
+|
+|
+| WORK IN PROGRESS
+|
+|
+|
+|
+|
+|
+
+
+
+
+
+
+
 
 Propose a merge request
 ^^^^^^^^^^^^^^^^^^^^^^^
