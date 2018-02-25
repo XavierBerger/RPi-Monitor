@@ -46,6 +46,8 @@ configuration bellow:
     web.status.1.content.1.icon=wifi.png
     web.status.1.content.1.line.1="WiFi Sent: <b>"+KMG(data.wifi_send)+"<i class='icon-arrow-up'></i></b> Received: <b>"+KMG(Math.abs(data.wifi_received)) + "<i class='icon-arrow-down'></i></b>"
 
+.. figure:: _static/wifi001.png
+
 Add statistics
 ^^^^^^^^^^^^^^
 
@@ -67,7 +69,7 @@ representing upstream and downstream metrics:
 In this configuration, we set color to green for downstream and red for upstream. 
 The curves are filled.
 
-
+.. important:: To apply the configuration, it is required to restart **RPi-Monitor** : ``/etc/init.d/rpimonotird restart``
 
 Monitor external disk
 ---------------------
@@ -176,6 +178,17 @@ Restart rpimonitor to activate the new graph.
 
 After waiting a little time to let the system extract data you will see this kind of graph.
 
+Advanced service monitoring configuration
+-----------------------------------------
+Here is an example of configuration proposed by Münir Ozan TOPCU:
+
+.. include:: ../../src/etc/rpimonitor/template/advanced_service.conf
+   :literal:
+
+Here is the result:
+
+.. image:: _static/advancedservice001.jpeg
+  :align: center
 
 Monitor rclone
 --------------
