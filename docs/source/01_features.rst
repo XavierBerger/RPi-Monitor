@@ -85,4 +85,3 @@ Extending the capabilities
 
 `Screenshots <02_screenshots.html>`_
 ------------------------------------
-  View **RPi-Monitor** in images in `screenshots <02_screenshots.html>`_ page.

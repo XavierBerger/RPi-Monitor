@@ -187,7 +187,7 @@ Here is an example of configuration proposed by Münir Ozan TOPCU:
 
 Here is the result:
 
-.. image:: _static/advancedservice001.jpeg
+.. image:: _static/advancedservices001.png
   :align: center
 
 Monitor rclone
