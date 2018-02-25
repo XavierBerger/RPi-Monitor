@@ -14,11 +14,13 @@ two main part:
  * A powerfull WEB application running in browser in charge of data rendering
 
 .. figure:: _static/features001.png
+   :align: center
+   :width: 500px
 
 Collecting metrics
 ------------------
   **rpimonitord** is a daemon wich periodically gather, process and store metrics.
-  In **RPi-Monitor** metrics are named **KPI** for Key Performance Indicator.
+  In **RPi-Monitor** metrics are named **KPI** for **K**\ ey **P**\ erformance **I**\ ndicator.
 
 Storing metrics
 ---------------
@@ -80,3 +82,7 @@ Extending the capabilities
   
   **RPi-Monitor** is also available for `Docker <https://www.docker.com/>`_ and for embedded devices created
   with `Yocto Project <https://www.yoctoproject.org/>`_
+
+`Screenshots <02_screenshots.html>`_
+------------------------------------
+  View **RPi-Monitor** in images in `screenshots <02_screenshots.html>`_ page.

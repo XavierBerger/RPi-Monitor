@@ -16,7 +16,7 @@ explains how to install, configure and use it.
 .. toctree::
    :maxdepth: 2
 
-   01_features 
+   01_features
 
 .. toctree::
    :maxdepth: 2
