@@ -53,15 +53,13 @@ To activate this addon, add the following lines to your configuration file
   web.addons.1.name=Top3
   web.addons.1.addons=top3
 
-Copy ``/usr/share/rpimonitor/web/addons/top3/top3.cron`` to ``/etc/cron.d/top3` to activate periodical check.
+Copy ``/usr/share/rpimonitor/web/addons/top3/top3.cron`` to ``/etc/cron.d/top3`` to activate periodical check.
 
 To add top3 information into status page, add the following line to configuration file.
 
 ::
   
   web.status.1.content.1.line.1=InsertHTML("/addons/top3/top3.html")
-
-
 
 Custom Addon
 ------------
@@ -74,19 +72,19 @@ iframe that can display any other web pages.
    :align: center
    :width: 500px
 
-  web.addons.<id>.name=<name>
-    ``<name>`` represent the name displayed in addon menu or addon title
-  web.addons.<id>.addons=custom
-    ``custom`` is the addon activated
-  web.addons.<id>.showtitle=<title visibility>
-    ``<title visibility>`` define if title should be displayed or not
-  web.addons.<id>.url=<url>
-    ``url`` is defining the page to be displayed into the iframe. It can be a file 
-    reachable from **RPi-Monitor** internal server or a site available into the Internet.
-  web.addons.<id>.allowupdate=<allow update>
-    ``<allow update>`` define is ``url`` can be updated in option
+web.addons.<id>.name=<name>
+  ``<name>`` represent the name displayed in addon menu or addon title
+web.addons.<id>.addons=custom
+  ``custom`` is the addon activated
+web.addons.<id>.showtitle=<title visibility>
+  ``<title visibility>`` define if title should be displayed or not
+web.addons.<id>.url=<url>
+  ``url`` is defining the page to be displayed into the iframe. It can be a file 
+  reachable from **RPi-Monitor** internal server or a site available into the Internet.
+web.addons.<id>.allowupdate=<allow update>
+  ``<allow update>`` define is ``url`` can be updated in option
 
-  .. important:: ``id`` has to start by 1 and incrementing. This is defining the order of addons with the menu.
+.. important:: ``id`` has to start by 1 and incrementing. This is defining the order of addons with the menu.
 
 
 Shellinabox

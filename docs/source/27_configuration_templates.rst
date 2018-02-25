@@ -184,4 +184,22 @@ Here is the result:
     :align: center
 
     Show visibility feature
-    
+
+Interval
+--------
+
+Interval parameter define when data should be extracted. By defaut an interval is 10 sec.
+Sometime it is usefull to extract data less frequently. Setting `interval` to 3 will 
+extract data every 30sec. 
+
+Here is an example of configuration : ``/etc/rpimonitor/template/example.interval.conf``
+
+In this example is showing interval set tj 1, 3 and 7
+
+.. include:: ../../src/etc/rpimonitor/template/example.interval.conf
+   :literal:
+
+Here is the result:
+
+.. figure:: _static/interval001.png
+    :align: center
