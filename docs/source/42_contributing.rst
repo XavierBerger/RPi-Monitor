@@ -17,6 +17,8 @@ The following command install sphinx and rtd theme:
 
   pip install sphinx sphinx-autobuild sphinx_rtd_theme
 
+  git submodule add  git@github.com:snide/sphinx_rtd_theme.git source/_themes/sphinx_rtd_theme
+
 
 Propose a merge request
 ^^^^^^^^^^^^^^^^^^^^^^^
