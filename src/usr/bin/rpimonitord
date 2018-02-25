@@ -149,7 +149,7 @@ sub Load
     #print Data::Dumper->Dump([$this->{'rrdlist'}]);
   }
 
-  # manage top page default parameters
+  # manage page header default parameters
   $this->{'web'}->{'page'}->{'icon'}       ||= "img/logo.png";
   $this->{'web'}->{'page'}->{'menutitle'}  ||= "'RPi-Monitor  <sub>('+data.hostname+')</sub>'";
   $this->{'web'}->{'page'}->{'pagetitle'}  ||= "'RPi-Monitor ('+data.hostname+')'";
@@ -1363,7 +1363,7 @@ OPTIONS
                     can be used to collect KPI and get them through snmp.
   -s, --show        Show configuration as loaded and exit
   -t, --timeout     KPI read timeout in seconds (Default: 5)
-  -v, --verbose     Defines the log level
+  -v, --verbose     Defines log level
   -V, --Version     Show version and exit
 
 CONFIGURATION

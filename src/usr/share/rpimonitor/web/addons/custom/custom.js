@@ -41,15 +41,15 @@ $(function () {
   });
 
   if (data[activePage].allowupdate || true ) {
-    customuri=(localStorage.getItem('customuri'+activePage) || data[activePage].url || '/addons/custom/custominfo.html');
-    $('#customuri'+activePage).val(customuri);
-    $('#customuri'+activePage).keyup(function(){
-      customuri = $('#customuri'+activePage).val();
-      localStorage.setItem('customuri'+activePage, customuri);
-      $("#customframe").attr('src', customuri);
-    });
-    
+  customuri=(localStorage.getItem('customuri'+activePage) || data[activePage].url || '/addons/custom/custominfo.html');
+  $('#customuri'+activePage).val(customuri);
+  $('#customuri'+activePage).keyup(function(){
+    customuri = $('#customuri'+activePage).val();
+    localStorage.setItem('customuri'+activePage, customuri);
     $("#customframe").attr('src', customuri);
+  });
+  
+  $("#customframe").attr('src', customuri);
   }
 });
 
