@@ -35,9 +35,7 @@ If you want to participate and propose a pull request, refer to [contributing](h
 
 **Note**: Pull request perfomed on **develop** branch will be integrated as soon as possible. Pull request perform on master branche may only be integrated when a new version is published (or not may not be integrated at all...)
 
-# Author / News / License
-
-**Author**: Xavier Berger
+# News / License
 
 **Latest news** : [RPi-Experience Blog](http://rpi-experiences.blogspot.fr/)
 
