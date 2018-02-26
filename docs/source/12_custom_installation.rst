@@ -42,11 +42,11 @@ Complete the installation with the command:
 
 Installing on gentoo
 --------------------
-**Gentoo** users can find the ebuild created by Stuart Shelton [here](https://github.com/srcshelton/gentoo-ebuilds/tree/master/www-apps/rpi-monitor).
+**Gentoo** users can find the **ebuild** created by Stuart Shelton [here](https://github.com/srcshelton/gentoo-ebuilds/tree/master/www-apps/rpi-monitor).
 
 Installing on archlinux
 -----------------------
-**Arch Linux** users can find the aur package created by ajs124 [here](https://aur.archlinux.org/packages/rpimonitor/). Developmental branch package is located [here](https://aur.archlinux.org/packages/rpimonitor-dev-git/)
+**Arch Linux** users can find the **aur package** created by ajs124 [here](https://aur.archlinux.org/packages/rpimonitor/). Developmental branch package is located [here](https://aur.archlinux.org/packages/rpimonitor-dev-git/)
 
 Installation from sources
 -------------------------

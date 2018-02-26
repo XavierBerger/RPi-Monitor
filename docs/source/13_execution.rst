@@ -132,3 +132,20 @@ The web interface configuration can also be downloaded in json format:
 * ``addons.json`` : List of addons
 
 Statistic information are stored into RRD file available in the directory ``/var/lib/rpimonitor/stat/``
+
+Web interface
+-------------
+
+The presentation of the information is performed by HTML5 pages. These pages dynamically download the
+information extracted from daemon and perform the rendering the in a nice looking format
+( using [bootstrap](http://twitter.github.io/bootstrap/), [jquery](http://jquery.com/),
+[jsqrencode](https://code.google.com/p/jsqrencode/), [javascriptrrd](http://javascriptrrd.sourceforge.net/) and 
+[flot](http://www.flotcharts.org/) ).
+
+This architecture has the advantage in an embedded architecture to offload the server task and delegate
+processing and rendering to the client.
+
+Some sata are stored into client browser into *local storage*.
+
+.. note:: Embedded server doesn't provide access control or authentication. It is still possible
+          to not start the embeded web server and use an external web server to deliver the pages.

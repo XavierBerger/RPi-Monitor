@@ -14,7 +14,7 @@ For details, refer to [keys features of RPi-Monitor](https://xavierberger.github
 
 ![MainPage](docs/source/_static/features002.png)
 
-See [Screenshot](https://xavierberger.github.io/RPi-Monitor-docs/02_screenshots.html) chapter 
+See [Screenshots](https://xavierberger.github.io/RPi-Monitor-docs/02_screenshots.html) chapter
 of documentation to see more screenshots.
 
 # Installation

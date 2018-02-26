@@ -194,27 +194,3 @@ v1.1-1
 v1.0-1
 ------
   * v1.0-1 Initial release.
-
-
-Technical details
-=================
-
-For performance and security reason, [**RPi-Monitor**](http://rpi-experiences.blogspot.fr/) separates the extraction of the information from the presentation of the information.
-
-The extraction of the information is done by a process designed to run as a daemon (which can be executed as root).
-The extracted key performance indicators (KPI) from the computer are stored them into a Round Robin Database (RRD)
-to keep an history of the health of the computer. rpimonitord is the perl script also starts the embedded web
-server giving access to the pages. The web server is running into a separate process owned by a non root user
-(the user 'pi' by default).
-
-The presentation of the information is performed by HTML5 pages. These pages dynamically download the
-information extracted from the previous script and perform the rendering the in a nice looking format
-( using [bootstrap](http://twitter.github.io/bootstrap/), [jquery](http://jquery.com/),
-[jsqrencode](https://code.google.com/p/jsqrencode/), [javascriptrrd](http://javascriptrrd.sourceforge.net/) and 
-[flot](http://www.flotcharts.org/) ).
-
-This architecture has the advantage in an embedded architecture to offload the server task and delegate
-processing and rendering to the client.
-
-Finnally note that the embedded server doesn't provide access control or authentication. It is still possible
-to not start the embeded web server and use an external web server to deliver the pages.
