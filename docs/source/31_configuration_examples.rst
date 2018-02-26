@@ -119,7 +119,7 @@ Dynamic stat will be stored into a RRD File as GAUGE. Ref to RRDTool help for de
 
 Now we will add a status line for this disk whit the following icon:
 
-.. figure:: _static/hdd001.pnd
+.. figure:: _static/hdd001.png
    :align: center
 
 This icons has to be installed into the img directory of **RPi-Monitor** which is 
@@ -153,7 +153,7 @@ statistics page into our browser.
 
 The result of the configuration is at the bottom of the following screenshot:
 
-.. figure:: _static/hdd002.pnd
+.. figure:: _static/hdd002.png
    :align: center
    :width: 500px
 
@@ -179,7 +179,7 @@ Restart rpimonitor to activate the new graph.
 
 After waiting a little time to let the system extract data you will see this kind of graph.
 
-.. figure:: _static/hdd003.pnd
+.. figure:: _static/hdd003.png
    :align: center
    :width: 500px
 
