@@ -201,3 +201,17 @@ Monitor rclone
 
 Use MRTG with RPi-Monitor in read-only mode
 --------------------------------------------
+
+Monitor a TOR relay 
+-------------------
+Here is an example of configuration proposed by Luiz Kill: on `tor-info <https://github.com/lzkill/tor-info>`_
+
+.. include:: ../../src/etc/rpimonitor/template/tor.conf
+   :literal:
+
+Here is the result:
+
+.. figure:: _static/tor001.jpg
+   :align: center
+   :width: 500px
+
