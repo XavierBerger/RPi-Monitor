@@ -6,19 +6,14 @@ To go further
 .. toctree::
    :maxdepth: 2
 
-   41_faq
-   
-.. toctree::
-   :maxdepth: 2
-
-   42_contributing
+   41_contributing
 
 .. toctree::
    :maxdepth: 2
 
-   43_license
+   42_license
 
 .. toctree::
    :maxdepth: 1
 
-   44_changelog
+   43_changelog

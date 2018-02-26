@@ -17,4 +17,8 @@ Getting started
    :maxdepth: 2
 
    13_execution
+   
+.. toctree::
+   :maxdepth: 2
 
+   14_faq
