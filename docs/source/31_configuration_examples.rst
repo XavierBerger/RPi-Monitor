@@ -211,7 +211,6 @@ Here is an example of configuration proposed by Luiz Kill: on `tor-info <https:/
 
 Here is the result:
 
-.. figure:: _static/tor001.jpg
+.. figure:: _static/tor001.png
    :align: center
    :width: 500px
-

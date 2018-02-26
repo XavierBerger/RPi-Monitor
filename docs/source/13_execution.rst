@@ -149,3 +149,4 @@ Some sata are stored into client browser into *local storage*.
 
 .. note:: Embedded server doesn't provide access control or authentication. It is still possible
           to not start the embeded web server and use an external web server to deliver the pages.
+          
