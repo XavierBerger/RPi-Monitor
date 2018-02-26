@@ -1,5 +1,3 @@
-# **RPi-Monitor**
-
 ![RPi-Monitor logo](docs/source/_static/logo.png)
 
 ## Overview
