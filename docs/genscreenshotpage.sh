@@ -2,10 +2,13 @@
 
 # Add legend in png image with the following command:
 #  convert image.png -set 'Doc Width' '500px' -set 'Doc Description' 'Status page' image.png
+TARGET=02_screenshots.rst
+
 
 cd source
-echo "Screenshots"
-echo "==========="
+echo ":github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/${TARGET}" > ${TARGET}
+echo "Screenshots" >> ${TARGET}
+echo "===========" >> ${TARGET}
 
 for IMAGE in $(ls _static/*.png)
 do
@@ -13,16 +16,16 @@ do
     if [ "" != "${DESCRIPTION}" ]
     then
         WIDTH=$(exiftool ${IMAGE} | perl -ne '/Doc Width\s+:\s+(.*)/ and print $1' )
-        echo "-----"
-        echo
-        echo ".. figure:: ${IMAGE}"
-        echo "   :align: center"
+        echo "-----" >> ${TARGET}
+        echo >> ${TARGET}
+        echo ".. figure:: ${IMAGE}" >> ${TARGET}
+        echo "   :align: center" >> ${TARGET}
         if [ "" !=  "${WIDTH}" ]
         then 
-            echo "   :width: ${WIDTH}"
+            echo "   :width: ${WIDTH}" >> ${TARGET}
         fi 
-        echo
-        echo "   ${DESCRIPTION}"
-        echo
+        echo >> ${TARGET}
+        echo "   ${DESCRIPTION}" >> ${TARGET}
+        echo >> ${TARGET}
     fi
 done

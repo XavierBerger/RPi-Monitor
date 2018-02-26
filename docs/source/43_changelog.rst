@@ -9,7 +9,7 @@ v2.13-beta3
 
   * Implement sortable status items written by iaa (#166 #197)
   * Create documentation in https://xavierberger.github.io/RPi-Monitor-docs/index.html
-  * Add snmp agent "pass_persist" extension
+  * Add snmp agent "pass_persist" extension and MIB generator
   * Add readonly option disabling disk write
   * Fix service status template (#172)
   * Various bug fixes and cleanup code

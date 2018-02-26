@@ -119,8 +119,8 @@ Dynamic stat will be stored into a RRD File as GAUGE. Ref to RRDTool help for de
 
 Now we will add a status line for this disk whit the following icon:
 
-
-Disk icon has been found here
+.. figure:: _static/hdd001.pnd
+   :align: center
 
 This icons has to be installed into the img directory of **RPi-Monitor** which is 
 by default ``/usr/share/rpimonitor/web/img/``.
@@ -153,8 +153,9 @@ statistics page into our browser.
 
 The result of the configuration is at the bottom of the following screenshot:
 
-
-
+.. figure:: _static/hdd002.pnd
+   :align: center
+   :width: 500px
 
 The status page is working, let's now add a graphic of the disk usage. 
 This is done with the following configuration:
@@ -177,6 +178,10 @@ ds_graph_options. Details of this parameter can be found in javascriptrrd help p
 Restart rpimonitor to activate the new graph.
 
 After waiting a little time to let the system extract data you will see this kind of graph.
+
+.. figure:: _static/hdd003.pnd
+   :align: center
+   :width: 500px
 
 Advanced service monitoring configuration
 -----------------------------------------

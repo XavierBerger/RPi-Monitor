@@ -206,67 +206,53 @@ Here is the result:
 
 Alerts
 ------
-|
-|
-|
-|
-|
-|
-|
-|  WORK IN PROGRESS
-|
-|
-|
-|
-|
-|
 
 **RPi-Monitor** is embedding a mechanism of alerts. The idea is to execute a 
 script when a KPI reach a limit. To avoid executing this script to frequently, 
 some timer have to be configured.
-The file ``example.alert.conf`` show how to configure alerts.  We will see here 
-how to simulate a temperature monitoring and how this configuration can raise 
-and clear alerts.
+The file ``example.alert.conf`` show how to configure alerts.  
 
+.. include:: ../../src/etc/rpimonitor/template/example.alert.conf
+   :literal:
 
-
-To better understand the following explanation you should open the file.
-
-The first part defines dynamic data and how RPi-Monitor should do to extract 
+The first part defines dynamic data and how **RPi-Monitor** should do to extract 
 information from the file ``/tmp/alert_test``.
 
-These data are added in statistics page to graphs the temperature. 
+These data are added in statistics page (``web.statistics.1.[...]``) to graphs the temperature. 
 
-Then we configure 2 alerts too_hot and too_cold. Here is the example for too_hot. 
+Then we configure 2 alerts ``too_hot`` and ``too_cold``. Let's see how ``too_hot`` is configured
+
+The alert will be evaluated only when it will become active, when ``active`` parameter will be evaluate to ``true``. 
+In this example 120 seconds after computer starts: ``alert.too_hot.active=data.uptime>120``.
+
+When the alert is active, the trigger is evaluated. In this example, when test 
+if the value of ``test_alert`` is greater than 50: ``alert.too_hot.trigger=data.test_alert>50``.
+
+When the trigger returns ``true`` during ``maxalertduration`` seconds (20 seconds), the command 
+``commandTooHot`` is executed.
+If the trigger is still true after ``resendperiod`` seconds after (60 seconds), the command 
+``raisecommand`` is executed again.
+
+When the trigger become ``false`` during ``cancelvalidation`` seconds (20 seconds), the  command 
+``cancelcommand`` is executed. 
+
+Into the example file, you can see how these data are used to display label on status page. 
+You will see that limit exceed is immediately detected and see alert send after the defined delay.
+
+To simulate a temperature monitoring and see how this configuration can raise and clear alerts, execute 
+the following commands to generate data:
 
 ::
 
-  alert.too_hot.active=data.uptime>120
-  alert.too_hot.trigger=data.test_alert>50
-  alert.too_hot.maxalertduration=20
-  alert.too_hot.cancelvalidation=20
-  alert.too_hot.resendperiod=60 
-  alert.too_hot.raisecommand=commandTooHot
-  alert.too_hot.cancelcommand=CommandItIsOkNow 
-
-The alert will be evaluated only when it will become active, when active parameter will be evaluate to true. In my example 120 seconds after computer starts.
-
-When the alert is active, the trigger is evaluated. In my example, when test if the value of test_alert is greater than 50.
-
-When the trigger returns true during maxalertduration seconds (20 seconds), the command commandTooHot is executed.
-If the trigger is still true after resendperiod seconds after (60 seconds), the command commandTooHot is executed again.
-
-When the trigger become false during cancelvalidation seconds (20 seconds), the  command commandItIsOkNow is executed. 
-
-Into the example file, you can see how these data are used to display label on status page. You will see that limit exceed is immediately detected and you will see alert send after the defined delay.
-
-You want to test this example. It is easy:
-
-    Uncomment the example.alert.conf include line into /etc/rpimonitor/data.conf
-    Execute the following command to generate data
     while ( true ); do echo $(( ( RANDOM % 100 ) - 20 )) > /tmp/test_alert; sleep 90; done
-    Execute the following command  to see alerts
-    watch 'cat /tmp/alert*' 
-    Open the status page and check the auto update option to see the example running in real time.
 
-You know how Alerts are behaving so you can start RPi-Monitor customization.
+Execute the following command  to see alerts
+
+::
+
+    watch 'cat /tmp/alert*
+    
+Open the status page and check the auto update option to see the example running in real time as shown bellow:
+
+.. figure:: _static/alertanimation001.gif
+   :align: center

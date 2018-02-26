@@ -19,7 +19,7 @@ Clone your fork and update theme with the following commands:
 
 ::
 
-  git clone git@github.com:<MyGitHubAccount>/RPi-Monitor.git
+  git clone git@github.com:${GITHUB_ACCOUNT}/RPi-Monitor.git
   cd RPi-Monitor
   git submodule update --init --recursive
   pip install sphinx sphinx-autobuild
