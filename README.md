@@ -4,16 +4,15 @@
 
 ## Overview
 
-[**RPi-Monitor**](http://rpi-experiences.blogspot.fr/) is an application designed to perform
-real time monitoring embedded devices.
+**RPi-Monitor**is an application designed to perform real time monitoring embedded devices.
 
 The development platform is a [Raspberry Pi](http://raspberrypi.org) v1 rev. B.
 
 **RPi-Monitor** provides a lot of feature such as Embedded Web server, Alert messaging, SNMP integration...
 
-For details, refer to [**RPi-Monitor** keys features](https://xavierberger.github.io/RPi-Monitor-docs/01_features.html) in documentation.
+For details, refer to [keys features of RPi-Monitor](https://xavierberger.github.io/RPi-Monitor-docs/01_features.html) in documentation.
 
-![RPi-Monitor main page](docs/source/_static/features002.png)
+[![MainPage](docs/source/_static/features002.png)](https://xavierberger.github.io/RPi-Monitor-docs/02_screenshots.html)
 
 ## Installation
 
@@ -21,7 +20,7 @@ Installation of **RPi-Monitor** is detailled in [getting started](https://xavier
 
 Each release can be installed with a Debian package for **Raspbian**.
 
-For other (unsupported) distribution see [Custom installation](https://xavierberger.github.io/RPi-Monitor-docs/12_custom_installation.html) chapter of documentation
+For other (unsupported) distribution (such as Gentoo, ArchLinux) refer to [Custom installation](https://xavierberger.github.io/RPi-Monitor-docs/12_custom_installation.html) chapter of documentation.
 
 ## Documentation
 
