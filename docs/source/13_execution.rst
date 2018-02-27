@@ -137,10 +137,15 @@ Web interface
 -------------
 
 The presentation of the information is performed by HTML5 pages. These pages dynamically download the
-information extracted from daemon and perform the rendering the in a nice looking format
-( using [bootstrap](http://twitter.github.io/bootstrap/), [jquery](http://jquery.com/),
-[jsqrencode](https://code.google.com/p/jsqrencode/), [javascriptrrd](http://javascriptrrd.sourceforge.net/) and 
-[flot](http://www.flotcharts.org/) ).
+information extracted from daemon and perform the rendering the in a nice looking format using:
+
+* `bootstrap <http://twitter.github.io/bootstrap/>`_
+* `jquery <http://jquery.com/>`_
+* `jsqrencode <https://code.google.com/p/jsqrencode/>`_
+* `javascriptrrd <http://javascriptrrd.sourceforge.net/>`_
+* `flot <http://www.flotcharts.org/>`_
+* `justgage <http://www.justgage.com>`_ and `raphael <http://raphaeljs.com>`_
+* `Sortable <https://github.com/rubaxa/Sortable>`_
 
 This architecture has the advantage in an embedded architecture to offload the server task and delegate
 processing and rendering to the client.

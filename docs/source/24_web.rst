@@ -141,10 +141,21 @@ web.status.<page id>.content.<status id>.line.<line number>=<parameter>
        
         .. image:: _static/web003.png
            :align: center
+           :width: 500px
 
     - **InsertHTML(url)**
         This function is used to insert an HTML information inside a page. (Ref Top3 example showing top most process cpu usage)
 
+    - **LinkToGraph(page,graph,text)**
+        This function is used create a link to graph in specific page.
+
+        * **page**  : page id (starting from 0)
+        * **graph** : graph id (starting from 0)
+        * **text**  : text of the link
+
+        .. image:: _static/web004.png
+           :align: center
+           :width: 500px
 
 Statistics
 ----------
