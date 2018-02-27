@@ -5,13 +5,13 @@ Web interface configuration
 
 Friends
 -------
-Friends are defining a displayed name and a link reachable from a
+Friends are defining a displayed title and a link reachable from a
 top left menu visible if at least one friends is configured. Each
 friend is identified by its ``<id>`` and is described by the 2 following
 parameters
 
-web.friends.<id>.name=<display name>
-  ``<display name>`` is the name printed into the drop down menu
+web.friends.<id>.title=<display title>
+  ``<display title>`` is the title printed into the drop down menu
 
 web.friends.<id>.link=<link to RPi-Monitor>
   ``<link to RPi-Monitor>`` is the link to another RPi-Monitor running
@@ -25,7 +25,7 @@ Header of web page can be customized with the following parameters:
 
 web.page.icon=<icon location relative to webroot>
   ``<icon location relative to webroot>`` is the path and filename of
-  the icon to be displayed into RPi-Monitor title bar
+  the icon to be displayed into **RPi-Monitor** title bar
 
 web.page.menutitle=<menu title>
   ``<menu title>`` javascript code defining the text displayed into
@@ -44,11 +44,11 @@ Each page is identified by its ``<page id>``.
 
 .. seealso:: Example of implementation in `Multi-pages customisation example  <31_customisation.html#multiple-pages>`_
 
-web.status.<page id>.name=<page name>
-  ``<page name>`` name of the page displayed into the drop down menu in case of multiple pages.
+web.status.<page id>.title=<page title>
+  ``<page title>`` title of the page displayed into the drop down menu in case of multiple pages.
 
 Status page is split in strips displaying information. Each status strip is 
-identified by a unique ``<status id>``. Each status strip is defined by a name, 
+identified by a unique ``<status id>``. Each status strip is defined by a title, 
 an icon and a serie of parameters described as follow:
 
 web.status.<page id>.content.<status id>.visibility=<visibility formula>
@@ -57,8 +57,8 @@ web.status.<page id>.content.<status id>.visibility=<visibility formula>
 
   .. seealso:: Example of implementation in `TO BE COMPLETED  <#>`_
 
-web.status.<page id>.content.<status id>.name=<display name>
-  ``<display name>`` Name displayed as title of the strip
+web.status.<page id>.content.<status id>.title=<display title>
+  ``<display title>`` title displayed as title of the strip
 
 web.status.<page id>.content.<status id>.icon=<display icon>
   ``<display icon>`` Icon of the strip
@@ -163,15 +163,15 @@ The statistic page is fully configurable.
 It is possible to define multiple pages. Each page is identified by
 its ``<page id>``.
 
-web.statistic.<page id>.name=<page name>
-  ``<page name>`` name of the page displayed into the drop down menu in
+web.statistic.<page id>.title=<page title>
+  ``<page title>`` title of the page displayed into the drop down menu in
   case of multiple pages. 
 
 The statistic page displays statistics graphs. The graphs are
 identified an unique ``<statistic id>`` and by the following parameters.
 
-web.statistics.<page id>.content.<statistic id>.name=<statistic name>
-  ``<statistic name>`` is the name of the statistics displayed in the
+web.statistics.<page id>.content.<statistic id>.title=<statistic title>
+  ``<statistic title>`` is the title of the statistics displayed in the
   top left drop down list.
 
 web.statistics.<page id>.content.<statistic id>.graph.<rrd id>=<data name>
@@ -198,8 +198,8 @@ Addons
 
   .. important:: ``id`` has to start by 1 and incrementing. This is defining the order of addons with the menu.
 
-  web.addons.<id>.name=<name to be display>
-    ``<name to be display>`` defines the text display in RPi-Monitor web interface
+  web.addons.<id>.title=<title to be display>
+    ``<title to be display>`` defines the text display in RPi-Monitor web interface
  
   web.addons.<id>.addons=<addon name>
     ``<addon name>`` defines the addon to activate
