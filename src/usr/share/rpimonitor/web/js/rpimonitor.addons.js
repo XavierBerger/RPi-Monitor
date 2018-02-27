@@ -27,7 +27,7 @@ function ConstructPage()
     activePage = 0
   }
   if ( data[activePage].showtitle !== 'false' ) {
-    $('<h2 id="pagetitle"><p class="text-info">'+data[activePage].name+'</p><hr></h2>').insertBefore("#insertionPoint");
+    $('<h2 id="pagetitle"><p class="text-info">'+eval(data[activePage].title)+'</p><hr></h2>').insertBefore("#insertionPoint");
   }
   
   $("#insertionPoint").load("addons/"+data[activePage].addons+"/"+data[activePage].addons+".html")

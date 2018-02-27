@@ -23,7 +23,9 @@ function RowTemplate(id,image,title){
   return ""+
         "<div data-id='"+id+"' class='row row"+id+" list-group-item' style='border: none'>"+
           "<hr class='row"+id+"' draggable='false'>"+
-          "<div class='Title' draggable='false'><img src='"+image+"' alt='"+title+"' class='DragHandle' draggable='false'> &nbsp;"+title+"</div>"+
+          "<div class='Title' draggable='false'>"+
+            "<img src='"+image+"' alt='"+title+"' class='DragHandle' draggable='false'> &nbsp;"+title+
+          "</div>"+
           "<div class='Text' id='Text"+id+"' draggable='false'><b></b></div>"+
         "</div>"
 }
@@ -99,7 +101,13 @@ function ConstructPage()
     $('#pageTitle').removeClass('hide');
   }
   for ( var iloop=0; iloop < data[activePage].content.length; iloop++) {
-    $(RowTemplate(iloop,"img/"+data[activePage].content[iloop].icon,data[activePage].content[iloop].name)).insertBefore("#insertionPoint");
+    if ( typeof data[activePage].content[iloop].title != 'undefined' ){ 
+      title = eval(data[activePage].content[iloop].title)
+    } 
+    else {
+      title = data[activePage].content[iloop].name
+    }
+    $(RowTemplate(iloop,"img/"+data[activePage].content[iloop].icon,title)).insertBefore("#insertionPoint");
     strips=data[activePage].content;
   }
   UpdateStatus();

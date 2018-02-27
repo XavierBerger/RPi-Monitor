@@ -175,7 +175,7 @@ function InsertHTML( url ){
     return result
 }
 
-function LinkToGraph(page, graph, text){
-    return "<a target=_blank href=statistics.html?activePage="+page+"&graph="+graph+">"+text+"</a>"
+function LinkToGraph(page, graph, text, target="_top"){
+    return "<a target="+target+" href=statistics.html?activePage="+page+"&graph="+graph+">"+text+"</a>"
 }
 
