@@ -1,6 +1,6 @@
 // This file is part of RPi-Monitor project
 //
-// Copyright 2013 -2014 - Xavier Berger - http://rpi-experiences.blogspot.fr/
+// Copyright 2013 - Xavier Berger - http://rpi-experiences.blogspot.fr/
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -24,9 +24,14 @@ function Start() {
   static = getData('static')
   graphconf = getData('statistics')
     
-  activestat = localStorage.getItem('activestat') || 0;
+  activestat = GetURLParameter('graph');
+  if (activestat == null){
+    activestat = localStorage.getItem('activestat') || 0;
+  }
   activePage = GetURLParameter('activePage');
-  if (activePage == null){ activePage = 0; }
+  if (activePage == null){ 
+    activePage = 0; 
+  }
   if ( ( typeof activePage == 'undefined' ) || 
        ( activePage >= graphconf.length ) 
      )
@@ -48,7 +53,7 @@ function SetGraphlist() {
     if (activestat == iloop) {
       graphlist += " selected ";
     }
-    graphlist += ">" + graphconf[activePage].content[iloop].name + "</option>\n";
+    graphlist += ">" + graphconf[activePage].content[iloop].title + "</option>\n";
   }
   graphlist += "</select>\n";
 

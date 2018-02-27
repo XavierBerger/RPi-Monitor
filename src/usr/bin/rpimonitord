@@ -156,15 +156,15 @@ sub Load
 
   # manage menu
   foreach (@{$this->{'web'}->{'status'}}) {
-    $_->{'name'} and push(@{$this->{'web'}->{'menu'}->{'status'}}, $_->{'name'})
-                 or  push(@{$this->{'web'}->{'menu'}->{'status'}}, "Status");
+    $_->{'title'} and push(@{$this->{'web'}->{'menu'}->{'status'}}, $_->{'title'})
+                  or  push(@{$this->{'web'}->{'menu'}->{'status'}}, "Status");
   }
   foreach (@{$this->{'web'}->{'statistics'}}) {
-    $_->{'name'} and push(@{$this->{'web'}->{'menu'}->{'statistics'}}, $_->{'name'})
-                 or  push(@{$this->{'web'}->{'menu'}->{'statistics'}}, "Statistics");
+    $_->{'title'} and push(@{$this->{'web'}->{'menu'}->{'statistics'}}, $_->{'title'})
+                  or  push(@{$this->{'web'}->{'menu'}->{'statistics'}}, "Statistics");
   }
   foreach (@{$this->{'web'}->{'addons'}}) {
-    $_->{'name'} and push(@{$this->{'web'}->{'menu'}->{'addons'}}, $_->{'name'});
+    $_->{'title'} and push(@{$this->{'web'}->{'menu'}->{'addons'}}, $_->{'title'});
   }
 
   # manage default value for dynamic data

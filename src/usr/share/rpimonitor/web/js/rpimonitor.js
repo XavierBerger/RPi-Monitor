@@ -1,6 +1,6 @@
 // This file is part of RPi-Monitor project
 //
-// Copyright 2013 - 2015 - Xavier Berger - http://rpi-experiences.blogspot.fr/
+// Copyright 2013 - Xavier Berger - http://rpi-experiences.blogspot.fr/
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -64,7 +64,7 @@ function ShowFriends(){
   if ( data.length > 0 ) {
     $('#friends').empty();
     for (var i = 0; i < data.length; i++) {
-      $('#friends').append('<li><a href="'+data[i].link+'">'+data[i].name+'</a></li>');
+      $('#friends').append('<li><a href="'+data[i].link+'">'+eval(data[i].title)+'</a></li>');
     }
     $('#divfriends').removeClass('hide');
   }
@@ -278,7 +278,7 @@ function UpdateMenu(){
       $('#statusmenu').addClass('dropdown');
       var dropDownMenu='<ul class="dropdown-menu">';
       for ( var iloop=0; iloop < data.status.length; iloop++){
-        dropDownMenu+='<li><a href="status.html?activePage='+iloop+'">'+data.status[iloop]+'</a></li>';
+        dropDownMenu+='<li><a href="status.html?activePage='+iloop+'">'+eval(data.status[iloop])+'</a></li>';
       }
       dropDownMenu+='</ul>';
       $('#statuslink').html( 'Status <b class="caret"></b>')
@@ -297,7 +297,7 @@ function UpdateMenu(){
       $('#statisticsmenu').addClass('dropdown');
       var dropDownMenu='<ul class="dropdown-menu">';
       for ( var iloop=0; iloop < data.statistics.length; iloop++){
-        dropDownMenu+='<li><a href="statistics.html?activePage='+iloop+'">'+data.statistics[iloop]+'</a></li>';
+        dropDownMenu+='<li><a href="statistics.html?activePage='+iloop+'">'+eval(data.statistics[iloop])+'</a></li>';
       }
       dropDownMenu+='</ul>';
       $('#statisticslink').html( 'Statistics <b class="caret"></b>')
@@ -311,13 +311,13 @@ function UpdateMenu(){
   if ( data.addons != undefined ) {
     if ( data.addons.length > 0 ){
       $('#addonsmenu').removeClass('hide');
-      $('#addonslink').html(data.addons[0]);
+      $('#addonslink').html(eval(data.addons[0]));
     }
     if ( data.addons.length > 1 ){
       $('#addonsmenu').addClass('dropdown');
       var dropDownMenu='<ul class="dropdown-menu">';
       for ( var iloop=0; iloop < data.addons.length; iloop++){
-        dropDownMenu+='<li><a href="addons.html?activePage='+iloop+'">'+data.addons[iloop]+'</a></li>';
+        dropDownMenu+='<li><a href="addons.html?activePage='+iloop+'">'+eval(data.addons[iloop])+'</a></li>';
       }
       dropDownMenu+='</ul>';
       $('#addonslink').html( 'Add-ons <b class="caret"></b>')
