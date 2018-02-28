@@ -250,7 +250,7 @@ Execute the following command  to see alerts
 
 ::
 
-    watch 'cat /tmp/alert*
+    watch 'grep ".*" /tmp/test_alert.*'
     
 Open the status page and check the auto update option to see the example running in real time as shown bellow:
 
