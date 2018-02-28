@@ -274,37 +274,37 @@ function UpdateMenu(){
     $('#statusmenu').addClass('hide');
   }
   else{
-    if ( data.status.length > 1 ){
-      $('#statusmenu').addClass('dropdown');
-      var dropDownMenu='<ul class="dropdown-menu">';
-      for ( var iloop=0; iloop < data.status.length; iloop++){
-        dropDownMenu+='<li><a href="status.html?activePage='+iloop+'">'+eval(data.status[iloop])+'</a></li>';
-      }
-      dropDownMenu+='</ul>';
-      $('#statuslink').html( 'Status <b class="caret"></b>')
-      $(dropDownMenu).insertAfter('#statuslink');
-      $('#statuslink').addClass('dropdown-toggle');
-      $('#statuslink').attr('data-toggle','dropdown');
-      $('#statuslink').attr('href','#');
+  if ( data.status.length > 1 ){
+    $('#statusmenu').addClass('dropdown');
+    var dropDownMenu='<ul class="dropdown-menu">';
+    for ( var iloop=0; iloop < data.status.length; iloop++){
+      dropDownMenu+='<li><a href="status.html?activePage='+iloop+'">'+eval(data.status[iloop])+'</a></li>';
     }
+    dropDownMenu+='</ul>';
+    $('#statuslink').html( 'Status <b class="caret"></b>')
+    $(dropDownMenu).insertAfter('#statuslink');
+    $('#statuslink').addClass('dropdown-toggle');
+    $('#statuslink').attr('data-toggle','dropdown');
+    $('#statuslink').attr('href','#');
+  }
   }
 
   if ( data.statistics == undefined ) {
     $('#statisticsmenu').addClass('hide');
   }
   else {
-    if ( data.statistics.length > 1 ){
-      $('#statisticsmenu').addClass('dropdown');
-      var dropDownMenu='<ul class="dropdown-menu">';
-      for ( var iloop=0; iloop < data.statistics.length; iloop++){
-        dropDownMenu+='<li><a href="statistics.html?activePage='+iloop+'">'+eval(data.statistics[iloop])+'</a></li>';
-      }
-      dropDownMenu+='</ul>';
-      $('#statisticslink').html( 'Statistics <b class="caret"></b>')
-      $(dropDownMenu).insertAfter('#statisticslink');
-      $('#statisticslink').addClass('dropdown-toggle');
-      $('#statisticslink').attr('data-toggle','dropdown');
-      $('#statisticslink').attr('href','#');
+  if ( data.statistics.length > 1 ){
+    $('#statisticsmenu').addClass('dropdown');
+    var dropDownMenu='<ul class="dropdown-menu">';
+    for ( var iloop=0; iloop < data.statistics.length; iloop++){
+      dropDownMenu+='<li><a href="statistics.html?activePage='+iloop+'">'+eval(data.statistics[iloop])+'</a></li>';
+    }
+    dropDownMenu+='</ul>';
+    $('#statisticslink').html( 'Statistics <b class="caret"></b>')
+    $(dropDownMenu).insertAfter('#statisticslink');
+    $('#statisticslink').addClass('dropdown-toggle');
+    $('#statisticslink').attr('data-toggle','dropdown');
+    $('#statisticslink').attr('href','#');
     }
   }
 
