@@ -53,7 +53,7 @@ function SetGraphlist() {
     if (activestat == iloop) {
       graphlist += " selected ";
     }
-    graphlist += ">" + graphconf[activePage].content[iloop].title + "</option>\n";
+    graphlist += ">" + eval(graphconf[activePage].content[iloop].title) + "</option>\n";
   }
   graphlist += "</select>\n";
 
