@@ -42,11 +42,12 @@ configuration bellow:
 
 ::
 
-    web.status.1.content.1.name=WiFi
+    web.status.1.content.1.title=WiFi
     web.status.1.content.1.icon=wifi.png
     web.status.1.content.1.line.1="WiFi Sent: <b>"+KMG(data.wifi_send)+"<i class='icon-arrow-up'></i></b> Received: <b>"+KMG(Math.abs(data.wifi_received)) + "<i class='icon-arrow-down'></i></b>"
 
 .. figure:: _static/wifi001.png
+   :align: center
 
 Add statistics
 ^^^^^^^^^^^^^^
@@ -56,7 +57,7 @@ representing upstream and downstream metrics:
 
 ::
 
-    web.statistics.1.content.1.name=WiFi
+    web.statistics.1.content.1.title=WiFi
     web.statistics.1.content.1.graph.1=wifi_send
     web.statistics.1.content.1.graph.2=wifi_received
     web.statistics.1.content.1.ds_graph_options.wifi_send.label=Upload bandwidth (bits)
@@ -90,11 +91,12 @@ First we need to configure the extraction of partitions sizes which are extracte
     static.1.name=storage1_total 
     static.1.source=df -t ext2 
     static.1.regexp=sda1\s+(\d+) 
-    static.1.postprocess=$1/1024 
-    static.1.name=storage2_total 
-    static.1.source=df -t ext4 
-    static.1.regexp=sda3\s+(\d+) 
     static.1.postprocess=$1/1024
+
+    static.2.name=storage2_total 
+    static.2.source=df -t ext4 
+    static.2.regexp=sda3\s+(\d+) 
+    static.2.postprocess=$1/1024
 
 The post processing is configured to transform kB into MB by dividing the extracted result by 1024.
 
@@ -108,6 +110,7 @@ For dynamic values extracted every 10 seconds, the configuration will be:
     dynamic.1.regexp=sda1\s+\d+\s+(\d+) 
     dynamic.1.postprocess=$1/1024 
     dynamic.1.rrd=GAUGE 
+
     dynamic.2.name=storage2_used 
     dynamic.2.source=df -t ext4 
     dynamic.2.regexp=sda3\s+\d+\s+(\d+) 
@@ -130,7 +133,7 @@ The configuration to add a new status strip will then be the following:
 
 ::    
 
-    web.status.1.content.1.name=Storage 
+    web.status.1.content.1.title=Storage 
     web.status.1.content.1.icon=usb_hdd.png 
     web.status.1.content.1.line.1="<b>/storage1</b> Used: <b>"+KMG(data.storage1_used,'M')+"</b> (<b>"+Percent(data.storage1_used,data.storage1_total,'M')+"</b>) Free: <b>"+KMG(data.storage1_total-data.storage1_used,'M')+ "</b> Total: <b>"+ KMG(data.storage1_total,'M') +"</b>" web.status.1.content.9.line.2=ProgressBar(data.storage1_used,data.storage1_total) web.status.1.content.9.line.3="<b>/storage2</b> Used: <b>"+KMG(data.storage2_used,'M')+"</b> (<b>"+Percent(data.storage2_used,data.storage2_total,'M')+"</b>) Free: <b>"+KMG(data.storage2_total-data.storage2_used,'M')+ "</b> Total: <b>"+ KMG(data.storage2_total,'M') +"</b>"
 
@@ -162,10 +165,23 @@ This is done with the following configuration:
 
 ::
 
-    web.statistics.1.content.1.name=Storage1 
+    web.statistics.1.content.1.title=Storage1 
     web.statistics.1.content.1.graph.1=storage1_total 
     web.statistics.1.content.1.graph.2=storage1_used 
-    web.statistics.1.content.1.ds_graph_options.storage1_total.label=Storage1 total space (MB) web.statistics.1.content.9.ds_graph_options.storage1_total.color="#FF7777" web.statistics.1.content.9.ds_graph_options.storage1_used.label=Storage1 used space (MB) web.statistics.1.content.9.ds_graph_options.storage1_used.lines={ fill: true } web.statistics.1.content.9.ds_graph_options.storage1_used.color="#7777FF" web.statistics.1.content.10.name=Storage2 web.statistics.1.content.10.graph.1=storage2_total web.statistics.1.content.10.graph.2=storage2_used web.statistics.1.content.10.ds_graph_options.storage2_total.label=Storage2 total space (MB) web.statistics.1.content.10.ds_graph_options.storage2_total.color="#FF7777" web.statistics.1.content.10.ds_graph_options.storage2_used.label=Storage2 used space (MB) web.statistics.1.content.10.ds_graph_options.storage2_used.lines={ fill: true } web.statistics.1.content.10.ds_graph_options.storage2_used.color="#7777FF"
+    web.statistics.1.content.1.ds_graph_options.storage1_total.label=Storage1 total space (MB) 
+    web.statistics.1.content.1.ds_graph_options.storage1_total.color="#FF7777" 
+    web.statistics.1.content.1.ds_graph_options.storage1_used.label=Storage1 used space (MB) 
+    web.statistics.1.content.1.ds_graph_options.storage1_used.lines={ fill: true } 
+    web.statistics.1.content.1.ds_graph_options.storage1_used.color="#7777FF" 
+
+    web.statistics.1.content.2.title=Storage2 
+    web.statistics.1.content.10.graph.1=storage2_total 
+    web.statistics.1.content.2.graph.2=storage2_used 
+    web.statistics.1.content.2.ds_graph_options.storage2_total.label=Storage2 total space (MB) 
+    web.statistics.1.content.2.ds_graph_options.storage2_total.color="#FF7777" 
+    web.statistics.1.content.2.ds_graph_options.storage2_used.label=Storage2 used space (MB) 
+    web.statistics.1.content.2.ds_graph_options.storage2_used.lines={ fill: true } 
+    web.statistics.1.content.2.ds_graph_options.storage2_used.color="#7777FF"
 
 The configuration may also need some explanation
 

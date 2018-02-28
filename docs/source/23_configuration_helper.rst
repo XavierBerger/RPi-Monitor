@@ -79,11 +79,11 @@ into an existing configuration file or add a new file in
 
 ::
 
-  dynamic.20.name=storage2_available
-  dynamic.20.source=df -t ntfs
-  dynamic.20.regexp=sda1\s+\d+\s+\d+\s+(\d+)
-  dynamic.20.postprocess=$1/1024
-  dynamic.20.rrd=GAUGE
+  dynamic.1.name=storage2_available
+  dynamic.1.source=df -t ntfs
+  dynamic.1.regexp=sda1\s+\d+\s+\d+\s+(\d+)
+  dynamic.1.postprocess=$1/1024
+  dynamic.1.rrd=GAUGE
 
 Once the configuration will be apply, restart **RPi-Monitor** with the command:
 

@@ -27,7 +27,7 @@ To remove this addons, simply comment out or delete the following lines from ``/
 
 ::
 
-  web.addons.1.name=Addons
+  web.addons.1.title=Addons
   web.addons.1.addons=about
 
 Top3 Addon 
@@ -50,7 +50,7 @@ To activate this addon, add the following lines to your configuration file
  
 ::
 
-  web.addons.1.name=Top3
+  web.addons.1.title=Top3
   web.addons.1.addons=top3
 
 Copy ``/usr/share/rpimonitor/web/addons/top3/top3.cron`` to ``/etc/cron.d/top3`` to activate periodical check.
@@ -72,8 +72,8 @@ iframe that can display any other web pages.
    :align: center
    :width: 500px
 
-web.addons.<id>.name=<name>
-  ``<name>`` represent the name displayed in addon menu or addon title
+web.addons.<id>.title=<title>
+  ``<title>`` represent the title displayed in addon menu or addon title
 web.addons.<id>.addons=custom
   ``custom`` is the addon activated
 web.addons.<id>.showtitle=<title visibility>
@@ -104,7 +104,7 @@ Shellinabox can be integrated to **RPi-Monitor** with custom addon as follow:
 
 ::
 
-  web.addons.1.name=ShelleInABox
+  web.addons.1.title=ShelleInABox
   web.addons.1.addons=custom
   web.addons.1.showtitle=false
   web.addons.1.url=https://raspberrypi.local:4200/
@@ -119,7 +119,7 @@ using the custom addon. The configuration will then be the following:
 
 ::
 
-  web.addons.1.name=Webcam - Hawkeye
+  web.addons.1.title=Webcam - Hawkeye
   web.addons.1.addons=custom
   web.addons.1.url=http://raspberrypi.local:8000/
   web.addons.1.allowupdate=false
@@ -149,7 +149,7 @@ Example addon can activate by adding the following lines into the configuration 
 
 ::
 
-  web.addons.1.name=Addon example
+  web.addons.1.title=Addon example
   web.addons.1.addons=example
   web.addons.1.showtitle=true
   web.addons.1.parameter=parameter_example

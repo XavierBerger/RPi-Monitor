@@ -79,7 +79,7 @@ This can be done with the configuration bellow:
 
 ::
 
-    web.statistics.1.content.1.name=humidity 
+    web.statistics.1.content.1.title=humidity 
     web.statistics.1.content.1.ds_graph_options.humidity.label=Humidity (%) 
     web.statistics.1.content.1.ds_graph_options.humidity.yaxis=2 
     web.statistics.1.content.1.graph_options.y2axis={ position: "right", min: 0, max: 100 }
@@ -110,6 +110,18 @@ You will see a new curve in Temperature graph as shown in the screenshot bellow:
   
   Graph with 2 Y axis: °C in left axis and % humidity (fixed from 0% to 100%) 
   on right axis
+
+
+
+|
+|
+|
+|
+| OLD CONF: TO BE REVIEWED 
+|
+|
+|
+|
 
 
 DS18B20 1wire temperature sensor
@@ -143,7 +155,10 @@ the id is: 28-000004fe1847. Let's now check if we can get the temperature:
 It looks to work. So now we need to extract the the numbers ending the second line (21625). The regular expression will then be t.(\d+)$. I'll not do a course about what a regexp is there are many site on the internet explaining it.
 Note: In version 1.x of RPi-Monitor it is prohibited to use = in regular expression.
 
-To add a graph to RPi-Monitor statistic, we need to create a new section. Let's call it [room_temperature]. Then we have to declare the new data name room_temp, its source /sys/bus/w1/devices/28-000004fe1847/w1_slave and the associated regular expression t.(\d+)$. The line to append will look like that:
+To add a graph to RPi-Monitor statistic, we need to create a new section. Let's call it 
+[room_temperature]. Then we have to declare the new data name room_temp, its source 
+/sys/bus/w1/devices/28-000004fe1847/w1_slave and the associated regular expression t.(\d+)$.
+ The line to append will look like that:
     # Room temperature
     [room_temperature]
     room_temp=/sys/bus/w1/devices/28-000004fe1847/w1_slave=t.(\d+)$
