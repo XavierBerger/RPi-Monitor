@@ -54,7 +54,7 @@ will add a drop down list on the right of the top menu with a links to
    :align: center
    :width: 500px
 
-Each friend is identified by an ``id`` and is described by 2 parameters: ``<name>`` and ``<link>``.
+Each friend is identified by an ``id`` and is described by 2 parameters: ``<title>`` and ``<link>``.
 
 Here is an example of configuration : ``/etc/rpimonitor/template/example.friends.conf``
 
