@@ -1,7 +1,7 @@
 :github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/02_screenshots.rst
+
 Screenshots
 ===========
------
 
 .. figure:: _static/addons001.png
    :align: center
@@ -66,6 +66,14 @@ Screenshots
 
 -----
 
+.. figure:: _static/logo.png
+   :align: center
+   :width: 500px
+
+   Official Logo
+
+-----
+
 .. figure:: _static/multipages001.png
    :align: center
    :width: 500px
@@ -87,4 +95,12 @@ Screenshots
    :width: 500px
 
    Statistics with dual axis
+
+-----
+
+.. figure:: _static/tor001.png
+   :align: center
+   :width: 500px
+
+   Example of usage: tor-info
 
