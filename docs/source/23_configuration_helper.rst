@@ -1,5 +1,4 @@
 :github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/26_configuration_helper.rst
-:wip:
 
 Interactive Configuration Helper
 ================================
@@ -61,7 +60,7 @@ The result is now the one expected , enter ``Yes`` ( or ``yes`` or ``Y`` or ``y`
 
 .. image:: _static/helper009.png
 
-We want the value in ``MB`` while is it given in ``kB``. We then need to devide it by ``1024``.
+We want the value in ``MB`` while is it given in ``kB``. We then need to divide it by ``1024``.
 The formula is then: ``$1/1024``
 
 .. image:: _static/helper010.png
@@ -76,7 +75,8 @@ The value extracted is variable so ``dynamic`` so enter ``No``.
 
 **RPi-Monitor** gives you the template of configuration. You now have to copy it 
 into an existing configuration file or add a new file in
-``/etc/rpimonitord.conf.d/`` and update the text inside ``<>``.
+``/etc/rpimonitord/`` directory or subdirectory. Update the text inside ``<>`` to 
+define how data should be stored. Include this file in ``data.conf``.
 
 ::
 
@@ -89,6 +89,3 @@ into an existing configuration file or add a new file in
 Once the configuration will be apply, restart **RPi-Monitor** with the command:
 
 ``/etc/init.d/rpimonitor restart``
-
-I hope this post is detailled enough to help you to configure **RPi-Monitor** to 
-define the correct sources and regular expression.
