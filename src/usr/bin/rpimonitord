@@ -451,7 +451,7 @@ sub DoGET
     
     #If requested rrd doesn't exist, return empty.rrd
     $path =~ /rrd$/ and ! -f "$configuration->{'daemon'}->{'datastore'}/$path" and $path="empty.rrd";
-    
+
     #Recreate empty rrd on demand
     $path =~ /empty\.rrd/ and $configuration->CreateRRD( "$configuration->{'daemon'}->{'datastore'}/stat/empty.rrd", 'empty', 'GAUGE', 'U', 'U' );
 
@@ -1131,7 +1131,7 @@ sub PrintConfiguration
   $_ = $type;
   /dynamic/ and print "dynamic.$id.rrd=<Define the rrd type>\n";
   print "\n You now have to copy it into an existing configuration file or\n";
-  print " add anew file into /etc/rpimonitor/.\n";
+  print " add a new file into /etc/rpimonitor/.\n";
   print " <Note the some text require a manual update>\n";
   print " Once the configuration will be apply, restart RPi-Monitor with the\n";
   print " command: /etc/init.d/rpimonitor restart or systemctl restart rpimonitord\n";
