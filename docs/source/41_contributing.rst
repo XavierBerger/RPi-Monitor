@@ -1,4 +1,4 @@
-:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/41_contributing.rst
+:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/develop/docs/source/41_contributing.rst
 :wip:
 
 Contributing

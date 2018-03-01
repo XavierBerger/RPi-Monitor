@@ -1,4 +1,4 @@
-:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/11_first_installation.rst
+:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/develop/docs/source/11_first_installation.rst
 
 Installation and upgrade
 ========================

@@ -1,4 +1,4 @@
-:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/35_lcd.rst
+:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/develop/docs/source/33_lcd.rst
 :wip:
 
 RPi-Monitor-LCD

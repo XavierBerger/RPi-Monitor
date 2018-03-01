@@ -1,4 +1,4 @@
-:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/36_external.rst
+:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/develop/docs/source/35_external.rst
 :wip:
 
 Non standard configuration

@@ -1,4 +1,4 @@
-:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/22_extraction.rst
+:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/develop/docs/source/22_extraction.rst
 :wip:
 
 Metrics extraction configuration

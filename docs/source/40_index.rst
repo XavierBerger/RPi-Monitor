@@ -1,4 +1,4 @@
-:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/40_index.rst
+:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/develop/docs/source/40_index.rst
 
 To go further
 ==============

@@ -1,4 +1,4 @@
-:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/25_alert.rst
+:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/develop/docs/source/26_alert.rst
 :wip:
 
 Alert configuration

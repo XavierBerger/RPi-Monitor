@@ -1,4 +1,4 @@
-:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/23_web.rst
+:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/develop/docs/source/24_web.rst
 :wip:
 
 Web interface configuration

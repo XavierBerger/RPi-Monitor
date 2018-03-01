@@ -1,4 +1,4 @@
-:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/33_autentication.rst
+:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/develop/docs/source/34_autentication.rst
 :wip:
 
 Authentication and secure access

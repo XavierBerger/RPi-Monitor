@@ -1,4 +1,4 @@
-:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/32_examples.rst
+:github_url: https://github.com/XavierBerger/RPi-Monitor/blob/develop/docs/source/31_configuration_examples.rst
 :wip:
 
 Configuration examples
