@@ -14,8 +14,9 @@ This documentation is presenting the features provided by **RPi-Monitor** and
 explains how to install, configure and use it.
 
 .. toctree::
-   :maxdepth: 2
-   
+   :maxdepth: 10
+   :includehidden:
+
    01_features
 
 .. toctree::

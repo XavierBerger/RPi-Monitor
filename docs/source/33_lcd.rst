@@ -23,7 +23,7 @@ in the drawing bellow:
   Schema made with Fritzing (fritzing.org)
 
 .. note:: If you want to reproduce this assembly, check carefully the pin order, 
-it may be different.
+          it may be different.
 
 
 Preparation
@@ -249,8 +249,8 @@ Copy this code into a file ``rpimonitor-testlcd.py`` the make this file
 executable ``chmod +x rpimonitor-testlcd.py`` then execute ``./rpimonitor-testlcd.py`` it to see:
 
 .. figure:: _static/lcd004.png
-  :width: 250px 
-  :align: center
+   :width: 250px 
+   :align: center
 
 
 

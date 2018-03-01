@@ -3,6 +3,8 @@
 Keys features of RPi-Monitor
 ============================
 
+
+
 At the beginning **RPi-Monitor** was designed to run on **Raspberry Pi**. This
 is explaining the name of this software. In reality **RPi-Monitor** can run 
 on every computers running `perl`.
@@ -10,8 +12,8 @@ on every computers running `perl`.
 Since the beginning **RPi-Monitor** as been designed for embedded devices and
 performances is the core of development strategy. The software is divided into 
 two main part:
- * A lightweight daemon running on the device and gathering data
- * A powerfull WEB application running in browser in charge of data rendering
+* A lightweight daemon running on the device and gathering data
+* A powerfull WEB application running in browser in charge of data rendering
 
 .. figure:: _static/features001.png
    :align: center
@@ -83,5 +85,14 @@ Extending the capabilities
   **RPi-Monitor** is also available for `Docker <https://www.docker.com/>`_ and for embedded devices created
   with `Yocto Project <https://www.yoctoproject.org/>`_
 
-`Screenshots <02_screenshots.html>`_
-------------------------------------
+Screenshots
+-----------
+
+  See `screenshots <02_screenshots.html>`_ on dedicated page.
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+
+   02_screenshots
+

@@ -109,14 +109,14 @@ Caveats
 ^^^^^^^
 
 Most informations regarding the power management unit rely on the ability to
- query the AXP209 via I2C/sysfs. A driver for kernel 3.4 provides internal 
- PMU informations below `/sys/devices/platform/sunxi-i2c.0/i2c-0/0-0034/`
-  but unfortunately this is still missing in mainline kernel.
+query the AXP209 via I2C/sysfs. A driver for kernel 3.4 provides internal 
+PMU informations below `/sys/devices/platform/sunxi-i2c.0/i2c-0/0-0034/`
+but unfortunately this is still missing in mainline kernel.
 
 Informations regarding [cpufreq settings](http://linux-sunxi.org/Cpufreq) 
 (CPU clock speed, governor) can only be queried if cpufreq support is built 
 into the kernel. This should apply to all 3.4.x kernels used nowadays and
- with mainline kernel starting with 4.0 for A10/A13/A20 too.
+with mainline kernel starting with 4.0 for A10/A13/A20 too.
 
 If you use mainline kernel 4.0 or above the SoC's temperature will be read 
 out using `/sys/class/thermal/thermal_zone0/temp`. If you've applied the 

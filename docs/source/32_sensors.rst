@@ -158,7 +158,8 @@ Note: In version 1.x of RPi-Monitor it is prohibited to use = in regular express
 To add a graph to RPi-Monitor statistic, we need to create a new section. Let's call it 
 [room_temperature]. Then we have to declare the new data name room_temp, its source 
 /sys/bus/w1/devices/28-000004fe1847/w1_slave and the associated regular expression t.(\d+)$.
- The line to append will look like that:
+The line to append will look like that:
+
     # Room temperature
     [room_temperature]
     room_temp=/sys/bus/w1/devices/28-000004fe1847/w1_slave=t.(\d+)$
@@ -169,7 +170,9 @@ Restart RPi-Monitor with the following command and it is done:
 A new graph is available in statistics (wait a little bit to have data and drawing):
 
 Use zoom feature to see the freshly added data.
-If you want to add a curve into the Temperature graph, it is possible by adding the KPI line into the section [temperature] as describe bellow:
+If you want to add a curve into the Temperature graph, it is possible by adding 
+the KPI line into the section [temperature] as describe bellow:
+
     [temperature]
     soc_temp=/sys/devices/virtual/thermal/thermal_zone0/temp=(.*)
     home_temp=/sys/bus/w1/devices/28-000004fe1847/w1_slave=t.(\d+)$
