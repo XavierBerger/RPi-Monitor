@@ -1,13 +1,13 @@
 :github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/11_first_installation.rst
 
-Installation and ugrade
-=======================
+Installation and upgrade
+========================
 
 Installation from repository
 ----------------------------
 
 **RPi-Monitor** is providing a debian repository. This repository makes 
-installation and update accessible with the command ``apt-get`` or ``aptitude``.
+installation and update accessible with the command ``apt``, ``apt-get`` or ``aptitude``.
 
 To use this repository follow the instruction bellow:
 
@@ -37,7 +37,7 @@ To install **RPi-Monitor**, execute the following command:
           The web interface is available on address http://raspberrypi.local:8888.
 
 .. note:: You may notice that **RPiMonitor** repository is hosted on 
-          `http://giteduberger.fr/ <http://giteduberger.fr/en>`_
+          `http://giteduberger.fr/ <https://giteduberger.fr/en>`_
 
 
 First step

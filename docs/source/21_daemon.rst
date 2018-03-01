@@ -1,4 +1,5 @@
 :github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/21_daemon.rst
+:wip:
 
 Daemon configuration
 ====================

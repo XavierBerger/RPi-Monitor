@@ -1,4 +1,5 @@
 :github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/14_execution.rst
+:wip:
 
 Understanding program execution
 ===============================
@@ -150,8 +151,10 @@ information extracted from daemon and perform the rendering the in a nice lookin
 This architecture has the advantage in an embedded architecture to offload the server task and delegate
 processing and rendering to the client.
 
-Some sata are stored into client browser into *local storage*.
+Some data are stored into client browser into *local storage*.
 
-.. note:: Embedded server doesn't provide access control or authentication. It is still possible
-          to not start the embeded web server and use an external web server to deliver the pages.
+.. note:: Embedded server doesn't provide access control or authentication. 
+          
+          Refer to `Authentication and secure access <34_autentication.html#authentication-and-secure-access>`_
+          to see how to use **nginx** to secure **RPi-Monitor**
           

@@ -1,4 +1,5 @@
 :github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/36_external.rst
+:wip:
 
 Non standard configuration
 ==========================
@@ -184,10 +185,3 @@ You may notice that some values are undefined or displayed as NaN (Not a Number)
 To fix these issues, you will have to update the configuration file 
 (rpimonitord.conf or default.conf in /etc/ + /etc/rpimonitord.conf.d or 
 /usr/local/rpimonitor/ depending on your installation).
-
-
-Yocto
------
-
-Docker
-------

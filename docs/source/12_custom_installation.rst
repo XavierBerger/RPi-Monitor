@@ -1,4 +1,5 @@
 :github_url: https://github.com/XavierBerger/RPi-Monitor/blob/feature/docs/docs/source/12_custom_installation.rst
+:wip:
 
 Custom installation
 ===================
@@ -6,22 +7,20 @@ Custom installation
 Installation from Debian package
 --------------------------------
 Download the latest package from the official repository in `Github
-<https://github.com/XavierBerger/RPi-Monitor-deb/tree/master/packages>`_
-with the following command (replace ``latest_package_url`` by the real url found on github):
+<https://github.com/XavierBerger/RPi-Monitor-deb/tree/master/packages>`_:
 
 ::
 
-    wget latest_package_url -O rpimonitor_latest_all.deb
+    wget https://goo.gl/yDYFhy -O rpimonitor_latest.deb
 
-If you have issue with GnuTLS: A TLS warning alert coming from Github you 
-can download it with the following command:
+If you have issue with GnuTLS: A TLS warning alert coming from Github you can download it with the following command:
 
 ::
 
-    curl -L latest_package_url -o rpimonitor_latest_all.deb
+    curl -L https://goo.gl/yDYFhy -o rpimonitor_latest.deb
 
 Install the dependencies by executing the following command (use command 
-``apt-get`` if ``aptitude`` is not available on your target system):
+``apt-get`` or ``apt`` if ``aptitude`` is not available on your target system):
 
 ::
 
@@ -32,7 +31,7 @@ Installation or upgrade can be done with the command:
 
 ::
 
-  sudo dpkg -i rpimonitor_latest_all.deb
+  sudo dpkg -i rpimonitor_latest.deb
 
 Complete the installation with the command:
 
@@ -40,16 +39,26 @@ Complete the installation with the command:
 
   sudo /usr/share/rpimonitor/scripts/updatePackagesStatus.pl
 
-Installing on gentoo
+Installing on Gentoo
 --------------------
-**Gentoo** users can find the **ebuild** created by Stuart Shelton [here](https://github.com/srcshelton/gentoo-ebuilds/tree/master/www-apps/rpi-monitor).
+**Gentoo** users can find the `ebuild <https://github.com/srcshelton/gentoo-ebuilds/tree/master/www-apps/rpi-monitor>`_ created by Stuart Shelton.
 
-Installing on archlinux
------------------------
-**Arch Linux** users can find the **aur package** created by ajs124 [here](https://aur.archlinux.org/packages/rpimonitor/). Developmental branch package is located [here](https://aur.archlinux.org/packages/rpimonitor-dev-git/)
+Installing on Arch Linux
+------------------------
+**Arch Linux** users can find the `aur package <https://aur.archlinux.org/packages/rpimonitor/>`_ created by ajs124. 
+
+Development branch package is located `here <https://aur.archlinux.org/packages/rpimonitor-dev-git/>`_
 
 Installation from sources
 -------------------------
 
 For manual installation, refer to `Packaging <32_contributing.html#packaging>`_ 
 instruction which describes how and where install files. 
+
+Yocto
+-----
+.. todo:: Explain how to use meta-rpiexperiences.
+
+Docker
+------
+.. todo:: Explain how to use docker.

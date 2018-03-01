@@ -30,6 +30,7 @@ import os
 # ones.
 extensions = [
     'sphinx.ext.githubpages',
+    'sphinx.ext.todo',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -103,7 +104,7 @@ pygments_style = 'sphinx'
 #keep_warnings = False
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
-#todo_include_todos = False
+todo_include_todos = True
 
 
 # -- Options for HTML output ----------------------------------------------
@@ -117,7 +118,6 @@ html_theme = 'sphinx_rtd_theme'
 # documentation.
 html_theme_options = {
     'canonical_url': '',
-    'analytics_id': 'UA-18642541-8',
     'logo_only': False,
     'display_version': True,
     'prev_next_buttons_location': 'bottom',
@@ -130,7 +130,6 @@ html_context = {
     "google_adsense": "ca-pub-6853682829194266",
     "google_adsense_slot": "2876944524",
     "google_analytics":"UA-18642541-8",
-    "work_in_progress": True
 }
 # Add any paths that contain custom themes here, relative to this directory.
 # git submodule add git@github.com:snide/sphinx_rtd_theme.git source/_themes/sphinx_rtd_theme

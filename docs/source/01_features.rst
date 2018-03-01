@@ -3,15 +3,18 @@
 Keys features of RPi-Monitor
 ============================
 
-
-
 At the beginning **RPi-Monitor** was designed to run on **Raspberry Pi**. This
 is explaining the name of this software. In reality **RPi-Monitor** can run 
 on every computers running `perl`.
 
+.. figure:: _static/logo.png
+   :align: center
+
 Since the beginning **RPi-Monitor** as been designed for embedded devices and
-performances is the core of development strategy. The software is divided into 
-two main part:
+performances is the core of development strategy. 
+
+The software is divided into two main part:
+
 * A lightweight daemon running on the device and gathering data
 * A powerfull WEB application running in browser in charge of data rendering
 
@@ -21,7 +24,7 @@ two main part:
 
 Collecting metrics
 ------------------
-  **rpimonitord** is a daemon wich periodically gather, process and store metrics.
+  ``rpimonitord`` is a daemon wich periodically gather, process and store metrics.
   In **RPi-Monitor** metrics are named **KPI** for **K**\ ey **P**\ erformance **I**\ ndicator.
 
 Storing metrics
@@ -50,8 +53,6 @@ Configurable
   - Define how to present and share metrics and statistics
   - Define how to detect an alert and what to do when alert appears or disappears
   - Define ... what you want to do with **RPi-Monitor**
-
-  .. note:: See `configuration <10_index.html>`_ chapter for details and examples.
   
 Processing metrics and raising alerts
 -------------------------------------
@@ -78,7 +79,8 @@ Sharing metrics
 Extending the capabilities
 --------------------------
   **RPi-Monitor** is extensible. It provides addons allowing customisation of
-  the interface `Shellinabox <https://github.com/shellinabox/shellinabox>`_, `Hawkeye <https://github.com/ipartola/hawkeye>`_, top3...
+  the interface. For example: `Shellinabox <https://github.com/shellinabox/shellinabox>`_ or 
+  `Hawkeye <https://github.com/ipartola/hawkeye>`_.
 
   **RPi-Monitor-Peeble** allows to see monitoring status on `Peeble <https://www.pebble.com/>`_ smart watch.
   
