@@ -215,9 +215,12 @@ Here is the result:
 Monitor rclone
 --------------
 
+.. todo:: write this section
 
 Use MRTG with RPi-Monitor in read-only mode
 --------------------------------------------
+
+.. todo:: write this section
 
 Monitor a TOR relay 
 -------------------

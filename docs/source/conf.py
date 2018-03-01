@@ -123,6 +123,7 @@ html_theme_options = {
     'prev_next_buttons_location': 'bottom',
     'collapse_navigation': True,
     'sticky_navigation': True,
+    'includehidden': True,
     'navigation_depth': 2
 }
 
@@ -274,7 +275,7 @@ man_pages = [
     ("13_execution", 'rpimonitor', u'RPi-Monitor Documentation',
      [author], 1),
     ("22_extraction", 'rpimonitor.conf', u'RPi-Monitor Documentation',
-     [author], 1)
+     [author], 5)
 ]
 
 # If true, show URL addresses after external links.

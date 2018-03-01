@@ -16,7 +16,8 @@ We will also see how to steup dual-axis.
 
 .. seealso:: Adafruit created a very good tutorial explaining how to use DHT11 or DHT22.
 
-             This tutorial is available at this `here <http://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/wiring>`_.
+             This tutorial is available at this 
+             `here <http://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/wiring>`_.
 
 Electronic assembly
 ^^^^^^^^^^^^^^^^^^^
@@ -112,21 +113,10 @@ You will see a new curve in Temperature graph as shown in the screenshot bellow:
   Graph with 2 Y axis: °C in left axis and % humidity (fixed from 0% to 100%) 
   on right axis
 
-
-
-|
-|
-|
-|
-| OLD CONF: TO BE REVIEWED 
-|
-|
-|
-|
-
-
 DS18B20 1wire temperature sensor
 --------------------------------
+
+.. todo:: old conf: to be updated
 
 Add other graphs from additional sources: external temperature probe
 

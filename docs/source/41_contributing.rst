@@ -60,27 +60,6 @@ Requesting a feature
 """"""""""""""""""""
 Feel free to file new feature requests as an `issue on GitHub <https://github.com/XavierBerger/RPi-Monitor/issues>`_, just like a bug.
 
-|
-|
-|
-|
-|
-|
-| WORK IN PROGRESS
-|
-|
-|
-|
-|
-|
-
-
-
-
-
-
-
-
 Propose a merge request
 ^^^^^^^^^^^^^^^^^^^^^^^
 
