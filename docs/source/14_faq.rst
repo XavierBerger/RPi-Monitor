@@ -7,7 +7,7 @@ Frequently Asked Questions
 
   There are a lot of GNU/Linux distribution available, I can't support all of them.
   I decided since the beginning use to Raspbian as target OS. The version v2.13 has been
-  tested on ``2017-11-29-raspbian-stretch-lite.img``.
+  tested with ``2017-11-29-raspbian-stretch-lite.img`` on **Raspberry Pi B**.
 
   Remember, in **RPi-Monitor**, everything is configurable. It should then be possible
   to update configuration files to match the specificities of your distro.

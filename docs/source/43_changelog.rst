@@ -4,7 +4,7 @@
 Release note
 ============
 
-v2.13-beta3 
+v2.13-beta4 
 -----------
   .. important :: Target version v2.13-r0 not yet published yet
 
@@ -12,6 +12,7 @@ v2.13-beta3
   * Create documentation in https://xavierberger.github.io/RPi-Monitor-docs/index.html
   * Add snmp agent "pass_persist" extension and MIB generator
   * Add readonly option disabling disk write
+  * Improve logfile management (#169)
   * Fix service status template (#172)
   * Various bug fixes and cleanup code
 

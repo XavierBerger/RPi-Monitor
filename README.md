@@ -4,9 +4,9 @@
 
 **RPi-Monitor** is an application designed to perform real time monitoring embedded devices.
 
-The development platform is a [Raspberry Pi](http://raspberrypi.org) v1 rev. B.
+The development platform is a [Raspberry Pi](http://raspberrypi.org) B.
 
-**RPi-Monitor** provides a lot of feature such as Embedded Web server, Alert messaging, SNMP integration...
+**RPi-Monitor** provides a lot of feature such as **Embedded Web server**, **Alert messaging**, **SNMP integration**...
 
 For details, refer to [keys features of RPi-Monitor](https://xavierberger.github.io/RPi-Monitor-docs/01_features.html) in documentation.
 

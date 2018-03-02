@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# Copyright 2013-2017 - Xavier Berger - http://rpi-experiences.blogspot.fr/
+# Copyright 2013-2018 - Xavier Berger - http://rpi-experiences.blogspot.fr/
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -105,7 +105,7 @@ sub Load
   $this->{'daemon'}->{'readonly'}    ||= 0;
   $this->{'daemon'}->{'timeout'}     ||= 5;
   $this->{'daemon'}->{'sharedmemkey'}||= 20130906;
-$this->{'daemon'}->{'loglevel'}      ||= 0;
+  $this->{'daemon'}->{'loglevel'}    ||= 0;
   $loglevel ||= $this->{'daemon'}->{'loglevel'};
 
   # Check user and group
