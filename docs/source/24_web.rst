@@ -11,7 +11,9 @@ friend is identified by its ``<id>`` and is described by the 2 following
 parameters
 
 web.friends.<id>.title=<display title>
-  ``<display title>`` is the title printed into the drop down menu
+  ``<display title>`` is the title printed into the drop down menu.
+  This parameter will be evaluated by the javascript command with the function ``eval()`` 
+  theirfore parameter should be valid javacript.
 
 web.friends.<id>.link=<link to RPi-Monitor>
   ``<link to RPi-Monitor>`` is the link to another RPi-Monitor running

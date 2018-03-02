@@ -1,36 +1,35 @@
 :github_url: https://github.com/XavierBerger/RPi-Monitor/blob/develop/docs/source/27_configuration_templates.rst
-:wip:
 
 Configuration templates
 =======================
 
 **RPi-Monitor** comes with example files showing the capabilities of some features 
 and functions available in status page. 
-These files are installed into ``/etc/rpimonotor/templates/``
+These files are installed into ``/etc/rpimonotor/templates/``.
 To see how a specific file is behaving, you can include this file into your 
 configuration file using the ``include``. 
 
 .. hint:: By default, files are included and commented out into ``data.conf``. 
           To activate them, you can simply uncomment them and restart ``rpimonitord``.
 
-.. note:: Remember to restart RPi-Monitor to apply the configuration change:
+.. note:: Remember to restart **RPi-Monitor** to apply the configuration change:
   
-  ::
+   ::
 
-    sudo /etc/init.d/rpimonitor restart
+     sudo /etc/init.d/rpimonitor restart
 
 Page header
 -----------
 
 This function allow to define a custom logo, custom title.
 
-Here is and example of configuration : ``/etc/rpimonitor/template/example.header.conf``
+Here is an example of configuration : ``/etc/rpimonitor/template/example.header.conf``
 
 .. include:: ../../src/etc/rpimonitor/template/example.header.conf
   :literal:
 
-``data.hostname`` is a value automatically extracted by **RPi-Monitor**. It is not 
-needed to add a configuration.
+``data.hostname`` is a value automatically extracted by **RPi-Monitor**. 
+It is not needed to add this extration in configuration file.
 
 The file ``avatar.png`` has been added into ``/usr/share/rpimonitor/web/img/``.
 
@@ -40,7 +39,7 @@ Here is the result:
    :align: center
    :width: 500px
 
-.. seealso:: See defails in `Header customisation  <13_web.html#header-customisation>`_
+.. seealso:: See defails in `Header definition  <24_web.html#header-customisation>`_
 
 Friends
 -------
@@ -65,7 +64,7 @@ Here is an example of configuration : ``/etc/rpimonitor/template/example.friends
 .. figure:: _static/friends002.png
    :align: center
 
-.. seealso:: See details in `Friends definition  <23_web.html#friends>`_
+.. seealso:: See details in `Friends definition  <24_web.html#friends>`_
 
 Badges and labels
 -----------------
@@ -100,6 +99,8 @@ Here is the result:
 
 .. image:: _static/label001.png
   :align: center
+
+.. seealso:: See details in `Badge and Label definition in status definition <24_web.html#status>`_
 
 Multiple pages
 --------------
@@ -146,6 +147,8 @@ Here is the result:
 
     Show warning and critical and colors 
 
+.. seealso:: See details in `ProgressBar definition in status definition <24_web.html#status>`_
+
 JustGageBar
 -----------
 
@@ -164,6 +167,8 @@ Here is the result:
     :align: center
 
     Show warning and critical and colors 
+
+.. seealso:: See details in `JustGageBar definition in status definition <24_web.html#status>`_
 
 Visibility
 ----------
@@ -186,6 +191,8 @@ Here is the result:
 
     Show visibility feature
 
+.. seealso:: See details in `Visibility definition in status definition <24_web.html#status>`_
+
 Interval
 --------
 
@@ -204,6 +211,8 @@ Here is the result:
 
 .. figure:: _static/interval001.png
     :align: center
+
+.. seealso:: See details in `Interval definition in status definition <24_web.html#status>`_
 
 Alerts
 ------
@@ -257,3 +266,5 @@ Open the status page and check the auto update option to see the example running
 
 .. figure:: _static/alertanimation001.gif
    :align: center
+
+.. seealso:: See details in `Badge and Label definition in status definition <26_alert.html>`_
