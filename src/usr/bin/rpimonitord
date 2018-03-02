@@ -26,7 +26,7 @@ $|=1;
 $SIG{CHLD}   = 'IGNORE';
 
 my $VERSION  = "{DEVELOPMENT}";
-our $verbose  = 0;
+our $loglevel  = 0;
 my $pidfile;
 
 package Configuration;
@@ -49,7 +49,7 @@ sub Debug
   my $this = shift;
   my $level = shift;
 
-  $level <= $verbose or return;
+  $level <= $loglevel or return;
   print STDERR "[", strftime("%Y/%m/%d-%H:%M:%S", localtime), "] ", "  " x ($level), (caller 1)[3], " @_\n";
 }
 
@@ -105,6 +105,8 @@ sub Load
   $this->{'daemon'}->{'readonly'}    ||= 0;
   $this->{'daemon'}->{'timeout'}     ||= 5;
   $this->{'daemon'}->{'sharedmemkey'}||= 20130906;
+$this->{'daemon'}->{'loglevel'}      ||= 0;
+  $loglevel ||= $this->{'daemon'}->{'loglevel'};
 
   # Check user and group
   $this->{'daemon'}->{'gid'} = getgrnam($this->{'daemon'}->{'group'})  || 1000;
@@ -178,7 +180,8 @@ sub Load
 
   if ( $this->{'show'} ) {
     $Data::Dumper::Indent = 1;
-    die Data::Dumper->Dump([$this]);
+    print Data::Dumper->Dump([$this]);
+    die "loglevel = $loglevel\n";
   }
 
   $this->{'sharedmem'} = IPC::ShareLite->new(
@@ -331,7 +334,7 @@ sub Debug
   my $this = shift;
   my $level = shift;
 
-  $level <= $verbose or return;
+  $level <= $loglevel or return;
   print STDERR "[", strftime("%Y/%m/%d-%H:%M:%S", localtime), "] ", "  " x ($level), (caller 1)[3], " @_\n";
 }
 
@@ -616,7 +619,7 @@ sub Debug
   my $this = shift;
   my $level = shift;
 
-  $level <= $verbose or return;
+  $level <= $loglevel or return;
   print STDERR "[", strftime("%Y/%m/%d-%H:%M:%S", localtime), "] ", "  " x ($level), (caller 1)[3], " @_\n";
 }
 
@@ -930,7 +933,7 @@ sub Debug
   my $this = shift;
   my $level = shift;
 
-  $level <= $verbose or return;
+  $level <= $loglevel or return;
   print STDERR "[", strftime("%Y/%m/%d-%H:%M:%S", localtime), "] ", "  " x ($level), (caller 1)[3], " @_\n";
 }
 
@@ -1218,7 +1221,7 @@ sub Debug
   my $this = shift;
   my $level = shift;
 
-  $level <= $verbose or return;
+  $level <= $loglevel or return;
   print STDERR "[", strftime("%Y/%m/%d-%H:%M:%S", localtime), "] ", "  " x ($level), (caller 1)[3], " @_\n";
 }
 
@@ -1478,9 +1481,20 @@ while($_ = shift)
   /-r(eadonly)?/    and $configuration->{'daemon'}->{'readonly'}++ and next;
   /-s(how)?/        and $configuration->{'show'}++ and next;
   /-t(imeout)?/     and $configuration->{'daemon'}->{'timeout'} = shift and next;
-  /^-([v]+)$/       and $verbose = length $1 and next;
+  /^-([v]+)$/       and $loglevel = length $1 and next;
   /-V(ersion)?/     and die "$0 version $VERSION\n";
 }
+
+$configuration->{'daemon'}->{'keeplogfile'} or -f $configuration->{'daemon'}->{'logfile'} and unlink $configuration->{'daemon'}->{'logfile'};
+$configuration->{'daemon'}->{'logfile'} ||= '/dev/null';
+
+if ( ! $pidfile ) {
+  if ( ! ($configuration->{'daemon'}->{'logfile'} =~ /\/dev\/null/) ){
+    open my $logfile, '>>', $configuration->{'daemon'}->{'logfile'};
+    *STDERR = $logfile;
+  }
+};
+
 $configuration->Load();
 
 if ($configuration->{'getmib'}) {
@@ -1488,9 +1502,6 @@ if ($configuration->{'getmib'}) {
   $snmpmodule->GetMib($configuration);
   exit;
 }
-
-$configuration->{'daemon'}->{'keeplogfile'} or -f $configuration->{'daemon'}->{'logfile'} and unlink $configuration->{'daemon'}->{'logfile'};
-$configuration->{'daemon'}->{'logfile'} ||= '/dev/null';
 
 my $monitor = Monitor->new();
 # Process data that should be extracted once, before the server starts
@@ -1513,10 +1524,10 @@ $SIG{INT}    = sub { stop(); }; # catch Ctrl+C
 my $serverpid;
 
 # Manage loglevel
-$SIG{USR1}   = sub { ($verbose < 5 ) and ++$verbose and print STDERR "[", strftime("%Y/%m/%d-%H:%M:%S", localtime), "] Change loglevel to ", $verbose ,"\n"; };
-$SIG{USR2}   = sub {  $verbose       and $verbose-- and print STDERR "[", strftime("%Y/%m/%d-%H:%M:%S", localtime), "] Change loglevel to ", $verbose ,"\n"; };
+$SIG{USR1}   = sub { ($loglevel < 5 ) and ++$loglevel and print STDERR "[", strftime("%Y/%m/%d-%H:%M:%S", localtime), "] Change loglevel to ", $loglevel ,"\n"; };
+$SIG{USR2}   = sub {  $loglevel       and $loglevel-- and print STDERR "[", strftime("%Y/%m/%d-%H:%M:%S", localtime), "] Change loglevel to ", $loglevel ,"\n"; };
 
-print STDERR "[", strftime("%Y/%m/%d-%H:%M:%S", localtime), "] ", "RPi-Monitor has been started\n";
+print STDERR "[", strftime("%Y/%m/%d-%H:%M:%S", localtime), "] ", "RPi-Monitor has been started with loglevel set to $loglevel\n";
 print STDERR "                      Log level can be increased or decreased during runtime\n";
 print STDERR "                      by sending signal USR1 or USR2 with the command killall -USRx rpimonitord\n";
 

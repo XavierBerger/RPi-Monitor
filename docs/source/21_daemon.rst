@@ -56,6 +56,9 @@ daemon.logfile=/var/log/rpimonitor.log
 
   .. note:: when ``rpimonitord`` is started in foreground, information a written in ``/dev/stderr``
 
+daemon.loglevel=0
+  Define log level (Default:0)
+
 SNMP configuration
 ------------------
   ``snmpagent`` is defining SNMP behavior of ``rpimonitord``.
