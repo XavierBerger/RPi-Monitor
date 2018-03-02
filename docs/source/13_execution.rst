@@ -1,5 +1,4 @@
 :github_url: https://github.com/XavierBerger/RPi-Monitor/blob/develop/docs/source/13_execution.rst
-:wip:
 
 Understanding program execution
 ===============================
@@ -58,7 +57,7 @@ Options
 |                 |              +------------------------------------------------------------------------+
 |                 |              | Default : 10                                                           |
 +-----------------+--------------+------------------------------------------------------------------------+
-|-l, --logfile    | log file     | Logfile directory and prefix (ex: ``/var/log/rpimonitor``)             |
+|-l, --logfile    | log file     | Logfile directory and prefix (ex: ``/var/log/rpimonitor.log``)         |
 |                 |              +------------------------------------------------------------------------+
 |                 |              | Default: ``/dev/null``                                                 |
 +-----------------+--------------+------------------------------------------------------------------------+

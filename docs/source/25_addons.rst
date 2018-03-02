@@ -1,17 +1,16 @@
 :github_url: https://github.com/XavierBerger/RPi-Monitor/blob/develop/docs/source/25_addons.rst
-:wip:
 
 Addons configuration
 ====================
 
-**RPi-Monitor** is providing addons. Addons are custom pages designed to give 
-you the possibility to free your imagination and cutomise **RPi-Monitor** to your needs.
+Addons are custom pages designed to give you the possibility to free your imagination 
+and cutomise **RPi-Monitor** interface to match your needs.
 
 Addons are ``html`` pages, ``javascript`` and ``css`` directly integrated into **RPi-Monitor**.
-The activation of an addon is done into **RPi-Monitor** configuration file.
+Addons are installed in ``/usr/share/rpimonitor/web/addons/`` and activation is done in configuration file.
 
 It is possible to use an addon many time into a same configuration file using 
-different parameters if the addon support them as show with `custom addon <24_addons.html#id3>`_.
+different parameters if the addon support them as show hereunder with `custom addon <24_addons.html#id3>`_.
 
 The next part of this chapter shows some examples of addons and highlight the possibilities of this feature.
 
@@ -22,14 +21,14 @@ The next part of this chapter shows some examples of addons and highlight the po
 About Addon 
 -----------
 
-About addons is activated by default and present addons feature. 
+``About addon`` is activated by default and present addons feature. 
 
 To remove this addons, simply comment out or delete the following lines from ``/etc/rpimonitor/data.conf``.
 
 ::
 
-  web.addons.1.title=Addons
-  web.addons.1.addons=about
+  include=/etc/rpimonitor/template/addons.conf
+
 
 Top3 Addon 
 ----------
@@ -40,11 +39,11 @@ Top3 is showing how to use addons to add additionnal information into status pag
    :align: center
    :width: 400px
 
-This addons is designed to periodically generate HTML content. This content can be 
-accessible from the addons menu and/or can be inserted into status page 
+This addons is designed to periodically generate HTML content. This content can 
+be accessible from the addons menu and/or can be inserted into status page 
 using the function ``InsertHTML()``.
 
-Top3 addons shows the 3 process consuming the CPU time of CPU in addition to 
+Top3 addons shows the 3 process consuming the most CPU time in addition to 
 cunsumption of ``rpimonitord`` process.
 
 To activate this addon, add the following lines to your configuration file
@@ -73,20 +72,25 @@ iframe that can display any other web pages.
    :align: center
    :width: 500px
 
+Custom addon can be configured with the following parameters: 
+
 web.addons.<id>.title=<title>
   ``<title>`` represent the title displayed in addon menu or addon title
+  This parameter will be evaluated by the javascript command with the function ``eval()`` 
+  theirfore parameter should be valid javacript.
+
 web.addons.<id>.addons=custom
   ``custom`` is the addon activated
+
 web.addons.<id>.showtitle=<title visibility>
   ``<title visibility>`` define if title should be displayed or not
+
 web.addons.<id>.url=<url>
   ``url`` is defining the page to be displayed into the iframe. It can be a file 
-  reachable from **RPi-Monitor** internal server or a site available into the Internet.
+  reachable from **RPi-Monitor** internal server or a site available on the Internet.
+
 web.addons.<id>.allowupdate=<allow update>
   ``<allow update>`` define is ``url`` can be updated in option
-
-.. important:: ``id`` has to start by 1 and incrementing. This is defining the order of addons with the menu.
-
 
 Shellinabox
 ^^^^^^^^^^^
@@ -114,8 +118,9 @@ Shellinabox can be integrated to **RPi-Monitor** with custom addon as follow:
 Webcam 
 ^^^^^^
 
-If you want to see the image of your webcam in your brower, you can use `hawkeye <https://github.com/ipartola/hawkeye>`_. 
-Once hawkeye installed, it is very easy to add it into **RPi-Monitor** interface 
+If you want to see the image of your webcam in your browser, you can use 
+`hawkeye <https://github.com/ipartola/hawkeye>`_. 
+Once ``hawkeye`` is installed, it is very easy to add it into **RPi-Monitor** interface 
 using the custom addon. The configuration will then be the following:
 
 ::
@@ -131,7 +136,8 @@ using the custom addon. The configuration will then be the following:
             security of your images. You should use the capacity of hawkeye to 
             restrict the access to the image using a login and a password. 
             
-            .. seealso:: You can also have a look to `Authentication and secure access to RPi-Monitor <34_autentication.html>`_.
+            .. seealso:: You can also have a look to 
+            `Authentication and secure access to RPi-Monitor <34_autentication.html>`_.
 
 Example Addon
 -------------

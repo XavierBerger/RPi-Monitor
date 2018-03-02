@@ -1,5 +1,4 @@
 :github_url: https://github.com/XavierBerger/RPi-Monitor/blob/develop/docs/source/24_web.rst
-:wip:
 
 Web interface configuration
 ===========================
@@ -38,6 +37,10 @@ web.page.pagetitle=<page title>
   tab and window title bar. This code can use status information with
   the keyword ``data`` including the ``data.hostname`` available natively
 
+  .. image:: _static/header001.png
+     :align: center
+     :width: 500px
+
 Status
 ------
 The status page is fully configurable. It is possible to define multiple pages.
@@ -47,6 +50,10 @@ Each page is identified by its ``<page id>``.
 
 web.status.<page id>.title=<page title>
   ``<page title>`` title of the page displayed into the drop down menu in case of multiple pages.
+  This parameter will be evaluated by the javascript command with the function ``eval()`` 
+  theirfore parameter should be valid javacript.
+
+  .. hint:: You can use the function ``LinkToGraph(page,graph,text)`` direct link to graph.
 
 Status page is split in strips displaying information. Each status strip is 
 identified by a unique ``<status id>``. Each status strip is defined by a title, 
@@ -56,7 +63,7 @@ web.status.<page id>.content.<status id>.visibility=<visibility formula>
   ``<visibility formula>`` should be a valid javascript formula returning
   ``0``: to hide the row anything else but ``0``: show the row
 
-  .. seealso:: Example of implementation in `TO BE COMPLETED  <#>`_
+  .. seealso:: Example of implementation in `Visibility example  <27_configuration_templates.html#visibility>`_
 
 web.status.<page id>.content.<status id>.title=<display title>
   ``<display title>`` title displayed as title of the strip
@@ -127,8 +134,8 @@ web.status.<page id>.content.<status id>.line.<line number>=<parameter>
         Print 's ' if value > 1 or ' ' if not.
 
     - **Clock(data.localtime)**
-        This function is a little bit particular and should be written  and should be 
-        written exactly as in the upper line. It will display on screen the current time and 
+        This function is a little bit particular and should be written exactly 
+        as in the upper line. It will display on screen the current time and 
         will simulate the seconds by incrementing them periodically.
 
     - **Label(data,formula, text, level)**
@@ -145,7 +152,9 @@ web.status.<page id>.content.<status id>.line.<line number>=<parameter>
            :width: 500px
 
     - **InsertHTML(url)**
-        This function is used to insert an HTML information inside a page. (Ref Top3 example showing top most process cpu usage)
+        This function is used to insert an HTML information inside a page. 
+        
+        .. seealso:: Example of implementation in `Top3 addon <25_addons.html#top3-addon>`_
 
     - **LinkToGraph(page,graph,text)**
         This function is used create a link to graph in specific page.
@@ -166,7 +175,8 @@ its ``<page id>``.
 
 web.statistic.<page id>.title=<page title>
   ``<page title>`` title of the page displayed into the drop down menu in
-  case of multiple pages. 
+  case of multiple pages. This parameter will be evaluated by the javascript
+  command with the function ``eval()`` theirfore parameter should be valid javacript.
 
 The statistic page displays statistics graphs. The graphs are
 identified an unique ``<statistic id>`` and by the following parameters.
@@ -183,8 +193,9 @@ web.statistics.<page id>.content.<statistic id>.graph.<rrd id>=<data name>
 web.statistics.<page id>.content.<statistic id>.ds_graph_options.<data name>.label=<label>
   ``<data name>`` same as the previous ``<data name>``
   ``<label>`` Label to display in legends. It is possible to setup other parameters
-  of ds_graph_options. Refer to the following web page for details:
-  http://javascriptrrd.sourceforge.net/docs/javascriptrrd_v0.5.0/doc/lib/rrdFlot_js.html
+  of ds_graph_options. Refer to
+  `javascriptrrd documentation <http://javascriptrrd.sourceforge.net/docs/javascriptrrd_v0.5.0/doc/lib/rrdFlot_js.html>`_
+  for details.
 
 web.statistics.<page id>.content.<statistic id>.graph_options.<parameter>=<value>
   ``<parameter>`` and ``<value>`` can be find into the same web page as previous
@@ -192,21 +203,21 @@ web.statistics.<page id>.content.<statistic id>.graph_options.<parameter>=<value
 
 Addons
 ------
-  **RPi-Monitor** features can be extended by addons. Addons are html, javascript
-  and css code installed in ``/usr/share/rpimonitor/web/addons/``.
+  **RPi-Monitor** features can be extended by addons. Addons are ``html``, ``javascript``
+  and ``css`` code installed in ``/usr/share/rpimonitor/web/addons/``.
 
   Each addons is idendifier by an ``id`` and the following parameters:
 
-  .. important:: ``id`` has to start by 1 and incrementing. This is defining the order of addons with the menu.
-
   web.addons.<id>.title=<title to be display>
-    ``<title to be display>`` defines the text display in RPi-Monitor web interface
+    ``<title to be display>`` defines the text display in RPi-Monitor web interface.
+    This parameter will be evaluated by the javascript command with the function ``eval()`` 
+    theirfore parameter should be valid javacript.
  
   web.addons.<id>.addons=<addon name>
-    ``<addon name>`` defines the addon to activate
+    ``<addon name>`` defines the addon to activate.
  
   web.addons.<id>.showTitle=<0|1>
-    ``<0|1>`` defines it the title of addon has to be shown in addon page
+    ``<0|1>`` defines it the title of addon has to be shown in addon page.
  
   web.addons.<id>.<parameter>=<value>
     ``<parameter>=<value>`` are optional parameter to configure addon
