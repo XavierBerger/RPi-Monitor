@@ -10,7 +10,7 @@ Addons are ``html`` pages, ``javascript`` and ``css`` directly integrated into *
 Addons are installed in ``/usr/share/rpimonitor/web/addons/`` and activation is done in configuration file.
 
 It is possible to use an addon many time into a same configuration file using 
-different parameters if the addon support them as show hereunder with `custom addon <24_addons.html#id3>`_.
+different parameters if the addon support them as show hereunder with `custom addon <25_addons.html#id1>`_.
 
 The next part of this chapter shows some examples of addons and highlight the possibilities of this feature.
 
