@@ -97,7 +97,7 @@ function ConstructPage()
     activePage=0;
   }
   if ( data.length > 1 ) {
-    $('#pageTitle').html("<h2>" + data[activePage].name + "</h2>" );
+    $('#pageTitle').html("<h2>" + eval(data[activePage].title) + "</h2>" );
     $('#pageTitle').removeClass('hide');
   }
   for ( var iloop=0; iloop < data[activePage].content.length; iloop++) {

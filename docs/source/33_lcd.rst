@@ -34,7 +34,7 @@ different solution using Python or C. After few tries, I decided to use
 Python based on the information shared into this post.
 
 To use the PCD8544 display we need to install few software and load a
- kernel module.
+kernel module.
 
 First, let's install wiringpi2 from drogon.net
 
@@ -124,7 +124,7 @@ To install it, execute the following commands:
     ./setup.py clean build 
     sudo ./setup.py install
 
- You can now test the installation with the proposed examples:
+You can now test the installation with the proposed examples:
 
 ::
 
@@ -141,7 +141,7 @@ You can try to execute other examples to see what the library is capable to do w
 
 Usage
 -----
-As I said in introduction, RPi-Monitor is gathering a lot of information and 
+As I said in introduction, **RPi-Monitor** is gathering a lot of information and 
 some of them may be interesting to have without having to start a PC. 
 Information are made available from the embedded web server. To get and 
 display the information we then just have to create a web client and use 
@@ -174,10 +174,12 @@ For people interesting about learning development I did comment my code:
         rpi_temperature = data['living_room_temp']
       except:
         rpi_temperature="--.---"
+      
       try:
         rpi_humidity = data['humidity']
       except:
         rpi_humidity = "--"
+      
       # Construct string to be displayed on screens
       temperature = "Temp: %s C" % rpi_temperature
       humidity = "Humidity: %s %%" % rpi_humidity
@@ -187,6 +189,7 @@ For people interesting about learning development I did comment my code:
       lcd.text(temperature)
       lcd.gotorc(3,0)
       lcd.text(humidity)
+      
       # Also print string in console
       os.system("clear")
       print " RPi-Monitor "
@@ -244,7 +247,7 @@ For people interesting about learning development I did comment my code:
       main()
 
 This code is dedicated to extract the living room temperature and humidity 
-from RPi-Monitor information.
+from **RPi-Monitor** information.
 
 Copy this code into a file ``rpimonitor-testlcd.py`` the make this file 
 executable ``chmod +x rpimonitor-testlcd.py`` then execute ``./rpimonitor-testlcd.py`` it to see:
@@ -252,6 +255,3 @@ executable ``chmod +x rpimonitor-testlcd.py`` then execute ``./rpimonitor-testlc
 .. figure:: _static/lcd004.png
    :width: 250px 
    :align: center
-
-
-

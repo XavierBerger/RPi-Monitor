@@ -39,7 +39,7 @@ function Start() {
     activePage = 0 
   }
   if ( graphconf.length > 1 ) {
-    $('#pageTitle').html("<h2>" + graphconf[activePage].name + "</h2><hr>" );
+    $('#pageTitle').html("<h2>" + eval(graphconf[activePage].title) + "</h2><hr>" );
     $('#pageTitle').removeClass('hide');
   }
 
