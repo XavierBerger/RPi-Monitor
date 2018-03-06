@@ -136,7 +136,9 @@ The configuration to add a new status strip will then be the following:
 
     web.status.1.content.1.title=Storage 
     web.status.1.content.1.icon=usb_hdd.png 
-    web.status.1.content.1.line.1="<b>/storage1</b> Used: <b>"+KMG(data.storage1_used,'M')+"</b> (<b>"+Percent(data.storage1_used,data.storage1_total,'M')+"</b>) Free: <b>"+KMG(data.storage1_total-data.storage1_used,'M')+ "</b> Total: <b>"+ KMG(data.storage1_total,'M') +"</b>" web.status.1.content.9.line.2=ProgressBar(data.storage1_used,data.storage1_total) web.status.1.content.9.line.3="<b>/storage2</b> Used: <b>"+KMG(data.storage2_used,'M')+"</b> (<b>"+Percent(data.storage2_used,data.storage2_total,'M')+"</b>) Free: <b>"+KMG(data.storage2_total-data.storage2_used,'M')+ "</b> Total: <b>"+ KMG(data.storage2_total,'M') +"</b>"
+    web.status.1.content.1.line.1="<b>/storage1</b> Used: <b>"+KMG(data.storage1_used,'M')+"</b> (<b>"+Percent(data.storage1_used,data.storage1_total,'M')+"</b>) Free: <b>"+KMG(data.storage1_total-data.storage1_used,'M')+ "</b> Total: <b>"+ KMG(data.storage1_total,'M') +"</b>" 
+    web.status.1.content.1.line.2=ProgressBar(data.storage1_used,data.storage1_total) 
+    web.status.1.content.1.line.3="<b>/storage2</b> Used: <b>"+KMG(data.storage2_used,'M')+"</b> (<b>"+Percent(data.storage2_used,data.storage2_total,'M')+"</b>) Free: <b>"+KMG(data.storage2_total-data.storage2_used,'M')+ "</b> Total: <b>"+ KMG(data.storage2_total,'M') +"</b>"
 
 
 The configuration may need some explanation:
@@ -176,7 +178,7 @@ This is done with the following configuration:
     web.statistics.1.content.1.ds_graph_options.storage1_used.color="#7777FF" 
 
     web.statistics.1.content.2.title=Storage2 
-    web.statistics.1.content.10.graph.1=storage2_total 
+    web.statistics.1.content.2.graph.1=storage2_total 
     web.statistics.1.content.2.graph.2=storage2_used 
     web.statistics.1.content.2.ds_graph_options.storage2_total.label=Storage2 total space (MB) 
     web.statistics.1.content.2.ds_graph_options.storage2_total.color="#FF7777" 
