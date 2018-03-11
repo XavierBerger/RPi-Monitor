@@ -267,4 +267,4 @@ Open the status page and check the auto update option to see the example running
 .. figure:: _static/alertanimation001.gif
    :align: center
 
-.. seealso:: See details in `Badge and Label definition in status definition <26_alert.html>`_
+.. seealso:: See details in `Alert definition in status definition <26_alert.html>`_

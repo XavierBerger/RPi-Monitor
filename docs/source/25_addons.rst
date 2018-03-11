@@ -136,8 +136,7 @@ using the custom addon. The configuration will then be the following:
             security of your images. You should use the capacity of hawkeye to 
             restrict the access to the image using a login and a password. 
             
-            .. seealso:: You can also have a look to 
-            `Authentication and secure access to RPi-Monitor <34_autentication.html>`_.
+            .. seealso:: You can also have a look to `Authentication and secure access to RPi-Monitor <34_autentication.html>`_.
 
 Example Addon
 -------------

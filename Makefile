@@ -19,7 +19,12 @@ all:
 	@echo " Once environment variable are set, execute: make install"
 	@echo ""
 
-install:
+DOCS_DIR = docs
+.PHONY: man
+man:
+	@make -C $(DOCS_DIR) man
+
+install: man
 	@echo "Installing RPi-Monitor in ${TARGETDIR}"
 	@mkdir -p ${TARGETDIR}var/lib/rpimonitor
 	@cp -r src/var/lib/rpimonitor/* ${TARGETDIR}var/lib/rpimonitor/
@@ -32,6 +37,11 @@ install:
 	@mkdir -p ${TARGETDIR}usr/share/rpimonitor
 	@cp -r src/usr/share/rpimonitor/* ${TARGETDIR}usr/share/rpimonitor/
 	@echo "Startup system is ${STARTUPSYS}"
+	@mkdir -p ${TARGETDIR}usr/share/man/man1
+	@cp -r docs/build/man/rpimonitor.1 ${TARGETDIR}usr/share/man/man1/
+	@mkdir -p ${TARGETDIR}usr/share/man/man5
+	@cp -r docs/build/man/rpimonitor-*.conf.5 ${TARGETDIR}usr/share/man/man5/
+	
 ifeq (${STARTUPSYS},sysVinit)
 	@mkdir -p ${TARGETDIR}etc/init.d
 	@cp -r src/etc/init.d/* ${TARGETDIR}etc/init.d/

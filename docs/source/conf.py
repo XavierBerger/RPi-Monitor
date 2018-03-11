@@ -277,6 +277,8 @@ man_pages = [
     ("21_daemon", 'rpimonitor-daemon.conf', u'RPi-Monitor daemon configuration',
      [author], 5),
     ("22_extraction", 'rpimonitor-data.conf', u'RPi-Monitor configuration',
+     [author], 5),
+    ("26_alert", 'rpimonitor-alert.conf', u'RPi-Monitor alert configuration',
      [author], 5)
 ]
 
