@@ -48,23 +48,32 @@ Options
 .. note:: If you want to change the default ``delay``, the rrd file will have to be deleted. 
           ``rpimonitord`` will recreate database at next startup with the new time slice.
 
--h, --help        Shows this help and exit
+-h,--help        
+      Shows this help and exit
 
--i, --interactive Interactive configuration helper   
+-i,--interactive 
+      Interactive configuration helper   
 
--k, --keep        Keep log file (Default: logfile is delete at each start)
+-k,--keep        
+      Keep log file (Default: logfile is delete at each start)
 
--m, --mib         Get MIB for current configuration   
+-m,--mib         
+      Get MIB for current configuration   
 
--n, --noserver    Don't start embeded web server   
+-n,--noserver    
+      Don't start embeded web server   
 
--r, --readonly    Read only mode.                
+-r,--readonly    
+      Read only mode.                
 
--s, --show        Show configuration as loaded and exit     
+-s,--show        
+      Show configuration as loaded and exit     
 
--v, --verbose     Write debug info on screen     
+-v,--verbose     
+      Write debug info on screen     
 
--V, --Version     Show version and exit                                   
+-V,--Version     
+      Show version and exit                                   
 
 Configuration
 -------------
