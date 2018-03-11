@@ -4,14 +4,16 @@
 Release note
 ============
 
-v2.13-beta4 
+v2.13-beta5 
 -----------
   .. important :: Target version v2.13-r0 not yet published yet
 
   * Implement sortable status items written by iaa (#166 #197)
   * Create documentation in https://xavierberger.github.io/RPi-Monitor-docs/index.html
-  * Add snmp agent "pass_persist" extension and MIB generator
+  * Add snmp agent "pass_persist" extension
   * Add readonly option disabling disk write
+  * Add LinkToGraph function (#201)
+  * Improve multiple KPI extraction, postprocessing and default values
   * Improve logfile management (#169)
   * Fix service status template (#172)
   * Various bug fixes and cleanup code
