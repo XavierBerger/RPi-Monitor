@@ -54,9 +54,9 @@ static.<static data id>.regexp=<data regexp>
   In case of KPI list, each group will be affected to a KPI name.
 
 static.<static data id>.postprocess=<data postprocess>
-  ``<data postprocess>`` is an expression defining the postprocessing to
-  be applied on result. KPI are idendified by ``$1``. In case of list,
-  other KPI are identified by ``$2``, ``$3``, ...
+  ``<data postprocess>`` is an expression defining the postprocessing formula or the
+  list of postprocessing formula (comma separated) to be applied on result.
+  Each result is processed individually and is identified by ``$1``
   This parameter will be evaluate by the command eval of ``perl``.
 
 Dynamic
@@ -84,9 +84,10 @@ dynamic.<dynamic data id>.regexp=<data regexp>
   In case of KPI list, each group will be affected to a KPI name.
 
 dynamic.<dynamic data id>.postprocess=<data postprocess>
-  ``<data name>``, ``<data source>``, ``<data regexp>``, ``<data postprocess>``
-  This 4 first parameters have the same signification as for static
-  parameters.
+  ``<data postprocess>`` is an expression defining the postprocessing formula or the
+  list of postprocessing formula (comma separated) to be applied on result.
+  Each result is processed individually and is identified by ``$1``
+  This parameter will be evaluate by the command eval of ``perl``.
 
   .. note:: Static values are accessible for the post processing using the
             variable ``$this->{'static'}->{'static_data_name'}`` and can be used.
@@ -98,8 +99,9 @@ dynamic.<dynamic data id>.interval=<interval>
   Default value is ``1``. This means that data is extracted at every loop.
 
 dynamic.<dynamic data id>.default=<default>
-  If ``rpimonitord`` can't extract information, it is now possible to define
-  a ``<default>`` value which will be set for the KPI.
+  If ``rpimonitord`` can't extract information, it is possible to define
+  a ``<default>`` value which will be set for the KPI or defaults values of a list 
+  of KPI separated by comma.
 
 dynamic.<dynamic data id>.rrd=<GAUGE|COUNTER|DERIVE|ABSOLUTE|COMPUTE>
   ``rrd`` parameter is defining if the KPI has to be stored into a RRD
