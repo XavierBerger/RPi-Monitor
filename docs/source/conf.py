@@ -272,9 +272,11 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ("13_execution", 'rpimonitor', u'RPi-Monitor Documentation',
+    ("13_execution", 'rpimonitor', u'RPi-Monitor program',
      [author], 1),
-    ("22_extraction", 'rpimonitor.conf', u'RPi-Monitor Documentation',
+    ("21_daemon", 'rpimonitor-daemon.conf', u'RPi-Monitor daemon configuration',
+     [author], 5),
+    ("22_extraction", 'rpimonitor-data.conf', u'RPi-Monitor configuration',
      [author], 5)
 ]
 

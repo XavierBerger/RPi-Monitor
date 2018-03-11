@@ -3,29 +3,6 @@
 Understanding program execution
 ===============================
 
-Startup script
---------------
-
-**RPi-Monitor** is configured to start automatically. ``/etc/init.d/rpimonitor``
-and link in runlevel startup directory (``/etc/rc?.d/``) do the job. 
-This script can be executed with the following parameters:
-
-start
-  Start ``rpimonitord`` daemon
-stop
-  Stop ``rpimonitord`` daemon
-restart
-  Stop and start ``rpimonitord`` daemon
-status
-  Show ``rpimonitord`` status
-update
-  Update 'packages to be installed' list. This information is displayed in default 
-  configuration of Web interface
-install_auto_package_status_update
-  Add a script to automatically call package update script when ``apt`` commands are executed
-remove_auto_package_status_update
-  Remove script automatically call for package update 
-
 Command line
 ------------
 ``rpimonitord`` can be directly executed with the following parameters:
@@ -40,63 +17,60 @@ Options
 ^^^^^^^
 .. tabularcolumns:: |l{5cm}|c{5cm}|p{10cm}|
 
-+-----------------+--------------+------------------------------------------------------------------------+
-|-a, --addr       |   address    | Web server bind address                                                |
-|                 |              +------------------------------------------------------------------------+
-|                 |              | Default: 0.0.0.0                                                       |
-+-----------------+--------------+------------------------------------------------------------------------+
-|-b, --background |   pid file   | Define the pid file when run in background                             |
-|                 |              +------------------------------------------------------------------------+
-|                 |              | Default: not set, application run in foreground                        |
-+-----------------+--------------+------------------------------------------------------------------------+
-|-c, --conf       | conf file    | Define the configuration file                                          |
-|                 |              +------------------------------------------------------------------------+
-|                 |              | Default: ``/etc/rpimonitor/data.conf`` ``/etc/rpimonitor/daemon.conf`` |
-+-----------------+--------------+------------------------------------------------------------------------+
-|-d, --delay      | delay        | Delay between check ins seconds                                        |
-|                 |              +------------------------------------------------------------------------+
-|                 |              | Default : 10                                                           |
-+-----------------+--------------+------------------------------------------------------------------------+
-|-l, --logfile    | log file     | Logfile directory and prefix (ex: ``/var/log/rpimonitor.log``)         |
-|                 |              +------------------------------------------------------------------------+
-|                 |              | Default: ``/dev/null``                                                 |
-+-----------------+--------------+------------------------------------------------------------------------+
-|-p, --port       | port         | Web server port                                                        |
-|                 |              +------------------------------------------------------------------------+
-|                 |              | Default: 8888                                                          |
-+-----------------+--------------+------------------------------------------------------------------------+
-|-t, --timeout    | timeout      | KPI read timeout in seconds                                            |
-|                 |              +------------------------------------------------------------------------+
-|                 |              | Default: 5                                                             |
-+-----------------+--------------+------------------------------------------------------------------------+
+-a,--addr address           
+      Web server bind address                                               
+      Default: 0.0.0.0 
+
+-b,--background pid-file      
+      Define the pid file when run in background                            
+      Default: not set, application run in foreground   
+
+-c,--conf conf-file     
+      Define the configuration file                                         
+      Default: ``/etc/rpimonitor/data.conf`` ``/etc/rpimonitor/daemon.conf``
+
+-d,--delay delay
+      Delay between check ins seconds                                       
+      Default : 10  
+
+-l,--logfile log-file      
+      Logfile directory and prefix (ex: ``/var/log/rpimonitor.log``)        
+      Default: ``/dev/null``    
+
+-p,--port port          
+      Web server port                                                       
+      Default: 8888  
+
+-t,--timeout timeout       
+      KPI read timeout in seconds                                           
+      Default: 5                                                            
 
 .. note:: If you want to change the default ``delay``, the rrd file will have to be deleted. 
           ``rpimonitord`` will recreate database at next startup with the new time slice.
 
-+------------------+----------------------------------------------------------+
-|-h, --help        | Shows this help and exit                                 |
-+------------------+----------------------------------------------------------+
-|-i, --interactive | Interactive configuration helper                         |
-+------------------+----------------------------------------------------------+
-|-k, --keep        | Keep log file (Default: logfile is delete at each start) |
-+------------------+----------------------------------------------------------+
-|-m, --mib         | Get MIB for current configuration                        |
-+------------------+----------------------------------------------------------+
-|-n, --noserver    | Don't start embeded web server                           |
-+------------------+----------------------------------------------------------+
-|-r, --readonly    | Read only mode.                                          |
-+------------------+----------------------------------------------------------+
-|-s, --show        | Show configuration as loaded and exit                    |
-+------------------+----------------------------------------------------------+
-|-v, --verbose     | Write debug info on screen                               |
-+------------------+----------------------------------------------------------+
-|-V, --Version     | Show version and exit                                    |
-+------------------+----------------------------------------------------------+
+-h, --help        Shows this help and exit
+
+-i, --interactive Interactive configuration helper   
+
+-k, --keep        Keep log file (Default: logfile is delete at each start)
+
+-m, --mib         Get MIB for current configuration   
+
+-n, --noserver    Don't start embeded web server   
+
+-r, --readonly    Read only mode.                
+
+-s, --show        Show configuration as loaded and exit     
+
+-v, --verbose     Write debug info on screen     
+
+-V, --Version     Show version and exit                                   
 
 Configuration
 -------------
 Configuration can be defined into ``/etc/rpimonitor/daemon.conf`` and
 ``/etc/rpimonitor/data.conf`` or in a list of files specified by ``-c`` parameter.
+
 In ``/etc/rpimonitor/template/*.conf``, provided at installation, you can see 
 how to customize ``rpimonitord``.
 
@@ -133,27 +107,37 @@ The web interface configuration can also be downloaded in json format:
 
 Statistic information are stored into RRD file available in the directory ``/var/lib/rpimonitor/stat/``
 
-Web interface
--------------
+Startup script
+--------------
 
-The presentation of the information is performed by HTML5 pages. These pages dynamically download the
-information extracted from daemon and perform the rendering the in a nice looking format using:
+**RPi-Monitor** is configured to start automatically. ``/etc/init.d/rpimonitor``
+and link in runlevel startup directory (``/etc/rc?.d/``) do the job. 
+This script can be executed with the following parameters:
 
-* `bootstrap <http://twitter.github.io/bootstrap/>`_
-* `jquery <http://jquery.com/>`_
-* `jsqrencode <https://code.google.com/p/jsqrencode/>`_
-* `javascriptrrd <http://javascriptrrd.sourceforge.net/>`_
-* `flot <http://www.flotcharts.org/>`_
-* `justgage <http://www.justgage.com>`_ and `raphael <http://raphaeljs.com>`_
-* `Sortable <https://github.com/rubaxa/Sortable>`_
+start
+  Start ``rpimonitord`` daemon
+stop
+  Stop ``rpimonitord`` daemon
+restart
+  Stop and start ``rpimonitord`` daemon
+status
+  Show ``rpimonitord`` status
+update
+  Update 'packages to be installed' list. This information is displayed in default 
+  configuration of Web interface
+install_auto_package_status_update
+  Add a script to automatically call package update script when ``apt`` commands are executed
+remove_auto_package_status_update
+  Remove script automatically call for package update           
 
-This architecture has the advantage in an embedded architecture to offload the server task and delegate
-processing and rendering to the client.
+Manpages
+--------
 
-Some data are stored into client browser into *local storage*.
+See also **RPi-Monitor** manpages :
 
-.. note:: Embedded server doesn't provide access control or authentication. 
-          
-          Refer to `Authentication and secure access <34_autentication.html#authentication-and-secure-access>`_
-          to see how to use **nginx** to secure **RPi-Monitor**
-          
+::
+ 
+  man rpimonitor
+  man rpimonitor-data
+  man rpimonitor-daemon
+ 

@@ -3,6 +3,33 @@
 Web interface configuration
 ===========================
 
+Overview
+--------
+
+The presentation of the information is performed by HTML5 pages. These pages 
+dynamically download the information extracted from daemon and perform the 
+rendering the in a nice looking format using:
+
+* `bootstrap <http://twitter.github.io/bootstrap/>`_
+* `jquery <http://jquery.com/>`_
+* `jsqrencode <https://code.google.com/p/jsqrencode/>`_
+* `javascriptrrd <http://javascriptrrd.sourceforge.net/>`_
+* `flot <http://www.flotcharts.org/>`_
+* `justgage <http://www.justgage.com>`_ and `raphael <http://raphaeljs.com>`_
+* `Sortable <https://github.com/rubaxa/Sortable>`_
+
+This architecture has the advantage in an embedded architecture to offload the server task and delegate
+processing and rendering to the client.
+
+Some data are stored into client browser into *local storage*.
+
+.. note:: Embedded server doesn't provide access control or authentication. 
+          
+          Refer to `Authentication and secure access <34_autentication.html#authentication-and-secure-access>`_
+          to see how to use **nginx** to secure **RPi-Monitor**
+
+The following chapter is explaining how to customize the web interface.
+
 Friends
 -------
 Friends are defining a displayed title and a link reachable from a
