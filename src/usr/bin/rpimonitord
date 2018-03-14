@@ -94,18 +94,19 @@ sub Load
   $this->{'version'} = localtime();
 
   # Load default values is not defined yet defined
-  $this->{'daemon'}->{'user'}        ||= "pi";
-  $this->{'daemon'}->{'group'}       ||= "pi";
-  $this->{'daemon'}->{'noserver'}    ||= 0;
-  $this->{'daemon'}->{'port'}        ||= 8888;
-  $this->{'daemon'}->{'addr'}        ||= '0.0.0.0';
-  $this->{'daemon'}->{'webroot'}     ||= "/usr/share/rpimonitor/web";
-  $this->{'daemon'}->{'datastore'}   ||= "/var/lib/rpimonitor";
-  $this->{'daemon'}->{'delay'}       ||= 10;
-  $this->{'daemon'}->{'readonly'}    ||= 0;
-  $this->{'daemon'}->{'timeout'}     ||= 5;
-  $this->{'daemon'}->{'sharedmemkey'}||= 20130906;
-  $this->{'daemon'}->{'loglevel'}    ||= 0;
+  $this->{'daemon'}->{'user'}            ||= "pi";
+  $this->{'daemon'}->{'group'}           ||= "pi";
+  $this->{'daemon'}->{'noserver'}        ||= 0;
+  $this->{'daemon'}->{'port'}            ||= 8888;
+  $this->{'daemon'}->{'addr'}            ||= '0.0.0.0';
+  $this->{'daemon'}->{'webroot'}         ||= "/usr/share/rpimonitor/web";
+  $this->{'daemon'}->{'datastore'}       ||= "/var/lib/rpimonitor";
+  $this->{'daemon'}->{'delay'}           ||= 10;
+  $this->{'daemon'}->{'defaultinterval'} ||= 1;
+  $this->{'daemon'}->{'readonly'}        ||= 0;
+  $this->{'daemon'}->{'timeout'}         ||= 5;
+  $this->{'daemon'}->{'sharedmemkey'}    ||= 20130906;
+  $this->{'daemon'}->{'loglevel'}        ||= 0;
   $loglevel ||= $this->{'daemon'}->{'loglevel'};
 
   # Check user and group
@@ -172,7 +173,7 @@ sub Load
   # manage default value for dynamic data
   $this->{'maxinterval'} = 1;
   foreach (@{$this->{'dynamic'}}) {
-    $_->{'interval'} ||= 1;
+    $_->{'interval'} ||= $this->{'daemon'}->{'defaultinterval'};
     if ($_->{'interval'} > $this->{'maxinterval'} ) {
       $this->{'maxinterval'} = $this->GreatestCommonDivisor($this->{'maxinterval'}, $_->{'interval'});
     }
