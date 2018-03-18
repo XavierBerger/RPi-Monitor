@@ -4,18 +4,19 @@
 Release note
 ============
 
-v2.13-beta5 
+v2.13-beta6 
 -----------
   .. important :: Target version v2.13-r0 not yet published yet
 
-  * Implement sortable status items written by iaa (#166 #197)
-  * Create documentation in https://xavierberger.github.io/RPi-Monitor-docs/index.html
-  * Add snmp agent "pass_persist" extension
-  * Add readonly option disabling disk write
-  * Add LinkToGraph function (#201)
-  * Improve multiple KPI extraction, postprocessing and default values
-  * Improve logfile management (#169)
-  * Fix service status template (#172)
+  * New: Implement sortable status items written by iaa (#166 #197)
+  * New: Create documentation in https://xavierberger.github.io/RPi-Monitor-docs/index.html
+  * New: Add snmp agent "pass_persist" extension
+  * New: Add readonly option disabling disk write
+  * New: Add LinkToGraph function (#201)
+  * Change: 'name' keyword of web interface definition become 'title' and value has to be a valid javascript code (using "") 
+  * Change: Improve multiple KPI extraction, postprocessing and default values
+  * Change: Improve logfile management (#169)
+  * Fix: Serverstatus is not refreshed (#172)
   * Various bug fixes and cleanup code
 
 v2.12-r1
