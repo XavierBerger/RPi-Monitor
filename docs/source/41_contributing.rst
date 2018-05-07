@@ -1,5 +1,4 @@
 :github_url: https://github.com/XavierBerger/RPi-Monitor/blob/develop/docs/source/41_contributing.rst
-:wip:
 
 Contributing
 =============
@@ -46,7 +45,7 @@ Contribute to software
 
 Report issue
 ^^^^^^^^^^^^
-Whether you've found an issue with **RPI-Monitor**, here's how to report the problem...
+Whether you've found an issue with **RPi-Monitor**, here's how to report the problem...
 
 First, check the documentation for solutions to common problems.
 
@@ -79,10 +78,12 @@ Please note: Pull request perfomed on ``develop`` branch will be integrated as s
 as possible. Pull request perform on master branche may only be integrated 
 when a new version is published (or not may not be integrated at all...)
 
+.. important:: Propose pull requests on **develop** branch only.
+
 Packaging
 ---------
 
-This document describe how **RPi-Monitor** is packaged and installed.
+The following chapter describes how **RPi-Monitor** is packaged and installed.
 
 Dependencies
 ^^^^^^^^^^^^

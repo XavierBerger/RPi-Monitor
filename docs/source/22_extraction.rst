@@ -148,11 +148,14 @@ SNMP OID
 
 Commands to use to get MIB information:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. todo:: Details SNMP configuration and usage
+
 Snmp Configuration
   See configuration file example in ``/etc/snmp/snmpd.conf.rpimonitor``
   and activate pass_persist extension
   
-Extract MIB from RPi-Monitor
+Extract MIB from **RPi-Monitor**
   ``rpimonitord -m > ~/mib.txt``
   
 Get data from SNMP

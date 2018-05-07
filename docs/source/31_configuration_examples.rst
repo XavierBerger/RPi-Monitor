@@ -214,15 +214,101 @@ Here is the result:
 .. image:: _static/advancedservices001.png
   :align: center
 
-Monitor rclone
---------------
-
-.. todo:: write this section
-
 Use MRTG with RPi-Monitor in read-only mode
 --------------------------------------------
 
-.. todo:: write this section
+In this section we will see how to configure **RPi-Monitor** in **read-only mode** and provide data over **SNMP**.
+We will use `MRTG <https://oss.oetiker.ch/mrtg/>` to geather these information and create graphs.
+
+Install **MRTG** and **SNMP** tools
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+::
+
+    sudo apt-get install mrtg snmp snmpd snmp-mibs-downloader
+
+.. note:: Answer `yes` to the question `Make /etc/mrtg.cfg owned by and readable only by root?` during **MRTG** installation.
+
+Configuring **RPi-Monitor**
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Update `/etc/rpimonitor/daemon.conf` as follow:
+
+::
+
+    daemon.noserver=1
+    daemon.readonly=1
+
+    snmpagent.rootoid=.1.3.6.1.4.1
+    snmpagent.enterpriseoid=54321
+    snmpagent.rpimonitoroid=42
+    snmpagent.mibname=RPIMONITOR-MIB
+    snmpagent.lastupdate=201802030000Z
+    snmpagent.moduleidentity=rpi-experiences
+    snmpagent.organisation=RPi-Monitor
+    snmpagent.contactionfo=http://rpi-experiences.blogspot.fr/
+    snmpagent.description=description
+    snmpagent.revision=201802030000Z
+
+Update `/etc/rpimonitor/date.conf`
+
+::
+
+    /etc/rpimonitor/template/cpu.conf
+
+The file `/etc/rpimonitor/template/cpu.conf` is containing the following configuration
+
+.. include:: ../../src/etc/rpimonitor/template/cpu.conf
+  :literal:
+
+Restart **RPi-Monitor** to activate the configuration
+
+::
+
+    sudo /etc/init.d/rpimonitor restart
+
+Configure snmp to work with **RPi-Monitor** and restart `snmpd`
+
+::
+
+    sudo cp /etc/snmp/snmpd.conf.rpimonitor /etc/snmp/snmpd.conf
+    sudo /etc/init.d/snmpd restart
+
+Validate configuration
+^^^^^^^^^^^^^^^^^^^^^^
+
+Extract MIB from **RPi-Monitor**
+
+::
+
+    rpimonitord -m > ~/mib.txt
+  
+Get data from SNMP
+  
+::
+
+    snmpwalk -v 2c -m ~/mib.txt -c public 127.0.0.1 1.3.6.1.4.1.54321.42
+
+Expected result is:
+
+:: 
+
+    RPIMONITOR-MIB::distribution = STRING: "Raspbian GNU/Linux 9 (stretch)"
+    RPIMONITOR-MIB::kernelversion = STRING: "Linux 4.9.80+ armv6l"
+    RPIMONITOR-MIB::firmware = STRING: "#1098"
+    RPIMONITOR-MIB::processor = STRING: "BCM2835"
+    RPIMONITOR-MIB::upgrade = STRING: "0 upgradable(s)"
+    RPIMONITOR-MIB::cpufrequency = INTEGER: 700
+    RPIMONITOR-MIB::cpuvoltage = INTEGER: 120
+    RPIMONITOR-MIB::load1 = INTEGER: 56
+    RPIMONITOR-MIB::load5 = INTEGER: 53
+    RPIMONITOR-MIB::load15 = INTEGER: 43
+    RPIMONITOR-MIB::scalinggovernor = STRING: "ondemand"
+    RPIMONITOR-MIB::scalinggovernor = No more variables left in this MIB View (It is past the end of the MIB tree)
+
+  
+
+
 
 Monitor a TOR relay 
 -------------------

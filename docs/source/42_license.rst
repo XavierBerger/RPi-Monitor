@@ -1,5 +1,4 @@
 :github_url: https://github.com/XavierBerger/RPi-Monitor/blob/develop/docs/source/42_license.rst
-:wip:
 
 Authors and Licenses
 ====================
