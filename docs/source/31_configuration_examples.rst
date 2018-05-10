@@ -31,7 +31,7 @@ Collecting metrics
     dynamic.2.postprocess=
     dynamic.2.rrd=DERIVE
 
-.. note:: We dicided to represent downstream data with negative values. This is
+.. note:: We decided to represent downstream data with negative values. This is
           performed by the postprocess command: ``$1*-1``
 
 
