@@ -251,5 +251,5 @@ Addons
   web.addons.<id>.<parameter>=<value>
     ``<parameter>=<value>`` are optional parameter to configure addon
 
-  .. seealso:: Example of addons in `addons configuration <24_addons.html>`_
+  .. seealso:: Example of addons in `addons configuration <25_addons.html>`_
  
