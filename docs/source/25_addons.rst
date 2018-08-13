@@ -33,7 +33,7 @@ To remove this addons, simply comment out or delete the following lines from ``/
 Top3 Addon 
 ----------
 
-Top3 is showing how to use addons to add additionnal information into status page. 
+Top3 is showing how to use addons to add additional information into status page. 
 
 .. figure:: _static/addons002.png
    :align: center
