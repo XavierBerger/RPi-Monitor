@@ -44,7 +44,7 @@ be accessible from the addons menu and/or can be inserted into status page
 using the function ``InsertHTML()``.
 
 Top3 addons shows the 3 process consuming the most CPU time in addition to 
-cunsumption of ``rpimonitord`` process.
+consumption of ``rpimonitord`` process.
 
 To activate this addon, add the following lines to your configuration file
  
