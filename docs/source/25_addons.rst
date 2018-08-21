@@ -33,7 +33,7 @@ To remove this addons, simply comment out or delete the following lines from ``/
 Top3 Addon 
 ----------
 
-Top3 is showing how to use addons to add additionnal information into status page. 
+Top3 is showing how to use addons to add additional information into status page. 
 
 .. figure:: _static/addons002.png
    :align: center
@@ -44,7 +44,7 @@ be accessible from the addons menu and/or can be inserted into status page
 using the function ``InsertHTML()``.
 
 Top3 addons shows the 3 process consuming the most CPU time in addition to 
-cunsumption of ``rpimonitord`` process.
+consumption of ``rpimonitord`` process.
 
 To activate this addon, add the following lines to your configuration file
  
