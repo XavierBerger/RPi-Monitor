@@ -145,7 +145,7 @@ I've some issue with my installation or customization of **RPi-Monitor** and I w
 
 |
 
-Some data are not extracting correctly at boot but when I restart ``rpimonotord`` everything becomes OK until I reboot. How can I fix thi issue?
+Some data are not extracting correctly at boot but when I restart ``rpimonitord`` everything becomes OK until I reboot. How can I fix thi issue?
 
   If you reach such situation, you certainly configure your source using a 
   command whitout the full path. For example ``gettemp.sh`` instead of 
