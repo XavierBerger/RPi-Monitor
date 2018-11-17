@@ -120,7 +120,7 @@ All the detail are gathered in `DockerHub <https://hub.docker.com/r/michaelmikli
 Yocto
 -----
 
-``meta-rpiexperiences`` is availabale on `github <https://github.com/XavierBerger/meta-rpiexperiences>`_ 
+``meta-rpiexperiences`` is available on `github <https://github.com/XavierBerger/meta-rpiexperiences>`_ 
 gathering the recipes to add **RPi-Monitor** and all its dependencies to your project.
 `meta-rpiexperiences <http://layers.openembedded.org/layerindex/branch/master/layer/meta-rpiexperiences/>`_  
 and `rpimonitor <http://layers.openembedded.org/layerindex/recipe/52439/>`_ are referenced on
