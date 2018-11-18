@@ -58,7 +58,7 @@ web.page.icon=<icon location relative to webroot>
 
 web.page.menutitle=<menu title>
   ``<menu title>`` javascript code defining the text displayed into
-  RPi-Monotor title bar. This code can use status information with
+  RPi-Monitor title bar. This code can use status information with
   the keyword ``data`` including the ``data.hostname`` available natively
 
 web.page.pagetitle=<page title>

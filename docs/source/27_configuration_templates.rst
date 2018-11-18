@@ -5,7 +5,7 @@ Configuration templates
 
 **RPi-Monitor** comes with example files showing the capabilities of some features 
 and functions available in status page. 
-These files are installed into ``/etc/rpimonotor/templates/``.
+These files are installed into ``/etc/rpimonitor/templates/``.
 To see how a specific file is behaving, you can include this file into your 
 configuration file using the ``include``. 
 

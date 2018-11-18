@@ -92,7 +92,7 @@ how to customize ``rpimonitord``.
 
 snmp-agent
 ----------
-``rpimonotord-snmp`` is the snmp agent provided by **RPi-Monitor**. This agent
+``rpimonitord-snmp`` is the snmp agent provided by **RPi-Monitor**. This agent
 allow ``snmpd`` to access to data exctracted by ``rpimonitord``.
 
 .. seealso:: See `configuration <20_index.html>`_ chapter for details or `usage <30_index.html>`_ chapter for examples.
