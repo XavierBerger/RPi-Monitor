@@ -1,6 +1,18 @@
 access_log off;
 add_header Cache-Control public;
+# do not show server version, avoid information leak and exploids
 server_tokens off;
+
+# Security HTTP headers
+#   test service: https://securityheaders.com/
+# Allow to use frame from same origin
+add_header X-Frame-Options "SAMEORIGIN" always;
+# Enable buildin XSS protection in browser
+add_header X-Xss-Protection "1; mode=block" always;
+# Disable Content sniffing
+add_header X-Content-Type-Options "nosniff" always;
+# Disable referrer to avoid information leak to other sides
+add_header Referrer-Policy "no-referrer" always;
 
 # HTTP 80
 server {
@@ -11,7 +23,7 @@ server {
 
 # HTTPS 443
 server  {
-  listen 443 ssl;
+  listen 443 ssl http2;
   keepalive_timeout 70;
 
   # SSL config
@@ -19,31 +31,23 @@ server  {
   ssl_certificate /etc/ssl/localcerts/RPi-Experiences-cert.pem;
   ssl_certificate_key /etc/ssl/localcerts/RPi-Experiences-key.pem;
 
-  ssl_session_timeout 5m;
+  ssl_session_timeout 1d;
+  ssl_session_cache shared:SSL:50m;
+  ssl_session_tickets off;
   
   # more informations:
-  #   recomendations: https://bettercrypto.org
-  #   testing: https://www.ssllabs.com/ssltest/
-  # SSLv3 are broken
-  ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+  #   recomendations: https://mozilla.github.io/server-side-tls/ssl-config-generator/
+  #   test service: https://www.ssllabs.com/ssltest/
+  # SSLv3 is broken, do not enable; TLSv1 TLSv1.1 are not recomended
+  # works with modern 
+  ssl_protocols TLSv1.2;
   
-  # RC4 are broken
-  # cipher recomendations from bettercrypto.org
-  ssl_ciphers 'EDH+CAMELLIA:EDH+aRSA:EECDH+aRSA+AESGCM:EECDH+aRSA+SHA384:EECDH+\
-    \aRSA+SHA256:EECDH:+CAMELLIA256:+AES256:+CAMELLIA128:+AES128:+SSLv3:!aNULL:!\
-    \eNULL:!LOW:!3DES:!MD5:!EXP:!PSK:!DSS:!RC4:!SEED:!ECDSA:CAMELLIA256-SHA:AES256\
-    \-SHA:CAMELLIA128-SHA:AES128-SHA';
+  # RC4 is brokenm, do not enable
+  ssl_ciphers 'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256';
   ssl_prefer_server_ciphers on;
-  ssl_session_cache shared:SSL:10m;
-
-  # Allow to use frame from same origin
-  add_header X-Frame-Options SAMEORIGIN;
 
   # strict ssl connection
   add_header Strict-Transport-Security "max-age=31536000;";
-
-  # do not show server version, avoid exploids
-  server_tokens off;
 
   # DDOS protection - Tune Values or deactivate in case of issue
   # limit_conn conn_limit_per_ip 20;
