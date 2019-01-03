@@ -572,6 +572,7 @@ sub Run
 
   # Create the server
   $this->{'server'} = new HTTP::Daemon     ( ReuseAddr => 1,
+                                             Listen => SOMAXCONN,
                                              LocalAddr => $configuration->{'daemon'}->{'addr'},
                                              LocalPort => $configuration->{'daemon'}->{'port'})
     or die "Web server not started because of error: $!\n";
