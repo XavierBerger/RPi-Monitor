@@ -16,7 +16,7 @@ new_certs_dir           = $dir/certs
 certificate             = $dir/public/cacert.pem
 private_key             = $dir/private/cakey.pem
 default_days            = 365
-default_md              = sha1
+default_md              = sha256
 preserve                = no
 email_in_dn             = no
 nameopt                 = default_ca
@@ -37,7 +37,7 @@ emailAddress            = optional
 [ req ]
 default_bits            = 2048      # Size of keys
 default_keyfile         = key.pem   # name of generated keys
-default_md              = md5       # message digest algorithm
+default_md              = sha256    # message digest algorithm
 string_mask             = nombstr   # permitted characters
 distinguished_name      = req_distinguished_name
 x509_extensions         = v3_req
