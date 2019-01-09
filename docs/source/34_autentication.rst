@@ -73,11 +73,11 @@ Reverse proxy configuration
 ---------------------------
 
 Let's first deactivate the default site since we want to use ngnix as a reverse 
-proxy only. To do so, delete the symbolic link from sites-enable directory:
+proxy only. To do so, delete the symbolic link from sites-enabled directory:
 
 ::
 
-    sudo rm /etc/nginx/sites-enable/default
+    sudo rm /etc/nginx/sites-enabled/default
 
 Create the file ``/etc/nginx/sites-available/reverseproxy`` with the following 
 content (also downloadable from Github):
