@@ -54,7 +54,7 @@ ifeq (${STARTUPSYS},upstart)
 endif
 ifeq (${STARTUPSYS},systemd)
 	@mkdir -p ${TARGETDIR}usr/lib/systemd/system
-	@cp -r src/usr/lib/systemd/system/* ${TARGETDIR}etc/systemd/system/
+	@cp -r src/usr/lib/systemd/system/* ${TARGETDIR}usr/lib/systemd/system/
 endif
 	@echo "Installation completed"
 
