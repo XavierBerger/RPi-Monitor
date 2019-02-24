@@ -5,7 +5,7 @@ Configuration templates
 
 **RPi-Monitor** comes with example files showing the capabilities of some features 
 and functions available in status page. 
-These files are installed into ``/etc/rpimonitor/templates/``.
+These files are installed into ``/etc/rpimonitor.d/templatess/``.
 To see how a specific file is behaving, you can include this file into your 
 configuration file using the ``include``. 
 
@@ -23,9 +23,9 @@ Page header
 
 This function allow to define a custom logo, custom title.
 
-Here is an example of configuration : ``/etc/rpimonitor/template/example.header.conf``
+Here is an example of configuration : ``/etc/rpimonitor.d/examples/example.header.conf``
 
-.. include:: ../../src/etc/rpimonitor/template/example.header.conf
+.. include:: ../../src/etc/rpimonitor.d/examples/example.header.conf
   :literal:
 
 ``data.hostname`` is a value automatically extracted by **RPi-Monitor**. 
@@ -56,9 +56,9 @@ will add a drop down list on the right of the top menu with a links to
 
 Each friend is identified by an ``id`` and is described by 2 parameters: ``<title>`` and ``<link>``.
 
-Here is an example of configuration : ``/etc/rpimonitor/template/example.friends.conf``
+Here is an example of configuration : ``/etc/rpimonitor.d/examples/example.friends.conf``
 
-.. include:: ../../src/etc/rpimonitor/template/example.friends.conf
+.. include:: ../../src/etc/rpimonitor.d/examples/example.friends.conf
    :literal:
 
 .. figure:: _static/friends002.png
@@ -71,9 +71,9 @@ Badges and labels
 
 The functions ``Label`` and ``Badge`` are designed to write a text highligted by a color base on condition.
 
-Here is an example of configuration : ``/etc/rpimonitor/template/example.badge_and_label.conf``
+Here is an example of configuration : ``/etc/rpimonitor.d/examples/example.badge_and_label.conf``
 
-.. include:: ../../src/etc/rpimonitor/template/example.badge_and_label.conf
+.. include:: ../../src/etc/rpimonitor.d/examples/example.badge_and_label.conf
    :literal:
 
 In this example, we monitor if the service ``ssh`` is listening on port ``22`` and display a 
@@ -109,9 +109,9 @@ Status and statistics can be sorted in pages. The parameter ``<page id>`` of
 ``web`` configuration is defining in which page data is displayed.
 
 
-Here is an example of configuration : ``/etc/rpimonitor/template/example.multipage.conf``
+Here is an example of configuration : ``/etc/rpimonitor.d/examples/example.multipage.conf``
 
-.. include:: ../../src/etc/rpimonitor/template/example.multipage.conf
+.. include:: ../../src/etc/rpimonitor.d/examples/example.multipage.conf
    :literal:
 
 The new page will be accessible by a drop down menu as shown in the screenshot bellow.
@@ -134,9 +134,9 @@ Progress bar
 The functions ``ProgressBar`` are designed to draw a progress bar. Default color is bleu.
 Color can change base on **warning** and **danger** thresholds.
 
-Here is an example of configuration : ``/etc/rpimonitor/template/example.progressbar.conf``
+Here is an example of configuration : ``/etc/rpimonitor.d/examples/example.progressbar.conf``
 
-.. include:: ../../src/etc/rpimonitor/template/example.progressbar.conf
+.. include:: ../../src/etc/rpimonitor.d/examples/example.progressbar.conf
    :literal:
 
 Here is the result:
@@ -155,9 +155,9 @@ JustGageBar
 Justgage is a handy JavaScript plugin for generating and animating nice & clean gauges. 
 It is based on Raphaël library for vector drawing, so it’s completely resolution independent and self-adjusting.
 
-Here is an example of configuration : ``/etc/rpimonitor/template/example.justgage.conf``
+Here is an example of configuration : ``/etc/rpimonitor.d/examples/example.justgage.conf``
 
-.. include:: ../../src/etc/rpimonitor/template/example.justgage.conf
+.. include:: ../../src/etc/rpimonitor.d/examples/example.justgage.conf
    :literal:
 
 Here is the result:
@@ -176,11 +176,11 @@ Visibility
 Visibility parameter define if a row should be displayed or not. It could be usefull 
 for monitoring of an external disk which could be disconnected.
 
-Here is an example of configuration : ``/etc/rpimonitor/template/example.visibility.conf``
+Here is an example of configuration : ``/etc/rpimonitor.d/examples/example.visibility.conf``
 
 In this example, the row is alternativelly dosplayed and hide depending on minute parity.
 
-.. include:: ../../src/etc/rpimonitor/template/example.visibility.conf
+.. include:: ../../src/etc/rpimonitor.d/examples/example.visibility.conf
    :literal:
 
 Here is the result:
@@ -200,11 +200,11 @@ Interval parameter define when data should be extracted. By defaut an interval i
 Sometime it is usefull to extract data less frequently. Setting `interval` to 3 will 
 extract data every 30sec. 
 
-Here is an example of configuration : ``/etc/rpimonitor/template/example.interval.conf``
+Here is an example of configuration : ``/etc/rpimonitor.d/examples/example.interval.conf``
 
 In this example is showing interval set tj 1, 3 and 7
 
-.. include:: ../../src/etc/rpimonitor/template/example.interval.conf
+.. include:: ../../src/etc/rpimonitor.d/examples/example.interval.conf
    :literal:
 
 Here is the result:
@@ -222,7 +222,7 @@ script when a KPI reach a limit. To avoid executing this script to frequently,
 some timer have to be configured.
 The file ``example.alert.conf`` show how to configure alerts.  
 
-.. include:: ../../src/etc/rpimonitor/template/example.alert.conf
+.. include:: ../../src/etc/rpimonitor.d/examples/example.alert.conf
    :literal:
 
 The first part defines dynamic data and how **RPi-Monitor** should do to extract 

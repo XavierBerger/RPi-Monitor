@@ -81,8 +81,15 @@ sub Load
 
   # Add default configuration file if not already defined by command line
   if ( !@{$this->{'daemon'}->{'confFiles'}} ) {
+    # Old organisation of configuration
     push(@{$this->{'daemon'}->{'confFiles'}},"/etc/rpimonitor/data.conf");
     push(@{$this->{'daemon'}->{'confFiles'}},"/etc/rpimonitor/daemon.conf");
+    # New organisation of configuration
+    push(@{$this->{'daemon'}->{'confFiles'}},"/etc/rpimonitor.conf");
+    my @files = </etc/rpimonitor.d/*>;
+    foreach my $file (@files) {
+      push(@{$this->{'daemon'}->{'confFiles'}},$file);
+    }
   }
 
   foreach ( @{$this->{'daemon'}->{'confFiles'}} ) {

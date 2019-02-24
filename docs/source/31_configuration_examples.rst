@@ -206,7 +206,7 @@ Advanced service monitoring configuration
 -----------------------------------------
 Here is an example of configuration proposed by Münir Ozan TOPCU:
 
-.. include:: ../../src/etc/rpimonitor/template/advanced_service.conf
+.. include:: ../../src/etc/rpimonitor.d/templates/advanced_service.conf
    :literal:
 
 Here is the result:
@@ -254,11 +254,11 @@ Update `/etc/rpimonitor/date.conf`
 
 ::
 
-    /etc/rpimonitor/template/cpu.conf
+    /etc/rpimonitor.d/01_cpu.conf
 
-The file `/etc/rpimonitor/template/cpu.conf` is containing the following configuration
+The file `/etc/rpimonitor.d/01_cpu.conf` is containing the following configuration
 
-.. include:: ../../src/etc/rpimonitor/template/cpu.conf
+.. include:: ../../src/etc/rpimonitor.d/01_cpu.conf
   :literal:
 
 Restart **RPi-Monitor** to activate the configuration
@@ -314,7 +314,7 @@ Monitor a TOR relay
 -------------------
 Here is an example of configuration proposed by Luiz Kill: on `tor-info <https://github.com/lzkill/tor-info>`_
 
-.. include:: ../../src/etc/rpimonitor/template/tor.conf
+.. include:: ../../src/etc/rpimonitor.d/templates/tor.conf
    :literal:
 
 Here is the result:
