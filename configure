@@ -49,6 +49,10 @@ makefile.write("\t@cp -r src/var/lib/rpimonitor/* ${DEST}var/lib/rpimonitor/\n")
 if args.with_web is not None:
     makefile.write("\n\t@mkdir -p ${DEST}/usr/share/rpimonitor/web\n")
     makefile.write("\t@cp -r src/usr/share/rpimonitor/web/* ${DEST}/usr/share/rpimonitor/web/\n")
+    if args.init == "systemd":
+        makefile.write("\n\t@mkdir -p ${DEST}/lib/systemd/system/\n")
+        makefile.write("\t@cp -r src/lib/systemd/system/top3.* ${DEST}/lib/systemd/system/\n")
+
 
 makefile.write("\n\t@mkdir -p ${DEST}etc/rpimonitor.d\n")
 if args.with_conf is not None:
