@@ -28,6 +28,7 @@ if args.with_all is not None:
     args.with_snmp = 1
     args.with_conf = 1
     args.with_web = 1
+    args.with_web_addons = 1
     args.with_scripts = 1
     args.with_extra_scripts = 1
     args.with_examples = 1
