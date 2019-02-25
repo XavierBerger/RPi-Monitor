@@ -93,7 +93,7 @@ sub Load
   }
 
   foreach ( @{$this->{'daemon'}->{'confFiles'}} ) {
-    $this->LoadFile($_);
+    -r $_ && $this->LoadFile($_);
   }
   delete($this->{'daemon'}->{'confFiles'});
 
