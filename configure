@@ -1,96 +1,109 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 import argparse
 
-parser = argparse.ArgumentParser(description='Create Makefile for rpimonitord', allow_abbrev=False)
-parser.add_argument('--dest', default="/",
-                    help='define installation directory')
-parser.add_argument('--with-man', action='store_const', const=1,
-                    help='generate and install manpages')
-parser.add_argument('--with-snmp', action='store_const', const=1,
-                    help='install snmp support')
-parser.add_argument('--with-cron', action='store_const', const=1,
-                    help='install cron for package update')                    
-parser.add_argument('--with-scripts', action='store_const', const=1,
-                    help='install scripts')
-parser.add_argument('--with-examples', action='store_const', const=1,
-                    help='install examples')
-parser.add_argument('--with-templates', action='store_const', const=1,
-                    help='install templates')
-parser.add_argument('--init', default="systemd",
-                    help='define init program')
+parser = argparse.ArgumentParser(
+    description="Create Makefile for rpimonitord"
+)  # allow_abbrev=False not available in python2.7!!
+parser.add_argument(
+    "--init", default="systemd", choices=["systemd", "upstart", "sysVinit", "none"], help="define init program"
+)
+parser.add_argument("--dest", default="/", help="define installation directory")
+parser.add_argument("--with-man", action="store_const", const=1, help="generate and install manpages")
+parser.add_argument("--with-snmp", action="store_const", const=1, help="install snmp support")
+parser.add_argument("--with-conf", action="store_const", const=1, help="install default configuration")
+parser.add_argument("--with-web", action="store_const", const=1, help="install rpimonitor web insterface")
+parser.add_argument("--with-scripts", action="store_const", const=1, help="install scripts")
+parser.add_argument("--with-examples", action="store_const", const=1, help="install examples")
+parser.add_argument("--with-templates", action="store_const", const=1, help="install templates")
+parser.add_argument("--with-cron", action="store_const", const=1, help="install cron for package update")
+
+parser.add_argument("--with-all", action="store_const", const=1, help="install cron for package update")
 
 args = parser.parse_args()
 
-f = open("Makefile","w")
-f.write(f"DEST={args.dest}/\n")
-f.write("DOCS_DIR = docs\n")
+if args.with_all is not None:
+    args.with_man = 1
+    args.with_snmp = 1
+    args.with_conf = 1
+    args.with_web = 1
+    args.with_scripts = 1
+    args.with_examples = 1
+    args.with_templates = 1
+    args.with_cron = 1
 
-f.write(f"\nall:\n")
-f.write(f"\t@echo\n")
-f.write(f"\ninstall:\n")
-f.write(f"\n# Install rpimonotor in {args.dest}/\n")
-f.write("\t@mkdir -p ${DEST}usr/bin\n")
-f.write("\t@cp -r src/usr/bin/rpimonitord ${DEST}usr/bin/\n")
-f.write("\n\t@mkdir -p ${DEST}/usr/share/rpimonitor/web\n")
-f.write("\t@cp -r src/usr/share/rpimonitor/web/* ${DEST}/usr/share/rpimonitor/web/\n")
-f.write("\n\t@mkdir -p ${DEST}etc/rpimonitor.d\n")
-f.write("\t@cp -r src/etc/rpimonitor.conf ${DEST}etc/\n")
-f.write("\t@cp src/etc/rpimonitor.d/??_* ${DEST}etc/rpimonitor.d/\n")
+makefile = open("Makefile", "w")
+makefile.write("DEST={}/\n".format(args.dest))
+makefile.write("DOCS_DIR = docs\n")
+
+makefile.write("\nall:\n")
+makefile.write("\t@echo\n")
+makefile.write("\ninstall:\n")
+makefile.write("\n# Install rpimonotor in {}/\n".format(args.dest))
+makefile.write("\t@mkdir -p ${DEST}usr/bin\n")
+makefile.write("\t@cp -r src/usr/bin/rpimonitord ${DEST}usr/bin/\n")
+
+if args.with_web is not None:
+    makefile.write("\n\t@mkdir -p ${DEST}/usr/share/rpimonitor/web\n")
+    makefile.write("\t@cp -r src/usr/share/rpimonitor/web/* ${DEST}/usr/share/rpimonitor/web/\n")
+
+makefile.write("\n\t@mkdir -p ${DEST}etc/rpimonitor.d\n")
+if args.with_conf is not None:
+    makefile.write("\t@cp -r src/etc/rpimonitor.conf ${DEST}etc/\n")
+    makefile.write("\t@cp src/etc/rpimonitor.d/??_* ${DEST}etc/rpimonitor.d/\n")
+
 if args.with_man is not None:
-    f.write("\n# Add manpages\n")
-    f.write("\t@make -C $(DOCS_DIR) man\n")
-    f.write("\t@mkdir -p ${DEST}usr/share/man/man1\n")
-    f.write("\t@cp -r docs/build/man/rpimonitor.1 ${DEST}usr/share/man/man1/\n")
-    f.write("\t@mkdir -p ${DEST}usr/share/man/man5\n")
-    f.write("\t@cp -r docs/build/man/rpimonitor-*.conf.5 ${DEST}usr/share/man/man5/\n")
+    makefile.write("\n# Add manpages\n")
+    makefile.write("\t@make -C $(DOCS_DIR) man\n")
+    makefile.write("\t@mkdir -p ${DEST}usr/share/man/man1\n")
+    makefile.write("\t@cp -r docs/build/man/rpimonitor.1 ${DEST}usr/share/man/man1/\n")
+    makefile.write("\t@mkdir -p ${DEST}usr/share/man/man5\n")
+    makefile.write("\t@cp -r docs/build/man/rpimonitor-*.conmakefile.5 ${DEST}usr/share/man/man5/\n")
 
-if args.with_snmp is not None: 
-    f.write("\n# Add snmp support\n")
-    f.write("\t@cp -r src/usr/bin/rpimonitord-snmp ${DEST}usr/bin/\n")
-    f.write("\t@mkdir -p ${DEST}etc/snmp\n")
-    f.write("\t@cp -r src/etc/snmp/* ${DEST}etc/snmp/\n")
+if args.with_snmp is not None:
+    makefile.write("\n# Add snmp support\n")
+    makefile.write("\t@cp -r src/usr/bin/rpimonitord-snmp ${DEST}usr/bin/\n")
+    makefile.write("\t@mkdir -p ${DEST}etc/snmp\n")
+    makefile.write("\t@cp -r src/etc/snmp/* ${DEST}etc/snmp/\n")
 
-if args.with_cron is not None: 
-    f.write("\n# Add cron support\n")
-    f.write("\t@mkdir -p ${DEST}etc/cron.d\n")
-    f.write("\t@cp -r src/etc/cron.d/* ${DEST}etc/cron.d/\n")
+if args.with_scripts is not None:
+    makefile.write("\n# Add scripts\n")
+    makefile.write("\t@mkdir -p ${DEST}/usr/share/rpimonitor/scripts\n")
+    makefile.write("\t@cp src/usr/share/rpimonitor/scripts/* ${DEST}/usr/share/rpimonitor/scripts/\n")
+    makefile.write("\t@mkdir -p ${DEST}var/lib/rpimonitor\n")
+    makefile.write("\t@cp -r src/var/lib/rpimonitor/* ${DEST}var/lib/rpimonitor/\n")
+    if args.with_cron is not None:
+        makefile.write("\n# Add cron support\n")
+        makefile.write("\t@mkdir -p ${DEST}etc/cron.d\n")
+        makefile.write("\t@cp -r src/etc/cron.d/* ${DEST}etc/cron.d/\n")
 
-if args.with_scripts is not None: 
-    f.write("\n# Add scripts\n")
-    f.write("\t@mkdir -p ${DEST}/usr/share/rpimonitor/scripts\n")
-    f.write("\t@cp src/usr/share/rpimonitor/scripts/* ${DEST}/usr/share/rpimonitor/scripts/\n")
-    f.write("\t@mkdir -p ${DEST}var/lib/rpimonitor\n")
-    f.write("\t@cp -r src/var/lib/rpimonitor/* ${DEST}var/lib/rpimonitor/\n")
+if args.with_examples is not None:
+    makefile.write("\n# Add examples\n")
+    makefile.write("\t@mkdir -p ${DEST}/etc/rpimonitor.d/examples\n")
+    makefile.write("\t@cp src/etc/rpimonitor.d/examples/* ${DEST}/etc/rpimonitor.d/examples/\n")
 
-if args.with_examples is not None: 
-    f.write("\n# Add examples\n")
-    f.write("\t@mkdir -p ${DEST}/etc/rpimonitor.d/examples\n")
-    f.write("\t@cp src/etc/rpimonitor.d/examples/* ${DEST}/etc/rpimonitor.d/examples/\n")
-
-if args.with_templates is not None: 
-    f.write("\n# Add templates\n")
-    f.write("\t@mkdir -p ${DEST}/etc/rpimonitor.d/templates\n")
-    f.write("\t@cp src//etc/rpimonitor.d/templates/* ${DEST}/etc/rpimonitor.d/templates/\n")
+if args.with_templates is not None:
+    makefile.write("\n# Add templates\n")
+    makefile.write("\t@mkdir -p ${DEST}/etc/rpimonitor.d/templates\n")
+    makefile.write("\t@cp src//etc/rpimonitor.d/templates/* ${DEST}/etc/rpimonitor.d/templates/\n")
     if args.init == "systemd":
-        f.write("\t@mkdir -p ${DEST}/lib/systemd/system\n")
-        f.write("\t@cp -r src/lib/systemd/system/sunxi-temp-daemon.service ${DEST}/lib/systemd/system/\n")
+        makefile.write("\t@mkdir -p ${DEST}/lib/systemd/system\n")
+        makefile.write("\t@cp -r src/lib/systemd/system/sunxi-temp-daemon.service ${DEST}/lib/systemd/system/\n")
 
 if args.init == "systemd":
-    f.write("\n# Add systemd\n")
-    f.write("\t@mkdir -p ${DEST}/lib/systemd/system\n")
-    f.write("\t@cp -r src/lib/systemd/system/rpimonitord.service ${DEST}/lib/systemd/system/\n")
+    makefile.write("\n# Add systemd\n")
+    makefile.write("\t@mkdir -p ${DEST}/lib/systemd/system\n")
+    makefile.write("\t@cp -r src/lib/systemd/system/rpimonitord.service ${DEST}/lib/systemd/system/\n")
 else:
     if args.init == "upstart":
-        f.write("\n# Add upstart\n")
-        f.write("\t@mkdir -p ${DEST}etc/init\n")
-        f.write("\t@cp -r src/etc/init/* ${DEST}etc/init/\n")
+        makefile.write("\n# Add upstart\n")
+        makefile.write("\t@mkdir -p ${DEST}etc/init\n")
+        makefile.write("\t@cp -r src/etc/init/* ${DEST}etc/init/\n")
     else:
         if args.init == "sysVinit":
-            f.write("\n# Add sysVinit\n")
-            f.write("\t@mkdir -p ${DEST}etc/init.d\n")
-            f.write("\t@cp -r src/etc/init.d/* ${DEST}etc/init.d/\n")
+            makefile.write("\n# Add sysVinit\n")
+            makefile.write("\t@mkdir -p ${DEST}etc/init.d\n")
+            makefile.write("\t@cp -r src/etc/init.d/* ${DEST}etc/init.d/\n")
 
-
-f.close()
+makefile.close()
 
 print(args)
