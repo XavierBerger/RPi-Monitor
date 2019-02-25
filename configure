@@ -13,6 +13,7 @@ parser.add_argument("--with-snmp", action="store_const", const=1, help="install 
 parser.add_argument("--with-conf", action="store_const", const=1, help="install default configuration")
 parser.add_argument("--with-web", action="store_const", const=1, help="install rpimonitor web insterface")
 parser.add_argument("--with-scripts", action="store_const", const=1, help="install scripts")
+parser.add_argument("--with-extra-scripts", action="store_const", const=1, help="install extra scripts")
 parser.add_argument("--with-examples", action="store_const", const=1, help="install examples")
 parser.add_argument("--with-templates", action="store_const", const=1, help="install templates")
 parser.add_argument("--with-cron", action="store_const", const=1, help="install cron for package update")
@@ -27,6 +28,7 @@ if args.with_all is not None:
     args.with_conf = 1
     args.with_web = 1
     args.with_scripts = 1
+    args.with_extra_scripts = 1
     args.with_examples = 1
     args.with_templates = 1
     args.with_cron = 1
@@ -41,6 +43,8 @@ makefile.write("\ninstall:\n")
 makefile.write("\n# Install rpimonotor in {}/\n".format(args.dest))
 makefile.write("\t@mkdir -p ${DEST}usr/bin\n")
 makefile.write("\t@cp -r src/usr/bin/rpimonitord ${DEST}usr/bin/\n")
+makefile.write("\t@mkdir -p ${DEST}var/lib/rpimonitor\n")
+makefile.write("\t@cp -r src/var/lib/rpimonitor/* ${DEST}var/lib/rpimonitor/\n")
 
 if args.with_web is not None:
     makefile.write("\n\t@mkdir -p ${DEST}/usr/share/rpimonitor/web\n")
@@ -68,13 +72,19 @@ if args.with_snmp is not None:
 if args.with_scripts is not None:
     makefile.write("\n# Add scripts\n")
     makefile.write("\t@mkdir -p ${DEST}/usr/share/rpimonitor/scripts\n")
-    makefile.write("\t@cp src/usr/share/rpimonitor/scripts/* ${DEST}/usr/share/rpimonitor/scripts/\n")
-    makefile.write("\t@mkdir -p ${DEST}var/lib/rpimonitor\n")
-    makefile.write("\t@cp -r src/var/lib/rpimonitor/* ${DEST}var/lib/rpimonitor/\n")
+    makefile.write(
+        "\t@cp src/usr/share/rpimonitor/scripts/updatePackagesStatus.pl ${DEST}/usr/share/rpimonitor/scripts/\n"
+    )
     if args.with_cron is not None:
         makefile.write("\n# Add cron support\n")
         makefile.write("\t@mkdir -p ${DEST}etc/cron.d\n")
         makefile.write("\t@cp -r src/etc/cron.d/* ${DEST}etc/cron.d/\n")
+
+if args.with_extra_scripts is not None:
+    makefile.write("\n# Add extra scripts\n")
+    makefile.write("\t@mkdir -p ${DEST}/usr/share/rpimonitor/scripts\n")
+    makefile.write("\t@cp src/usr/share/rpimonitor/scripts/sunxi* ${DEST}/usr/share/rpimonitor/scripts/\n")
+    makefile.write("\t@cp src/usr/share/rpimonitor/scripts/rpionitor* ${DEST}/usr/share/rpimonitor/scripts/\n")
 
 if args.with_examples is not None:
     makefile.write("\n# Add examples\n")
