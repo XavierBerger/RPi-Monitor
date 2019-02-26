@@ -18,19 +18,21 @@
 # web.status.1.content.1.line.4=InsertHTML("/addons/top3/top3.html")
 #
 my $process='rpimonitor';
-my $web=1;
+my $tohtml=1;
+my $dest = "/usr/share/rpimonitor/web/addons/top3/top3.html";
 my $nbtop=3;
 my @top=[];
 my $monitored;
 
-#Get uptime
+# Get uptime
 my $uptime;
-open ( FILE, "/proc/uptime") or die "Can't open /proc/uptime \n";
-while (<FILE>){
+open ( UPTIME, "/proc/uptime") or die "Can't open /proc/uptime \n";
+while (<UPTIME>){
   /(\S+) \S+/;
   $uptime = $_;
 }
 
+# Get CPU usage
 my $idx=0;
 open (PS, 'ps -e -o etimes,time,comm --sort -time |') or die;
 while (<PS>)
@@ -43,27 +45,37 @@ while (<PS>)
   $1 or next;
   my $start=100*($2*60*60+$3*60+$4)/$1;
   my $total=100*($2*60*60+$3*60+$4)/$uptime;
-  $web
+  $tohtml
   and $top[$idx] = sprintf("<tr><td>%3d</td><td>%02d:%02d:%02d</td><td>%-12s</td><td>( %.2f% / %.2f% )</td></tr>\n",$idx, $2, $3, $4, $5, $start, $total)
   or $top[$idx] = sprintf("%3d %02d:%02d:%02d %-12s ( %.2f% / %.2f% ) \n",$idx, $2, $3, $4, $5, $start, $total);
 }
 close PS or die;
 my $iloop;
 
-  $web
-  and print "<table class='table'>\n"
-  and print "<tr><th>#</th><th>CPU usage</th><th>Process</th><th>% start / total</th></tr>\n";
-  for ($iloop=1; $iloop<=$nbtop; $iloop++)
-  {
-    print $top[$iloop];
-  }
-  if ($iloop < $monitored->{'idx'}){
-    $web
-    and print "<tr><td></td><td colspan='3'>...</td></tr>\n"
-    or print "    ...\n";
-  }
-  if ($iloop <= $monitored->{'idx'}){
-    print $top[$monitored->{'idx'}];
-  }
-  $web
-  and print "</table>\n";
+$tohtml
+and ( open ( OUTPUT, '>', $dest) or die "Can't open $dest \n" );
+
+$tohtml
+and print OUTPUT "<table class='table'>\n"
+and print OUTPUT "<tr><th>#</th><th>CPU usage</th><th>Process</th><th>% start / total</th></tr>\n";
+for ($iloop=1; $iloop<=$nbtop; $iloop++)
+{
+  $tohtml
+  and print OUTPUT "$top[$iloop]"
+  or print "$top[$iloop]";
+}
+if ($iloop < $monitored->{'idx'}){
+  $tohtml
+  and print OUTPUT "<tr><td></td><td colspan='3'>...</td></tr>\n"
+  or print "    ...\n";
+}
+if ($iloop <= $monitored->{'idx'}){
+  $tohtml
+  and print OUTPUT $top[$monitored->{'idx'}]
+  or print $top[$monitored->{'idx'}];
+}
+$tohtml
+and print OUTPUT "</table>\n";
+
+$tohtml
+and close OUTPUT;

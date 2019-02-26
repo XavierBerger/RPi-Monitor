@@ -2,7 +2,7 @@
 Description=Update top3
 
 [Service]
-ExecStart=/usr/share/rpimonitor/web/addons/top3/top3 > /usr/share/rpimonitor/web/addons/top3/top3.html
+ExecStart=/usr/share/rpimonitor/web/addons/top3/top3
 Nice=19
 IOSchedulingClass=best-effort
 IOSchedulingPriority=7
