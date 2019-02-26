@@ -5,7 +5,7 @@ parser = argparse.ArgumentParser(
     description="Create Makefile for rpimonitord"
 )  # allow_abbrev=False not available in python2.7!!
 parser.add_argument(
-    "--init", default="systemd", choices=["systemd", "upstart", "sysVinit", "none"], help="define init program"
+    "--init", default="systemd", choices=["systemd", "upstart", "sysvinit", "none"], help="define init program"
 )
 parser.add_argument("--dest", default="/", help="define installation directory")
 parser.add_argument("--with-man", action="store_const", const=1, help="generate and install manpages")
@@ -90,8 +90,6 @@ makefile.write("\ninstall:\n")
 makefile.write("\n# Install rpimonotor in {}/\n".format(args.dest))
 makefile.write("\t@mkdir -p ${DEST}usr/bin\n")
 makefile.write("\t@cp -r src/usr/bin/rpimonitord ${DEST}usr/bin/\n")
-makefile.write("\t@mkdir -p ${DEST}var/lib/rpimonitor\n")
-makefile.write("\t@cp -r src/var/lib/rpimonitor/* ${DEST}var/lib/rpimonitor/\n")
 
 if args.with_web is not None:
     makefile.write("\n\t@mkdir -p ${DEST}/usr/share/rpimonitor/web\n")
@@ -99,6 +97,7 @@ if args.with_web is not None:
     makefile.write("\t@cp -r src/usr/share/rpimonitor/web/fonts/ ${DEST}/usr/share/rpimonitor/web/\n")
     makefile.write("\t@cp -r src/usr/share/rpimonitor/web/img/ ${DEST}/usr/share/rpimonitor/web/\n")
     makefile.write("\t@cp -r src/usr/share/rpimonitor/web/js/ ${DEST}/usr/share/rpimonitor/web/\n")
+
 if args.with_web_addons_about is not None:
     makefile.write("\n\t@mkdir -p ${DEST}/usr/share/rpimonitor/web/addons/about\n")
     makefile.write(
@@ -107,6 +106,7 @@ if args.with_web_addons_about is not None:
     if args.init == "systemd":
         makefile.write("\n\t@mkdir -p ${DEST}/lib/systemd/system/\n")
         makefile.write("\t@cp -r src/lib/systemd/system/top3.* ${DEST}/lib/systemd/system/\n")
+
 if args.with_web_addons_about is not None:
     makefile.write("\n\t@mkdir -p ${DEST}/usr/share/rpimonitor/web/addons/about\n")
     makefile.write(
@@ -157,6 +157,8 @@ if args.with_scripts is not None:
     makefile.write(
         "\t@cp src/usr/share/rpimonitor/scripts/updatePackagesStatus.pl ${DEST}/usr/share/rpimonitor/scripts/\n"
     )
+    makefile.write("\t@mkdir -p ${DEST}var/lib/rpimonitor\n")
+    makefile.write("\t@cp -r src/var/lib/rpimonitor/* ${DEST}var/lib/rpimonitor/\n")
     if args.with_cron is not None:
         makefile.write("\n# Add cron support\n")
         makefile.write("\t@mkdir -p ${DEST}etc/cron.d\n")
@@ -191,8 +193,8 @@ else:
         makefile.write("\t@mkdir -p ${DEST}etc/init\n")
         makefile.write("\t@cp -r src/etc/init/* ${DEST}etc/init/\n")
     else:
-        if args.init == "sysVinit":
-            makefile.write("\n# Add sysVinit\n")
+        if args.init == "sysvinit":
+            makefile.write("\n# Add sysvinit\n")
             makefile.write("\t@mkdir -p ${DEST}etc/init.d\n")
             makefile.write("\t@cp -r src/etc/init.d/* ${DEST}etc/init.d/\n")
 
