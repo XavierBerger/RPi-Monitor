@@ -93,6 +93,7 @@ makefile.write("\t@cp -r src/usr/bin/rpimonitord ${DEST}usr/bin/\n")
 
 if args.with_web is not None:
     makefile.write("\n\t@mkdir -p ${DEST}/usr/share/rpimonitor/web\n")
+    makefile.write("\t@cp -r src/usr/share/rpimonitor/web/*.html ${DEST}/usr/share/rpimonitor/web/\n")
     makefile.write("\t@cp -r src/usr/share/rpimonitor/web/css/ ${DEST}/usr/share/rpimonitor/web/\n")
     makefile.write("\t@cp -r src/usr/share/rpimonitor/web/fonts/ ${DEST}/usr/share/rpimonitor/web/\n")
     makefile.write("\t@cp -r src/usr/share/rpimonitor/web/img/ ${DEST}/usr/share/rpimonitor/web/\n")
