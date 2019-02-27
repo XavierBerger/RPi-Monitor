@@ -144,7 +144,7 @@ if args.with_man is not None:
     makefile.write("\t@mkdir -p ${DEST}usr/share/man/man1\n")
     makefile.write("\t@cp -r docs/build/man/rpimonitor.1 ${DEST}usr/share/man/man1/\n")
     makefile.write("\t@mkdir -p ${DEST}usr/share/man/man5\n")
-    makefile.write("\t@cp -r docs/build/man/rpimonitor-*.conmakefile.5 ${DEST}usr/share/man/man5/\n")
+    makefile.write("\t@cp -r docs/build/man/rpimonitor-*.conf.5 ${DEST}usr/share/man/man5/\n")
 
 if args.with_snmp is not None:
     makefile.write("\n# Add snmp support\n")
@@ -169,7 +169,7 @@ if args.with_extra_scripts is not None:
     makefile.write("\n# Add extra scripts\n")
     makefile.write("\t@mkdir -p ${DEST}/usr/share/rpimonitor/scripts\n")
     makefile.write("\t@cp src/usr/share/rpimonitor/scripts/sunxi* ${DEST}/usr/share/rpimonitor/scripts/\n")
-    makefile.write("\t@cp src/usr/share/rpimonitor/scripts/rpionitor* ${DEST}/usr/share/rpimonitor/scripts/\n")
+    makefile.write("\t@cp src/usr/share/rpimonitor/scripts/rpimonitor* ${DEST}/usr/share/rpimonitor/scripts/\n")
 
 if args.with_examples is not None:
     makefile.write("\n# Add examples\n")
