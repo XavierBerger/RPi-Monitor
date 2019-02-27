@@ -5,14 +5,40 @@ parser = argparse.ArgumentParser(
     description="Create Makefile for rpimonitord"
 )  # allow_abbrev=False not available in python2.7!!
 parser.add_argument(
-    "--init", default="systemd", choices=["systemd", "upstart", "sysVinit", "none"], help="define init program"
+    "--init", default="systemd", choices=["systemd", "upstart", "sysvinit", "none"], help="define init program"
 )
 parser.add_argument("--dest", default="/", help="define installation directory")
 parser.add_argument("--with-man", action="store_const", const=1, help="generate and install manpages")
 parser.add_argument("--with-snmp", action="store_const", const=1, help="install snmp support")
 parser.add_argument("--with-conf", action="store_const", const=1, help="install default configuration")
 parser.add_argument("--with-web", action="store_const", const=1, help="install rpimonitor web interface")
-parser.add_argument("--with-web-addons", action="store_const", const=1, help="install rpimonitor web addons")
+parser.add_argument(
+    "--with-web-addons", action="store_const", const=1, help="install rpimonitor web addons (imply --with-web)"
+)
+parser.add_argument(
+    "--with-web-addons-about",
+    action="store_const",
+    const=1,
+    help="install rpimonitor web about addons (imply --with-web)",
+)
+parser.add_argument(
+    "--with-web-addons-custom",
+    action="store_const",
+    const=1,
+    help="install rpimonitor web custom addons (imply --with-web)",
+)
+parser.add_argument(
+    "--with-web-addons-example",
+    action="store_const",
+    const=1,
+    help="install rpimonitor web example addons (imply --with-web)",
+)
+parser.add_argument(
+    "--with-web-addons-top3",
+    action="store_const",
+    const=1,
+    help="install rpimonitor web top3 addons (imply --with-web)",
+)
 parser.add_argument("--with-scripts", action="store_const", const=1, help="install scripts")
 parser.add_argument("--with-extra-scripts", action="store_const", const=1, help="install extra scripts")
 parser.add_argument("--with-examples", action="store_const", const=1, help="install examples")
@@ -35,6 +61,25 @@ if args.with_all is not None:
     args.with_templates = 1
     args.with_cron = 1
 
+if args.with_web_addons is not None:
+    args.with_web = 1
+    args.with_web_addons_about = 1
+    args.with_web_addons_custom = 1
+    args.with_web_addons_example = 1
+    args.with_web_addons_top3 = 1
+
+if args.with_web_addons_about is not None:
+    args.with_web = 1
+
+if args.with_web_addons_custom is not None:
+    args.with_web = 1
+
+if args.with_web_addons_example is not None:
+    args.with_web = 1
+
+if args.with_web_addons_top3 is not None:
+    args.with_web = 1
+
 makefile = open("Makefile", "w")
 makefile.write("DEST={}/\n".format(args.dest))
 makefile.write("DOCS_DIR = docs\n")
@@ -45,18 +90,44 @@ makefile.write("\ninstall:\n")
 makefile.write("\n# Install rpimonotor in {}/\n".format(args.dest))
 makefile.write("\t@mkdir -p ${DEST}usr/bin\n")
 makefile.write("\t@cp -r src/usr/bin/rpimonitord ${DEST}usr/bin/\n")
-makefile.write("\t@mkdir -p ${DEST}var/lib/rpimonitor\n")
-makefile.write("\t@cp -r src/var/lib/rpimonitor/* ${DEST}var/lib/rpimonitor/\n")
 
 if args.with_web is not None:
     makefile.write("\n\t@mkdir -p ${DEST}/usr/share/rpimonitor/web\n")
+    makefile.write("\t@cp -r src/usr/share/rpimonitor/web/*.html ${DEST}/usr/share/rpimonitor/web/\n")
     makefile.write("\t@cp -r src/usr/share/rpimonitor/web/css/ ${DEST}/usr/share/rpimonitor/web/\n")
     makefile.write("\t@cp -r src/usr/share/rpimonitor/web/fonts/ ${DEST}/usr/share/rpimonitor/web/\n")
     makefile.write("\t@cp -r src/usr/share/rpimonitor/web/img/ ${DEST}/usr/share/rpimonitor/web/\n")
     makefile.write("\t@cp -r src/usr/share/rpimonitor/web/js/ ${DEST}/usr/share/rpimonitor/web/\n")
-if args.with_web_addons is not None:
-    makefile.write("\n\t@mkdir -p ${DEST}/usr/share/rpimonitor/web\n")
-    makefile.write("\t@cp -r src/usr/share/rpimonitor/web/addons/ ${DEST}/usr/share/rpimonitor/web/\n")
+
+if args.with_web_addons_about is not None:
+    makefile.write("\n\t@mkdir -p ${DEST}/usr/share/rpimonitor/web/addons/about\n")
+    makefile.write(
+        "\t@cp -r src/usr/share/rpimonitor/web/addons/about/* ${DEST}/usr/share/rpimonitor/web/addons/about/\n"
+    )
+    if args.init == "systemd":
+        makefile.write("\n\t@mkdir -p ${DEST}/lib/systemd/system/\n")
+        makefile.write("\t@cp -r src/lib/systemd/system/top3.* ${DEST}/lib/systemd/system/\n")
+
+if args.with_web_addons_about is not None:
+    makefile.write("\n\t@mkdir -p ${DEST}/usr/share/rpimonitor/web/addons/about\n")
+    makefile.write(
+        "\t@cp -r src/usr/share/rpimonitor/web/addons/about/* ${DEST}/usr/share/rpimonitor/web/addons/about/\n"
+    )
+if args.with_web_addons_custom is not None:
+    makefile.write("\n\t@mkdir -p ${DEST}/usr/share/rpimonitor/web/addons/custom\n")
+    makefile.write(
+        "\t@cp -r src/usr/share/rpimonitor/web/addons/custom/* ${DEST}/usr/share/rpimonitor/web/addons/custom/\n"
+    )
+if args.with_web_addons_example is not None:
+    makefile.write("\n\t@mkdir -p ${DEST}/usr/share/rpimonitor/web/addons/example\n")
+    makefile.write(
+        "\t@cp -r src/usr/share/rpimonitor/web/addons/example/* ${DEST}/usr/share/rpimonitor/web/addons/example/\n"
+    )
+if args.with_web_addons_top3 is not None:
+    makefile.write("\n\t@mkdir -p ${DEST}/usr/share/rpimonitor/web/addons/top3\n")
+    makefile.write(
+        "\t@cp -r src/usr/share/rpimonitor/web/addons/top3/* ${DEST}/usr/share/rpimonitor/web/addons/top3/\n"
+    )
     if args.init == "systemd":
         makefile.write("\n\t@mkdir -p ${DEST}/lib/systemd/system/\n")
         makefile.write("\t@cp -r src/lib/systemd/system/top3.* ${DEST}/lib/systemd/system/\n")
@@ -87,6 +158,8 @@ if args.with_scripts is not None:
     makefile.write(
         "\t@cp src/usr/share/rpimonitor/scripts/updatePackagesStatus.pl ${DEST}/usr/share/rpimonitor/scripts/\n"
     )
+    makefile.write("\t@mkdir -p ${DEST}var/lib/rpimonitor\n")
+    makefile.write("\t@cp -r src/var/lib/rpimonitor/* ${DEST}var/lib/rpimonitor/\n")
     if args.with_cron is not None:
         makefile.write("\n# Add cron support\n")
         makefile.write("\t@mkdir -p ${DEST}etc/cron.d\n")
@@ -121,8 +194,8 @@ else:
         makefile.write("\t@mkdir -p ${DEST}etc/init\n")
         makefile.write("\t@cp -r src/etc/init/* ${DEST}etc/init/\n")
     else:
-        if args.init == "sysVinit":
-            makefile.write("\n# Add sysVinit\n")
+        if args.init == "sysvinit":
+            makefile.write("\n# Add sysvinit\n")
             makefile.write("\t@mkdir -p ${DEST}etc/init.d\n")
             makefile.write("\t@cp -r src/etc/init.d/* ${DEST}etc/init.d/\n")
 

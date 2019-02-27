@@ -3,5 +3,3 @@
 
 # run at 03:10 to update status
 10 03 * * * root /usr/share/rpimonitor/scripts/updatePackagesStatus.pl
-
-
