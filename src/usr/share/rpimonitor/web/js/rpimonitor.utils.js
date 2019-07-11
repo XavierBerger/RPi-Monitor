@@ -73,7 +73,9 @@ function KMG(value, initPre){
 }
 
 function Percent(value,total){
-  return (100*value/total).toFixed(2)+"%";
+  if (total > 0) {
+    return (100*value/total).toFixed(2)+"%";
+  } else { return (0)+"%" }
 }
 
 function ProgressBar(value, max, warning, danger){
