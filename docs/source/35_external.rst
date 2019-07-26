@@ -7,7 +7,7 @@ Non standard configuration
 Use it with my own Web Server
 -----------------------------
 
-In this example I will use **nginx** server. You could use the same tactic with 
+In this example I will use the **nginx** server. You could use the same tactic with 
 your preferred web server.
 
 
@@ -22,7 +22,7 @@ Then restart RPi-Monitor with the command:
     sudo service rpimonitor restart
 
 
-The embedded server is no more running so, we will need to configure another server to access the data.
+The embedded server is no longer running so we will need to configure another server to access the data.
 
 
 For nginx we will create the file ``/etc/nginx/sites-enabled/rpimonitor`` with the following content:
@@ -35,12 +35,17 @@ For nginx we will create the file ``/etc/nginx/sites-enabled/rpimonitor`` with t
         root /usr/share/rpimonitor/web; 
     }
 
-and restart the server with the command:
+Restart the server with the command:
 
 ::
 
     sudo service nginx restart
 
+And add the symlink:
+
+::
+
+    sudo ln -s /var/lib/rpimonitor/stat /usr/share/rpimonitor/web/stat
 
 Now you can reach **RPi-Monitor** with your favorite browser on your favorite web server.
 
