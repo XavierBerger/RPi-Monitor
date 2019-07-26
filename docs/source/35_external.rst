@@ -12,7 +12,7 @@ your preferred web server.
 
 
 Let's first update the configuration file to disable the embedded web server. 
-Edit the file ``/etc/rpimonitord.conf`` and set daemon.noserver=1.
+Edit the file ``/etc/rpimonitor/daemon.conf`` and set ``daemon.noserver=1``.
 
 
 Then restart RPi-Monitor with the command:
