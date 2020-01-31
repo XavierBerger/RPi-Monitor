@@ -46,7 +46,7 @@ web.friends.<id>.link=<link to RPi-Monitor>
   ``<link to RPi-Monitor>`` is the link to another RPi-Monitor running
   into the friend machine.
 
-.. seealso:: Example of implementation in `Friends customisation example  <31_customisation.html#friends>`_
+.. seealso:: Example of implementation in `Friends customisation example  <27_configuration_templates.html#friends>`_
 
 Header customisation
 -----------------------
@@ -75,7 +75,7 @@ Status
 The status page is fully configurable. It is possible to define multiple pages.
 Each page is identified by its ``<page id>``.
 
-.. seealso:: Example of implementation in `Multi-pages customisation example  <31_customisation.html#multiple-pages>`_
+.. seealso:: Example of implementation in `Multi-pages customisation example  <27_configuration_templates.html#multiple-pages>`_
 
 web.status.<page id>.title=<page title>
   ``<page title>`` title of the page displayed into the drop down menu in case of multiple pages.
