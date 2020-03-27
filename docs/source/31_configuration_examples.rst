@@ -43,7 +43,7 @@ configuration bellow:
 
 ::
 
-    web.status.1.content.1.title=WiFi
+    web.status.1.content.1.name=WiFi
     web.status.1.content.1.icon=wifi.png
     web.status.1.content.1.line.1="WiFi Sent: <b>"+KMG(data.wifi_send)+"<i class='icon-arrow-up'></i></b> Received: <b>"+KMG(Math.abs(data.wifi_received)) + "<i class='icon-arrow-down'></i></b>"
 
@@ -58,7 +58,7 @@ representing upstream and downstream metrics:
 
 ::
 
-    web.statistics.1.content.1.title=WiFi
+    web.statistics.1.content.1.name=WiFi
     web.statistics.1.content.1.graph.1=wifi_send
     web.statistics.1.content.1.graph.2=wifi_received
     web.statistics.1.content.1.ds_graph_options.wifi_send.label=Upload bandwidth (bits)
