@@ -16,13 +16,13 @@ Install **RPi-Monitor**'s public key to trust **RPi-Monitor** repository:
 ::
 
   sudo apt-get install dirmngr
-  sudo apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 2C0D3C0F
+  sudo apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 43A579636E330A99A8336C14E4E362DE2C0D3C0F
 
 Execute the following command to add **RPi-Monitor** into your list of repository: 
 
 ::
 
-  sudo wget http://goo.gl/vewCLL -O /etc/apt/sources.list.d/rpimonitor.list
+  sudo wget https://goo.gl/vewCLL -O /etc/apt/sources.list.d/rpimonitor.list
 
 
 
