@@ -139,6 +139,7 @@ The configuration to add a new status strip will then be the following:
     web.status.1.content.1.line.1="<b>/storage1</b> Used: <b>"+KMG(data.storage1_used,'M')+"</b> (<b>"+Percent(data.storage1_used,data.storage1_total,'M')+"</b>) Free: <b>"+KMG(data.storage1_total-data.storage1_used,'M')+ "</b> Total: <b>"+ KMG(data.storage1_total,'M') +"</b>" 
     web.status.1.content.1.line.2=ProgressBar(data.storage1_used,data.storage1_total) 
     web.status.1.content.1.line.3="<b>/storage2</b> Used: <b>"+KMG(data.storage2_used,'M')+"</b> (<b>"+Percent(data.storage2_used,data.storage2_total,'M')+"</b>) Free: <b>"+KMG(data.storage2_total-data.storage2_used,'M')+ "</b> Total: <b>"+ KMG(data.storage2_total,'M') +"</b>"
+    web.status.1.content.1.line.4=ProgressBar(data.storage2_used,data.storage2_total)
 
 
 The configuration may need some explanation:
