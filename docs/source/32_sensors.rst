@@ -45,7 +45,7 @@ Download Adafruit_DHT form Adafruit's github repository and copy is in ``/usr/bi
 
 ::
 
-    wget http://goo.gl/oadpl -O Adafruit_DHT
+    wget https://github.com/adafruit/Adafruit-Raspberry-Pi-Python-Code/raw/legacy/Adafruit_DHT_Driver/Adafruit_DHT -O Adafruit_DHT
     sudo cp Adafruit_DHT /usr/bin/
 
 To test the electronic assembly and the software installation execute the 
