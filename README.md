@@ -1,3 +1,20 @@
+# Request for collaboration.
+
+I don't have time to manage update to `Rpi-Monitor`. 
+
+The project looks to be used be many people. Some PR need to be reviewed and merged and next version is requiring tests.
+
+If one of you would like to help to manage the project, I'll be happy to grant her/him the right on `Rpi-Monitor` repository.
+
+I let you contact me if you are interrested.
+
+Thanks,
+
+X@v
+
+
+----
+
 ![RPi-Monitor logo](docs/source/_static/logo.png)
 
 # Overview
