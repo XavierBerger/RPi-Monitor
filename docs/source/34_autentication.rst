@@ -5,7 +5,9 @@ Authentication and secure access
 ================================
 
 The purpose of **RPi-Monitor** is to... monitor. For different reason (security, 
-time, scope of project...) it do not add any authentication. 
+time, scope of project...) it do not add any high secure level authentication.
+
+A mecanism, based on the basic-auth challenge is provided, see the daemon configuration. Be aware this kind of authentication should be enclosed in an HTTPS connexion.
 
 We will see here how to configure a reverse proxy which will be in charge of 
 user authentication and ssl connections. We will also configure a firewall to 
@@ -22,6 +24,7 @@ To install nginx execute the following command:
 
 Manage authentication
 ---------------------
+Be sure to disable the internal basic-auth by commenting the line ``daemon.basicauth`` in the config file.
 
 To manage authentication we need to create a file gathering the username and 
 passwords. The following script will help you to generate new users id 

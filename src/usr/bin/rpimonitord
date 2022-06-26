@@ -320,6 +320,7 @@ use IO::Handle;
 use HTTP::Daemon;
 use HTTP::Status;
 use JSON -convert_blessed_universally;
+use MIME::Base64;
 #use Data::Dumper;
 
 sub new
@@ -403,6 +404,38 @@ sub SendError
   $this->{'connection'}->close();
 
   return 1;
+}
+
+sub SendChallenge
+{
+  my $this=shift;
+  $this->Debug(2,"Challenge auth");
+  my $response = HTTP::Response->new( 
+    401 => 'Authorization Required',
+    [ 'WWW-Authenticate' => 'Basic realm="Identity"',
+      'Content-Type' => "text/plain"],
+    "Authentication needed"
+  );
+  $this->{'connection'}->send_response($response);
+  $this->{'connection'}->close();
+}
+
+sub CheckChallenge
+{
+  my $this = shift;
+  my $request = shift;
+  my $auth_received = shift;
+  my $configuration = shift;
+  my $auth = "Basic ".encode_base64($configuration->{'daemon'}->{'basicauth'}, '');
+  if ($auth eq $auth_received)
+  {
+    return 1;
+  }
+  else
+  {
+    $this->Debug(1, "Bad authent provided");
+    return 0;
+  }
 }
 
 sub DoGET
@@ -586,8 +619,27 @@ sub Run
   for (;;){
     while ( $this->{'connection'} = $this->{'server'}->accept) {
       while (my $request = $this->{'connection'}->get_request) {
-        my $method = "Do".$request->method();
-        $this->can($method) and $this->$method($request,$configuration);
+        if ($configuration->{'daemon'}->{'basicauth'}) {
+          # Basic authen enabled
+          if ($request->header( 'Authorization' )) {
+            my $auth = $request->header( 'Authorization' );
+            if ($this->CheckChallenge($request, $auth, $configuration)) {
+              my $method = "Do".$request->method();
+              $this->can($method) and $this->$method($request,$configuration);
+            }
+            else {
+              $this->SendChallenge();
+            }
+          }
+          else {
+            $this->SendChallenge();
+          }
+        }
+        else {
+          # Basic auth not enabled
+          my $method = "Do".$request->method();
+          $this->can($method) and $this->$method($request,$configuration);
+        }
       }
       $this->{'connection'}->close;
       undef($this->{'connection'});

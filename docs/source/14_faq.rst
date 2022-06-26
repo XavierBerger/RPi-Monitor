@@ -69,11 +69,11 @@ I would like to use my favorite web server instead of the one embedded into **RP
 
 Can you add login/password and authentication to RPI-Monitor web interface?
 
-  **No**. I'll never add such a feature to **RPi-Monitor**. Why? Just because it is 
-  something complex to do in a clean and fully secured way. Some software are 
-  already design to do the job and they do it well. 
+  **Yes** but only using the basic-authentication challenge. Only a single username
+  and password is allowed, and be aware that if you are not in HTTPS, the username
+  and password may be collected by a malicious user.
   
-  A `solution is proposed in this documentation using nginx 
+  An other `solution is proposed in this documentation using nginx
   <34_autentication.html#authentication-and-secure-access>`_ frontend.
 
 |
