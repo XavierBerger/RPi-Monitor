@@ -187,3 +187,5 @@ In this section the contents of the layer is listed, along with a short help for
 Send pull requests, patches, comments or questions to https://github.com/XavierBerger/meta-rpiexperiences/issues
 
 * **Maintainer**: Xavier Berger
+
+* **rpi4** : need to change /dev/vcsm into /dev/vcsm-cma
