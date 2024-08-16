@@ -58,6 +58,11 @@ daemon.logfile=/var/log/rpimonitor.log
 daemon.loglevel=0
   Define log level (Default:0)
 
+daemon.basicauth=<none>
+  Define a username and a password to access the embedded web server. (Default: no authentication)
+
+  .. important:: Syntax is ``username:password`` in plain text (note the semicolon).
+
 SNMP configuration
 ------------------
   ``snmpagent`` is defining SNMP behavior of ``rpimonitord``.
