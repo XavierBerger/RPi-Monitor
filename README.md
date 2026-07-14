@@ -1,22 +1,8 @@
-# Request for collaboration.
+# RPi-Monotor Organization
 
-I don't have time to manage update to `Rpi-Monitor`. 
+2026-07-14 is a great day... yes, this is the [French national day](https://en.wikipedia.org/wiki/Bastille_Day) but it’s also a new milestone for the **RPi-Monitor** project. Today, I created a GitHub organization so volunteers can join the project, contribute, and help ensure it keeps going.
 
-The project looks to be used be many people. Some PR need to be reviewed and merged and next version is requiring tests.
-
-If one of you would like to help to manage the project, I'll be happy to grant her/him the right on `Rpi-Monitor` repository.
-
-I let you contact me if you are interrested.
-
-Thanks,
-
-X@v
-
-----
-
-Looking for a simplest tool, you may have d look to [https://github.com/nekromoff/rpi-monitor-dashboard](https://github.com/nekromoff/rpi-monitor-dashboard)
-
-----
+--- 
 
 ![RPi-Monitor logo](docs/source/_static/logo.png)
 
