@@ -51,7 +51,7 @@ Development branch package is located `here <https://aur.archlinux.org/packages/
 Installation from sources
 -------------------------
 
-For manual installation, refer to `Packaging <32_contributing.html#packaging>`_ 
+For manual installation, refer to `Packaging <41_contributing.html#packaging>`_ 
 instruction which describes how and where install files. 
 
 Docker
